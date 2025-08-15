@@ -4,7 +4,6 @@ import {
   IconSortAscendingLetters,
   IconSortDescendingLetters,
 } from '@tabler/icons-react'
-import { Badge } from '@/components/ui/badge.tsx'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
@@ -117,12 +116,7 @@ export default function Apps() {
               className='rounded-lg border p-4 hover:shadow-md'
             >
               <div className='mb-8 flex items-center justify-between'>
-                <Badge variant='secondary' className='text-xs'>
-                  <span className='flex h-2 w-2 items-center justify-center'>
-                    <span className='h-1.5 w-1.5 animate-pulse rounded-full bg-green-600'></span>
-                  </span>
-                  Live
-                </Badge>
+                <div className='text-5xl'>{project.logo}</div>
                 <Button variant='outline' size='sm'>
                   Configure
                 </Button>
@@ -134,8 +128,16 @@ export default function Apps() {
                     {project.url}
                   </a>
                 </div>
-                <div>
-                  <div className='text-4xl'>{project.logo}</div>
+                <div className='flex items-center gap-1'>
+                  <span className='flex h-2 w-2 items-center justify-center'>
+                    <span className='h-1.5 w-1.5 animate-pulse rounded-full bg-green-600'></span>
+                  </span>
+                  <small
+                    className='spacing-x-1 font-medium tracking-widest text-green-600'
+                    style={{ fontSize: '10px' }}
+                  >
+                    LIVE
+                  </small>
                 </div>
               </div>
             </li>
