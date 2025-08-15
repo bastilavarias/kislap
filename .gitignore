@@ -1,1 +1,31 @@
 .idea
+
+# kislap root .gitignore
+
+# -----------------
+# Sparkle (Next.js)
+# -----------------
+.next/
+out/
+node_modules/
+.env.local
+.env.development
+.env.production
+npm-debug.log*
+yarn-debug.log*
+
+# -----------------
+# Flash (Go)
+# -----------------
+bin/
+pkg/
+# Compiled binary
+kislap-flash
+*.exe
+*.test
+*.prof
+
+# -----------------
+# Other general ignores
+# -----------------
+.DS_Store
