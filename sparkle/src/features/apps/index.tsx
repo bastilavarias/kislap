@@ -1,8 +1,10 @@
 import { useState } from 'react'
+import { Link } from '@tanstack/react-router'
 import {
   IconAdjustmentsHorizontal,
   IconSortAscendingLetters,
   IconSortDescendingLetters,
+  IconPlus,
 } from '@tabler/icons-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -60,11 +62,19 @@ export default function Apps() {
 
       {/* ===== Content ===== */}
       <Main fixed>
-        <div>
-          <h1 className='text-2xl font-bold tracking-tight'>Projects</h1>
-          <p className='text-muted-foreground'>
-            Here&apos;s a list of your projects!
-          </p>
+        <div className='flex items-center justify-between'>
+          <div>
+            <h1 className='text-2xl font-bold tracking-tight'>Projects</h1>
+            <p className='text-muted-foreground'>
+              Here&apos;s a list of your projects!
+            </p>
+          </div>
+          <Button asChild>
+            <Link to='/projects/new'>
+              <IconPlus color='white' />
+              Add
+            </Link>
+          </Button>
         </div>
         <div className='my-4 flex items-end justify-between sm:my-0 sm:items-center'>
           <div className='flex flex-col gap-4 sm:my-4 sm:flex-row'>

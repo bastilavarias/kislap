@@ -113,7 +113,7 @@ export default function NewProject() {
       {/* ===== Content ===== */}
       <Main>
         <div className='mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8'>
-          <Card className='shadow-sm'>
+          <Card className='shadow-none'>
             <CardContent className='p-8'>
               {/* Header Section */}
               <div className='mb-8'>
