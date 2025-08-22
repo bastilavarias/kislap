@@ -66,8 +66,8 @@ export function Hero() {
         >
           {[
             { color: "bg-green-500", text: "Lightning fast" },
-            { color: "bg-blue-500", text: "Multiplayer" },
-            { color: "bg-purple-500", text: "AI-powered" },
+            { color: "bg-blue-500", text: "AI powered" },
+            { color: "bg-purple-500", text: "Of course, FREE" },
           ].map((item, index) => (
             <motion.div
               key={item.text}
