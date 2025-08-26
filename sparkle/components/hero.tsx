@@ -14,7 +14,7 @@ export function Hero() {
           transition={{ duration: 0.6 }}
         >
           <Badge variant="secondary" className="mb-6 text-sm">
-            🎉 Sparkle is built by Community
+            🎉 Kislap is built by Community
           </Badge>
         </motion.div>
 
@@ -25,7 +25,7 @@ export function Hero() {
           transition={{ duration: 0.8, delay: 0.2 }}
         >
           ✨Transform your forms into{" "}
-          <span className="gradient-text">beautiful websites </span>
+          <span className="gradient-text">beautiful websites. </span>
         </motion.h1>
 
         <motion.p
@@ -66,8 +66,8 @@ export function Hero() {
         >
           {[
             { color: "bg-green-500", text: "Lightning fast" },
-            { color: "bg-blue-500", text: "AI powered" },
-            { color: "bg-purple-500", text: "Of course, FREE" },
+            { color: "bg-blue-500", text: "Easy to use" },
+            { color: "bg-purple-500", text: "Of course, LIBRE" },
           ].map((item, index) => (
             <motion.div
               key={item.text}

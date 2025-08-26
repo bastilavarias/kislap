@@ -1,4 +1,5 @@
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
+import { LogoVersion } from "@/components/logo-version";
 
 export function Footer() {
   return (
@@ -6,14 +7,9 @@ export function Footer() {
       <div className="container mx-auto max-w-6xl">
         <div className="grid md:grid-cols-4 gap-8 mb-12">
           <div>
-            <div className="flex items-center space-x-2 mb-4">
-              <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center">
-                <span className="text-accent-foreground font-bold text-lg">Z</span>
-              </div>
-              <span className="text-xl font-bold">Zed</span>
-            </div>
+            <LogoVersion />
             <p className="text-muted-foreground text-sm leading-relaxed">
-              Code at the speed of thought with the most performant editor ever built.
+              Transform your forms into beautiful websites.
             </p>
           </div>
 
@@ -97,7 +93,9 @@ export function Footer() {
         </div>
 
         <div className="pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center">
-          <p className="text-sm text-muted-foreground mb-4 md:mb-0">© 2024 Zed Industries, Inc. All rights reserved.</p>
+          <p className="text-sm text-muted-foreground mb-4 md:mb-0">
+            © 2025 Kislap made with 💖
+          </p>
           <div className="flex items-center space-x-4">
             <Button variant="ghost" size="sm">
               GitHub
@@ -112,5 +110,5 @@ export function Footer() {
         </div>
       </div>
     </footer>
-  )
+  );
 }

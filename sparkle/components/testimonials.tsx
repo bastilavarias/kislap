@@ -1,29 +1,32 @@
-"use client"
+"use client";
 
-import { Card, CardContent } from "@/components/ui/card"
-import { motion } from "framer-motion"
+import { Card, CardContent } from "@/components/ui/card";
+import { motion } from "framer-motion";
 
 export function Testimonials() {
   const testimonials = [
     {
-      quote: "Zed is the fastest editor I've ever used. The multiplayer features are game-changing for our team.",
+      quote:
+        "Zed is the fastest editor I've ever used. The multiplayer features are game-changing for our team.",
       author: "Sarah Chen",
       role: "Senior Engineer at Stripe",
       avatar: "/professional-woman-developer.png",
     },
     {
-      quote: "Finally, an editor that keeps up with my thoughts. The AI assistance is incredibly helpful.",
+      quote:
+        "Finally, an editor that keeps up with my thoughts. The AI assistance is incredibly helpful.",
       author: "Marcus Rodriguez",
       role: "Tech Lead at Vercel",
       avatar: "/professional-man-developer.png",
     },
     {
-      quote: "The Vim integration is flawless. It's like they built it specifically for modal editing enthusiasts.",
+      quote:
+        "The Vim integration is flawless. It's like they built it specifically for modal editing enthusiasts.",
       author: "Alex Kim",
       role: "Principal Engineer at GitHub",
       avatar: "/professional-developer.png",
     },
-  ]
+  ];
 
   return (
     <section className="py-20 px-4 bg-muted/20">
@@ -35,8 +38,10 @@ export function Testimonials() {
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
         >
-          <h2 className="text-4xl font-bold mb-4">Loved by developers</h2>
-          <p className="text-xl text-muted-foreground">Join thousands of developers who've made the switch to Zed.</p>
+          <h2 className="text-4xl font-bold mb-4">💖Loved by Everyone💖</h2>
+          <p className="text-xl text-muted-foreground">
+            Join the smart people who use Kislap to get things done.
+          </p>
         </motion.div>
 
         <div className="grid md:grid-cols-3 gap-6">
@@ -79,8 +84,12 @@ export function Testimonials() {
                       transition={{ type: "spring", stiffness: 300 }}
                     />
                     <div>
-                      <div className="font-semibold text-foreground">{testimonial.author}</div>
-                      <div className="text-sm text-muted-foreground">{testimonial.role}</div>
+                      <div className="font-semibold text-foreground">
+                        {testimonial.author}
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        {testimonial.role}
+                      </div>
                     </div>
                   </motion.div>
                 </CardContent>
@@ -90,5 +99,5 @@ export function Testimonials() {
         </div>
       </div>
     </section>
-  )
+  );
 }

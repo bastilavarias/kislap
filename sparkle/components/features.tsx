@@ -53,7 +53,7 @@ export function Features() {
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
         >
-          <h2 className="text-4xl font-bold mb-4">Built for anyone</h2>
+          <h2 className="text-4xl font-bold mb-4">Built for Anyone😎</h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Deploy websites for your business, resume, startup waitlist, or
             Linktree, with more features on the way!
