@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LogoVersion } from "@/components/logo-version";
+import Link from "next/link";
 
 export function Header() {
   return (
@@ -20,14 +21,15 @@ export function Header() {
 
         <div className="flex items-center space-x-4">
           <ThemeToggle />
-          <Button variant="outline" size="sm">
-            Docs
+          <Button variant="outline" size="sm" asChild>
+            <Link href="/docs">Docs</Link>
           </Button>
           <Button
             size="sm"
             className="bg-primary hover:bg-primary/90 text-primary-foreground"
+            asChild
           >
-            Dashboard
+            <Link href="/dashboard">Dashboard</Link>
           </Button>
         </div>
       </div>
