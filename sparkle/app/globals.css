@@ -10,7 +10,7 @@
   --card-foreground: oklch(0 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0 0 0);
-  --primary: oklch(0.65 0.24 26.92);
+  --primary: oklch(58.9% 0.232 282.7);
   --primary-foreground: oklch(1 0 0);
   --secondary: oklch(0.97 0.21 109.74);
   --secondary-foreground: oklch(0 0 0);
@@ -21,20 +21,20 @@
   --destructive: oklch(0 0 0);
   --border: oklch(0 0 0);
   --input: oklch(0 0 0);
-  --ring: oklch(0.65 0.24 26.92);
-  --chart-1: oklch(0.65 0.24 26.92);
+  --ring: oklch(58.9% 0.232 282.7);
+  --chart-1: oklch(58.9% 0.232 282.7);
   --chart-2: oklch(0.97 0.21 109.74);
   --chart-3: oklch(0.56 0.24 260.83);
   --chart-4: oklch(0.73 0.25 142.5);
   --chart-5: oklch(0.59 0.27 328.36);
   --sidebar: oklch(0.96 0 0);
   --sidebar-foreground: oklch(0 0 0);
-  --sidebar-primary: oklch(0.65 0.24 26.92);
+  --sidebar-primary: oklch(58.9% 0.232 282.7);
   --sidebar-primary-foreground: oklch(1 0 0);
   --sidebar-accent: oklch(0.56 0.24 260.83);
   --sidebar-accent-foreground: oklch(1 0 0);
   --sidebar-border: oklch(0 0 0);
-  --sidebar-ring: oklch(0.65 0.24 26.92);
+  --sidebar-ring: oklch(58.9% 0.232 282.7);
 
   --font-sans: DM Sans, sans-serif;
   --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
@@ -63,7 +63,7 @@
   --card-foreground: oklch(1 0 0);
   --popover: oklch(0.32 0 0);
   --popover-foreground: oklch(1 0 0);
-  --primary: oklch(0.7 0.19 23.04);
+  --primary: oklch(65% 0.15 282.7);
   --primary-foreground: oklch(0 0 0);
   --secondary: oklch(0.97 0.2 109.61);
   --secondary-foreground: oklch(0 0 0);
@@ -74,20 +74,20 @@
   --destructive: oklch(1 0 0);
   --border: oklch(1 0 0);
   --input: oklch(1 0 0);
-  --ring: oklch(0.7 0.19 23.04);
-  --chart-1: oklch(0.7 0.19 23.04);
+  --ring: oklch(65% 0.15 282.7);
+  --chart-1: oklch(65% 0.15 282.7);
   --chart-2: oklch(0.97 0.2 109.61);
   --chart-3: oklch(0.68 0.18 251.63);
   --chart-4: oklch(0.74 0.23 142.87);
   --chart-5: oklch(0.61 0.25 328.13);
   --sidebar: oklch(0 0 0);
   --sidebar-foreground: oklch(1 0 0);
-  --sidebar-primary: oklch(0.7 0.19 23.04);
+  --sidebar-primary: oklch(65% 0.15 282.7);
   --sidebar-primary-foreground: oklch(0 0 0);
   --sidebar-accent: oklch(0.68 0.18 251.63);
   --sidebar-accent-foreground: oklch(0 0 0);
   --sidebar-border: oklch(1 0 0);
-  --sidebar-ring: oklch(0.7 0.19 23.04);
+  --sidebar-ring: oklch(65% 0.15 282.7);
 
   --shadow-2xs: 0 1px 3px 0px oklch(0 0 0 / 0.05);
   --shadow-xs: 0 1px 3px 0px oklch(0 0 0 / 0.05);
