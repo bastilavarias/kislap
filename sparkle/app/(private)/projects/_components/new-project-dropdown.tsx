@@ -10,10 +10,10 @@ import {
 import Link from "next/link";
 
 const projectTypes = [
-  { label: "Online Resume", emoji: "📄", url: "/projects/resume/new" },
-  { label: "Business Website", emoji: "🏢", url: "/projects/resume/new" },
-  { label: "Startup Waitlists", emoji: "🚀", url: "/projects/resume/new" },
-  { label: "Link-in-bio Page", emoji: "🔗", url: "/projects/resume/new" },
+  { label: "Online Resume", emoji: "📄", url: "/projects/builder/resume/new" },
+  { label: "Business Website", emoji: "🏢", url: "/projects/builder/biz/new" },
+  { label: "Startup Waitlists", emoji: "🚀", url: "/projects/builder/waitlist/new" },
+  { label: "Link-in-bio Page", emoji: "🔗", url: "/projects/builder/link/new" },
 ];
 
 export function NewProjectDropdown() {

@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
@@ -88,10 +89,10 @@ export function Form() {
     <Card>
       <CardContent>
         <div className="mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">Header</h2>
+          <h2 className="text-3xl font-bold mb-6">Header</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div>
-              <label className="block text-sm font-medium mb-2">Name</label>
+              <Label className="font-medium mb-2">Name</Label>
               <Input
                 value={formData.name}
                 onChange={(e) => handleInputChange("name", e.target.value)}
@@ -99,7 +100,7 @@ export function Form() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2">Location</label>
+              <Label className="font-medium mb-2">Location</Label>
               <Input
                 value={formData.location}
                 onChange={(e) => handleInputChange("location", e.target.value)}
@@ -109,7 +110,7 @@ export function Form() {
           </div>
 
           <div className="mb-6">
-            <label className="block text-sm font-medium mb-2">Short About</label>
+            <Label className="font-medium mb-2">Short About</Label>
             <Textarea
               value={formData.shortAbout}
               onChange={(e) => handleInputChange("shortAbout", e.target.value)}
@@ -119,7 +120,7 @@ export function Form() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div>
-              <label className="block text-sm font-medium mb-2">Email</label>
+              <Label className="font-medium mb-2">Email</Label>
               <Input
                 value={formData.email}
                 onChange={(e) => handleInputChange("email", e.target.value)}
@@ -127,7 +128,7 @@ export function Form() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2">Phone Number</label>
+              <Label className="font-medium mb-2">Phone Number</Label>
               <Input
                 value={formData.phone}
                 onChange={(e) => handleInputChange("phone", e.target.value)}
@@ -138,10 +139,10 @@ export function Form() {
           </div>
 
           <div className="mb-6">
-            <label className="block text-sm font-medium mb-4">Social Links</label>
+            <Label className="font-medium mb-4">Social Links</Label>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-xs  mb-2">Website</label>
+                <Label className="text-xs  mb-2">Website</Label>
                 <Input
                   value={formData.website}
                   onChange={(e) => handleInputChange("website", e.target.value)}
@@ -149,7 +150,7 @@ export function Form() {
                 />
               </div>
               <div>
-                <label className="block text-xs  mb-2">GitHub</label>
+                <Label className="text-xs  mb-2">GitHub</Label>
                 <Input
                   value={formData.github}
                   onChange={(e) => handleInputChange("github", e.target.value)}
@@ -157,7 +158,7 @@ export function Form() {
                 />
               </div>
               <div>
-                <label className="block text-xs  mb-2">LinkedIn</label>
+                <Label className="text-xs  mb-2">LinkedIn</Label>
                 <Input
                   value={formData.linkedin}
                   onChange={(e) => handleInputChange("linkedin", e.target.value)}
@@ -165,7 +166,7 @@ export function Form() {
                 />
               </div>
               <div>
-                <label className="block text-xs  mb-2">Twitter/X</label>
+                <Label className="text-xs  mb-2">Twitter/X</Label>
                 <Input
                   value={formData.twitter}
                   onChange={(e) => handleInputChange("twitter", e.target.value)}
@@ -174,9 +175,11 @@ export function Form() {
               </div>
             </div>
           </div>
+
+
         </div>
         <div className="mb-8 border-t border-gray-200 pt-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">About</h2>
+          <h2 className="text-3xl font-bold mb-6">About</h2>
           <Textarea
             value={formData.about}
             onChange={(e) => handleInputChange("about", e.target.value)}
@@ -193,7 +196,7 @@ export function Form() {
 
           <div className="border-2 border-dashed border-gray-300 rounded p-6 space-y-6">
             <div>
-              <label className="block text-sm font-medium mb-2">Job Title</label>
+              <Label className="font-medium mb-2">Job Title</Label>
               <Input
                 value={formData.workExperience[0].jobTitle}
                 onChange={(e) => handleWorkExperienceChange(0, 'jobTitle', e.target.value)}
@@ -203,7 +206,7 @@ export function Form() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium mb-2">Company</label>
+                <Label className="font-medium mb-2">Company</Label>
                 <Input
                   value={formData.workExperience[0].company}
                   onChange={(e) => handleWorkExperienceChange(0, 'company', e.target.value)}
@@ -211,7 +214,7 @@ export function Form() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">Location</label>
+                <Label className="font-medium mb-2">Location</Label>
                 <Input
                   value={formData.workExperience[0].location}
                   onChange={(e) => handleWorkExperienceChange(0, 'location', e.target.value)}
@@ -221,17 +224,17 @@ export function Form() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">Date Range</label>
+              <Label className="font-medium mb-2">Date Range</Label>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs  mb-2">Start Date</label>
+                  <Label className="text-xs  mb-2">Start Date</Label>
                   <div className="flex items-center space-x-2 border border-gray-300 rounded-md px-3 py-2">
                     <Calendar className="w-4 h-4 text-gray-400" />
                     <span className="text-sm">{formData.workExperience[0].startDate}</span>
                   </div>
                 </div>
                 <div>
-                  <label className="block text-xs  mb-2">End Date</label>
+                  <Label className="text-xs  mb-2">End Date</Label>
                   <div className="flex items-center space-x-2 border border-gray-300 rounded-md px-3 py-2">
                     <Calendar className="w-4 h-4 text-gray-400" />
                     <span className="text-sm ">{formData.workExperience[0].endDate}</span>
@@ -241,7 +244,7 @@ export function Form() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">Description</label>
+              <Label className="font-medium mb-2">Description</Label>
               <Textarea
                 value={formData.workExperience[0].description}
                 onChange={(e) => handleWorkExperienceChange(0, 'description', e.target.value)}
@@ -255,6 +258,7 @@ export function Form() {
             Add Work Experience
           </Button>
         </div>
+
         <div className="mb-8 border-t border-gray-200 pt-8">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold">Education</h2>
@@ -265,7 +269,7 @@ export function Form() {
 
           <div className="border-2 border-dashed border-gray-300 rounded p-6 space-y-6">
             <div>
-              <label className="block text-sm font-medium mb-2">Degree</label>
+              <Label className="font-medium mb-2">Degree</Label>
               <Input
                 value={formData.education[0].degree}
                 onChange={(e) => handleEducationChange(0, "degree", e.target.value)}
@@ -275,7 +279,7 @@ export function Form() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">School</label>
+              <Label className="font-medium mb-2">School</Label>
               <Input
                 value={formData.education[0].school}
                 onChange={(e) => handleEducationChange(0, "school", e.target.value)}
@@ -285,17 +289,17 @@ export function Form() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">Date Range</label>
+              <Label className="font-medium mb-2">Date Range</Label>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs  mb-2">Start Date</label>
+                  <Label className="text-xs  mb-2">Start Date</Label>
                   <div className="flex items-center space-x-2 border border-gray-300 rounded-md px-3 py-2">
                     <Calendar className="w-4 h-4 text-gray-400" />
                     <span className="text-sm ">{formData.education[0].startDate}</span>
                   </div>
                 </div>
                 <div>
-                  <label className="block text-xs  mb-2">End Date</label>
+                  <Label className="text-xs  mb-2">End Date</Label>
                   <div className="flex items-center space-x-2 border border-gray-300 rounded-md px-3 py-2">
                     <Calendar className="w-4 h-4 text-gray-400" />
                     <span className="text-sm ">{formData.education[0].endDate}</span>
@@ -311,7 +315,7 @@ export function Form() {
           </Button>
         </div>
         <div className="border-t border-gray-200 pt-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">Skills</h2>
+          <h2 className="text-3xl font-bold mb-6">Skills</h2>
 
           <div className="flex flex-wrap gap-2 mb-4">
             {formData.skills.map((skill, index) => (

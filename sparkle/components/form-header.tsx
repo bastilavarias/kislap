@@ -11,7 +11,7 @@ type HeaderProps = {
   onTabChange: (value: string) => void;
 };
 
-export function Header({ tab, onTabChange }: HeaderProps) {
+export function FormHeader({ tab, onTabChange }: HeaderProps) {
   const [slug, setSlug] = useState("sebastech");
 
   return (
