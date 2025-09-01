@@ -1,8 +1,8 @@
 import { Header } from "@/components/header";
-import { Hero } from "@/components/hero";
-import { Features } from "@/components/features";
-import { Testimonials } from "@/components/testimonials";
 import { Footer } from "@/components/footer";
+import { Hero } from "@/app/(public)/components/hero";
+import { Features } from "@/app/(public)/components/features";
+import { Testimonials } from "@/app/(public)/components/testimonials";
 
 export default function Home() {
   return (

@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Form } from "@/app/(private)/projects/builder/biz/new/_components/form";
-import { Preview } from '@/app/(private)/projects/builder/biz/new/_components/preview';
+import { Form } from "@/app/(private)/projects/builder/waitlist/new/components/form";
+import { Preview } from '@/app/(private)/projects/builder/waitlist/new/components/preview';
 import { FormHeader } from '@/components/form-header';
 
 export default function Wrapper() {

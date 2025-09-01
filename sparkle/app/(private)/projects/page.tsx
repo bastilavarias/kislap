@@ -1,7 +1,7 @@
-import { DataTable } from "@/app/(private)/dashboard/_components/data-table";
+import { DataTable } from "@/app/(private)/dashboard/components/data-table";
 
 import data from "./data.json";
-import { NewProjectDropdown } from "@/app/(private)/projects/_components/new-project-dropdown";
+import { NewProjectDropdown } from "@/app/(private)/projects/components/new-project-dropdown";
 
 export default function Page() {
   return (

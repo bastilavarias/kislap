@@ -3,8 +3,8 @@
 import * as React from "react";
 import { Home, Folder, Settings2 } from "lucide-react";
 
-import { NavFavorites } from "@/app/(private)/_components/nav-favorites";
-import { NavMain } from "@/app/(private)/_components/nav-main";
+import { NavFavorites } from "@/app/(private)/components/nav-favorites";
+import { NavMain } from "@/app/(private)/components/nav-main";
 import {
   Sidebar,
   SidebarContent,

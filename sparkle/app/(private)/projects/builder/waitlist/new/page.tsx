@@ -1,4 +1,4 @@
-import Wrapper from "@/app/(private)/projects/builder/waitlist/new/_components/wrapper";
+import Wrapper from "@/app/(private)/projects/builder/waitlist/new/components/wrapper";
 
 export default function Page() {
   return (
