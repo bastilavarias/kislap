@@ -4,17 +4,21 @@ import { useState } from "react";
 import { Form } from "@/app/(private)/projects/builder/resume/new/components/form";
 import { Preview } from '@/app/(private)/projects/builder/resume/new/components/preview';
 import { FormHeader } from '@/components/form-header';
+import { BackButton } from '@/components/back-button';
 
 export default function Wrapper() {
   const [tab, setTab] = useState("edit");
 
   return (
-    <div className="flex flex-col gap-12">
-      <FormHeader tab={tab} onTabChange={setTab} />
-      <div className="w-full  mx-auto px-4 sm:px-6 lg:px-8">
-        {
-          tab === 'edit' ? <Form/> : <Preview/>
-        }
+    <div>
+      <BackButton className="mb-5" icon={true}>Go back</BackButton>
+      <div className="flex flex-col gap-10">
+        <FormHeader tab={tab} onTabChange={setTab} />
+        <div className="w-full">
+          {
+            tab === 'edit' ? <Form /> : <Preview />
+          }
+        </div>
       </div>
     </div>
   );

@@ -106,62 +106,92 @@ export function Preview() {
           <p className="text-gray-600 leading-relaxed">{resumeData.about}</p>
         </div>
 
-        {/* Work Experience Section */}
-        <div>
-          <h2 className="text-xl font-semibold text-gray-900 mb-6">Work Experience</h2>
-          <div className="space-y-8">
-            {resumeData.workExperience.map((exp, index) => (
-              <div key={index} className="border-l-2 border-gray-100 pl-6 relative">
-                <div className="absolute -left-2 top-0 w-4 h-4 bg-white border-2 border-gray-300 rounded-full"></div>
-                <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-2">
-                  <div>
-                    <h3 className="font-semibold text-gray-900 text-lg">{exp.jobTitle}</h3>
-                    <p className="text-gray-600 font-medium">{exp.company}</p>
-                    <p className="text-gray-500 text-sm">{exp.location}</p>
-                  </div>
-                  <div className="text-gray-500 text-sm mt-1 md:mt-0">
-                    {exp.startDate} - {exp.endDate}
-                  </div>
-                </div>
-                <p className="text-gray-600 leading-relaxed">{exp.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
+     <div className="flex items-start gap-5">
+       <div className="flex flex-col justify-start gap-10">
+         {/* Skills Section */}
+         <div>
+           <h2 className="text-xl font-semibold text-gray-900 mb-4">Skills</h2>
+           <div className="flex flex-wrap gap-2">
+             {resumeData.skills.map((skill, index) => (
+               <Badge
+                 key={index}
+                 variant="secondary"
+                 className="bg-gray-800 text-white hover:bg-gray-700 px-3 py-1 text-sm"
+               >
+                 {skill}
+               </Badge>
+             ))}
+           </div>
+         </div>
 
-        {/* Education Section */}
-        <div>
-          <h2 className="text-xl font-semibold text-gray-900 mb-6">Education</h2>
-          <div className="space-y-4">
-            {resumeData.education.map((edu, index) => (
-              <div key={index} className="flex flex-col md:flex-row md:items-center md:justify-between py-2">
-                <div>
-                  <h3 className="font-semibold text-gray-900">{edu.degree}</h3>
-                  <p className="text-gray-600">{edu.school}</p>
-                </div>
-                <div className="text-gray-500 text-sm mt-1 md:mt-0">
-                  {edu.startDate} - {edu.endDate}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+         {/* Education Section */}
+         <div>
+           <h2 className="text-xl font-semibold text-gray-900 mb-6">Education</h2>
+           <div className="space-y-4">
+             {resumeData.education.map((edu, index) => (
+               <div key={index} className="flex flex-col md:flex-row md:items-center md:justify-between py-2">
+                 <div>
+                   <h3 className="font-semibold text-gray-900">{edu.degree}</h3>
+                   <p className="text-gray-600">{edu.school}</p>
+                 </div>
+                 <div className="text-gray-500 text-sm mt-1 md:mt-0">
+                   {edu.startDate} - {edu.endDate}
+                 </div>
+               </div>
+             ))}
+           </div>
+         </div>
+       </div>
 
-        {/* Skills Section */}
-        <div>
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Skills</h2>
-          <div className="flex flex-wrap gap-2">
-            {resumeData.skills.map((skill, index) => (
-              <Badge
-                key={index}
-                variant="secondary"
-                className="bg-gray-800 text-white hover:bg-gray-700 px-3 py-1 text-sm"
-              >
-                {skill}
-              </Badge>
-            ))}
-          </div>
-        </div>
+       <div className="flex flex-col justify-start gap-10">
+         {/* Work Experience Section */}
+         <div>
+           <h2 className="text-xl font-semibold text-gray-900 mb-6">Work Experience</h2>
+           <div className="space-y-8">
+             {resumeData.workExperience.map((exp, index) => (
+               <div key={index} className="border-l-2 border-gray-100 pl-6 relative">
+                 <div className="absolute -left-2 top-0 w-4 h-4 bg-white border-2 border-gray-300 rounded-full"></div>
+                 <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-2">
+                   <div>
+                     <h3 className="font-semibold text-gray-900 text-lg">{exp.jobTitle}</h3>
+                     <p className="text-gray-600 font-medium">{exp.company}</p>
+                     <p className="text-gray-500 text-sm">{exp.location}</p>
+                   </div>
+                   <div className="text-gray-500 text-sm mt-1 md:mt-0">
+                     {exp.startDate} - {exp.endDate}
+                   </div>
+                 </div>
+                 <p className="text-gray-600 leading-relaxed">{exp.description}</p>
+               </div>
+             ))}
+           </div>
+         </div>
+
+         {/* Projects Section */}
+         <div>
+           <h2 className="text-xl font-semibold text-gray-900 mb-6">Projects</h2>
+           <div className="space-y-8">
+             {resumeData.workExperience.map((exp, index) => (
+               <div key={index} className="border-l-2 border-gray-100 pl-6 relative">
+                 <div className="absolute -left-2 top-0 w-4 h-4 bg-white border-2 border-gray-300 rounded-full"></div>
+                 <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-2">
+                   <div>
+                     <h3 className="font-semibold text-gray-900 text-lg">{exp.jobTitle}</h3>
+                     <p className="text-gray-600 font-medium">{exp.company}</p>
+                     <p className="text-gray-500 text-sm">{exp.location}</p>
+                   </div>
+                   <div className="text-gray-500 text-sm mt-1 md:mt-0">
+                     {exp.startDate} - {exp.endDate}
+                   </div>
+                 </div>
+                 <p className="text-gray-600 leading-relaxed">{exp.description}</p>
+               </div>
+             ))}
+           </div>
+         </div>
+
+       </div>
+     </div>
       </CardContent>
     </Card>
   )
