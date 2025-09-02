@@ -1,7 +1,7 @@
-import { Button } from "@/components/ui/button";
-import { ThemeToggle } from "@/components/theme-toggle";
-import { LogoVersion } from "@/components/logo-version";
-import Link from "next/link";
+import { Button } from '@/components/ui/button';
+import { ThemeToggle } from '@/components/theme-toggle';
+import { LogoVersion } from '@/components/logo-version';
+import Link from 'next/link';
 
 export function Header() {
   return (
@@ -10,10 +10,7 @@ export function Header() {
         <div className="flex items-center space-x-8">
           <LogoVersion />
           <nav className="hidden md:flex items-center space-x-6">
-            <a
-              href="#"
-              className="text-muted-foreground hover:text-foreground transition-colors"
-            >
+            <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
               What&#39;s this?
             </a>
           </nav>

@@ -1,89 +1,92 @@
-"use client"
+'use client';
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent } from "@/components/ui/card"
-import { X, Calendar, Plus } from "lucide-react"
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@/components/ui/card';
+import { X, Calendar, Plus } from 'lucide-react';
 
 export function Form() {
   const [formData, setFormData] = useState({
-    name: "Jose J",
-    location: "Mandaluyong City, National Capital R",
+    name: 'Jose J',
+    location: 'Mandaluyong City, National Capital R',
     shortAbout:
-      "Experienced financial and operations professional with a strong background in managing financial transactions, invoicing, and client relationships. Skilled in ensuring accurate and timely financial reporting and maintaining client trust.",
-    email: "jh.aquamonia@gmail.com",
-    phone: "Your phone number",
-    website: "your-website.com",
-    github: "github.com/ username",
-    linkedin: "linkedin.com/in/ username",
-    twitter: "x.com/ username",
+      'Experienced financial and operations professional with a strong background in managing financial transactions, invoicing, and client relationships. Skilled in ensuring accurate and timely financial reporting and maintaining client trust.',
+    email: 'jh.aquamonia@gmail.com',
+    phone: 'Your phone number',
+    website: 'your-website.com',
+    github: 'github.com/ username',
+    linkedin: 'linkedin.com/in/ username',
+    twitter: 'x.com/ username',
     about:
-      "Dedicated financial and operations professional with a proven track record in managing financial transactions, invoicing, and client relationships. Adept at ensuring accurate and timely financial reporting and maintaining client trust. Skilled in handling various payment methods and maintaining detailed financial records.",
+      'Dedicated financial and operations professional with a proven track record in managing financial transactions, invoicing, and client relationships. Adept at ensuring accurate and timely financial reporting and maintaining client trust. Skilled in handling various payment methods and maintaining detailed financial records.',
     workExperience: [
       {
-        jobTitle: "Financial and Operations Manager",
-        company: "Aquamonia Trading",
-        location: "Mandaluyong City, National Capital",
-        startDate: "Jul 2025",
-        endDate: "Pick an end month",
+        jobTitle: 'Financial and Operations Manager',
+        company: 'Aquamonia Trading',
+        location: 'Mandaluyong City, National Capital',
+        startDate: 'Jul 2025',
+        endDate: 'Pick an end month',
         description:
-          "Responsible for managing financial transactions, invoicing, and client relationships. Ensured accurate and timely financial reporting and maintained client trust. Handled various payment methods including Cash on Delivery (COD) and online payments for the Finance department.",
+          'Responsible for managing financial transactions, invoicing, and client relationships. Ensured accurate and timely financial reporting and maintained client trust. Handled various payment methods including Cash on Delivery (COD) and online payments for the Finance department.',
       },
     ],
     education: [
       {
-        degree: "Degree",
-        school: "School",
-        startDate: "Pick a start month",
-        endDate: "Pick an end month",
+        degree: 'Degree',
+        school: 'School',
+        startDate: 'Pick a start month',
+        endDate: 'Pick an end month',
       },
     ],
     skills: [
-      "Financial Management",
-      "Invoicing",
-      "Client Relationship Management",
-      "Payment Processing",
-      "Cash on Delivery (COD)",
-      "Online Payments",
-      "Financial Reporting",
-      "Transaction Management",
-      "Banking Operations",
-      "Customer Service",
+      'Financial Management',
+      'Invoicing',
+      'Client Relationship Management',
+      'Payment Processing',
+      'Cash on Delivery (COD)',
+      'Online Payments',
+      'Financial Reporting',
+      'Transaction Management',
+      'Banking Operations',
+      'Customer Service',
     ],
-  })
+  });
+  const [themeCustomizerOpen, setThemeCustomizerOpen] = useState(false);
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
-  }
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
 
   const handleWorkExperienceChange = (index: number, field: string, value: string) => {
     setFormData((prev) => ({
       ...prev,
-      workExperience: prev.workExperience.map((exp, i) => (i === index ? { ...exp, [field]: value } : exp)),
-    }))
-  }
+      workExperience: prev.workExperience.map((exp, i) =>
+        i === index ? { ...exp, [field]: value } : exp
+      ),
+    }));
+  };
 
   const handleEducationChange = (index: number, field: string, value: string) => {
     setFormData((prev) => ({
       ...prev,
       education: prev.education.map((edu, i) => (i === index ? { ...edu, [field]: value } : edu)),
-    }))
-  }
+    }));
+  };
 
   const addSkill = () => {
-    setFormData((prev) => ({ ...prev, skills: [...prev.skills, "Add Skill"] }))
-  }
+    setFormData((prev) => ({ ...prev, skills: [...prev.skills, 'Add Skill'] }));
+  };
 
   const removeSkill = (index: number) => {
     setFormData((prev) => ({
       ...prev,
       skills: prev.skills.filter((_, i) => i !== index),
-    }))
-  }
+    }));
+  };
 
   return (
     <Card>
@@ -95,7 +98,7 @@ export function Form() {
               <Label className="font-medium mb-2">Name</Label>
               <Input
                 value={formData.name}
-                onChange={(e) => handleInputChange("name", e.target.value)}
+                onChange={(e) => handleInputChange('name', e.target.value)}
                 className="w-full"
               />
             </div>
@@ -103,7 +106,7 @@ export function Form() {
               <Label className="font-medium mb-2">Location</Label>
               <Input
                 value={formData.location}
-                onChange={(e) => handleInputChange("location", e.target.value)}
+                onChange={(e) => handleInputChange('location', e.target.value)}
                 className="w-full"
               />
             </div>
@@ -113,7 +116,7 @@ export function Form() {
             <Label className="font-medium mb-2">Short About</Label>
             <Textarea
               value={formData.shortAbout}
-              onChange={(e) => handleInputChange("shortAbout", e.target.value)}
+              onChange={(e) => handleInputChange('shortAbout', e.target.value)}
               className="w-full h-20 resize-none"
             />
           </div>
@@ -123,7 +126,7 @@ export function Form() {
               <Label className="font-medium mb-2">Email</Label>
               <Input
                 value={formData.email}
-                onChange={(e) => handleInputChange("email", e.target.value)}
+                onChange={(e) => handleInputChange('email', e.target.value)}
                 className="w-full"
               />
             </div>
@@ -131,7 +134,7 @@ export function Form() {
               <Label className="font-medium mb-2">Phone Number</Label>
               <Input
                 value={formData.phone}
-                onChange={(e) => handleInputChange("phone", e.target.value)}
+                onChange={(e) => handleInputChange('phone', e.target.value)}
                 className="w-full "
                 placeholder="Your phone number"
               />
@@ -145,7 +148,7 @@ export function Form() {
                 <Label className="text-xs  mb-2">Website</Label>
                 <Input
                   value={formData.website}
-                  onChange={(e) => handleInputChange("website", e.target.value)}
+                  onChange={(e) => handleInputChange('website', e.target.value)}
                   className="w-full "
                 />
               </div>
@@ -153,7 +156,7 @@ export function Form() {
                 <Label className="text-xs  mb-2">GitHub</Label>
                 <Input
                   value={formData.github}
-                  onChange={(e) => handleInputChange("github", e.target.value)}
+                  onChange={(e) => handleInputChange('github', e.target.value)}
                   className="w-full "
                 />
               </div>
@@ -161,7 +164,7 @@ export function Form() {
                 <Label className="text-xs  mb-2">LinkedIn</Label>
                 <Input
                   value={formData.linkedin}
-                  onChange={(e) => handleInputChange("linkedin", e.target.value)}
+                  onChange={(e) => handleInputChange('linkedin', e.target.value)}
                   className="w-full "
                 />
               </div>
@@ -169,20 +172,18 @@ export function Form() {
                 <Label className="text-xs  mb-2">Twitter/X</Label>
                 <Input
                   value={formData.twitter}
-                  onChange={(e) => handleInputChange("twitter", e.target.value)}
+                  onChange={(e) => handleInputChange('twitter', e.target.value)}
                   className="w-full "
                 />
               </div>
             </div>
           </div>
-
-
         </div>
         <div className="mb-8 border-t border-gray-200 pt-8">
           <h2 className="text-3xl font-bold mb-6">About</h2>
           <Textarea
             value={formData.about}
-            onChange={(e) => handleInputChange("about", e.target.value)}
+            onChange={(e) => handleInputChange('about', e.target.value)}
             className="w-full h-32 resize-none"
           />
         </div>
@@ -258,7 +259,6 @@ export function Form() {
             Add Work Experience
           </Button>
         </div>
-
         <div className="mb-8 border-t border-gray-200 pt-8">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold">Education</h2>
@@ -272,7 +272,7 @@ export function Form() {
               <Label className="font-medium mb-2">Degree</Label>
               <Input
                 value={formData.education[0].degree}
-                onChange={(e) => handleEducationChange(0, "degree", e.target.value)}
+                onChange={(e) => handleEducationChange(0, 'degree', e.target.value)}
                 className="w-full "
                 placeholder="Degree"
               />
@@ -282,7 +282,7 @@ export function Form() {
               <Label className="font-medium mb-2">School</Label>
               <Input
                 value={formData.education[0].school}
-                onChange={(e) => handleEducationChange(0, "school", e.target.value)}
+                onChange={(e) => handleEducationChange(0, 'school', e.target.value)}
                 className="w-full "
                 placeholder="School"
               />
@@ -339,5 +339,5 @@ export function Form() {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }
