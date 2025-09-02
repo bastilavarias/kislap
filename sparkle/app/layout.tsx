@@ -30,11 +30,11 @@ const fontMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    template: '%s - Shadcn Studio',
-    default: 'Shadcn Studio - Craft Stunning Shadcn UI, Lightning Fast',
+    template: '%s - KISLAP',
+    default: 'KISLAP - Craft Stunning Shadcn UI, Lightning Fast',
   },
   description:
-    'Shadcn Studio, a complete Shadcn UI collection of customizable components, blocks & templates with powerful theme generator for faster customization.',
+    'KISLAP, a complete Shadcn UI collection of customizable components, blocks & templates with powerful theme generator for faster customization.',
   keywords: [
     'shadcn ui',
     'shadcn studio',
@@ -87,11 +87,11 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: {
-      template: '%s - Shadcn Studio',
-      default: 'Shadcn Studio - Craft Stunning Shadcn UI, Lightning Fast',
+      template: '%s - KISLAP',
+      default: 'KISLAP - Craft Stunning Shadcn UI, Lightning Fast',
     },
     description:
-      'Shadcn Studio, a complete Shadcn UI collection of customizable components, blocks & templates with powerful theme generator for faster customization.',
+      'KISLAP, a complete Shadcn UI collection of customizable components, blocks & templates with powerful theme generator for faster customization.',
     url: 'https://shadcnstudio.com',
     images: [
       {
@@ -99,18 +99,18 @@ export const metadata: Metadata = {
         type: 'image/png',
         width: 1200,
         height: 630,
-        alt: 'Shadcn Studio - Craft Stunning Shadcn UI, Lightning Fast',
+        alt: 'KISLAP - Craft Stunning Shadcn UI, Lightning Fast',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
     title: {
-      template: '%s - Shadcn Studio',
-      default: 'Shadcn Studio - Craft Stunning Shadcn UI, Lightning Fast',
+      template: '%s - KISLAP',
+      default: 'KISLAP - Craft Stunning Shadcn UI, Lightning Fast',
     },
     description:
-      'Shadcn Studio, a complete Shadcn UI collection of customizable components, blocks & templates with powerful theme generator for faster customization.',
+      'KISLAP, a complete Shadcn UI collection of customizable components, blocks & templates with powerful theme generator for faster customization.',
   },
 };
 
