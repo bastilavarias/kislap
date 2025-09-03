@@ -38,7 +38,12 @@ import { getAppliedThemeFont, sansSerifFonts, serifFonts, monoFonts } from '@/li
 
 type Mode = 'light' | 'dark';
 
-const ThemeControlPanel = () => {
+type Props = {
+  stateless: boolean;
+  variant: 'full' | 'basic';
+};
+
+const ThemeControlPanel = ({ stateless = false, variant = 'full' }): Props => {
   // Hooks
   const { setTheme } = useTheme();
   const { settings, updateSettings, applyThemePreset, resetToDefault } = useSettings();
@@ -60,11 +65,14 @@ const ThemeControlPanel = () => {
         },
       };
 
-      // Update settings first
-      updateSettings(updatedSettings);
+      if (!stateless) {
+        updateSettings(updatedSettings);
 
-      // Then update next-themes
-      setTheme(newMode);
+        setTheme(newMode);
+        return;
+      }
+
+      return updatedSettings;
     }
   };
 

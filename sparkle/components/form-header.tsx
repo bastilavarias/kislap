@@ -4,8 +4,9 @@ import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { EditIcon, EyeIcon, ExternalLinkIcon } from 'lucide-react';
+import { ExternalLinkIcon, LayoutDashboardIcon, EditIcon } from 'lucide-react';
 import { ThemeCustomizer } from '@/components/customizer';
+import Link from 'next/link';
 
 type HeaderProps = {
   tab: string;
@@ -26,28 +27,25 @@ export function FormHeader({ tab, onTabChange }: HeaderProps) {
           </div>
 
           <div className="ml-auto flex gap-2">
-            <Button variant="ghost" onClick={() => setIsThemeCustomizerOpen(true)}>
-              Theme
-            </Button>
-            <Button variant="outline">Unpublish</Button>
-            <Button>
-              Visit Site <ExternalLinkIcon />
-            </Button>
+            <Button variant="outline">Save</Button>
+            <Button>Publish</Button>
           </div>
         </div>
 
         <div className="flex justify-between items-center">
           <Tabs value={tab} onValueChange={onTabChange}>
             <TabsList>
+              <TabsTrigger value="overview">
+                <LayoutDashboardIcon className="mr-1" /> Overview
+              </TabsTrigger>
               <TabsTrigger value="edit">
                 <EditIcon className="mr-1" /> Edit
               </TabsTrigger>
-              <TabsTrigger value="preview">
-                <EyeIcon className="mr-1" /> Preview
-              </TabsTrigger>
             </TabsList>
           </Tabs>
-          <Button variant="secondary">Upload Resume</Button>
+          <Button asChild={true} variant="secondary">
+            <Link href="/p/resume">Preview</Link>
+          </Button>
         </div>
       </div>
 

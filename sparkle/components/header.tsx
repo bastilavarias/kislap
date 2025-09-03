@@ -1,5 +1,4 @@
 import { Button } from '@/components/ui/button';
-import { ThemeToggle } from '@/components/theme-toggle';
 import { LogoVersion } from '@/components/logo-version';
 import Link from 'next/link';
 
@@ -17,7 +16,6 @@ export function Header() {
         </div>
 
         <div className="flex items-center space-x-4">
-          <ThemeToggle />
           <Button variant="outline" size="sm" asChild>
             <Link href="/docs">Docs</Link>
           </Button>
