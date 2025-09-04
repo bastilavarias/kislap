@@ -4,6 +4,7 @@ import type { InputHTMLAttributes } from 'react';
 
 // Type Imports
 import type { ThemePreset, ThemeStyleProps } from '@/types/theme';
+import type { Settings, ThemeSettings } from '@/contexts/settingsContext';
 
 // Component Imports
 import {
@@ -18,6 +19,11 @@ import { useSettings } from '@/hooks/useSettings';
 
 // Utils Imports
 import { colorFormatter } from '@/lib/color-converter';
+
+type ThemeColorPanelProps = {
+  stateless?: boolean;
+  settings?: Settings;
+};
 
 type ColorSwatchProps = {
   label: string;
@@ -103,13 +109,26 @@ export const ColorSwatch = ({ label, value, onChange }: ColorSwatchProps) => {
   );
 };
 
-const ThemeColorPanel = () => {
+const ThemeColorPanel = (props: ThemeColorPanelProps) => {
   // Hooks
   const { settings, updateSettings } = useSettings();
 
-  const currentTheme = settings.theme.styles?.[
-    settings.mode === 'system' ? 'light' : settings.mode
+  const [localSettings, setLocalSettings] = useState(props.settings ? props.settings : settings);
+
+  const currentTheme = localSettings.theme.styles?.[
+    localSettings.mode === 'system' ? 'light' : localSettings.mode
   ] as Partial<ThemeStyleProps> | undefined;
+
+  const handleUpdateSettings = (settings: ThemeSettings) => {
+    if (props.stateless) {
+      setLocalSettings({
+        ...localSettings,
+        ...settings,
+      });
+      return;
+    }
+    updateSettings(settings);
+  };
 
   const updateColor = useCallback(
     (key: keyof ThemeStyleProps, value: string) => {
@@ -117,13 +136,13 @@ const ThemeColorPanel = () => {
 
       // apply common styles to both light and dark modes
       if (key === 'font-sans' || key === 'font-serif' || key === 'font-mono' || key === 'radius') {
-        updateSettings({
+        handleUpdateSettings({
           theme: {
-            ...settings.theme,
+            ...localSettings.theme,
             styles: {
-              ...settings.theme.styles,
-              light: { ...settings.theme.styles?.light, [key]: value },
-              dark: { ...settings.theme.styles?.dark, [key]: value },
+              ...localSettings.theme.styles,
+              light: { ...localSettings.theme.styles?.light, [key]: value },
+              dark: { ...localSettings.theme.styles?.dark, [key]: value },
             },
           },
         });
@@ -131,13 +150,13 @@ const ThemeColorPanel = () => {
         return;
       }
 
-      updateSettings({
+      handleUpdateSettings({
         theme: {
-          ...settings.theme,
+          ...localSettings.theme,
           styles: {
-            ...settings.theme.styles,
-            [settings.mode]: {
-              ...settings.theme.styles?.[settings.mode as keyof ThemePreset],
+            ...localSettings.theme.styles,
+            [localSettings.mode]: {
+              ...localSettings.theme.styles?.[localSettings.mode as keyof ThemePreset],
               [key]: value,
             },
           },
@@ -145,8 +164,14 @@ const ThemeColorPanel = () => {
       });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [currentTheme, settings.theme.styles]
+    [currentTheme, localSettings.theme.styles]
   );
+
+  useEffect(() => {
+    if (props.settings) {
+      setLocalSettings(props.settings);
+    }
+  }, [props.settings]);
 
   return (
     <div className="space-y-6">

@@ -8,7 +8,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { X, Calendar, Plus } from 'lucide-react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import ThemeControlPanel from '@/components/customizer/ThemeControlPanel';
 
 export function Form() {
@@ -337,7 +336,12 @@ export function Form() {
         <div className="lg:col-span-4">
           <div>
             <h2 className="text-2xl font-bold mb-6">Customization</h2>
-            <ThemeControlPanel />
+            <ThemeControlPanel
+              stateless={true}
+              hideTopActionButtons={true}
+              hideScrollArea={true}
+              hideThemeSaverButton={false}
+            />
           </div>
         </div>
       </CardContent>
