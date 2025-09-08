@@ -14,5 +14,9 @@ func RegisterRoutes(r *gin.Engine) {
 		api.GET("/resumes/:id", resumeController.Show)
 		api.PUT("/resumes/:id", resumeController.Update)
 		api.DELETE("/resumes/:id", resumeController.Delete)
+
+		authController := controllers.AuthController{}
+		api.POST("/auth/login", authController.Login)
+		api.POST("/auth/register", authController.Register)
 	}
 }
