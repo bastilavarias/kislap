@@ -12,13 +12,13 @@ import { Copy, RotateCcw, Sun, Moon, AlertCircle } from 'lucide-react';
 import type { ThemeStyleProps } from '@/types/theme';
 
 // Component Imports
-import ShadowControl from './ShadowControl';
-import ThemeFontSelect from './ThemeFontSelect';
-import SliderWithInput from './SliderWithInput';
-import ThemeColorPanel from './ThemeColorPanel';
-import HoldToSaveTheme from './HoldToSaveTheme';
-import ThemePresetSelect from './ThemePresetSelect';
-import ThemeVariablesDialog from './ThemeVariablesDialog';
+import ShadowControl from './shadow-control';
+import ThemeFontSelect from './theme-font-select';
+import SliderWithInput from './slider-with-input';
+import ThemeColorPanel from './theme-color-panel';
+import HoldToSaveTheme from './hold-to-save-theme';
+import ThemePresetSelect from './theme-preset-select';
+import ThemeVariablesDialog from './theme-variables-dialog';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';

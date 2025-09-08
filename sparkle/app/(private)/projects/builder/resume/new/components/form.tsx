@@ -8,7 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { X, Calendar, Plus } from 'lucide-react';
-import ThemeControlPanel from '@/components/customizer/ThemeControlPanel';
+import ThemeControlPanel from '@/components/customizer/theme-control-panel';
 
 export function Form() {
   const [formData, setFormData] = useState({

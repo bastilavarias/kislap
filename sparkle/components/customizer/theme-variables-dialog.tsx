@@ -22,8 +22,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import CodeBlock from './CodeBlock';
-import CopyButton from './CopyButton';
+import CodeBlock from './code-block';
+import CopyButton from './copy-button';
 
 // Config Imports
 import { defaultLightThemeStyles, defaultDarkThemeStyles } from '@/config/theme';

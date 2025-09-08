@@ -4,9 +4,11 @@ import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ExternalLinkIcon, LayoutDashboardIcon, EditIcon } from 'lucide-react';
+import { LayoutDashboardIcon, EditIcon } from 'lucide-react';
 import { ThemeCustomizer } from '@/components/customizer';
 import Link from 'next/link';
+import { Card, CardContent } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
 
 type HeaderProps = {
   tab: string;
@@ -18,20 +20,26 @@ export function FormHeader({ tab, onTabChange }: HeaderProps) {
   const [isThemeCustomizerOpen, setIsThemeCustomizerOpen] = useState(false);
 
   return (
-    <div>
-      <div className="p-4 border rounded-md shadow-sm flex flex-col gap-4">
-        <div className="flex items-center gap-4">
-          <div className="relative flex items-center">
-            <Input value={slug} onChange={(e) => setSlug(e.target.value)} className="w-32" />
-            <span className="text-gray-500 font-mono ml-1">.kislap.com</span>
-          </div>
+    <Card>
+      <CardContent className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4">
+          <Label className="">Domain</Label>
+          <div className="flex items-center gap-4">
+            <div className="relative flex items-center">
+              <Input
+                value={slug}
+                onChange={(e) => setSlug(e.target.value)}
+                className="w-32 shadow"
+              />
+              <span className="text-gray-500 font-mono ml-1">.kislap.com</span>
+            </div>
 
-          <div className="ml-auto flex gap-2">
-            <Button variant="outline">Save</Button>
-            <Button>Publish</Button>
+            <div className="ml-auto flex gap-2">
+              <Button variant="outline">Save</Button>
+              <Button>Publish</Button>
+            </div>
           </div>
         </div>
-
         <div className="flex justify-between items-center">
           <Tabs value={tab} onValueChange={onTabChange}>
             <TabsList>
@@ -47,9 +55,9 @@ export function FormHeader({ tab, onTabChange }: HeaderProps) {
             <Link href="/p/resume">Preview</Link>
           </Button>
         </div>
-      </div>
+      </CardContent>
 
       <ThemeCustomizer open={isThemeCustomizerOpen} setOpen={setIsThemeCustomizerOpen} />
-    </div>
+    </Card>
   );
 }

@@ -19,7 +19,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import CssImportDialog from './CssImportDialog';
+import CssImportDialog from './css-import-dialog';
 
 // Config Imports
 import { defaultThemeState } from '@/config/theme';

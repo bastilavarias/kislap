@@ -1,17 +1,9 @@
 'use client';
 
 import React from 'react';
-import { Palette, X } from 'lucide-react';
-import ThemeControlPanel from './ThemeControlPanel';
-import { RainbowButton } from '@/components/ui/rainbow-button';
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-  SheetClose,
-} from '@/components/ui/sheet';
+import { X } from 'lucide-react';
+import ThemeControlPanel from './theme-control-panel';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetClose } from '@/components/ui/sheet';
 
 type Props = {
   open: boolean;
