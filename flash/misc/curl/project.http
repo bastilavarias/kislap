@@ -1,0 +1,47 @@
+### Create a new project
+POST {{host}}/api/projects
+Content-Type: application/json
+
+{
+  "name": "My Portfolio",
+  "description": "This is a test portfolio project",
+  "sub_domain": "portfolio1",
+  "theme": "light",
+  "layout": "grid",
+  "type": "portfolio"
+}
+
+###
+
+### Get all projects
+GET {{host}}/api/projects
+
+###
+
+### Get a project by ID
+GET {{host}}/api/projects/1
+
+###
+
+### Update a project
+PUT {{host}}/api/projects/1
+Content-Type: application/json
+
+{
+  "name": "Updated Project",
+  "description": "Updated description",
+  "sub_domain": "updated-sub",
+  "theme": "dark",
+  "layout": "list",
+  "type": "biz"
+}
+
+###
+
+### Delete a project
+DELETE {{host}}/api/projects/1
+
+###
+
+### Check a project sub domain
+GET {{host}}/api/projects/check/sub-domain/sebastech

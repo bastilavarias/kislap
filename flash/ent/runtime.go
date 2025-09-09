@@ -3,6 +3,7 @@
 package ent
 
 import (
+	"flash/ent/project"
 	"flash/ent/schema"
 	"flash/ent/user"
 	"time"
@@ -12,6 +13,30 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	projectFields := schema.Project{}.Fields()
+	_ = projectFields
+	// projectDescName is the schema descriptor for name field.
+	projectDescName := projectFields[0].Descriptor()
+	// project.NameValidator is a validator for the "name" field. It is called by the builders before save.
+	project.NameValidator = projectDescName.Validators[0].(func(string) error)
+	// projectDescTheme is the schema descriptor for theme field.
+	projectDescTheme := projectFields[4].Descriptor()
+	// project.DefaultTheme holds the default value on creation for the theme field.
+	project.DefaultTheme = projectDescTheme.Default.(string)
+	// projectDescLayout is the schema descriptor for layout field.
+	projectDescLayout := projectFields[5].Descriptor()
+	// project.DefaultLayout holds the default value on creation for the layout field.
+	project.DefaultLayout = projectDescLayout.Default.(string)
+	// projectDescCreatedAt is the schema descriptor for created_at field.
+	projectDescCreatedAt := projectFields[7].Descriptor()
+	// project.DefaultCreatedAt holds the default value on creation for the created_at field.
+	project.DefaultCreatedAt = projectDescCreatedAt.Default.(func() time.Time)
+	// projectDescUpdatedAt is the schema descriptor for updated_at field.
+	projectDescUpdatedAt := projectFields[8].Descriptor()
+	// project.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	project.DefaultUpdatedAt = projectDescUpdatedAt.Default.(func() time.Time)
+	// project.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	project.UpdateDefaultUpdatedAt = projectDescUpdatedAt.UpdateDefault.(func() time.Time)
 	userFields := schema.User{}.Fields()
 	_ = userFields
 	// userDescFirstName is the schema descriptor for first_name field.

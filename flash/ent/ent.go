@@ -5,6 +5,7 @@ package ent
 import (
 	"context"
 	"errors"
+	"flash/ent/project"
 	"flash/ent/user"
 	"fmt"
 	"reflect"
@@ -73,7 +74,8 @@ var (
 func checkColumn(t, c string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
-			user.Table: user.ValidColumn,
+			project.Table: project.ValidColumn,
+			user.Table:    user.ValidColumn,
 		})
 	})
 	return columnCheck(t, c)

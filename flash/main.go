@@ -2,6 +2,7 @@ package main
 
 import (
 	"flash/database"
+	"flash/ent"
 	"flash/routes"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -19,10 +20,18 @@ func main() {
 	}
 	fmt.Println("Running in", env, "mode")
 	router := gin.Default()
-	dbInstance := database.InitDatabase()
+	client := database.InitDatabase()
 	fmt.Println("Database connected")
-	defer dbInstance.Close()
-	router.SetTrustedProxies([]string{"127.0.0.1"})
-	routes.RegisterRoutes(router)
+	defer func(client *ent.Client) {
+		err := client.Close()
+		if err != nil {
+			return
+		}
+	}(client)
+	err := router.SetTrustedProxies([]string{"127.0.0.1"})
+	if err != nil {
+		return
+	}
+	routes.RegisterRoutes(router, client)
 	router.Run(":5000")
 }

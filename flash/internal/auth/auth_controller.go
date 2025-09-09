@@ -1,4 +1,4 @@
-package controllers
+package auth
 
 import (
 	"flash/ent"
@@ -11,12 +11,11 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type AuthController struct {
+type Controller struct {
 	Client *ent.Client
 }
 
-// Register creates a new user
-func (ac AuthController) Register(c *gin.Context) {
+func (ac Controller) Register(c *gin.Context) {
 	var input struct {
 		FirstName string `json:"first_name" binding:"required"`
 		LastName  string `json:"last_name" binding:"required"`
@@ -29,14 +28,13 @@ func (ac AuthController) Register(c *gin.Context) {
 		return
 	}
 
-	// hash password
 	hashed, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.DefaultCost)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to hash password"})
 		return
 	}
 
-	user, err := ac.Client.User.
+	u, err := ac.Client.User.
 		Create().
 		SetFirstName(input.FirstName).
 		SetLastName(input.LastName).
@@ -50,11 +48,10 @@ func (ac AuthController) Register(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"id": user.ID, "email": user.Email})
+	c.JSON(http.StatusCreated, u)
 }
 
-// Login authenticates a user and returns JWT
-func (ac AuthController) Login(c *gin.Context) {
+func (ac Controller) Login(c *gin.Context) {
 	var input struct {
 		Email    string `json:"email" binding:"required,email"`
 		Password string `json:"password" binding:"required"`

@@ -8,6 +8,25 @@ import (
 )
 
 var (
+	// ProjectsColumns holds the columns for the "projects" table.
+	ProjectsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "name", Type: field.TypeString},
+		{Name: "description", Type: field.TypeString, Nullable: true},
+		{Name: "slug", Type: field.TypeString, Unique: true},
+		{Name: "sub_domain", Type: field.TypeString, Nullable: true},
+		{Name: "theme", Type: field.TypeString, Default: "default"},
+		{Name: "layout", Type: field.TypeString, Default: "default"},
+		{Name: "type", Type: field.TypeEnum, Enums: []string{"portfolio", "biz", "links", "waitlist"}, Default: "portfolio"},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+	}
+	// ProjectsTable holds the schema information for the "projects" table.
+	ProjectsTable = &schema.Table{
+		Name:       "projects",
+		Columns:    ProjectsColumns,
+		PrimaryKey: []*schema.Column{ProjectsColumns[0]},
+	}
 	// UsersColumns holds the columns for the "users" table.
 	UsersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -28,6 +47,7 @@ var (
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
+		ProjectsTable,
 		UsersTable,
 	}
 )

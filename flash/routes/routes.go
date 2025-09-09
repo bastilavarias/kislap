@@ -1,22 +1,33 @@
 package routes
 
 import (
-	"flash/controllers"
+	"flash/ent"
+	"flash/internal/auth"
+	"flash/internal/portfolio"
+	"flash/internal/project"
 	"github.com/gin-gonic/gin"
 )
 
-func RegisterRoutes(r *gin.Engine) {
+func RegisterRoutes(r *gin.Engine, c *ent.Client) {
 	api := r.Group("/api")
 	{
-		resumeController := controllers.ResumeController{}
-		api.GET("/resumes", resumeController.Index)
-		api.POST("/resumes", resumeController.Create)
-		api.GET("/resumes/:id", resumeController.Show)
-		api.PUT("/resumes/:id", resumeController.Update)
-		api.DELETE("/resumes/:id", resumeController.Delete)
+		projectController := project.Controller{Client: c}
+		api.GET("/projects", projectController.Index)
+		api.GET("/projects/check/sub-domain/:sub-domain", projectController.CheckDomain)
+		api.GET("/projects/:id", projectController.Show)
+		api.POST("/projects", projectController.Create)
+		api.PUT("/projects/:id", projectController.Update)
+		api.DELETE("/projects/:id", projectController.Delete)
 
-		authController := controllers.AuthController{}
-		api.POST("/auth/login", authController.Login)
-		api.POST("/auth/register", authController.Register)
+		resumeController := portfolio.Controller{Client: c}
+		api.GET("/portfolios", resumeController.Index)
+		api.POST("/portfolios", resumeController.Create)
+		api.GET("/portfolios/:id", resumeController.Show)
+		api.PUT("/portfolios/:id", resumeController.Update)
+		api.DELETE("/portfolios/:id", resumeController.Delete)
+
+		ac := auth.Controller{Client: c}
+		api.POST("/auth/login", ac.Login)
+		api.POST("/auth/register", ac.Register)
 	}
 }
