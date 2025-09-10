@@ -1,25 +1,33 @@
 package database
 
 import (
-	"context"
+	"fmt"
+	"github.com/joho/godotenv"
 	"log"
+	"os"
 
-	"entgo.io/ent/dialect"
-	"entgo.io/ent/dialect/sql"
-	"flash/ent"
-	_ "github.com/go-sql-driver/mysql"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
-func InitDatabase() *ent.Client {
-	dsn := "root:@tcp(localhost:3306)/kislap?parseTime=True"
-	drv, err := sql.Open(dialect.MySQL, dsn)
+var DB *gorm.DB
+
+func Default() *gorm.DB {
+	_ = godotenv.Load()
+
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+		os.Getenv("DB_USER"),
+		os.Getenv("DB_PASS"),
+		os.Getenv("DB_HOST"),
+		os.Getenv("DB_PORT"),
+		os.Getenv("DB_NAME"),
+	)
+
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatalf("failed opening connection to mysql: %v", err)
 	}
-	client := ent.NewClient(ent.Driver(drv))
-	if err := client.Schema.Create(context.Background()); err != nil {
-		log.Fatalf("failed creating schema resources: %v", err)
-	}
 
-	return client
+	DB = db
+	return DB
 }

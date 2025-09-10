@@ -1,20 +1,25 @@
 package project
 
 import (
-	"flash/ent"
-	"flash/ent/project"
+	"flash/models"
 	"flash/utils"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 	"net/http"
 	"strconv"
 )
 
 type Controller struct {
-	Client *ent.Client
+	DB *gorm.DB
 }
 
 func (pc Controller) Index(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{"message": "List all resumes"})
+	var projects []models.Project
+	if err := pc.DB.Find(&projects).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, projects)
 }
 
 func (pc Controller) Create(c *gin.Context) {
@@ -23,7 +28,7 @@ func (pc Controller) Create(c *gin.Context) {
 		Description string `json:"description"`
 		Theme       string `json:"theme" binding:"required"`
 		Layout      string `json:"layout" binding:"required"`
-		Type        string `json:"type" binding:"required,oneof=portfolio biz link waitlist"`
+		Type        string `json:"type" binding:"required,oneof=portfolio biz links waitlist"`
 	}
 
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -33,30 +38,28 @@ func (pc Controller) Create(c *gin.Context) {
 
 	slug := utils.Slugify(input.Name, 0)
 
-	exists, err := pc.Client.Project.Query().
-		Where(project.SlugEQ(slug)).
-		Exist(c.Request.Context())
-
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	var count int64
+	if err := pc.DB.Model(&models.Project{}).
+		Where("slug = ?", slug).
+		Count(&count).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
 	}
-
-	if exists {
+	if count > 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Project name already exists!"})
 		return
 	}
 
-	newProj, err := pc.Client.Project.Create().
-		SetSlug(slug).
-		SetName(input.Name).
-		SetDescription(input.Description).
-		SetTheme(input.Theme).
-		SetLayout(input.Layout).
-		SetType(project.Type(input.Type)).
-		Save(c.Request.Context())
-
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to create user"})
+	newProj := models.Project{
+		Name:        input.Name,
+		Description: input.Description,
+		Slug:        slug,
+		Theme:       input.Theme,
+		Layout:      input.Layout,
+		Type:        input.Type,
+	}
+	if err := pc.DB.Create(&newProj).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to create project"})
 		return
 	}
 
@@ -65,45 +68,94 @@ func (pc Controller) Create(c *gin.Context) {
 
 func (pc Controller) Show(c *gin.Context) {
 	idStr := c.Param("id")
-
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Can't parse string."})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
 		return
 	}
 
-	foundProj, err := pc.Client.Project.Get(c, id)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Project sub domain already taken!"})
+	var proj models.Project
+	if err := pc.DB.First(&proj, id).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Project not found"})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, foundProj)
+	c.JSON(http.StatusOK, proj)
 }
 
+// PUT /projects/:id
 func (pc Controller) Update(c *gin.Context) {
-	id := c.Param("id")
-	c.JSON(http.StatusOK, gin.H{"message": "Update resume", "id": id})
-}
-
-func (pc Controller) Delete(c *gin.Context) {
-	id := c.Param("id")
-	c.JSON(http.StatusOK, gin.H{"message": "Delete resume", "id": id})
-}
-
-func (pc Controller) CheckDomain(c *gin.Context) {
-	subDomain := c.Param("sub-domain")
-
-	exists, err := pc.Client.Project.Query().
-		Where(project.SubDomainEQ(subDomain)).
-		Exist(c.Request.Context())
-
+	idStr := c.Param("id")
+	id, err := strconv.Atoi(idStr)
 	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
+		return
+	}
+
+	var input struct {
+		Name        string `json:"name"`
+		Description string `json:"description"`
+		Theme       string `json:"theme"`
+		Layout      string `json:"layout"`
+		Type        string `json:"type"`
+	}
+
+	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	if exists {
+	var proj models.Project
+	if err := pc.DB.First(&proj, id).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Project not found"})
+		return
+	}
+
+	pc.DB.Model(&proj).Updates(models.Project{
+		Name:        input.Name,
+		Description: input.Description,
+		Theme:       input.Theme,
+		Layout:      input.Layout,
+		Type:        input.Type,
+	})
+
+	c.JSON(http.StatusOK, proj)
+}
+
+// DELETE /projects/:id
+func (pc Controller) Delete(c *gin.Context) {
+	idStr := c.Param("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
+		return
+	}
+
+	if err := pc.DB.Delete(&models.Project{}, id).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Project deleted"})
+}
+
+// GET /projects/check-domain/:subdomain
+func (pc Controller) CheckDomain(c *gin.Context) {
+	subDomain := c.Param("sub-domain")
+
+	var count int64
+	if err := pc.DB.Model(&models.Project{}).
+		Where("sub_domain = ?", subDomain).
+		Count(&count).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	if count > 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Project sub domain already taken!"})
 		return
 	}
