@@ -12,7 +12,6 @@ type Controller struct {
 	DB *gorm.DB
 }
 
-// GET /portfolios
 func (rc Controller) Index(c *gin.Context) {
 	var portfolios []models.Portfolio
 	if err := rc.DB.Find(&portfolios).Error; err != nil {
@@ -22,7 +21,6 @@ func (rc Controller) Index(c *gin.Context) {
 	c.JSON(http.StatusOK, portfolios)
 }
 
-// POST /portfolios
 func (rc Controller) Create(c *gin.Context) {
 	var input struct {
 		Name     string `json:"first_name" binding:"required"`
@@ -51,7 +49,6 @@ func (rc Controller) Create(c *gin.Context) {
 	c.JSON(http.StatusCreated, newPortfolio)
 }
 
-// GET /portfolios/:id
 func (rc Controller) Show(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)

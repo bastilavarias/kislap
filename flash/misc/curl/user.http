@@ -1,0 +1,34 @@
+### Register a new user
+POST {{host}}/api/user
+Content-Type: application/json
+
+{
+  "first_name": "John",
+  "last_name": "Doe",
+  "mobile_number": "09123456789",
+  "email": "johndoe@example.com",
+  "password": "secret123"
+}
+
+### Invalid registration (missing required fields)
+POST {{host}}/api/user
+Content-Type: application/json
+
+{
+  "first_name": "",
+  "last_name": "",
+  "email": "invalid-email",
+  "password": ""
+}
+
+### Register without mobile number (nullable)
+POST {{host}}/api/user
+Content-Type: application/json
+
+{
+  "first_name": "Alice",
+  "last_name": "Smith",
+  "mobile_number": "",
+  "email": "alice@example.com",
+  "password": "mypassword"
+}

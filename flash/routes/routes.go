@@ -1,8 +1,10 @@
 package routes
 
 import (
+	"flash/internal/auth"
 	"flash/internal/portfolio"
 	"flash/internal/project"
+	"flash/internal/user"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
@@ -10,6 +12,13 @@ import (
 func RegisterRoutes(r *gin.Engine, db *gorm.DB) {
 	api := r.Group("/api")
 	{
+		authController := auth.NewController(db)
+		api.POST("/auth/login", authController.Login)
+		api.GET("/auth/refresh", authController.Refresh)
+
+		userController := user.NewController(db)
+		api.POST("/user", userController.Register)
+
 		projectController := project.Controller{DB: db}
 		api.GET("/projects", projectController.Index)
 		api.GET("/projects/check/sub-domain/:sub-domain", projectController.CheckDomain)
