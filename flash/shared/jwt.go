@@ -49,6 +49,5 @@ func HashToken(token string) (string, error) {
 		return "", err
 	}
 
-	hashedStr := string(hashed)
-	return hashedStr, nil
+	return string(hashed), nil
 }
