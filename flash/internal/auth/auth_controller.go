@@ -41,5 +41,23 @@ func (controller Controller) Login(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"access_token": tokens.AccessToken})
 }
 
-func (controller Controller) Refresh(c *gin.Context) {
+func (controller Controller) Refresh(context *gin.Context) {
+	userID, exists := context.Get("user_id")
+	if !exists {
+		context.JSON(http.StatusUnauthorized, gin.H{"error": "User not found in context"})
+		return
+	}
+
+	uid := userID.(uint64)
+
+	tokens, err := controller.Service.Refresh(uid)
+
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	shared.SetCookie(context, "refresh_token", tokens.RefreshToken)
+
+	context.JSON(http.StatusOK, gin.H{"access_token": tokens.AccessToken})
 }

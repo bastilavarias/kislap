@@ -22,51 +22,55 @@ func AuthMiddleware(db *gorm.DB) gin.HandlerFunc {
 
 		tokenString := strings.TrimPrefix(authHeader, "Bearer ")
 		validatedToken, err := shared.ValidateToken(tokenString)
+		var uid = uint64(0)
 		if err != nil || !validatedToken.Valid {
-			ok, err := checkRefreshToken(context, db)
+			userID, ok, err := checkRefreshToken(context, db)
 			if !ok || err != nil {
 				context.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err})
 				return
 			}
+			uid = *userID
 		}
+
+		context.Set("user_id", uid)
 
 		context.Next()
 	}
 }
 
-func checkRefreshToken(context *gin.Context, db *gorm.DB) (bool, error) {
+func checkRefreshToken(context *gin.Context, db *gorm.DB) (*uint64, bool, error) {
 	refreshToken, err := context.Cookie("refresh_token")
 	if err != nil {
-		return false, err
+		return nil, false, err
 	}
 
 	validatedToken, err := shared.ValidateToken(refreshToken)
 	if err != nil || !validatedToken.Valid {
-		return false, err
+		return nil, false, err
 	}
 
 	claims, ok := validatedToken.Claims.(jwt.MapClaims)
 	if !ok {
-		return false, err
+		return nil, false, err
 	}
 
 	idFloat, ok := claims["user_id"].(float64)
 	if !ok {
-		return false, err
+		return nil, false, err
 	}
 
 	userID := uint(idFloat)
 
 	var user models.User
 	if err := db.Where("id = ?", userID).First(&user).Error; err != nil {
-		return false, err
+		return nil, false, err
 	}
 
 	digest := sha256.Sum256([]byte(refreshToken))
 	err = bcrypt.CompareHashAndPassword([]byte(*user.RefreshToken), digest[:])
 	if err != nil {
-		return false, err
+		return nil, false, err
 	}
 
-	return true, nil
+	return &user.ID, true, nil
 }

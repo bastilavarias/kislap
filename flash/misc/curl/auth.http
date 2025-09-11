@@ -8,3 +8,8 @@ Content-Type: application/json
   "email": "sebastian.lavarias@kislap.com",
   "password": "secret123"
 }
+
+### Refresh User
+GET {{host}}/api/auth/refresh
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
