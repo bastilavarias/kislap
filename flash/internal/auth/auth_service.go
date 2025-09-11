@@ -3,15 +3,23 @@ package auth
 import (
 	"errors"
 	"flash/models"
+	"flash/shared"
+	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
 type Service struct {
-	DB *gorm.DB
+	DB      *gorm.DB
+	Context *gin.Context
 }
 
-func (service Service) Login(email string, password string) (*models.User, error) {
+type loginResponse struct {
+	AccessToken  string
+	RefreshToken string
+}
+
+func (service Service) Login(email string, password string) (*loginResponse, error) {
 	var user models.User
 
 	dbUser := service.DB.Where("email = ?", email).
@@ -26,5 +34,27 @@ func (service Service) Login(email string, password string) (*models.User, error
 		return nil, errors.New("invalid password")
 	}
 
-	return &user, nil
+	accessTokenLifeSpan := 300
+	accessToken, err := shared.GenerateToken(user, &accessTokenLifeSpan)
+	if err != nil {
+		return nil, err
+	}
+
+	refreshTokenLifeSpan := 604800
+	refreshToken, err := shared.GenerateToken(user, &refreshTokenLifeSpan)
+	if err != nil {
+		return nil, err
+	}
+
+	hashedToken, err := shared.HashToken(refreshToken)
+	if err != nil {
+		return nil, err
+	}
+
+	user.RefreshToken = &hashedToken
+	if err := service.DB.Save(&user).Error; err != nil {
+		return nil, err
+	}
+
+	return &loginResponse{AccessToken: accessToken, RefreshToken: refreshToken}, nil
 }

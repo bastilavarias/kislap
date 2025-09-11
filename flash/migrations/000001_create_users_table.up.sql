@@ -6,6 +6,7 @@ CREATE TABLE `users` (
     `password`      VARCHAR(255) NOT NULL,
     `mobile_number` VARCHAR(20) DEFAULT NULL,
     `role`          VARCHAR(50) NOT NULL DEFAULT 'default',
+    `refresh_token` VARCHAR(255) DEFAULT NULL,
     `created_at`    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated_at`    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted_at` DATETIME NULL DEFAULT NULL,

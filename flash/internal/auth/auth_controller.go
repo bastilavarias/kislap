@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"flash/shared"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 	"net/http"
@@ -17,25 +18,27 @@ func NewController(db *gorm.DB) *Controller {
 	return &Controller{Service: service}
 }
 
-func (controller Controller) Login(c *gin.Context) {
+func (controller Controller) Login(context *gin.Context) {
 	var input struct {
 		Email    string `json:"email" binding:"required,email"`
 		Password string `json:"password" binding:"required"`
 	}
 
-	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	if err := context.ShouldBindJSON(&input); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	user, err := controller.Service.Login(input.Email, input.Password)
+	tokens, err := controller.Service.Login(input.Email, input.Password)
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"success": user})
+	shared.SetCookie(context, "refresh_token", tokens.RefreshToken)
+
+	context.JSON(http.StatusOK, gin.H{"access_token": tokens.AccessToken})
 }
 
 func (controller Controller) Refresh(c *gin.Context) {

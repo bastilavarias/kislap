@@ -5,6 +5,7 @@ import (
 	"flash/internal/portfolio"
 	"flash/internal/project"
 	"flash/internal/user"
+	"flash/middleware"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
@@ -17,7 +18,7 @@ func RegisterRoutes(r *gin.Engine, db *gorm.DB) {
 		api.GET("/auth/refresh", authController.Refresh)
 
 		userController := user.NewController(db)
-		api.POST("/user", userController.Register)
+		api.POST("/user", middleware.AuthMiddleware(db), userController.Register)
 
 		projectController := project.Controller{DB: db}
 		api.GET("/projects", projectController.Index)

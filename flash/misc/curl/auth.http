@@ -1,19 +1,8 @@
-### Register User
-POST {{host}}/api/auth/register
-Content-Type: application/json
-
-{
-  "first_name": "John",
-  "last_name": "Doe",
-  "email": "john@example.com",
-  "password": "secret123"
-}
-
 ### Login User
 POST {{host}}/api/auth/login
 Content-Type: application/json
 
 {
   "email": "sebastian.lavarias@kislap.com",
-  "password": "password"
+  "password": "secret123"
 }
