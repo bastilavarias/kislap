@@ -29,3 +29,6 @@ kislap-flash
 # Other general ignores
 # -----------------
 .DS_Store
+
+flash/.env
+flash/tmp/build-errors.log
