@@ -1,4 +1,4 @@
-package shared
+package jwt
 
 import (
 	"crypto/sha256"

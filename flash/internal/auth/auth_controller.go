@@ -1,7 +1,7 @@
 package auth
 
 import (
-	"flash/shared"
+	"flash/shared/cookie"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 	"net/http"
@@ -36,7 +36,7 @@ func (controller Controller) Login(context *gin.Context) {
 		return
 	}
 
-	shared.SetCookie(context, "refresh_token", tokens.RefreshToken)
+	cookie.SetCookie(context, "refresh_token", tokens.RefreshToken)
 
 	context.JSON(http.StatusOK, gin.H{"access_token": tokens.AccessToken})
 }
@@ -57,7 +57,7 @@ func (controller Controller) Refresh(context *gin.Context) {
 		return
 	}
 
-	shared.SetCookie(context, "refresh_token", tokens.RefreshToken)
+	cookie.SetCookie(context, "refresh_token", tokens.RefreshToken)
 
 	context.JSON(http.StatusOK, gin.H{"access_token": tokens.AccessToken})
 }

@@ -3,7 +3,7 @@ package auth
 import (
 	"errors"
 	"flash/models"
-	"flash/shared"
+	"flash/shared/jwt"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
@@ -35,18 +35,18 @@ func (service Service) Login(email string, password string) (*loginResponse, err
 	}
 
 	accessTokenLifeSpan := 300
-	accessToken, err := shared.GenerateToken(user, &accessTokenLifeSpan)
+	accessToken, err := jwt.GenerateToken(user, &accessTokenLifeSpan)
 	if err != nil {
 		return nil, err
 	}
 
 	refreshTokenLifeSpan := 604800
-	refreshToken, err := shared.GenerateToken(user, &refreshTokenLifeSpan)
+	refreshToken, err := jwt.GenerateToken(user, &refreshTokenLifeSpan)
 	if err != nil {
 		return nil, err
 	}
 
-	hashedToken, err := shared.HashToken(refreshToken)
+	hashedToken, err := jwt.HashToken(refreshToken)
 	if err != nil {
 		return nil, err
 	}
@@ -71,18 +71,18 @@ func (service Service) Refresh(userID uint64) (*loginResponse, error) {
 	}
 
 	accessTokenLifeSpan := 300
-	accessToken, err := shared.GenerateToken(user, &accessTokenLifeSpan)
+	accessToken, err := jwt.GenerateToken(user, &accessTokenLifeSpan)
 	if err != nil {
 		return nil, err
 	}
 
 	refreshTokenLifeSpan := 604800
-	refreshToken, err := shared.GenerateToken(user, &refreshTokenLifeSpan)
+	refreshToken, err := jwt.GenerateToken(user, &refreshTokenLifeSpan)
 	if err != nil {
 		return nil, err
 	}
 
-	hashedToken, err := shared.HashToken(refreshToken)
+	hashedToken, err := jwt.HashToken(refreshToken)
 	if err != nil {
 		return nil, err
 	}

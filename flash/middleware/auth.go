@@ -3,7 +3,6 @@ package middleware
 import (
 	"crypto/sha256"
 	"flash/models"
-	"flash/shared"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
@@ -11,6 +10,8 @@ import (
 	"net/http"
 	"strings"
 )
+
+import sharedjwt "flash/shared/jwt"
 
 func AuthMiddleware(db *gorm.DB) gin.HandlerFunc {
 	return func(context *gin.Context) {
@@ -21,7 +22,7 @@ func AuthMiddleware(db *gorm.DB) gin.HandlerFunc {
 		}
 
 		tokenString := strings.TrimPrefix(authHeader, "Bearer ")
-		validatedToken, err := shared.ValidateToken(tokenString)
+		validatedToken, err := sharedjwt.ValidateToken(tokenString)
 		var uid = uint64(0)
 		if err != nil || !validatedToken.Valid {
 			userID, ok, err := checkRefreshToken(context, db)
@@ -44,7 +45,7 @@ func checkRefreshToken(context *gin.Context, db *gorm.DB) (*uint64, bool, error)
 		return nil, false, err
 	}
 
-	validatedToken, err := shared.ValidateToken(refreshToken)
+	validatedToken, err := sharedjwt.ValidateToken(refreshToken)
 	if err != nil || !validatedToken.Valid {
 		return nil, false, err
 	}
