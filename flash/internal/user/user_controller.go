@@ -17,7 +17,7 @@ func NewController(db *gorm.DB) *Controller {
 	return &Controller{Service: service}
 }
 
-func (c *Controller) Register(ctx *gin.Context) {
+func (controller *Controller) Register(context *gin.Context) {
 	var input struct {
 		FirstName    string `json:"first_name" binding:"required"`
 		LastName     string `json:"last_name" binding:"required"`
@@ -26,16 +26,16 @@ func (c *Controller) Register(ctx *gin.Context) {
 		Password     string `json:"password" binding:"required"`
 	}
 
-	if err := ctx.ShouldBindJSON(&input); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	if err := context.ShouldBindJSON(&input); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	user, err := c.Service.Register(input.FirstName, input.LastName, input.MobileNumber, input.Email, input.Password)
+	user, err := controller.Service.Register(input.FirstName, input.LastName, input.MobileNumber, input.Email, input.Password)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"success": user})
+	context.JSON(http.StatusOK, gin.H{"success": user})
 }

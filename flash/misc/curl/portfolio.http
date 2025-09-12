@@ -1,0 +1,48 @@
+@no-cookie-jar=false
+
+### Create a new portfolio
+POST {{host}}/portfolios
+Content-Type: application/json
+
+{
+  "name": "BABU",
+  "description": "This is a test portfolio portfolios",
+  "theme": "light",
+  "layout": "grid",
+  "type": "portfolio"
+}
+
+###
+
+### Get all portfolios
+GET {{host}}/api/portfolios
+
+###
+
+### Get a portfolios by ID
+GET {{host}}/api/portfolios/1
+
+###
+
+### Update a portfolios
+PUT {{host}}/api/portfolios/1
+Content-Type: application/json
+
+{
+  "name": "Updated Project",
+  "description": "Updated description",
+  "sub_domain": "updated-sub",
+  "theme": "dark",
+  "layout": "list",
+  "type": "biz"
+}
+
+###
+
+### Delete a portfolios
+DELETE {{host}}/api/portfolios/1
+
+###
+
+### Check a portfolios sub domain
+GET {{host}}/api/portfolios/check/sub-domain/sebastech

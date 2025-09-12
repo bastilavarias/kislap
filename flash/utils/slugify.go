@@ -2,6 +2,8 @@ package utils
 
 import (
 	"bytes"
+	"os"
+	"path/filepath"
 	"strings"
 	"unicode"
 
@@ -56,4 +58,10 @@ func Slugify(s string, maxLen int) string {
 	}
 
 	return slug
+}
+
+func GetLocalPath(filename string) string {
+	wd, _ := os.Getwd()
+
+	return filepath.Join(wd, filename)
 }
