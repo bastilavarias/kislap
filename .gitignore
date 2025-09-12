@@ -31,4 +31,4 @@ kislap-flash
 .DS_Store
 
 flash/.env
-flash/tmp/build-errors.log
+flash/tmp

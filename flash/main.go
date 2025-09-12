@@ -42,11 +42,6 @@ func main() {
 		Model:  os.Getenv("LLM_MODEL"),
 	})
 
-	err := router.SetTrustedProxies([]string{"127.0.0.1"})
-	if err != nil {
-		return
-	}
-
 	routes.RegisterRoutes(router, databaseClient, llmProvider)
 	router.Run(":5000")
 }

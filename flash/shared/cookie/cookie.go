@@ -16,25 +16,26 @@ func SetCookie(context *gin.Context, name string, data string) {
 
 	domain := ""
 	secure := false
+	sameSite := http.SameSiteStrictMode
 
 	if appEnv == "production" {
 		domain = os.Getenv("APP_DOMAIN")
 		secure = true
+		sameSite = http.SameSiteStrictMode
+	} else if appEnv == "local" {
+		sameSite = http.SameSiteLaxMode
 	}
 
-	context.SetCookie(
-		name,
-		data,
-		int((7 * 24 * time.Hour).Seconds()),
-		"/",
-		domain,
-		secure,
-		true,
-	)
-
-	if appEnv == "local" {
-		context.SetSameSite(http.SameSiteLaxMode)
-	} else {
-		context.SetSameSite(http.SameSiteStrictMode)
+	cookie := &http.Cookie{
+		Name:     name,
+		Value:    data,
+		Path:     "/",
+		Domain:   domain,
+		MaxAge:   int((7 * 24 * time.Hour).Seconds()),
+		Secure:   secure,
+		HttpOnly: true,
+		SameSite: sameSite,
 	}
+
+	http.SetCookie(context.Writer, cookie)
 }

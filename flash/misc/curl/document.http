@@ -1,0 +1,6 @@
+@no-cookie-jar=false
+
+### Create a new portfolio
+POST {{host}}/api/document
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
