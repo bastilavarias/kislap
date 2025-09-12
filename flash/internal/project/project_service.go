@@ -41,7 +41,9 @@ func (service Service) Create(payload Payload) (*models.Project, error) {
 		Theme:       payload.Theme,
 		Layout:      payload.Layout,
 		Type:        payload.Type,
+		SubDomain:   nil,
 	}
+
 	if err := service.DB.Create(&newProj).Error; err != nil {
 		return nil, err
 	}

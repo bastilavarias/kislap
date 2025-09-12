@@ -6,9 +6,8 @@ Content-Type: application/json
 Authorization: Bearer {{access_token}}
 
 {
-  "name": "Sebastech",
+  "name": "BABU",
   "description": "This is a test portfolio project",
-  "sub_domain": "portfolio1",
   "theme": "light",
   "layout": "grid",
   "type": "portfolio"
