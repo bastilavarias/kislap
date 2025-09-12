@@ -23,7 +23,8 @@ func RegisterRoutes(router *gin.Engine, db *gorm.DB, llm llm.Provider) {
 		api.POST("/auth/login", authController.Login)
 		api.GET("/auth/refresh", middleware.AuthMiddleware(db), authController.Refresh)
 
-		api.POST("/user", middleware.AuthMiddleware(db), userController.Register)
+		api.POST("/user", userController.Register)
+		//api.POST("/user", middleware.AuthMiddleware(db), userController.Register)
 
 		api.GET("/projects", middleware.AuthMiddleware(db), projectController.List)
 		api.GET("/projects/check/sub-domain/:sub-domain", middleware.AuthMiddleware(db), projectController.CheckDomain)
