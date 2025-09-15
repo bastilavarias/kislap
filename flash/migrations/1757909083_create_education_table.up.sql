@@ -1,0 +1,19 @@
+CREATE TABLE IF NOT EXISTS `education` (
+    `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `portfolio_id` BIGINT UNSIGNED NULL,
+
+    `school` VARCHAR(255) NULL,
+    `level` VARCHAR(255) NULL,
+    `degree` VARCHAR(255) NULL,
+    `location` VARCHAR(255) NULL,
+    `year_start` INT NULL,
+    `year_end` INT NULL,
+    `about` TEXT NULL,
+
+    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `deleted_at` DATETIME NULL DEFAULT NULL,
+
+    FOREIGN KEY (portfolio_id) REFERENCES `portfolios`(id) ON DELETE SET NULL
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

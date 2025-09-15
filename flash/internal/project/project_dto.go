@@ -1,5 +1,7 @@
 package project
 
+const TYPE_RESUME = "resume"
+
 type CreateUpdateProjectRequest struct {
 	Name        string `json:"name" binding:"required"`
 	Description string `json:"description"`

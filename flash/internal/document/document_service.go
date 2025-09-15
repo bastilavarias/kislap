@@ -1,11 +1,12 @@
 package document
 
 import (
+	"errors"
+	"flash/internal/project"
 	"flash/pkg/llm"
 	"flash/pkg/llm/prompt"
 	pdfExtractor "flash/shared/pdf_extractor"
 	"flash/utils"
-	"fmt"
 	"gorm.io/gorm"
 )
 
@@ -14,19 +15,31 @@ type Service struct {
 	LLM llm.Provider
 }
 
-func (service Service) Parse() {
+func (service Service) Parse(payload Payload) (*PortfolioResponse, error) {
 	extractor := pdfExtractor.Default()
-	content, err := extractor.Extract(utils.GetLocalPath("./shared/pdf_extractor/sample.pdf"))
+	content, err := extractor.ExtractFromReader(payload.File)
 	if err != nil {
-		fmt.Println("Error extracting PDF:", err)
-		return
+		return nil, err
 	}
 
-	response, err := service.LLM.Generate(prompt.ResumeToJSON(content))
-	if err != nil {
-		fmt.Println("Error generating JSON:", err)
-		return
+	var generatedPrompt string
+	givenType := payload.Type
+
+	if givenType == project.TYPE_RESUME {
+		generatedPrompt = prompt.ResumeToJSON(content)
+	} else {
+		return nil, errors.New("invalid type")
 	}
 
-	fmt.Println("Formatted JSON Response:\n", response)
+	aiResp, err := service.LLM.Generate(generatedPrompt)
+	if err != nil {
+		return nil, err
+	}
+
+	structData, err := utils.ParseLLMJSON[PortfolioResponse](aiResp)
+	if err != nil {
+		return nil, err
+	}
+
+	return structData, nil
 }
