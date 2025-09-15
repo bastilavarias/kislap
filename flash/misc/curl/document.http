@@ -1,7 +1,7 @@
 @no-cookie-jar=false
 
 ### Parse resume
-POST {{host}}/api/document
+POST {{host}}/api/documents
 Authorization: Bearer {{access_token}}
 Content-Type: multipart/form-data; boundary=boundary
 

@@ -13,7 +13,7 @@ type WorkExperience struct {
 	Company   *string    `gorm:"size:255" json:"company"`
 	Role      *string    `gorm:"size:255" json:"role"`
 	Location  *string    `gorm:"size:255" json:"location"`
-	StartDate *time.Time `json:"start_date,omitempty"`
+	StartDate *date      `json:"start_date,omitempty"` // fix this
 	EndDate   *time.Time `json:"end_date,omitempty"`
 	About     *string    `gorm:"type:text" json:"about"`
 

@@ -8,8 +8,8 @@ import (
 
 type Portfolio struct {
 	ID           uint64         `gorm:"primaryKey;autoIncrement" json:"id"`
-	ProjectID    *uint64        `gorm:"index" json:"project_id"`
-	UserID       *uint64        `gorm:"index" json:"user_id"`
+	ProjectID    uint64         `gorm:"index" json:"project_id"`
+	UserID       uint64         `gorm:"index" json:"user_id"`
 	Name         *string        `gorm:"size:255" json:"name"`
 	JobTitle     *string        `gorm:"size:255" json:"job_title"`
 	Introduction *string        `gorm:"type:text" json:"introduction"`
@@ -26,4 +26,9 @@ type Portfolio struct {
 
 	Project *Project `gorm:"foreignKey:ProjectID;constraint:OnDelete:SET NULL;"`
 	User    *User    `gorm:"foreignKey:UserID;constraint:OnDelete:SET NULL;"`
+
+	WorkExperiences []WorkExperience `gorm:"foreignKey:PortfolioID" json:"work_experiences"`
+	Education       []Education      `gorm:"foreignKey:PortfolioID" json:"education"`
+	Showcases       []Showcase       `gorm:"foreignKey:PortfolioID" json:"showcases"`
+	Skills          []Skill          `gorm:"foreignKey:PortfolioID" json:"skills"`
 }

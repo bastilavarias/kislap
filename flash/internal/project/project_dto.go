@@ -18,6 +18,6 @@ type Payload struct {
 	Type        string
 }
 
-func (r CreateUpdateProjectRequest) ToServicePayload() Payload {
-	return Payload(r)
+func (request CreateUpdateProjectRequest) ToServicePayload() Payload {
+	return Payload(request)
 }

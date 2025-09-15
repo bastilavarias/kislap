@@ -3,6 +3,7 @@ package routes
 import (
 	"flash/internal/auth"
 	"flash/internal/document"
+	"flash/internal/portfolio"
 	"flash/internal/project"
 	"flash/internal/user"
 	"flash/middleware"
@@ -19,6 +20,7 @@ func RegisterRoutes(router *gin.Engine, db *gorm.DB, llm llm.Provider) {
 		userController := user.NewController(db)
 		projectController := project.NewController(db)
 		documentController := document.NewController(db, llm)
+		portfolioController := portfolio.NewController(db)
 
 		api.POST("/auth/login", authController.Login)
 		api.GET("/auth/refresh", middleware.AuthMiddleware(db), authController.Refresh)
@@ -32,6 +34,8 @@ func RegisterRoutes(router *gin.Engine, db *gorm.DB, llm llm.Provider) {
 		api.PUT("/projects/:id", middleware.AuthMiddleware(db), projectController.Update)
 		api.DELETE("/projects/:id", middleware.AuthMiddleware(db), projectController.Delete)
 
-		api.POST("/document", middleware.AuthMiddleware(db), documentController.Parse)
+		api.POST("/documents", middleware.AuthMiddleware(db), documentController.Parse)
+
+		api.POST("/portfolios", middleware.AuthMiddleware(db), portfolioController.Create)
 	}
 }

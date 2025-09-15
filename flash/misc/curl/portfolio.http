@@ -1,15 +1,88 @@
 @no-cookie-jar=false
 
 ### Create a new portfolio
-POST {{host}}/portfolios
+POST {{host}}/api/portfolios
 Content-Type: application/json
+Authorization: Bearer {{ access_token }}
 
 {
-  "name": "BABU",
-  "description": "This is a test portfolio portfolios",
-  "theme": "light",
-  "layout": "grid",
-  "type": "portfolio"
+  "name": "John Doe",
+  "job_title": "Full Stack Developer",
+  "introduction": "Passionate about building scalable web applications.",
+  "about": "I have 5+ years of experience working with Go, Vue, and cloud infrastructure.",
+  "email": "john.doe@example.com",
+  "phone": "+639171234567",
+  "website": "https://johndoe.dev",
+  "github": "https://github.com/johndoe",
+  "linkedin": "https://www.linkedin.com/in/johndoe",
+  "twitter": "https://twitter.com/johndoe",
+
+  "work_experiences": [
+    {
+      "company": "Tech Corp",
+      "role": "Software Engineer",
+      "location": "Manila, PH",
+      "start_date": "2020-01-01",
+      "end_date": "2022-06-30",
+      "about": "Worked on backend services with Go and microservices."
+    },
+    {
+      "company": "Innovate Labs",
+      "role": "Senior Developer",
+      "location": "Remote",
+      "start_date": "2022-07-01",
+      "end_date": null,
+      "about": "Leading a small team to build SaaS solutions."
+    }
+  ],
+
+  "education": [
+    {
+      "school": "University of the Philippines",
+      "level": "Bachelor",
+      "degree": "BS Computer Science",
+      "location": "Quezon City, PH",
+      "year_start": 2016,
+      "year_end": 2020,
+      "about": "Focused on software engineering and distributed systems."
+    }
+  ],
+
+  "skills": [
+    {
+      "name": "Go"
+    },
+    {
+      "name": "Vue.js",
+      "url": "https://vuejs.org"
+    },
+    {
+      "name": "Docker"
+    }
+  ],
+
+  "showcases": [
+    {
+      "name": "Portfolio Website",
+      "description": "A personal website to showcase my work and projects.",
+      "role": "Full Stack Developer",
+      "technologies": [
+        { "name": "Next.js" },
+        { "name": "TailwindCSS" },
+        { "name": "Vercel" }
+      ]
+    },
+    {
+      "name": "E-commerce API",
+      "description": "REST API for an online store with order and payment features.",
+      "role": "Backend Developer",
+      "technologies": [
+        { "name": "Go" },
+        { "name": "PostgreSQL" },
+        { "name": "Docker" }
+      ]
+    }
+  ]
 }
 
 ###
