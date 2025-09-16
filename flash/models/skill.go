@@ -10,7 +10,7 @@ type Skill struct {
 	ID          uint64  `gorm:"primaryKey;autoIncrement" json:"id"`
 	PortfolioID *uint64 `gorm:"index" json:"portfolio_id"`
 
-	Name *string `gorm:"size:255" json:"name"`
+	Name string  `gorm:"size:255" json:"name"`
 	URL  *string `gorm:"size:255" json:"url"`
 
 	CreatedAt time.Time      `gorm:"autoCreateTime" json:"created_at"`

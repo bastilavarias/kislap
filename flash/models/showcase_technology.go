@@ -10,7 +10,7 @@ type ShowcaseTechnology struct {
 	PortfolioID *uint64 `gorm:"index" json:"portfolio_id"`
 	ShowcaseID  *uint64 `gorm:"index" json:"showcase_id"`
 
-	Name *string `gorm:"size:255" json:"name"`
+	Name string `gorm:"size:255" json:"name"`
 
 	CreatedAt time.Time      `gorm:"autoCreateTime" json:"created_at"`
 	UpdatedAt time.Time      `gorm:"autoUpdateTime" json:"updated_at"`

@@ -10,7 +10,7 @@ type Showcase struct {
 	ID          uint64  `gorm:"primaryKey;autoIncrement" json:"id"`
 	PortfolioID *uint64 `gorm:"index" json:"portfolio_id"`
 
-	Name        *string `gorm:"size:255" json:"name"`
+	Name        string  `gorm:"size:255" json:"name"`
 	Description *string `gorm:"type:text" json:"description"`
 	Role        *string `gorm:"size:255" json:"role"`
 
