@@ -6,89 +6,326 @@ Content-Type: application/json
 Authorization: Bearer {{ access_token }}
 
 {
-  "user_id": 1,
-  "project_id": 1,
-  "name": "Master Baste",
-  "job_title": "Full-Stack Developer",
-  "introduction": "Passionate developer building modern web apps",
-  "about": "I love coding, fitness, and coffee.",
-  "email": "baste@example.com",
-  "phone": "+639171234567",
-  "website": "https://example.com",
-  "github": "https://github.com/masterbaste",
-  "linkedin": "https://linkedin.com/in/masterbaste",
-  "twitter": "https://twitter.com/masterbaste",
+  "name": "SEBASTIAN CURTIS LAVARIAS",
+  "job_title": "FULL STACK WEB DEVELOPER",
+  "introduction": "",
+  "about": "",
+  "email": "sebastiancurtislavarias@gmail.com",
+  "phone": "09972217704",
+  "website": "https://sebastech.vercel.app/",
+  "github": "https://github.com/bastilavarias",
+  "linkedin": "",
+  "twitter": "",
   "work_experiences": [
     {
-      "company": "TechCorp",
-      "role": "Software Engineer",
-      "location": "Manila, Philippines",
-      "start_date": "2022-01-01T00:00:00Z",
-      "end_date": "2023-06-30T00:00:00Z",
-      "about": "Worked on backend APIs and frontend dashboards."
+      "company": "ChanzIT",
+      "role": "Full-stack Web Developer",
+      "location": "Philippines",
+      "start_date": "2022-10-01",
+      "end_date": null,
+      "about": ""
     },
     {
-      "company": "WebSolutions",
-      "role": "Frontend Developer",
-      "location": "Cebu, Philippines",
-      "start_date": "2020-05-01T00:00:00Z",
-      "end_date": "2021-12-31T00:00:00Z",
-      "about": "Built responsive web apps with Vue and React."
+      "company": "Vaskeappen",
+      "role": "Outsourced Front-end Developer",
+      "location": "Drøbak, Norway",
+      "start_date": "2021-11-01",
+      "end_date": "2022-08-01",
+      "about": ""
+    },
+    {
+      "company": "Fourello",
+      "role": "Full-stack Web Developer",
+      "location": "Philippines",
+      "start_date": "2020-12-01",
+      "end_date": "2022-10-01",
+      "about": ""
     }
   ],
   "education": [
     {
-      "school": "University of Manila",
-      "level": "Bachelor",
-      "degree": "BS Computer Science",
-      "location": "Manila, Philippines",
-      "year_start": 2016,
-      "year_end": 2020,
-      "about": "Focused on software development and algorithms."
+      "school": "Universidad De Manila",
+      "level": "Bachelor's Degree",
+      "degree": "BS Information Technology",
+      "location": "",
+      "year_start": null,
+      "year_end": 2023,
+      "about": ""
+    },
+    {
+      "school": "MMC-CAST",
+      "level": "Senior Highschool",
+      "degree": null,
+      "location": "",
+      "year_start": null,
+      "year_end": 2018,
+      "about": ""
+    },
+    {
+      "school": "Tondo High School",
+      "level": "Junior Highschool",
+      "degree": null,
+      "location": "",
+      "year_start": null,
+      "year_end": 2016,
+      "about": ""
+    },
+    {
+      "school": "Magat Salamat Elementary School",
+      "level": "Elementary",
+      "degree": null,
+      "location": "",
+      "year_start": null,
+      "year_end": 2012,
+      "about": ""
     }
   ],
   "skills": [
     {
-      "name": "Go",
-      "url": "https://golang.org"
+      "name": "PHP",
+      "url": ""
     },
     {
-      "name": "Vue.js",
-      "url": "https://vuejs.org"
+      "name": "JavaScript",
+      "url": ""
+    },
+    {
+      "name": "TypeScript",
+      "url": ""
+    },
+    {
+      "name": "Laravel",
+      "url": ""
+    },
+    {
+      "name": "Nodejs",
+      "url": ""
+    },
+    {
+      "name": "Vue 2",
+      "url": ""
+    },
+    {
+      "name": "Vue 3",
+      "url": ""
+    },
+    {
+      "name": "React",
+      "url": ""
+    },
+    {
+      "name": "Ubuntu / Linux servers",
+      "url": ""
+    },
+    {
+      "name": "Digital Ocean",
+      "url": ""
+    },
+    {
+      "name": "Docker",
+      "url": ""
+    },
+    {
+      "name": "HTML5 + CSS3",
+      "url": ""
+    },
+    {
+      "name": "Bootstrap",
+      "url": ""
+    },
+    {
+      "name": "Tailwind",
+      "url": ""
+    },
+    {
+      "name": "Materialize",
+      "url": ""
+    },
+    {
+      "name": "Quasar",
+      "url": ""
+    },
+    {
+      "name": "Git",
+      "url": ""
+    },
+    {
+      "name": "SQL",
+      "url": ""
     }
   ],
   "showcases": [
     {
-      "name": "Portfolio Website",
-      "description": "A personal portfolio website showing projects and skills.",
-      "role": "Full-Stack Developer",
+      "name": "IndoorCare",
+      "description": "IndoorCare is a workplace wellness software solution that interprets complex indoor air quality data into important insights about an individual’s well-being. I have been assigned the task of developing the platform.",
+      "role": "Full-stack Web Developer",
       "technologies": [
         {
-          "name": "Go"
+          "name": "PHP"
         },
         {
-          "name": "Vue.js"
+          "name": "Laravel"
         },
         {
-          "name": "Tailwind CSS"
+          "name": "JavaScript"
+        },
+        {
+          "name": "Vue 3"
+        },
+        {
+          "name": "Stripe"
+        },
+        {
+          "name": "Soketi"
+        },
+        {
+          "name": "Redis"
+        },
+        {
+          "name": "MongoDB"
+        },
+        {
+          "name": "Digital Ocean"
+        },
+        {
+          "name": "Linux Servers"
         }
       ]
     },
     {
-      "name": "E-Commerce App",
-      "description": "Online store with payments and admin dashboard.",
-      "role": "Backend Developer",
+      "name": "Water Delivery Philippines",
+      "description": "Water Delivery Philippines is an online platform and mobile application that facilitates the convenient ordering of top-notch drinking water from over 100+ reliable distributors located in the National Capital Region (NCR). I have been assigned the task of developing the 2.0 version of Water Delivery Philippines.",
+      "role": "Full-stack Web/Mobile Developer",
       "technologies": [
         {
-          "name": "Go"
+          "name": "PHP"
         },
         {
-          "name": "PostgreSQL"
+          "name": "Laravel"
+        },
+        {
+          "name": "JavaScript"
+        },
+        {
+          "name": "Vue 3"
+        },
+        {
+          "name": "CapacitorJS"
+        },
+        {
+          "name": "Ably"
+        },
+        {
+          "name": "Digital Ocean"
+        },
+        {
+          "name": "Linux Servers"
+        }
+      ]
+    },
+    {
+      "name": "IMATCH",
+      "description": "iMatch Realty Inc., a real estate company based in BGC, Manila and Boracay. My responsibility involves maintaining and introducing new features to the website",
+      "role": "Full-stack Web Developer",
+      "technologies": [
+        {
+          "name": "PHP"
+        },
+        {
+          "name": "Laravel"
+        },
+        {
+          "name": "JavaScript"
+        },
+        {
+          "name": "Vue 2"
+        },
+        {
+          "name": "Digital Ocean"
+        },
+        {
+          "name": "Linux Servers"
+        }
+      ]
+    },
+    {
+      "name": "Medgate",
+      "description": "Medgate is a teleconsultation mobile app that allows patients to talk to doctors regarding various illnesses as well as receive follow-up care and virtual prescription. I was assigned to create and maintain the public website, web portal, and CSR chats part of the system.",
+      "role": "Full-stack Web Developer",
+      "technologies": [
+        {
+          "name": "PHP"
+        },
+        {
+          "name": "Laravel"
+        },
+        {
+          "name": "JavaScript"
+        },
+        {
+          "name": "Vue 2"
+        },
+        {
+          "name": "AWS"
+        },
+        {
+          "name": "Linux Servers"
+        }
+      ]
+    },
+    {
+      "name": "Inspire App",
+      "description": "Inspire App is designed to publish content and have the church members watch or listen to these contents. I was assigned to create and maintain the web portal part of the system.",
+      "role": "Full-stack Web Developer",
+      "technologies": [
+        {
+          "name": "PHP"
+        },
+        {
+          "name": "Laravel"
+        },
+        {
+          "name": "JavaScript"
+        },
+        {
+          "name": "Vue 2"
+        },
+        {
+          "name": "AWS"
+        },
+        {
+          "name": "Linux Servers"
+        }
+      ]
+    },
+    {
+      "name": "ZWELL Philippines",
+      "description": "ZWELL Philippine Realty Development Corp is a Philippine-based real-estate corporation. I was assigned to create and maintain ZWELLs web portal.",
+      "role": "Full-stack Web Developer",
+      "technologies": [
+        {
+          "name": "PHP"
+        },
+        {
+          "name": "Laravel"
+        },
+        {
+          "name": "JavaScript"
+        },
+        {
+          "name": "Vue 2"
+        },
+        {
+          "name": "AWS"
+        },
+        {
+          "name": "Linux Servers"
         }
       ]
     }
   ]
 }
+
 
 ###
 
@@ -98,13 +335,13 @@ GET {{host}}/api/portfolios
 ###
 
 ### Get a portfolios by ID
-GET {{host}}/api/portfolios/3
+GET {{host}}/api/portfolios/2
 Authorization: Bearer {{ access_token }}
 
 ###
 
 ### Update a portfolios
-PUT {{host}}/api/portfolios/3
+PUT {{host}}/api/portfolios/1
 Content-Type: application/json
 
 {
@@ -119,9 +356,7 @@ Content-Type: application/json
 ###
 
 ### Delete a portfolios
-DELETE {{host}}/api/portfolios/1
+DELETE {{host}}/api/portfolios/3
+Authorization: Bearer {{ access_token }}
 
 ###
-
-### Check a portfolios sub domain
-GET {{host}}/api/portfolios/check/sub-domain/sebastech

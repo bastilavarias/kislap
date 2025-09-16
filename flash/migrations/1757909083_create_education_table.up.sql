@@ -2,8 +2,8 @@ CREATE TABLE IF NOT EXISTS `education` (
     `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `portfolio_id` BIGINT UNSIGNED NULL,
 
-    `school` VARCHAR(255) NULL,
-    `level` VARCHAR(255) NULL,
+    `school` VARCHAR(255) NOT NULL,
+    `level` VARCHAR(255) NOT NULL,
     `degree` VARCHAR(255) NULL,
     `location` VARCHAR(255) NULL,
     `year_start` INT NULL,

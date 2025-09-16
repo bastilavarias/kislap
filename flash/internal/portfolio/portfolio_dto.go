@@ -13,7 +13,7 @@ type WorkExperienceRequest struct {
 
 type EducationRequest struct {
 	School    string  `json:"school" binding:"required"`
-	Level     *string `json:"level"`
+	Level     string  `json:"level" binding:"required"`
 	Degree    *string `json:"degree"`
 	Location  *string `json:"location"`
 	YearStart *int    `json:"year_start"`
@@ -67,7 +67,7 @@ type WorkExperiencePayload struct {
 
 type EducationPayload struct {
 	School    string
-	Level     *string
+	Level     string
 	Degree    *string
 	Location  *string
 	YearStart *int

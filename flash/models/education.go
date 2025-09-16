@@ -7,11 +7,11 @@ import (
 )
 
 type Education struct {
-	ID          uint64  `gorm:"primaryKey;autoIncrement" json:"id"`
-	PortfolioID *uint64 `gorm:"index" json:"portfolio_id"`
+	ID          uint64 `gorm:"primaryKey;autoIncrement" json:"id"`
+	PortfolioID uint64 `gorm:"index" json:"portfolio_id"`
 
-	School    *string `gorm:"size:255" json:"school"`
-	Level     *string `gorm:"size:255" json:"level"`
+	School    string  `gorm:"size:255" json:"school"`
+	Level     string  `gorm:"size:255" json:"level"`
 	Degree    *string `gorm:"size:255" json:"degree"`
 	Location  *string `gorm:"size:255" json:"location"`
 	YearStart *int    `json:"year_start,omitempty"`

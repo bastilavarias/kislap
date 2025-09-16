@@ -3,8 +3,8 @@ CREATE TABLE IF NOT EXISTS `work_experiences` (
     `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `portfolio_id` BIGINT UNSIGNED NULL,
 
-    `company` VARCHAR(255) NULL,
-    `role` VARCHAR(255) NULL,
+    `company` VARCHAR(255) NOT NULL,
+    `role` VARCHAR(255) NOT NULL,
     `location` VARCHAR(255) NULL,
     `start_date` DATE NULL,
     `end_date` DATE NULL,

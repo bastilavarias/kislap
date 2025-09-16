@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS `showcases` (
     `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `portfolio_id` BIGINT UNSIGNED NULL,
 
-    `name` VARCHAR(255) NULL,
+    `name` VARCHAR(255) NOT NULL,
     `description` TEXT NULL,
     `role` VARCHAR(255) NULL,
 

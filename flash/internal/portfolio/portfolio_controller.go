@@ -52,3 +52,45 @@ func (controller Controller) Get(context *gin.Context) {
 
 	context.JSON(http.StatusOK, gin.H{"data": portfolio})
 }
+
+func (controller Controller) Update(context *gin.Context) {
+	paramID := context.Param("id")
+	var request CreateUpdatePortfolioRequest
+
+	portfolioID, err := strconv.Atoi(paramID)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if err := context.ShouldBindJSON(&request); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	portfolio, err := controller.Service.Update(uint64(portfolioID), request.ToServicePayload())
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	context.JSON(http.StatusOK, gin.H{"data": portfolio})
+}
+
+func (controller Controller) Delete(context *gin.Context) {
+	paramID := context.Param("id")
+
+	portfolioID, err := strconv.Atoi(paramID)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	err = controller.Service.Delete(uint64(portfolioID))
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	context.JSON(http.StatusOK, gin.H{"data": nil})
+}

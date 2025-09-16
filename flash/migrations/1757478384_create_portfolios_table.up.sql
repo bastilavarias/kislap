@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS `portfolios` (
     `project_id` BIGINT UNSIGNED NULL,
     `user_id` BIGINT UNSIGNED NULL,
 
-    `name` VARCHAR(255) NULL,
+    `name` VARCHAR(255) NOT NULL,
     `job_title` VARCHAR(255) NULL,
     `introduction` TEXT NULL,
     `about` TEXT NULL,

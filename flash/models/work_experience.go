@@ -7,11 +7,11 @@ import (
 )
 
 type WorkExperience struct {
-	ID          uint64  `gorm:"primaryKey;autoIncrement" json:"id"`
-	PortfolioID *uint64 `gorm:"index" json:"portfolio_id"`
+	ID          uint64 `gorm:"primaryKey;autoIncrement" json:"id"`
+	PortfolioID uint64 `gorm:"index" json:"portfolio_id"`
 
-	Company   *string    `gorm:"size:255" json:"company"`
-	Role      *string    `gorm:"size:255" json:"role"`
+	Company   string     `gorm:"size:255" json:"company"`
+	Role      string     `gorm:"size:255" json:"role"`
 	Location  *string    `gorm:"size:255" json:"location"`
 	StartDate *time.Time `json:"start_date,omitempty"`
 	EndDate   *time.Time `json:"end_date,omitempty"`
