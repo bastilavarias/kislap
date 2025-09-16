@@ -24,11 +24,14 @@ type Portfolio struct {
 	UpdatedAt    time.Time      `gorm:"autoUpdateTime" json:"updated_at"`
 	DeletedAt    gorm.DeletedAt `gorm:"index" json:"deleted_at,omitempty"`
 
-	Project *Project `gorm:"foreignKey:ProjectID;constraint:OnDelete:SET NULL;"`
-	User    *User    `gorm:"foreignKey:UserID;constraint:OnDelete:SET NULL;"`
-
+	User            User             `gorm:"foreignKey:UserID" json:"user"`
+	Project         Project          `gorm:"foreignKey:ProjectID" json:"project"`
 	WorkExperiences []WorkExperience `gorm:"foreignKey:PortfolioID" json:"work_experiences"`
 	Education       []Education      `gorm:"foreignKey:PortfolioID" json:"education"`
 	Showcases       []Showcase       `gorm:"foreignKey:PortfolioID" json:"showcases"`
 	Skills          []Skill          `gorm:"foreignKey:PortfolioID" json:"skills"`
+}
+
+func (Portfolio) TableName() string {
+	return "portfolios"
 }

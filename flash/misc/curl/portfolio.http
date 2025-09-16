@@ -6,80 +6,85 @@ Content-Type: application/json
 Authorization: Bearer {{ access_token }}
 
 {
-  "name": "John Doe",
-  "job_title": "Full Stack Developer",
-  "introduction": "Passionate about building scalable web applications.",
-  "about": "I have 5+ years of experience working with Go, Vue, and cloud infrastructure.",
-  "email": "john.doe@example.com",
+  "user_id": 1,
+  "project_id": 1,
+  "name": "Master Baste",
+  "job_title": "Full-Stack Developer",
+  "introduction": "Passionate developer building modern web apps",
+  "about": "I love coding, fitness, and coffee.",
+  "email": "baste@example.com",
   "phone": "+639171234567",
-  "website": "https://johndoe.dev",
-  "github": "https://github.com/johndoe",
-  "linkedin": "https://www.linkedin.com/in/johndoe",
-  "twitter": "https://twitter.com/johndoe",
-
+  "website": "https://example.com",
+  "github": "https://github.com/masterbaste",
+  "linkedin": "https://linkedin.com/in/masterbaste",
+  "twitter": "https://twitter.com/masterbaste",
   "work_experiences": [
     {
-      "company": "Tech Corp",
+      "company": "TechCorp",
       "role": "Software Engineer",
-      "location": "Manila, PH",
-      "start_date": "2020-01-01",
-      "end_date": "2022-06-30",
-      "about": "Worked on backend services with Go and microservices."
+      "location": "Manila, Philippines",
+      "start_date": "2022-01-01T00:00:00Z",
+      "end_date": "2023-06-30T00:00:00Z",
+      "about": "Worked on backend APIs and frontend dashboards."
     },
     {
-      "company": "Innovate Labs",
-      "role": "Senior Developer",
-      "location": "Remote",
-      "start_date": "2022-07-01",
-      "end_date": null,
-      "about": "Leading a small team to build SaaS solutions."
+      "company": "WebSolutions",
+      "role": "Frontend Developer",
+      "location": "Cebu, Philippines",
+      "start_date": "2020-05-01T00:00:00Z",
+      "end_date": "2021-12-31T00:00:00Z",
+      "about": "Built responsive web apps with Vue and React."
     }
   ],
-
   "education": [
     {
-      "school": "University of the Philippines",
+      "school": "University of Manila",
       "level": "Bachelor",
       "degree": "BS Computer Science",
-      "location": "Quezon City, PH",
+      "location": "Manila, Philippines",
       "year_start": 2016,
       "year_end": 2020,
-      "about": "Focused on software engineering and distributed systems."
+      "about": "Focused on software development and algorithms."
     }
   ],
-
   "skills": [
     {
-      "name": "Go"
+      "name": "Go",
+      "url": "https://golang.org"
     },
     {
       "name": "Vue.js",
       "url": "https://vuejs.org"
-    },
-    {
-      "name": "Docker"
     }
   ],
-
   "showcases": [
     {
       "name": "Portfolio Website",
-      "description": "A personal website to showcase my work and projects.",
-      "role": "Full Stack Developer",
+      "description": "A personal portfolio website showing projects and skills.",
+      "role": "Full-Stack Developer",
       "technologies": [
-        { "name": "Next.js" },
-        { "name": "TailwindCSS" },
-        { "name": "Vercel" }
+        {
+          "name": "Go"
+        },
+        {
+          "name": "Vue.js"
+        },
+        {
+          "name": "Tailwind CSS"
+        }
       ]
     },
     {
-      "name": "E-commerce API",
-      "description": "REST API for an online store with order and payment features.",
+      "name": "E-Commerce App",
+      "description": "Online store with payments and admin dashboard.",
       "role": "Backend Developer",
       "technologies": [
-        { "name": "Go" },
-        { "name": "PostgreSQL" },
-        { "name": "Docker" }
+        {
+          "name": "Go"
+        },
+        {
+          "name": "PostgreSQL"
+        }
       ]
     }
   ]
@@ -93,12 +98,13 @@ GET {{host}}/api/portfolios
 ###
 
 ### Get a portfolios by ID
-GET {{host}}/api/portfolios/1
+GET {{host}}/api/portfolios/3
+Authorization: Bearer {{ access_token }}
 
 ###
 
 ### Update a portfolios
-PUT {{host}}/api/portfolios/1
+PUT {{host}}/api/portfolios/3
 Content-Type: application/json
 
 {

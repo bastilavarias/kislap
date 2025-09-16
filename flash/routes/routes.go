@@ -36,6 +36,7 @@ func RegisterRoutes(router *gin.Engine, db *gorm.DB, llm llm.Provider) {
 
 		api.POST("/documents", middleware.AuthMiddleware(db), documentController.Parse)
 
+		api.GET("/portfolios/:id", middleware.AuthMiddleware(db), portfolioController.Get)
 		api.POST("/portfolios", middleware.AuthMiddleware(db), portfolioController.Create)
 	}
 }

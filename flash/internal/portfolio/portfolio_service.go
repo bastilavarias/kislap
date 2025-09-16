@@ -9,7 +9,7 @@ type Service struct {
 	DB *gorm.DB
 }
 
-func (service Service) Create(payload Payload) (*models.Portfolio, *error) {
+func (service Service) Create(payload Payload) (*models.Portfolio, error) {
 	var workExperiences []models.WorkExperience
 	for _, workExperience := range payload.WorkExperiences {
 		workExperiences = append(workExperiences, models.WorkExperience{
@@ -59,7 +59,7 @@ func (service Service) Create(payload Payload) (*models.Portfolio, *error) {
 		}
 	}
 
-	portfolio := models.Portfolio{
+	rawPortfolio := models.Portfolio{
 		UserID:       uint64(payload.UserID),
 		ProjectID:    uint64(payload.ProjectID),
 		Name:         &payload.Name,
@@ -77,6 +77,38 @@ func (service Service) Create(payload Payload) (*models.Portfolio, *error) {
 		Education:       education,
 		Skills:          skills,
 		Showcases:       showcases,
+	}
+
+	if err := service.DB.
+		Create(&rawPortfolio).Error; err != nil {
+		return nil, err
+	}
+
+	var portfolio models.Portfolio
+	err := service.DB.Find(&portfolio, rawPortfolio.ID).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return &portfolio, nil
+}
+
+func (service Service) Get(portfolioID uint64) (*models.Portfolio, error) {
+	var portfolio models.Portfolio
+	err := service.DB.
+		Preload("User").
+		Preload("Project").
+		Preload("WorkExperiences").
+		Preload("Education").
+		Preload("Skills").
+		Preload("Showcases").
+		First(&portfolio, portfolioID).Error
+	if err != nil {
+		return nil, err
+	}
+
+	if &portfolio.ID == nil {
+		return nil, gorm.ErrRecordNotFound
 	}
 
 	return &portfolio, nil

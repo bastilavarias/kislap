@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 	"net/http"
+	"strconv"
 )
 
 type Controller struct {
@@ -25,5 +26,29 @@ func (controller Controller) Create(context *gin.Context) {
 		return
 	}
 
-	controller.Service.Create(request.ToServicePayload())
+	portfolio, err := controller.Service.Create(request.ToServicePayload())
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	context.JSON(http.StatusOK, gin.H{"data": portfolio})
+}
+
+func (controller Controller) Get(context *gin.Context) {
+	paramID := context.Param("id")
+
+	portfolioID, err := strconv.Atoi(paramID)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	portfolio, err := controller.Service.Get(uint64(portfolioID))
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	context.JSON(http.StatusOK, gin.H{"data": portfolio})
 }

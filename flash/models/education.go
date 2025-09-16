@@ -24,3 +24,7 @@ type Education struct {
 
 	Portfolio *Portfolio `gorm:"foreignKey:PortfolioID;constraint:OnDelete:SET NULL;" json:"portfolio,omitempty"`
 }
+
+func (Education) TableName() string {
+	return "education"
+}
