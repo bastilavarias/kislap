@@ -1,0 +1,49 @@
+networks:
+  kislap_subnet:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+services:
+  nginx:
+    image: nginx:latest
+    container_name: kislap_nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./flash:/app
+      - ./.docker/nginx/conf/local:/etc/nginx/conf.d
+      - ./.docker/nginx/log:/var/log/nginx
+    depends_on:
+      - kislap_flash
+    networks:
+      kislap_subnet:
+        ipv4_address: 172.20.0.10
+
+  kislap_flash:
+    build: ./flash
+    container_name: kislap_flash
+    env_file:
+      - ./flash/.env
+    volumes:
+      - ./flash:/app
+    ports:
+      - "5000:5000"
+    restart: always
+    networks:
+      kislap_subnet:
+        ipv4_address: 172.20.0.20
+
+  mysql:
+    image: mysql:8
+    container_name: kislap_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: kislap
+    networks:
+      kislap_subnet:
+        ipv4_address: 172.20.0.30
+    ports:
+      - "3306:3306"
+    restart: always

@@ -1,6 +1,6 @@
 module flash
 
-go 1.24.6
+go 1.25.1
 
 require (
 	github.com/gin-gonic/gin v1.5.0

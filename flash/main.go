@@ -43,5 +43,5 @@ func main() {
 	})
 
 	routes.RegisterRoutes(router, databaseClient, llmProvider)
-	router.Run(":5000")
+	router.Run("0.0.0.0:5000")
 }
