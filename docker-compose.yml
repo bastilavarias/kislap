@@ -1,25 +1,21 @@
-networks:
-  kislap_subnet:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 172.20.0.0/16
+x-dns: &dns_settings
+  dns:
+    - 172.20.0.2
 
 services:
   dnsmasq:
+    <<: *dns_settings
     image: dockurr/dnsmasq
     container_name: kislap_dns
     volumes:
       - ./.docker/dnsmasq/dnsmasq.conf:/etc/dnsmasq.conf
-    ports:
-      - "127.0.0.1:53:53/udp"
-      - "127.0.0.1:53:53/tcp"
     networks:
       kislap_subnet:
         ipv4_address: 172.20.0.2
     restart: always
 
   nginx:
+    <<: *dns_settings
     image: nginx:latest
     container_name: kislap_nginx
     ports:
@@ -35,6 +31,7 @@ services:
         ipv4_address: 172.20.0.10
 
   kislap_flash:
+    <<: *dns_settings
     build: ./flash
     container_name: kislap_flash
     env_file:
@@ -48,19 +45,21 @@ services:
       kislap_subnet:
         ipv4_address: 172.20.0.20
 
-  #  kislap_sparkle:
-  #    build: ./sparkle
-  #    container_name: kislap_sparkle
-  #    volumes:
-  #      - ./sparkle:/app
-  #      - /app/node_modules
-  #    ports:
-  #      - "3000:3000"
-  #    networks:
-  #      kislap_subnet:
-  #        ipv4_address: 172.20.0.30
+  kislap_sparkle:
+    <<: *dns_settings
+    build: ./sparkle
+    container_name: kislap_sparkle
+    volumes:
+      - ./sparkle:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    networks:
+      kislap_subnet:
+        ipv4_address: 172.20.0.30
 
   database:
+    <<: *dns_settings
     image: mysql:8
     container_name: kislap_database
     environment:
@@ -72,3 +71,10 @@ services:
     ports:
       - "3306:3306"
     restart: always
+
+networks:
+  kislap_subnet:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
