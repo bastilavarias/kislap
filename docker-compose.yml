@@ -6,6 +6,19 @@ networks:
         - subnet: 172.20.0.0/16
 
 services:
+  dnsmasq:
+    image: dockurr/dnsmasq
+    container_name: kislap_dns
+    volumes:
+      - ./.docker/dnsmasq/dnsmasq.conf:/etc/dnsmasq.conf
+    ports:
+      - "127.0.0.1:53:53/udp"
+      - "127.0.0.1:53:53/tcp"
+    networks:
+      kislap_subnet:
+        ipv4_address: 172.20.0.2
+    restart: always
+
   nginx:
     image: nginx:latest
     container_name: kislap_nginx
@@ -35,15 +48,27 @@ services:
       kislap_subnet:
         ipv4_address: 172.20.0.20
 
-  mysql:
+  #  kislap_sparkle:
+  #    build: ./sparkle
+  #    container_name: kislap_sparkle
+  #    volumes:
+  #      - ./sparkle:/app
+  #      - /app/node_modules
+  #    ports:
+  #      - "3000:3000"
+  #    networks:
+  #      kislap_subnet:
+  #        ipv4_address: 172.20.0.30
+
+  database:
     image: mysql:8
-    container_name: kislap_mysql
+    container_name: kislap_database
     environment:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: kislap
     networks:
       kislap_subnet:
-        ipv4_address: 172.20.0.30
+        ipv4_address: 172.20.0.40
     ports:
       - "3306:3306"
     restart: always

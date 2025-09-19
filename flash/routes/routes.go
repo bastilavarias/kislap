@@ -7,7 +7,7 @@ import (
 	"flash/internal/project"
 	"flash/internal/user"
 	"flash/middleware"
-	"flash/pkg/llm"
+	"flash/sdk/llm"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )

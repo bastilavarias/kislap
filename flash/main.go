@@ -2,8 +2,8 @@ package main
 
 import (
 	"flash/database"
-	"flash/pkg/llm"
 	"flash/routes"
+	"flash/sdk/llm"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"

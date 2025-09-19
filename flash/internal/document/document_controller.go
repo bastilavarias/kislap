@@ -1,7 +1,7 @@
 package document
 
 import (
-	"flash/pkg/llm"
+	"flash/sdk/llm"
 	"flash/utils"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
