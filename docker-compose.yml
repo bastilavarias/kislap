@@ -1,23 +1,14 @@
-x-dns: &dns_settings
-  dns:
-    - 172.20.0.2
+networks:
+  kislap_subnet:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
 
 services:
-  dnsmasq:
-    <<: *dns_settings
-    image: dockurr/dnsmasq
-    container_name: kislap_dns
-    volumes:
-      - ./.docker/dnsmasq/dnsmasq.conf:/etc/dnsmasq.conf
-    networks:
-      kislap_subnet:
-        ipv4_address: 172.20.0.2
-    restart: always
-
-  nginx:
-    <<: *dns_settings
+  kislap_web_server:
     image: nginx:latest
-    container_name: kislap_nginx
+    container_name: kislap_web_server
     ports:
       - "80:80"
     volumes:
@@ -31,22 +22,25 @@ services:
         ipv4_address: 172.20.0.10
 
   kislap_flash:
-    <<: *dns_settings
     build: ./flash
     container_name: kislap_flash
     env_file:
       - ./flash/.env
     volumes:
       - ./flash:/app
+      - kislap_flash_go_mod:/go/pkg/mod
+      - kislap_flash_go_build:/root/.cache/go-build
     ports:
       - "5000:5000"
     restart: always
     networks:
       kislap_subnet:
         ipv4_address: 172.20.0.20
+    depends_on:
+      kislap_database:
+        condition: service_healthy
 
   kislap_sparkle:
-    <<: *dns_settings
     build: ./sparkle
     container_name: kislap_sparkle
     volumes:
@@ -58,8 +52,7 @@ services:
       kislap_subnet:
         ipv4_address: 172.20.0.30
 
-  database:
-    <<: *dns_settings
+  kislap_database:
     image: mysql:8
     container_name: kislap_database
     environment:
@@ -71,10 +64,27 @@ services:
     ports:
       - "3306:3306"
     restart: always
+    volumes:
+      - database_data:/var/lib/mysql
+    healthcheck:
+      test: [ "CMD-SHELL", "mysqladmin ping -h localhost -u root -p$${MYSQL_ROOT_PASSWORD} || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
-networks:
-  kislap_subnet:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 172.20.0.0/16
+  kislap_adminer:
+    image: adminer
+    container_name: kislap_adminer
+    restart: always
+    ports:
+      - "8080:8080"
+    networks:
+      kislap_subnet:
+        ipv4_address: 172.20.0.31
+    depends_on:
+      - kislap_database
+
+volumes:
+  kislap_flash_go_mod:
+  kislap_flash_go_build:
+  database_data:
