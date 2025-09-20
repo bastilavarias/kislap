@@ -32,3 +32,5 @@ kislap-flash
 
 flash/.env
 flash/tmp
+
+.docker/nginx/log

@@ -3,10 +3,11 @@ package document
 import (
 	"errors"
 	"flash/internal/project"
-	"flash/pkg/llm/prompt"
 	"flash/sdk/llm"
+	"flash/sdk/llm/prompt"
 	pdfExtractor "flash/shared/pdf_extractor"
 	"flash/utils"
+
 	"gorm.io/gorm"
 )
 

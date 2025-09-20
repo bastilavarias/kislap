@@ -3,10 +3,11 @@ package document
 import (
 	"flash/sdk/llm"
 	"flash/utils"
-	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 	"mime/multipart"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 type Controller struct {

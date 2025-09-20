@@ -7,18 +7,20 @@ import (
 	"flash/internal/project"
 	"flash/internal/user"
 	"flash/middleware"
+	"flash/sdk/dns"
 	"flash/sdk/llm"
+
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
-func RegisterRoutes(router *gin.Engine, db *gorm.DB, llm llm.Provider) {
+func RegisterRoutes(router *gin.Engine, db *gorm.DB, llm llm.Provider, dns dns.Provider) {
 
 	api := router.Group("/api")
 	{
 		authController := auth.NewController(db)
 		userController := user.NewController(db)
-		projectController := project.NewController(db)
+		projectController := project.NewController(db, dns)
 		documentController := document.NewController(db, llm)
 		portfolioController := portfolio.NewController(db)
 

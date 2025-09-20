@@ -3,12 +3,13 @@ package middleware
 import (
 	"crypto/sha256"
 	"flash/models"
+	"net/http"
+	"strings"
+
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
-	"net/http"
-	"strings"
 )
 
 import sharedjwt "flash/shared/jwt"

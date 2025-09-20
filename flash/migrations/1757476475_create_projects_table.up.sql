@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS `projects` (
     `slug` VARCHAR(255) NOT NULL,
     `sub_domain` VARCHAR(255),
     `theme_name` VARCHAR(255) NULL,
-    `theme_object` VARCHAR(255) NULL,
+    `theme_object` JSON NULL,
     `layout_name` VARCHAR(255) NOT NULL DEFAULT 'default',
     `type` ENUM('portfolio','biz','links','waitlist') NOT NULL DEFAULT 'portfolio',
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,

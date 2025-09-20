@@ -1,20 +1,24 @@
 package project
 
 import (
-	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
+	"flash/sdk/dns"
 	"net/http"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 type Controller struct {
 	Service *Service
 }
 
-func NewController(db *gorm.DB) *Controller {
+func NewController(db *gorm.DB, dns dns.Provider) *Controller {
 	service := &Service{
-		DB: db,
+		DB:  db,
+		DNS: dns,
 	}
+
 	return &Controller{Service: service}
 }
 

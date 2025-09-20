@@ -1,14 +1,18 @@
 package project
 
 import (
+	"encoding/json"
 	"errors"
 	"flash/models"
+	"flash/sdk/dns"
 	"flash/utils"
+
 	"gorm.io/gorm"
 )
 
 type Service struct {
-	DB *gorm.DB
+	DB  *gorm.DB
+	DNS dns.Provider
 }
 
 func (service Service) List() (*[]models.Project, error) {
@@ -34,17 +38,28 @@ func (service Service) Create(payload Payload) (*models.Project, error) {
 		return nil, errors.New("project name already exists")
 	}
 
+	themeObjectBytes, err := json.Marshal(payload.ThemeObject)
+	if err != nil {
+		return nil, err
+	}
+
 	newProj := models.Project{
 		Name:        payload.Name,
 		Description: payload.Description,
+		SubDomain:   &payload.SubDomain,
 		Slug:        slug,
-		Theme:       payload.Theme,
-		Layout:      payload.Layout,
 		Type:        payload.Type,
-		SubDomain:   nil,
+		LayoutName:  payload.LayoutName,
+		ThemeName:   payload.ThemeName,
+		ThemeObject: themeObjectBytes,
 	}
 
 	if err := service.DB.Create(&newProj).Error; err != nil {
+		return nil, err
+	}
+
+	err = service.DNS.Insert(*newProj.SubDomain)
+	if err != nil {
 		return nil, err
 	}
 
@@ -60,8 +75,8 @@ func (service Service) Update(projectID int, payload Payload) (*models.Project, 
 	service.DB.Model(&proj).Updates(models.Project{
 		Name:        payload.Name,
 		Description: payload.Description,
-		Theme:       payload.Theme,
-		Layout:      payload.Layout,
+		ThemeName:   payload.ThemeName,
+		LayoutName:  payload.LayoutName,
 		Type:        payload.Type,
 	})
 
