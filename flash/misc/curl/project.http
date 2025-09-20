@@ -111,7 +111,7 @@ GET {{host}}/api/projects
 ###
 
 ### Get a project by ID
-GET {{host}}/api/projects/1
+GET {{host}}/api/projects/show/1
 
 ###
 

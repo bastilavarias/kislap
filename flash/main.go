@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
@@ -48,6 +49,12 @@ func main() {
 	dnsProvider := dns.Default(envDev, rootDomain)
 
 	router := gin.Default()
+	router.Use(cors.New(cors.Config{
+		AllowAllOrigins:  true,
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Accept"},
+		AllowCredentials: true,
+	}))
 	routes.RegisterRoutes(router, databaseClient, llmProvider, dnsProvider)
 	router.Run("0.0.0.0:5000")
 }

@@ -36,21 +36,12 @@ services:
     networks:
       kislap_subnet:
         ipv4_address: 172.20.0.20
+    extra_hosts:
+      - "kislap.test:127.0.0.1"
+      - "api.kislap.test:127.0.0.1"
     depends_on:
       kislap_database:
         condition: service_healthy
-
-  kislap_sparkle:
-    build: ./sparkle
-    container_name: kislap_sparkle
-    volumes:
-      - ./sparkle:/app
-      - /app/node_modules
-    ports:
-      - "3000:3000"
-    networks:
-      kislap_subnet:
-        ipv4_address: 172.20.0.30
 
   kislap_database:
     image: mysql:8
