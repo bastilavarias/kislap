@@ -21,6 +21,13 @@ export function Header() {
           </Button>
           <Button
             size="sm"
+            className="bg-secondary hover:bg-secondary/90 text-secondary-foreground"
+            asChild
+          >
+            <Link href="/login">Login</Link>
+          </Button>
+          <Button
+            size="sm"
             className="bg-primary hover:bg-primary/90 text-primary-foreground"
             asChild
           >
