@@ -19,11 +19,7 @@ export function Header() {
           <Button variant="outline" size="sm" asChild>
             <Link href="/docs">Docs</Link>
           </Button>
-          <Button
-            size="sm"
-            className="bg-secondary hover:bg-secondary/90 text-secondary-foreground"
-            asChild
-          >
+          <Button size="sm" variant="outline" asChild>
             <Link href="/login">Login</Link>
           </Button>
           <Button

@@ -1,9 +1,9 @@
-import { Button } from "@/components/ui/button";
-import { LogoVersion } from "@/components/logo-version";
+import { Button } from '@/components/ui/button';
+import { LogoVersion } from '@/components/logo-version';
 
 export function Footer() {
   return (
-    <footer className="py-20 px-4 border-t border-border">
+    <footer className="py-20 px-4 bg-background/80 backdrop-blur-md border-t border-border">
       <div className="container mx-auto max-w-6xl">
         <div className="grid md:grid-cols-4 gap-8 mb-12">
           <div>
@@ -93,9 +93,7 @@ export function Footer() {
         </div>
 
         <div className="pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center">
-          <p className="text-sm text-muted-foreground mb-4 md:mb-0">
-            © 2025 Kislap made with 💖
-          </p>
+          <p className="text-sm text-muted-foreground mb-4 md:mb-0">© 2025 Kislap made with 💖</p>
           <div className="flex items-center space-x-4">
             <Button variant="ghost" size="sm">
               GitHub

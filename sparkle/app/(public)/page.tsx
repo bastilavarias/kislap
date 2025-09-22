@@ -1,8 +1,7 @@
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
-import { Hero } from "@/app/(public)/components/hero";
-import { Features } from "@/app/(public)/components/features";
-import { Testimonials } from "@/app/(public)/components/testimonials";
+import { Header } from '@/components/header';
+import { Hero } from '@/app/(public)/components/hero';
+import { Features } from '@/app/(public)/components/features';
+import { Testimonials } from '@/app/(public)/components/testimonials';
 
 export default function Home() {
   return (
@@ -11,7 +10,6 @@ export default function Home() {
       <Hero />
       <Features />
       <Testimonials />
-      <Footer />
     </main>
   );
 }

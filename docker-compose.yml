@@ -53,12 +53,16 @@ services:
       kislap_subnet:
         ipv4_address: 172.20.0.40
     ports:
-      - "3306:3306"
+      - "3307:3307"
     restart: always
     volumes:
       - database_data:/var/lib/mysql
     healthcheck:
-      test: [ "CMD-SHELL", "mysqladmin ping -h localhost -u root -p$${MYSQL_ROOT_PASSWORD} || exit 1" ]
+      test:
+        [
+          "CMD-SHELL",
+          "mysqladmin ping -h localhost -u root -p$${MYSQL_ROOT_PASSWORD} || exit 1",
+        ]
       interval: 10s
       timeout: 5s
       retries: 10
