@@ -2,6 +2,7 @@ package auth
 
 import (
 	"flash/shared/cookie"
+	"flash/utils"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 	"net/http"
@@ -25,20 +26,20 @@ func (controller Controller) Login(context *gin.Context) {
 	}
 
 	if err := context.ShouldBindJSON(&input); err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	tokens, err := controller.Service.Login(input.Email, input.Password)
 
 	if err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	cookie.SetCookie(context, "refresh_token", tokens.RefreshToken)
 
-	context.JSON(http.StatusOK, gin.H{"access_token": tokens.AccessToken})
+	utils.APIRespondSuccess(context, http.StatusOK, "Login successful", gin.H{"access_token": tokens.AccessToken})
 }
 
 func (controller Controller) Refresh(context *gin.Context) {

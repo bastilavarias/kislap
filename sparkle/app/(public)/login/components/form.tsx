@@ -1,11 +1,52 @@
+'use client';
+
 import type React from 'react';
+import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useAuth } from '@/hooks/api/useAuth';
+import { useLocalStorage } from '@/hooks/useLocalStorage';
+import { revalidate } from '@/lib/api';
+import { useRouter } from 'next/navigation';
 
 export default function Form({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
+  const { login } = useAuth();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [_, setAccessToken] = useLocalStorage<string | null>('access_token', null);
+  const router = useRouter();
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    try {
+      setError('');
+      setLoading(true);
+      const result = await login(email, password);
+      if (result?.success && result?.data?.access_token) {
+        setAccessToken(result.data.access_token);
+        revalidate('api/auth/refresh');
+        router.push('/dashboard');
+        return;
+      }
+      throw new Error(result?.message || 'Something went wrong.');
+    } catch (error) {
+      setError(
+        error instanceof Error
+          ? error.message
+          : typeof error === 'string'
+            ? error
+            : 'Something went wrong'
+      );
+    }
+
+    setLoading(false);
+  }
+
   return (
     <div className={cn('flex flex-col gap-6', className)} {...props}>
       <Card>
@@ -14,7 +55,7 @@ export default function Form({ className, ...props }: React.ComponentPropsWithou
           <CardDescription>Login with your GitHub or Google accounts</CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form onSubmit={handleSubmit}>
             <div className="grid gap-6">
               <div className="flex flex-col gap-4">
                 <Button variant="outline" className="w-full">
@@ -60,9 +101,16 @@ export default function Form({ className, ...props }: React.ComponentPropsWithou
                 </span>
               </div>
               <div className="grid gap-6">
+                <div>{error && <p className="text-red-500">{error}</p>}</div>
                 <div className="grid gap-2">
                   <Label htmlFor="email">Email</Label>
-                  <Input id="email" type="email" placeholder="m@example.com" required />
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="m@example.com"
+                    required
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
                 </div>
                 <div className="grid gap-2">
                   <div className="flex items-center">
@@ -71,10 +119,15 @@ export default function Form({ className, ...props }: React.ComponentPropsWithou
                       Forgot your password?
                     </a>
                   </div>
-                  <Input id="password" type="password" required />
+                  <Input
+                    id="password"
+                    type="password"
+                    required
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
                 </div>
-                <Button type="submit" className="w-full">
-                  Login
+                <Button type="submit" className="w-full" disabled={loading}>
+                  {loading ? 'Loggin in...' : 'Login'}
                 </Button>
               </div>
               <div className="text-center text-sm">

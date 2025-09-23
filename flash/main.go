@@ -38,6 +38,7 @@ func main() {
 		os.Getenv("DB_PORT"),
 		os.Getenv("DB_NAME"),
 	)
+	fmt.Println(dsn)
 	databaseClient := database.Default(dsn)
 
 	llmProvider := llm.Default(&llm.Gemini{
