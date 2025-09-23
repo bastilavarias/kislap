@@ -9,11 +9,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '@/hooks/api/useAuth';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
-import { revalidate } from '@/lib/api';
 import { useRouter } from 'next/navigation';
 
 export default function Form({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
-  const { login } = useAuth();
+  const { login, refreshUser } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -29,8 +28,8 @@ export default function Form({ className, ...props }: React.ComponentPropsWithou
       const result = await login(email, password);
       if (result?.success && result?.data?.access_token) {
         setAccessToken(result.data.access_token);
-        revalidate('api/auth/refresh');
-        router.push('/dashboard');
+        await refreshUser();
+        await router.push('/dashboard');
         return;
       }
       throw new Error(result?.message || 'Something went wrong.');

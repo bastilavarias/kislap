@@ -3,9 +3,10 @@ package auth
 import (
 	"flash/shared/cookie"
 	"flash/utils"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
-	"net/http"
 )
 
 type Controller struct {

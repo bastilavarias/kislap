@@ -20,6 +20,7 @@ function getAuthHeaders() {
   if (typeof window !== 'undefined') {
     const token = window.localStorage.getItem('access_token');
     if (token) {
+      console.log({ Authorization: `Bearer ${JSON.parse(token)}` });
       return { Authorization: `Bearer ${JSON.parse(token)}` }; // because you stored with JSON.stringify
     }
   }
@@ -47,11 +48,24 @@ export async function fetcher<T>(endpoint: string): Promise<APIResponse<T>> {
   return res.json();
 }
 
-/**
- * Hook wrapper for SWR.
- */
-export function useApiGet<T>(endpoint: string) {
-  return useSWR<APIResponse<T>>(endpoint, fetcher);
+export async function apiGet<T>(endpoint: string, options?: Options): Promise<APIResponse<T>> {
+  const res = await fetch(`${API_BASE_URL}/${endpoint}`, {
+    ...options,
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    headers: {
+      'Content-Type': 'application/json',
+      ...getAuthHeaders(),
+      ...(options?.headers || {}),
+    },
+  });
+
+  if (!res.ok) {
+    const error = await res.json().catch(() => ({ message: res.statusText }));
+    throw new Error(error.message || 'Request failed');
+  }
+
+  return res.json();
 }
 
 /**

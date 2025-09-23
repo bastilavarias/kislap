@@ -12,4 +12,4 @@ Content-Type: application/json
 ### Refresh User
 GET {{host}}/api/auth/refresh
 Content-Type: application/json
-Authorization: Bearer {{access_token}}
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNlYmFzdGlhbi5sYXZhcmlhc0BraXNsYXAuY29tIiwiZXhwIjoxNzU4NjM2NDU3LCJyb2xlIjoiZGVmYXVsdCIsInVzZXJfaWQiOjF9.ZityNPvCPxNIy3cKOkVjSm_rip3XvrOCzMOCrFxs3RY

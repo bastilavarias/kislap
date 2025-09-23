@@ -3,6 +3,7 @@ package middleware
 import (
 	"crypto/sha256"
 	"flash/models"
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -21,7 +22,6 @@ func AuthMiddleware(db *gorm.DB) gin.HandlerFunc {
 			context.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid Access Token"})
 			return
 		}
-
 		tokenString := strings.TrimPrefix(authHeader, "Bearer ")
 		validatedToken, err := sharedjwt.ValidateToken(tokenString)
 		var uid = uint64(0)
@@ -31,9 +31,12 @@ func AuthMiddleware(db *gorm.DB) gin.HandlerFunc {
 				context.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err})
 				return
 			}
+			fmt.Println(userID)
+			fmt.Println("---")
 			uid = *userID
 		}
 
+		// Fix this:
 		context.Set("user_id", uid)
 
 		context.Next()
