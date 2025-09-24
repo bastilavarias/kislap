@@ -2,8 +2,10 @@ package jwt
 
 import (
 	"crypto/sha256"
+	"errors"
 	"flash/models"
 	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -50,4 +52,25 @@ func HashToken(token string) (string, error) {
 	}
 
 	return string(hashed), nil
+}
+
+func ExtractUser(token *jwt.Token, db *gorm.DB) (*models.User, error) {
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		return nil, errors.New("invalid token claims")
+	}
+
+	idFloat, ok := claims["user_id"].(float64)
+	if !ok {
+		return nil, errors.New("user ID not found")
+	}
+
+	userID := uint(idFloat)
+
+	var user models.User
+	if err := db.Where("id = ?", userID).First(&user).Error; err != nil {
+		return nil, err
+	}
+
+	return &user, nil
 }

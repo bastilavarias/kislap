@@ -3,12 +3,10 @@ package middleware
 import (
 	"crypto/sha256"
 	"flash/models"
-	"fmt"
 	"net/http"
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
@@ -24,26 +22,30 @@ func AuthMiddleware(db *gorm.DB) gin.HandlerFunc {
 		}
 		tokenString := strings.TrimPrefix(authHeader, "Bearer ")
 		validatedToken, err := sharedjwt.ValidateToken(tokenString)
-		var uid = uint64(0)
+		var user models.User
 		if err != nil || !validatedToken.Valid {
-			userID, ok, err := checkRefreshToken(context, db)
-			if !ok || err != nil {
+			refreshUser, ok, err := checkRefreshToken(context, db)
+			if !ok && err != nil {
 				context.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err})
 				return
 			}
-			fmt.Println(userID)
-			fmt.Println("---")
-			uid = *userID
+
+			user = *refreshUser
 		}
 
-		// Fix this:
-		context.Set("user_id", uid)
+		extractedUser, err := sharedjwt.ExtractUser(validatedToken, db)
+		if err != nil {
+			context.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err})
+			return
+		}
+		user = *extractedUser
 
+		context.Set("user_id", user.ID)
 		context.Next()
 	}
 }
 
-func checkRefreshToken(context *gin.Context, db *gorm.DB) (*uint64, bool, error) {
+func checkRefreshToken(context *gin.Context, db *gorm.DB) (*models.User, bool, error) {
 	refreshToken, err := context.Cookie("refresh_token")
 	if err != nil {
 		return nil, false, err
@@ -54,20 +56,8 @@ func checkRefreshToken(context *gin.Context, db *gorm.DB) (*uint64, bool, error)
 		return nil, false, err
 	}
 
-	claims, ok := validatedToken.Claims.(jwt.MapClaims)
-	if !ok {
-		return nil, false, err
-	}
-
-	idFloat, ok := claims["user_id"].(float64)
-	if !ok {
-		return nil, false, err
-	}
-
-	userID := uint(idFloat)
-
-	var user models.User
-	if err := db.Where("id = ?", userID).First(&user).Error; err != nil {
+	user, err := sharedjwt.ExtractUser(validatedToken, db)
+	if err != nil {
 		return nil, false, err
 	}
 
@@ -77,5 +67,5 @@ func checkRefreshToken(context *gin.Context, db *gorm.DB) (*uint64, bool, error)
 		return nil, false, err
 	}
 
-	return &user.ID, true, nil
+	return user, true, nil
 }
