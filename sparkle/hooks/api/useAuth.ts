@@ -1,33 +1,45 @@
-import { apiGet, apiPost, APIResponse } from '@/lib/api';
+import { APIResponse, useApi } from '@/lib/api';
 import { useState } from 'react';
+import { useLocalStorage } from '@/hooks/useLocalStorage';
 
-type User = {
+export type AuthUser = {
   id: number;
   first_name: string;
   last_name: string;
+  email: string;
+  mobile_number: string;
+  role: 'default' | 'admin' | string; // tighten if you know all roles
+  created_at: string;
+  updated_at: string;
+  deleted_at: string | null;
 };
 
-type LoginData = {
+export type AuthLoginData = {
   access_token: string;
+  user: AuthUser;
 };
 
 export function useAuth() {
-  const [user, setUser] = useState<User | null>(null);
+  const { apiPost } = useApi();
+  const [storageAuthUser, _] = useLocalStorage<AuthUser | null>('auth_user', null);
+  const [authUser, setAuthUser] = useState<AuthUser | null>(null);
 
-  const login = async (email: string, password: string): Promise<APIResponse<LoginData>> => {
-    return await apiPost<LoginData>('api/auth/login', {
+  const login = async (email: string, password: string): Promise<APIResponse<AuthLoginData>> => {
+    return await apiPost<APIResponse<AuthLoginData>>('api/auth/login', {
       email,
       password,
     });
   };
-
-  const refreshUser = async () => {
-    const response = await apiGet<User>('api/auth/refresh');
-    console.log(response);
+  const syncAuthUser = () => {
+    if (storageAuthUser) {
+      setAuthUser(storageAuthUser);
+    }
   };
 
   return {
     login,
-    refreshUser,
+    authUser,
+    setAuthUser,
+    syncAuthUser,
   };
 }

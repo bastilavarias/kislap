@@ -14,16 +14,14 @@ func SetCookie(context *gin.Context, name string, data string) {
 
 	appEnv := os.Getenv("APP_ENV")
 
-	domain := ""
+	domain := ".kislap.test"
 	secure := false
-	sameSite := http.SameSiteStrictMode
+	sameSite := http.SameSiteLaxMode
 
 	if appEnv == "production" {
 		domain = os.Getenv("APP_DOMAIN")
 		secure = true
 		sameSite = http.SameSiteStrictMode
-	} else if appEnv == "local" {
-		sameSite = http.SameSiteLaxMode
 	}
 
 	cookie := &http.Cookie{
@@ -31,9 +29,9 @@ func SetCookie(context *gin.Context, name string, data string) {
 		Value:    data,
 		Path:     "/",
 		Domain:   domain,
+		HttpOnly: true,
 		MaxAge:   int((7 * 24 * time.Hour).Seconds()),
 		Secure:   secure,
-		HttpOnly: true,
 		SameSite: sameSite,
 	}
 

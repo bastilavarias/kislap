@@ -31,35 +31,51 @@ func (controller Controller) Login(context *gin.Context) {
 		return
 	}
 
-	tokens, err := controller.Service.Login(input.Email, input.Password)
+	result, err := controller.Service.Login(input.Email, input.Password)
 
 	if err != nil {
 		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	cookie.SetCookie(context, "refresh_token", tokens.RefreshToken)
+	cookie.SetCookie(context, "refresh_token", result.RefreshToken)
 
-	utils.APIRespondSuccess(context, http.StatusOK, "Login successful", gin.H{"access_token": tokens.AccessToken})
+	utils.APIRespondSuccess(context, http.StatusOK, "Login successful", gin.H{
+		"access_token": result.AccessToken,
+		"user":         result.User,
+	})
 }
 
 func (controller Controller) Refresh(context *gin.Context) {
 	userID, exists := context.Get("user_id")
+
 	if !exists {
 		context.JSON(http.StatusUnauthorized, gin.H{"error": "User not found in context"})
+		context.Abort()
+		return
+	}
+
+	refreshToken, exists := context.Get("refresh_token")
+	if !exists {
+		context.JSON(http.StatusUnauthorized, gin.H{"error": "User not found in context"})
+		context.Abort()
 		return
 	}
 
 	uid := userID.(uint64)
+	strRefreshToken := refreshToken.(string)
 
-	tokens, err := controller.Service.Refresh(uid)
+	result, err := controller.Service.Refresh(uid, strRefreshToken)
 
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	cookie.SetCookie(context, "refresh_token", tokens.RefreshToken)
+	cookie.SetCookie(context, "refresh_token", result.RefreshToken)
 
-	context.JSON(http.StatusOK, gin.H{"access_token": tokens.AccessToken})
+	context.JSON(http.StatusOK, gin.H{
+		"access_token": result.AccessToken,
+		"user":         result.User,
+	})
 }

@@ -25,24 +25,24 @@ func RegisterRoutes(router *gin.Engine, db *gorm.DB, llm llm.Provider, dns dns.P
 		portfolioController := portfolio.NewController(db)
 
 		api.POST("/auth/login", authController.Login)
-		api.GET("/auth/refresh", middleware.AuthMiddleware(db), authController.Refresh)
+		api.GET("/auth/refresh", middleware.RefreshTokenValidatorMiddleware(db), authController.Refresh)
 
 		api.POST("/user", userController.Register)
-		//api.POST("/user", middleware.AuthMiddleware(db), userController.Register)
+		//api.POST("/user", middleware.AccessTokenValidatorMiddleware(db), userController.Register)
 
-		api.GET("/projects", middleware.AuthMiddleware(db), projectController.List)
-		//api.GET("/projects/show/:id", middleware.AuthMiddleware(db), projectController.Show)
+		api.GET("/projects", middleware.AccessTokenValidatorMiddleware(db), projectController.List)
+		//api.GET("/projects/show/:id", middleware.AccessTokenValidatorMiddleware(db), projectController.Show)
 		api.GET("/projects/show/:id", projectController.Show)
-		api.GET("/projects/check/sub-domain/:sub-domain", middleware.AuthMiddleware(db), projectController.CheckDomain)
-		api.POST("/projects", middleware.AuthMiddleware(db), projectController.Create)
-		api.PUT("/projects/:id", middleware.AuthMiddleware(db), projectController.Update)
-		api.DELETE("/projects/:id", middleware.AuthMiddleware(db), projectController.Delete)
+		api.GET("/projects/check/sub-domain/:sub-domain", middleware.AccessTokenValidatorMiddleware(db), projectController.CheckDomain)
+		api.POST("/projects", middleware.AccessTokenValidatorMiddleware(db), projectController.Create)
+		api.PUT("/projects/:id", middleware.AccessTokenValidatorMiddleware(db), projectController.Update)
+		api.DELETE("/projects/:id", middleware.AccessTokenValidatorMiddleware(db), projectController.Delete)
 
-		api.POST("/documents", middleware.AuthMiddleware(db), documentController.Parse)
+		api.POST("/documents", middleware.AccessTokenValidatorMiddleware(db), documentController.Parse)
 
-		api.GET("/portfolios/:id", middleware.AuthMiddleware(db), portfolioController.Get)
-		api.POST("/portfolios", middleware.AuthMiddleware(db), portfolioController.Create)
-		api.PUT("/portfolios/:id", middleware.AuthMiddleware(db), portfolioController.Update)
-		api.DELETE("/portfolios/:id", middleware.AuthMiddleware(db), portfolioController.Delete)
+		api.GET("/portfolios/:id", middleware.AccessTokenValidatorMiddleware(db), portfolioController.Get)
+		api.POST("/portfolios", middleware.AccessTokenValidatorMiddleware(db), portfolioController.Create)
+		api.PUT("/portfolios/:id", middleware.AccessTokenValidatorMiddleware(db), portfolioController.Update)
+		api.DELETE("/portfolios/:id", middleware.AccessTokenValidatorMiddleware(db), portfolioController.Delete)
 	}
 }

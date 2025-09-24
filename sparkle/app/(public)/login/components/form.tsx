@@ -7,17 +7,18 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useAuth } from '@/hooks/api/useAuth';
+import { useAuth, AuthUser } from '@/hooks/api/useAuth';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { useRouter } from 'next/navigation';
 
 export default function Form({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
-  const { login, refreshUser } = useAuth();
+  const { login, setAuthUser } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [_, setAccessToken] = useLocalStorage<string | null>('access_token', null);
+  const [__, setStorageAuthUser] = useLocalStorage<AuthUser | null>('auth_user', null);
   const router = useRouter();
 
   async function handleSubmit(e: React.FormEvent) {
@@ -28,8 +29,9 @@ export default function Form({ className, ...props }: React.ComponentPropsWithou
       const result = await login(email, password);
       if (result?.success && result?.data?.access_token) {
         setAccessToken(result.data.access_token);
-        await refreshUser();
-        await router.push('/dashboard');
+        setAuthUser(result.data.user);
+        setStorageAuthUser(result.data.user);
+        router.push('/dashboard');
         return;
       }
       throw new Error(result?.message || 'Something went wrong.');

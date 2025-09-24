@@ -2,13 +2,13 @@ package main
 
 import (
 	"flash/database"
+	"flash/middleware"
 	"flash/routes"
 	"flash/sdk/dns"
 	"flash/sdk/llm"
 	"fmt"
 	"os"
 
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
@@ -38,7 +38,6 @@ func main() {
 		os.Getenv("DB_PORT"),
 		os.Getenv("DB_NAME"),
 	)
-	fmt.Println(dsn)
 	databaseClient := database.Default(dsn)
 
 	llmProvider := llm.Default(&llm.Gemini{
@@ -50,12 +49,7 @@ func main() {
 	dnsProvider := dns.Default(envDev, rootDomain)
 
 	router := gin.Default()
-	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:3000"},
-		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
-		AllowCredentials: true,
-	}))
+	router.Use(middleware.CORSMiddleware())
 	routes.RegisterRoutes(router, databaseClient, llmProvider, dnsProvider)
 	router.Run("0.0.0.0:5000")
 }

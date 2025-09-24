@@ -1,155 +1,69 @@
-import useSWR, { mutate } from 'swr';
+import { useLocalStorage } from '@/hooks/useLocalStorage';
+import { AuthLoginData, AuthUser, useAuth } from '@/hooks/api/useAuth';
+
+export type APIResponse<T> = { success: boolean; status: number; message: string; data: T | null };
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://api.kislap.test';
 
-export type APIResponse<T> = {
-  success: boolean;
-  status: number;
-  message: string;
-  data: T | null;
-};
+export function useApi() {
+  const [accessToken, setAccessToken] = useLocalStorage<string | null>('access_token', null);
+  const [_, setStorageAuthUser] = useLocalStorage<AuthUser | null>('auth_user', null);
 
-type Options<B = unknown> = Omit<RequestInit, 'body'> & {
-  body?: B;
-};
+  async function apiRequest<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+    const buildHeaders = (token?: string) => ({
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...(options.headers || {}),
+    });
 
-/**
- * Helper to get auth headers if token exists.
- */
-function getAuthHeaders() {
-  if (typeof window !== 'undefined') {
-    const token = window.localStorage.getItem('access_token');
-    if (token) {
-      console.log({ Authorization: `Bearer ${JSON.parse(token)}` });
-      return { Authorization: `Bearer ${JSON.parse(token)}` }; // because you stored with JSON.stringify
+    let response = await fetch(`${API_BASE_URL}/${endpoint}`, {
+      ...options,
+      headers: buildHeaders(accessToken || undefined),
+      credentials: 'include',
+    });
+
+    if (response.status === 401) {
+      const refreshResponse = await fetch(`${API_BASE_URL}/api/auth/refresh`, {
+        method: 'GET',
+        headers: buildHeaders(),
+      });
+
+      const result = await refreshResponse.json();
+
+      if (!result?.success) {
+        window.location.href = '/login';
+        throw new Error('Unauthorized'); // stop execution
+      }
+
+      const newAccessToken = result?.data?.access_token;
+      if (result?.success && newAccessToken) {
+        setAccessToken(newAccessToken);
+        setStorageAuthUser(result.data.user);
+
+        // retry the original request with the new token
+        response = await fetch(`${API_BASE_URL}/${endpoint}`, {
+          ...options,
+          headers: buildHeaders(newAccessToken),
+        });
+      }
     }
-  }
-  return {};
-}
 
-/**
- * Core fetcher used by SWR (for GET requests).
- */
-export async function fetcher<T>(endpoint: string): Promise<APIResponse<T>> {
-  const res = await fetch(`${API_BASE_URL}/${endpoint}`, {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
-    headers: {
-      'Content-Type': 'application/json',
-      ...getAuthHeaders(),
-    },
-  });
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({ message: response.statusText }));
+      throw new Error(error.message || 'Request failed');
+    }
 
-  if (!res.ok) {
-    const error = await res.json().catch(() => ({ message: res.statusText }));
-    throw new Error(error.message || 'Request failed');
+    return response.json();
   }
 
-  return res.json();
-}
-
-export async function apiGet<T>(endpoint: string, options?: Options): Promise<APIResponse<T>> {
-  const res = await fetch(`${API_BASE_URL}/${endpoint}`, {
-    ...options,
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
-    headers: {
-      'Content-Type': 'application/json',
-      ...getAuthHeaders(),
-      ...(options?.headers || {}),
-    },
-  });
-
-  if (!res.ok) {
-    const error = await res.json().catch(() => ({ message: res.statusText }));
-    throw new Error(error.message || 'Request failed');
-  }
-
-  return res.json();
-}
-
-/**
- * POST request (mutations).
- */
-export async function apiPost<T, B = unknown>(
-  endpoint: string,
-  body: B,
-  options?: Options
-): Promise<APIResponse<T>> {
-  const res = await fetch(`${API_BASE_URL}/${endpoint}`, {
-    ...options,
-    method: 'POST',
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
-    headers: {
-      'Content-Type': 'application/json',
-      ...getAuthHeaders(),
-      ...(options?.headers || {}),
-    },
-    body: JSON.stringify(body),
-  });
-
-  if (!res.ok) {
-    const error = await res.json().catch(() => ({ message: res.statusText }));
-    throw new Error(error.message || 'Request failed');
-  }
-
-  return res.json();
-}
-
-/**
- * PUT request (mutations).
- */
-export async function apiPut<T, B = unknown>(
-  endpoint: string,
-  body: B,
-  options?: Options
-): Promise<APIResponse<T>> {
-  const res = await fetch(`${API_BASE_URL}/${endpoint}`, {
-    ...options,
-    method: 'PUT',
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
-    headers: {
-      'Content-Type': 'application/json',
-      ...getAuthHeaders(),
-      ...(options?.headers || {}),
-    },
-    body: JSON.stringify(body),
-  });
-
-  if (!res.ok) {
-    const error = await res.json().catch(() => ({ message: res.statusText }));
-    throw new Error(error.message || 'Request failed');
-  }
-
-  return res.json();
-}
-
-/**
- * DELETE request (mutations).
- */
-export async function apiDelete<T>(endpoint: string, options?: Options): Promise<APIResponse<T>> {
-  const res = await fetch(`${API_BASE_URL}/${endpoint}`, {
-    ...options,
-    method: 'DELETE',
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
-    headers: {
-      'Content-Type': 'application/json',
-      ...getAuthHeaders(),
-      ...(options?.headers || {}),
-    },
-  });
-
-  if (!res.ok) {
-    const error = await res.json().catch(() => ({ message: res.statusText }));
-    throw new Error(error.message || 'Request failed');
-  }
-
-  return res.json();
-}
-
-export function revalidate(endpoint: string) {
-  mutate(endpoint);
+  return {
+    apiGet: <T>(endpoint: string, options?: RequestInit) =>
+      apiRequest<T>(endpoint, { ...options, method: 'GET' }),
+    apiPost: <T, B = unknown>(endpoint: string, body: B, options?: RequestInit) =>
+      apiRequest<T>(endpoint, { ...options, method: 'POST', body: JSON.stringify(body) }),
+    apiPut: <T, B = unknown>(endpoint: string, body: B, options?: RequestInit) =>
+      apiRequest<T>(endpoint, { ...options, method: 'PUT', body: JSON.stringify(body) }),
+    apiDelete: <T>(endpoint: string, options?: RequestInit) =>
+      apiRequest<T>(endpoint, { ...options, method: 'DELETE' }),
+  };
 }
