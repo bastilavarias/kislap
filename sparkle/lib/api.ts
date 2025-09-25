@@ -26,12 +26,13 @@ export function useApi() {
       const refreshResponse = await fetch(`${API_BASE_URL}/api/auth/refresh`, {
         method: 'GET',
         headers: buildHeaders(),
+        credentials: 'include',
       });
 
       const result = await refreshResponse.json();
 
       if (!result?.success) {
-        window.location.href = '/login';
+        // window.location.href = '/login';
         throw new Error('Unauthorized'); // stop execution
       }
 
