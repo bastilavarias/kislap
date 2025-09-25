@@ -2,6 +2,7 @@ package project
 
 import (
 	"flash/sdk/dns"
+	"flash/utils"
 	"net/http"
 	"strconv"
 
@@ -22,93 +23,105 @@ func NewController(db *gorm.DB, dns dns.Provider) *Controller {
 	return &Controller{Service: service}
 }
 
-func (controller Controller) List(c *gin.Context) {
+func (controller Controller) List(context *gin.Context) {
 	projects, err := controller.Service.List()
+
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err})
+		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
+		context.Abort()
 	}
 
-	c.JSON(http.StatusOK, projects)
+	utils.APIRespondSuccess(context, http.StatusOK, projects)
 }
 
-func (controller Controller) Create(c *gin.Context) {
+func (controller Controller) Create(context *gin.Context) {
 	var request CreateUpdateProjectRequest
 
-	if err := c.ShouldBindJSON(&request); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
+	if err := context.ShouldBindJSON(&request); err != nil {
+		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
+		context.Abort()
 	}
 
 	project, err := controller.Service.Create(request.ToServicePayload())
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
+		context.Abort()
 	}
 
-	c.JSON(http.StatusCreated, project)
+	utils.APIRespondSuccess(context, http.StatusOK, project)
 }
 
-func (controller Controller) Show(c *gin.Context) {
-	idStr := c.Param("id")
+func (controller Controller) Show(context *gin.Context) {
+	idStr := context.Param("id")
 	projectID, err := strconv.Atoi(idStr)
+
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
+		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
+		context.Abort()
 		return
 	}
 
 	project, err := controller.Service.Show(projectID)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err})
-		return
+		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
+		context.Abort()
 	}
 
-	c.JSON(http.StatusOK, project)
+	utils.APIRespondSuccess(context, http.StatusOK, project)
 }
 
-func (controller Controller) Update(c *gin.Context) {
-	idStr := c.Param("id")
+func (controller Controller) Update(context *gin.Context) {
+	idStr := context.Param("id")
 	projectID, err := strconv.Atoi(idStr)
+
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
-		return
+		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
+		context.Abort()
 	}
 
 	var request CreateUpdateProjectRequest
 
-	if err := c.ShouldBindJSON(&request); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
+	if err := context.ShouldBindJSON(&request); err != nil {
+		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
+		context.Abort()
 	}
 
 	project, err := controller.Service.Update(projectID, request.ToServicePayload())
+
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err})
-		return
+		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
+		context.Abort()
 	}
 
-	c.JSON(http.StatusOK, project)
+	utils.APIRespondSuccess(context, http.StatusOK, project)
 }
 
-func (controller Controller) Delete(c *gin.Context) {
-	idStr := c.Param("id")
+func (controller Controller) Delete(context *gin.Context) {
+	idStr := context.Param("id")
 	id, err := strconv.Atoi(idStr)
+
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
-		return
+		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
+		context.Abort()
 	}
 
 	project, err := controller.Service.Delete(id)
+	if err != nil {
+		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
+		context.Abort()
+	}
 
-	c.JSON(http.StatusOK, project)
+	utils.APIRespondSuccess(context, http.StatusOK, project)
 }
 
-func (controller Controller) CheckDomain(c *gin.Context) {
-	subDomain := c.Param("sub-domain")
+func (controller Controller) CheckDomain(context *gin.Context) {
+	subDomain := context.Param("sub-domain")
 
 	ok, err := controller.Service.CheckDomain(subDomain)
 	if !ok {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err})
-		return
+		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
+		context.Abort()
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Project sub domain available!"})
+	utils.APIRespondSuccess(context, http.StatusOK, subDomain)
 }

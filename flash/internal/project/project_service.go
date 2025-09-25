@@ -113,7 +113,7 @@ func (service Service) CheckDomain(subDomain string) (bool, error) {
 	}
 
 	if count > 0 {
-		return false, errors.New("Project sub domain already taken!")
+		return false, errors.New("project sub domain already taken")
 	}
 
 	return true, nil

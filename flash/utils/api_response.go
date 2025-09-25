@@ -19,8 +19,9 @@ func APIRespond[T any](ctx *gin.Context, status int, success bool, message strin
 	})
 }
 
-func APIRespondSuccess[T any](ctx *gin.Context, status int, message string, data T) {
-	APIRespond(ctx, status, true, message, data)
+func APIRespondSuccess[T any](ctx *gin.Context, status int, data T) {
+	defaultMessage := "API Request Success"
+	APIRespond(ctx, status, true, defaultMessage, data)
 }
 
 func APIRespondError(ctx *gin.Context, status int, message string) {

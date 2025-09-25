@@ -40,7 +40,7 @@ func (controller Controller) Login(context *gin.Context) {
 
 	cookie.SetCookie(context, "refresh_token", result.RefreshToken)
 
-	utils.APIRespondSuccess(context, http.StatusOK, "Login successful", gin.H{
+	utils.APIRespondSuccess(context, http.StatusOK, gin.H{
 		"access_token": result.AccessToken,
 		"user":         result.User,
 	})
