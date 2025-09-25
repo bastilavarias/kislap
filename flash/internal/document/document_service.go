@@ -26,7 +26,7 @@ func (service Service) Parse(payload Payload) (*PortfolioResponse, error) {
 	var generatedPrompt string
 	givenType := payload.Type
 
-	if givenType == project.TYPE_RESUME {
+	if givenType == project.TypeResume {
 		generatedPrompt = prompt.ResumeToJSON(content)
 	} else {
 		return nil, errors.New("invalid type")
