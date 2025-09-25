@@ -1,5 +1,4 @@
 import { APIResponse, useApi } from '@/lib/api';
-import { AuthLoginData, AuthUser } from '@/hooks/api/useAuth';
 
 export type Project = {
   id: number;
@@ -20,7 +19,7 @@ export function useProject() {
   const { apiPost } = useApi();
 
   const create = async (name: string, description: string, sub_domain: string, type: string) => {
-    return await apiPost<APIResponse<Project>>('api/project', {
+    return await apiPost<APIResponse<Project>>('api/projects', {
       name,
       description,
       sub_domain,

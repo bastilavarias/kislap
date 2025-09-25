@@ -1,5 +1,5 @@
 import { useLocalStorage } from '@/hooks/useLocalStorage';
-import { AuthLoginData, AuthUser, useAuth } from '@/hooks/api/useAuth';
+import { AuthUser } from '@/hooks/api/useAuth';
 
 export type APIResponse<T> = { success: boolean; status: number; message: string; data: T | null };
 
@@ -9,7 +9,10 @@ export function useApi() {
   const [accessToken, setAccessToken] = useLocalStorage<string | null>('access_token', null);
   const [_, setStorageAuthUser] = useLocalStorage<AuthUser | null>('auth_user', null);
 
-  async function apiRequest<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+  async function apiRequest<T>(
+    endpoint: string,
+    options: RequestInit = {}
+  ): Promise<APIResponse<T | null>> {
     const buildHeaders = (token?: string) => ({
       'Content-Type': 'application/json',
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -23,28 +26,30 @@ export function useApi() {
     });
 
     if (response.status === 401) {
-      const refreshResponse = await fetch(`${API_BASE_URL}/api/auth/refresh`, {
+      const refreshedUserResponse = await fetch(`${API_BASE_URL}/api/auth/refresh`, {
         method: 'GET',
         headers: buildHeaders(),
         credentials: 'include',
       });
 
-      const result = await refreshResponse.json();
-
-      if (!result?.success) {
-        // window.location.href = '/login';
-        throw new Error('Unauthorized'); // stop execution
+      const refreshedUserData = await refreshedUserResponse.json();
+      if (!refreshedUserResponse?.ok) {
+        window.location.href = '/login';
+        throw new Error('Unauthorized');
       }
 
-      const newAccessToken = result?.data?.access_token;
-      if (result?.success && newAccessToken) {
+      const newAccessToken = refreshedUserData?.access_token;
+
+      if (newAccessToken) {
         setAccessToken(newAccessToken);
-        setStorageAuthUser(result.data.user);
+
+        setStorageAuthUser(refreshedUserData?.user);
 
         // retry the original request with the new token
         response = await fetch(`${API_BASE_URL}/${endpoint}`, {
           ...options,
           headers: buildHeaders(newAccessToken),
+          credentials: 'include',
         });
       }
     }
@@ -54,7 +59,7 @@ export function useApi() {
       throw new Error(error.message || 'Request failed');
     }
 
-    return response.json();
+    return await response.json();
   }
 
   return {
