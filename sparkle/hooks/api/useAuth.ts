@@ -1,4 +1,4 @@
-import { APIResponse, useApi } from '@/lib/api';
+import { useApi } from '@/lib/api';
 import { useState } from 'react';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 
@@ -24,8 +24,8 @@ export function useAuth() {
   const [storageAuthUser, _] = useLocalStorage<AuthUser | null>('auth_user', null);
   const [authUser, setAuthUser] = useState<AuthUser | null>(null);
 
-  const login = async (email: string, password: string): Promise<APIResponse<AuthLoginData>> => {
-    return await apiPost<APIResponse<AuthLoginData>>('api/auth/login', {
+  const login = async (email: string, password: string) => {
+    return await apiPost<AuthLoginData>('api/auth/login', {
       email,
       password,
     });

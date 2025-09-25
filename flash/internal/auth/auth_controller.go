@@ -28,6 +28,7 @@ func (controller Controller) Login(context *gin.Context) {
 
 	if err := context.ShouldBindJSON(&input); err != nil {
 		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
+		context.Abort()
 		return
 	}
 
@@ -35,6 +36,7 @@ func (controller Controller) Login(context *gin.Context) {
 
 	if err != nil {
 		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
+		context.Abort()
 		return
 	}
 
@@ -69,6 +71,7 @@ func (controller Controller) Refresh(context *gin.Context) {
 
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		context.Abort()
 		return
 	}
 

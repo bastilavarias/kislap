@@ -1,4 +1,4 @@
-import { APIResponse, useApi } from '@/lib/api';
+import { useApi } from '@/lib/api';
 
 export type Project = {
   id: number;
@@ -19,7 +19,7 @@ export function useProject() {
   const { apiPost } = useApi();
 
   const create = async (name: string, description: string, sub_domain: string, type: string) => {
-    return await apiPost<APIResponse<Project>>('api/projects', {
+    return await apiPost<Project>('api/projects', {
       name,
       description,
       sub_domain,

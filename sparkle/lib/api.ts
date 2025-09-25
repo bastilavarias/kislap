@@ -12,54 +12,79 @@ export function useApi() {
   async function apiRequest<T>(
     endpoint: string,
     options: RequestInit = {}
-  ): Promise<APIResponse<T | null>> {
+  ): Promise<APIResponse<T>> {
     const buildHeaders = (token?: string) => ({
       'Content-Type': 'application/json',
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...(options.headers || {}),
     });
 
-    let response = await fetch(`${API_BASE_URL}/${endpoint}`, {
-      ...options,
-      headers: buildHeaders(accessToken || undefined),
-      credentials: 'include',
-    });
+    let response: Response | null = null;
+    let payload: APIResponse<T> | null = null;
+    let message = '';
 
-    if (response.status === 401) {
-      const refreshedUserResponse = await fetch(`${API_BASE_URL}/api/auth/refresh`, {
-        method: 'GET',
-        headers: buildHeaders(),
+    try {
+      response = await fetch(`${API_BASE_URL}/${endpoint}`, {
+        ...options,
+        headers: buildHeaders(accessToken || undefined),
         credentials: 'include',
       });
 
-      const refreshedUserData = await refreshedUserResponse.json();
-      if (!refreshedUserResponse?.ok) {
-        window.location.href = '/login';
-        throw new Error('Unauthorized');
-      }
-
-      const newAccessToken = refreshedUserData?.access_token;
-
-      if (newAccessToken) {
-        setAccessToken(newAccessToken);
-
-        setStorageAuthUser(refreshedUserData?.user);
-
-        // retry the original request with the new token
-        response = await fetch(`${API_BASE_URL}/${endpoint}`, {
-          ...options,
-          headers: buildHeaders(newAccessToken),
+      // Handle expired token → refresh
+      if (response.status === 401) {
+        const refreshRes = await fetch(`${API_BASE_URL}/api/auth/refresh`, {
+          method: 'GET',
+          headers: buildHeaders(),
           credentials: 'include',
         });
+
+        if (!refreshRes.ok) {
+          window.location.href = '/login';
+          throw new Error('Unauthorized');
+        }
+
+        const refreshedUserData = await refreshRes.json();
+        const newAccessToken = refreshedUserData?.access_token;
+        if (newAccessToken) {
+          setAccessToken(newAccessToken);
+          setStorageAuthUser(refreshedUserData?.user);
+
+          // retry original request with new token
+          response = await fetch(`${API_BASE_URL}/${endpoint}`, {
+            ...options,
+            headers: buildHeaders(newAccessToken),
+            credentials: 'include',
+          });
+        }
       }
+
+      payload = await response.json();
+    } catch (err) {
+      message = err instanceof Error ? err.message : String(err);
+      return {
+        success: false,
+        status: response?.status ?? 500,
+        message,
+        data: null,
+      };
     }
 
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({ message: response.statusText }));
-      throw new Error(error.message || 'Request failed');
+    // Unified return block
+    if (!response?.ok || !payload?.success) {
+      return {
+        success: false,
+        status: payload?.status ?? response?.status ?? 500,
+        message: payload?.message || message || 'Request failed',
+        data: null,
+      };
     }
 
-    return await response.json();
+    return {
+      success: true,
+      status: payload.status,
+      message: payload.message,
+      data: payload.data as T,
+    };
   }
 
   return {

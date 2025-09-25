@@ -5,7 +5,6 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ProjectFormValues, ProjectSchema } from '@/lib/schemas/project';
 import { useProject } from '@/hooks/api/useProject';
-
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -20,6 +19,9 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { AlertCircleIcon } from 'lucide-react';
+import { Alert, AlertTitle } from '@/components/ui/alert';
+import { useRouter } from 'next/navigation';
 
 const projectTypes = [
   { label: 'portfolio', emoji: '📄' },
@@ -31,6 +33,8 @@ const projectTypes = [
 export function ProjectFormDialog() {
   const { create } = useProject();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const router = useRouter();
 
   const {
     register,
@@ -50,17 +54,21 @@ export function ProjectFormDialog() {
 
   const currentType = watch('type');
 
-  const onSubmit = async (data: ProjectFormValues) => {
+  const onSubmit = async (form: ProjectFormValues) => {
+    setError('');
     setLoading(true);
-
-    try {
-      const res = await create(data.name, data.description ?? '', data.sub_domain, data.type);
-      setLoading(false);
-      console.log('Project created:', res);
-    } catch (err) {
-      setLoading(false);
-      console.error('Error creating project:', err);
+    const { success, data, message } = await create(
+      form.name,
+      form.description ?? '',
+      form.sub_domain,
+      form.type
+    );
+    if (success && data) {
+      router.push(`/projects/builder/${currentType}/${data.slug}`);
+      return;
     }
+    setLoading(false);
+    setError(message);
   };
 
   return (
@@ -76,6 +84,13 @@ export function ProjectFormDialog() {
 
           <div className="py-5">
             <div className="grid grid-cols-1 gap-6 mb-6">
+              {error && (
+                <Alert variant="destructive">
+                  <AlertCircleIcon />
+                  <AlertTitle className="capitalize">{error}</AlertTitle>
+                </Alert>
+              )}
+
               <div>
                 <Label className="font-medium mb-2">Name</Label>
                 <Input
@@ -83,29 +98,31 @@ export function ProjectFormDialog() {
                   placeholder="My Online Portfolio"
                   className="w-full shadow-none"
                 />
-                {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
-              </div>
-
-              <div>
-                <Label className="font-medium mb-2">Description</Label>
-                <Textarea
-                  {...register('description')}
-                  placeholder="Description here..."
-                  className="w-full shadow-none"
-                />
-                {errors.description && (
-                  <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>
+                {errors.name && (
+                  <p className="text-destructive text-sm mt-1">{errors.name.message}</p>
                 )}
               </div>
 
               <div>
                 <Label className="font-medium mb-2">Domain</Label>
                 <div className="relative flex items-center">
-                  <Input {...register('sub_domain')} className="w-full shadow-none" />
+                  <Input
+                    {...register('sub_domain')}
+                    placeholder="myportfolio"
+                    className="w-full shadow-none"
+                  />
                   <span className="text-gray-500 font-mono ml-1">.kislap.test</span>
                 </div>
                 {errors.sub_domain && (
-                  <p className="text-red-500 text-sm mt-1">{errors.sub_domain.message}</p>
+                  <p className="text-destructive text-sm mt-1">{errors.sub_domain.message}</p>
+                )}
+              </div>
+
+              <div>
+                <Label className="font-medium mb-2">Description</Label>
+                <Textarea {...register('description')} className="w-full shadow-none" />
+                {errors.description && (
+                  <p className="text-destructive text-sm mt-1">{errors.description.message}</p>
                 )}
               </div>
             </div>
@@ -123,11 +140,12 @@ export function ProjectFormDialog() {
                     </CardHeader>
                     <CardContent className="mt-0 pt-0">
                       <div className="flex justify-between items-center">
-                        <small>Lorem ipsum</small>
+                        <small></small>
                         <Button
                           type="button"
                           variant={currentType === project.label ? 'default' : 'outline'}
                           onClick={() => setValue('type', project.label, { shouldValidate: true })}
+                          className="shadow-none w-24"
                         >
                           {currentType === project.label ? 'Selected' : 'Select'}
                         </Button>
@@ -136,17 +154,19 @@ export function ProjectFormDialog() {
                   </Card>
                 ))}
               </div>
-              {errors.type && <p className="text-red-500 text-sm mt-1">{errors.type.message}</p>}
+              {errors.type && (
+                <p className="text-destructive text-sm mt-1">{errors.type.message}</p>
+              )}
             </div>
           </div>
 
           <DialogFooter>
             <DialogClose asChild>
-              <Button type="button" variant="outline">
+              <Button type="button" variant="outline" className="shadow-none">
                 Cancel
               </Button>
             </DialogClose>
-            <Button type="submit" disabled={loading}>
+            <Button type="submit" disabled={loading} className="w-24">
               {loading ? 'Processing' : 'Process'}
             </Button>
           </DialogFooter>

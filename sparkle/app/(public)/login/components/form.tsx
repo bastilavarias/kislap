@@ -23,29 +23,18 @@ export default function Form({ className, ...props }: React.ComponentPropsWithou
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    try {
-      setError('');
-      setLoading(true);
-      const result = await login(email, password);
-      if (result?.success && result?.data?.access_token) {
-        setAccessToken(result.data.access_token);
-        setAuthUser(result.data.user);
-        setStorageAuthUser(result.data.user);
-        router.push('/dashboard');
-        return;
-      }
-      throw new Error(result?.message || 'Something went wrong.');
-    } catch (error) {
-      setError(
-        error instanceof Error
-          ? error.message
-          : typeof error === 'string'
-            ? error
-            : 'Something went wrong'
-      );
+    setError('');
+    setLoading(true);
+    const { success, data, message } = await login(email, password);
+    if (success && data) {
+      setAccessToken(data.access_token);
+      setAuthUser(data.user);
+      setStorageAuthUser(data.user);
+      router.push(`/dashboard`);
+      return;
     }
-
     setLoading(false);
+    setError(message);
   }
 
   return (
@@ -128,7 +117,7 @@ export default function Form({ className, ...props }: React.ComponentPropsWithou
                   />
                 </div>
                 <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? 'Loggin in...' : 'Login'}
+                  {loading ? 'Logging in...' : 'Login'}
                 </Button>
               </div>
               <div className="text-center text-sm">

@@ -29,6 +29,7 @@ func (controller Controller) List(context *gin.Context) {
 	if err != nil {
 		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
 		context.Abort()
+		return
 	}
 
 	utils.APIRespondSuccess(context, http.StatusOK, projects)
@@ -40,12 +41,14 @@ func (controller Controller) Create(context *gin.Context) {
 	if err := context.ShouldBindJSON(&request); err != nil {
 		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
 		context.Abort()
+		return
 	}
 
 	project, err := controller.Service.Create(request.ToServicePayload())
 	if err != nil {
 		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
 		context.Abort()
+		return
 	}
 
 	utils.APIRespondSuccess(context, http.StatusOK, project)
@@ -65,6 +68,7 @@ func (controller Controller) Show(context *gin.Context) {
 	if err != nil {
 		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
 		context.Abort()
+		return
 	}
 
 	utils.APIRespondSuccess(context, http.StatusOK, project)
@@ -77,6 +81,7 @@ func (controller Controller) Update(context *gin.Context) {
 	if err != nil {
 		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
 		context.Abort()
+		return
 	}
 
 	var request CreateUpdateProjectRequest
@@ -84,6 +89,7 @@ func (controller Controller) Update(context *gin.Context) {
 	if err := context.ShouldBindJSON(&request); err != nil {
 		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
 		context.Abort()
+		return
 	}
 
 	project, err := controller.Service.Update(projectID, request.ToServicePayload())
@@ -91,6 +97,7 @@ func (controller Controller) Update(context *gin.Context) {
 	if err != nil {
 		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
 		context.Abort()
+		return
 	}
 
 	utils.APIRespondSuccess(context, http.StatusOK, project)
@@ -103,12 +110,14 @@ func (controller Controller) Delete(context *gin.Context) {
 	if err != nil {
 		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
 		context.Abort()
+		return
 	}
 
 	project, err := controller.Service.Delete(id)
 	if err != nil {
 		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
 		context.Abort()
+		return
 	}
 
 	utils.APIRespondSuccess(context, http.StatusOK, project)
@@ -121,6 +130,7 @@ func (controller Controller) CheckDomain(context *gin.Context) {
 	if !ok {
 		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
 		context.Abort()
+		return
 	}
 
 	utils.APIRespondSuccess(context, http.StatusOK, subDomain)

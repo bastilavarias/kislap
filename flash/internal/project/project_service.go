@@ -24,19 +24,18 @@ func (service Service) List() (*[]models.Project, error) {
 }
 
 func (service Service) Create(payload Payload) (*models.Project, error) {
-	slug := utils.Slugify(payload.Name, 0)
-
 	var count int64
 	if err := service.DB.Model(&models.Project{}).
-		Where("slug = ?", slug).
+		Where("sub_domain = ?", payload.SubDomain).
 		Count(&count).Error; err != nil {
 		return nil, err
 	}
 
 	if count > 0 {
-		return nil, errors.New("project name already exists")
+		return nil, errors.New("domain already taken")
 	}
 
+	slug := utils.Slugify(payload.Name, 0)
 	newProj := models.Project{
 		Name:        payload.Name,
 		Description: payload.Description,
