@@ -41,6 +41,7 @@ type Mode = 'light' | 'dark';
 type Props = {
   stateless?: boolean;
   hideTopActionButtons?: boolean;
+  hideModeToggle?: boolean;
   hideScrollArea?: boolean;
   hideThemeSaverButton?: boolean;
 };
@@ -48,6 +49,7 @@ type Props = {
 const ThemeControlPanel = ({
   stateless = false,
   hideTopActionButtons = false,
+  hideModeToggle = false,
   hideScrollArea = false,
   hideThemeSaverButton = false,
 }: Props) => {
@@ -186,7 +188,7 @@ const ThemeControlPanel = ({
   const currentStyles = localSettings.theme.styles?.[localSettings.mode as Mode] || {};
 
   const form = (
-    <div className="flex flex-col gap-6 p-6">
+    <div className="flex flex-col gap-6">
       {!hideTopActionButtons && (
         <div className="flex gap-3">
           <ThemeVariablesDialog
@@ -212,32 +214,34 @@ const ThemeControlPanel = ({
         </div>
       )}
 
-      <div className="flex flex-col gap-4">
-        <h3 className="text-lg font-medium">Mode</h3>
-        <ToggleGroup
-          type="single"
-          value={localSettings.mode}
-          onValueChange={handleModeChange}
-          className="gap-4"
-        >
-          <ToggleGroupItem
-            value="light"
-            aria-label="Toggle light"
-            className="hover:text-foreground cursor-pointer rounded-md border px-4 py-2"
+      {!hideModeToggle && (
+        <div className="flex flex-col gap-4">
+          <h3 className="text-lg font-medium">Mode</h3>
+          <ToggleGroup
+            type="single"
+            value={localSettings.mode}
+            onValueChange={handleModeChange}
+            className="gap-4"
           >
-            <Sun className="size-4" />
-            <span>Light</span>
-          </ToggleGroupItem>
-          <ToggleGroupItem
-            value="dark"
-            aria-label="Toggle dark"
-            className="hover:text-foreground cursor-pointer rounded-md border px-4 py-2"
-          >
-            <Moon className="size-4" />
-            <span>Dark</span>
-          </ToggleGroupItem>
-        </ToggleGroup>
-      </div>
+            <ToggleGroupItem
+              value="light"
+              aria-label="Toggle light"
+              className="hover:text-foreground cursor-pointer rounded-md border px-4 py-2"
+            >
+              <Sun className="size-4" />
+              <span>Light</span>
+            </ToggleGroupItem>
+            <ToggleGroupItem
+              value="dark"
+              aria-label="Toggle dark"
+              className="hover:text-foreground cursor-pointer rounded-md border px-4 py-2"
+            >
+              <Moon className="size-4" />
+              <span>Dark</span>
+            </ToggleGroupItem>
+          </ToggleGroup>
+        </div>
+      )}
 
       {/* Themes Selection */}
       <ThemePresetSelect

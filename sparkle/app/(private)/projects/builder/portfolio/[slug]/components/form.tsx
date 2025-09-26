@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-import { X, Calendar, Plus } from 'lucide-react';
+import { X, Calendar, Plus, File } from 'lucide-react';
 import ThemeControlPanel from '@/components/customizer/theme-control-panel';
 
 export function Form() {
@@ -62,7 +62,7 @@ export function Form() {
   };
 
   const handleWorkExperienceChange = (index: number, field: string, value: string) => {
-    setFormData((prev) => ({
+    setFormData((prev) => ({  
       ...prev,
       workExperience: prev.workExperience.map((exp, i) =>
         i === index ? { ...exp, [field]: value } : exp
@@ -86,10 +86,17 @@ export function Form() {
 
   return (
     <Card>
-      <CardContent className="grid grid-cols-12 gap-4">
+      <CardContent className="grid grid-cols-12 gap-6">
         <div className="lg:col-span-8">
+          <div className="flex justify-between items-center">
+            <h2 className="text-2xl font-bold mb-6">Content</h2>
+            <Button variant="outline" className="cursor-pointer shadow-none">
+              <File className="size-4" />
+              Upload
+            </Button>
+          </div>
           <div className="mb-8">
-            <h2 className="text-2xl font-bold mb-6">Header</h2>
+            <h3 className="text-lg font-medium mb-6">Header</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
               <div>
                 <Label className="font-medium mb-2">Name</Label>
@@ -110,7 +117,7 @@ export function Form() {
             </div>
 
             <div className="mb-6">
-              <Label className="font-medium mb-2">Short About</Label>
+              <Label className="font-medium mb-2">Introduction</Label>
               <Textarea
                 value={formData.shortAbout}
                 onChange={(e) => handleInputChange('shortAbout', e.target.value)}
@@ -176,17 +183,17 @@ export function Form() {
               </div>
             </div>
           </div>
-          <div className="mb-8 border-t border-gray-200 pt-8">
-            <h2 className="text-2xl font-bold mb-6">About</h2>
+          <div className="mb-8 pt-8">
+            <h2 className="text-lg font-medium mb-6">About</h2>
             <Textarea
               value={formData.about}
               onChange={(e) => handleInputChange('about', e.target.value)}
               className="w-full shadow-none h-32 resize-none"
             />
           </div>
-          <div className="mb-8 border-t border-gray-200 pt-8">
+          <div className="mb-8 pt-8">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold">Work Experience</h2>
+              <h2 className="text-lg font-medium">Work Experience</h2>
               <Button variant="ghost" size="sm" className="text-gray-400">
                 <X className="w-4 h-4" />
               </Button>
@@ -256,9 +263,9 @@ export function Form() {
               Add Work Experience
             </Button>
           </div>
-          <div className="mb-8 border-t border-gray-200 pt-8">
+          <div className="mb-8 pt-8">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold">Education</h2>
+              <h2 className="text-lg font-medium">Education</h2>
               <Button variant="ghost" size="sm" className="text-gray-400">
                 <X className="w-4 h-4" />
               </Button>
@@ -311,8 +318,8 @@ export function Form() {
               Add Education
             </Button>
           </div>
-          <div className="border-t border-gray-200 pt-8">
-            <h2 className="text-2xl font-bold mb-6">Skills</h2>
+          <div className="pt-8">
+            <h2 className="text-lg font-medium mb-6">Skills</h2>
             <div className="flex flex-wrap gap-2 mb-4">
               {formData.skills.map((skill, index) => (
                 <Badge
@@ -339,6 +346,7 @@ export function Form() {
             <ThemeControlPanel
               stateless={true}
               hideTopActionButtons={true}
+              hideModeToggle={true}
               hideScrollArea={true}
               hideThemeSaverButton={false}
             />

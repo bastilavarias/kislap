@@ -137,7 +137,7 @@ const ThemePresetSelect = ({ presets, currentPreset, onPresetChange }: ThemePres
           <Button
             variant="outline"
             onClick={() => setCssImportOpen(true)}
-            className="cursor-pointer"
+            className="cursor-pointer shadow-none"
           >
             <FileCode className="size-4" />
             Import
@@ -147,14 +147,14 @@ const ThemePresetSelect = ({ presets, currentPreset, onPresetChange }: ThemePres
             onOpenChange={setCssImportOpen}
             onImport={handleCssImport}
           />
-          <Button variant="outline" onClick={randomize} className="cursor-pointer">
+          <Button variant="outline" onClick={randomize} className="cursor-pointer shadow-none">
             <Dices className="size-4" />
             Random
           </Button>
         </div>
       </div>
       <Select value={value || ''} onValueChange={onPresetChange}>
-        <SelectTrigger className="h-12 w-full cursor-pointer">
+        <SelectTrigger className="h-12 w-full cursor-pointer shadow-none">
           <SelectValue placeholder="Choose Theme" />
         </SelectTrigger>
         <SelectContent>

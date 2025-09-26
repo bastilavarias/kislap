@@ -1,8 +1,8 @@
 // React Imports
-import { useState } from 'react'
+import { useState } from 'react';
 
 // Third-party Imports
-import { AlertCircle } from 'lucide-react'
+import { AlertCircle } from 'lucide-react';
 
 // Component Imports
 import {
@@ -11,74 +11,76 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle
-} from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
-import { Textarea } from '@/components/ui/textarea'
-import { Alert, AlertDescription } from '@/components/ui/alert'
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 type CssImportDialogProps = {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  onImport: (css: string) => void
-}
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onImport: (css: string) => void;
+};
 
 const CssImportDialog = ({ open, onOpenChange, onImport }: CssImportDialogProps) => {
   // States
-  const [cssText, setCssText] = useState('')
-  const [error, setError] = useState<string | null>(null)
+  const [cssText, setCssText] = useState('');
+  const [error, setError] = useState<string | null>(null);
 
   const handleImport = () => {
     // Basic validation - check if the CSS contains some expected variables
     if (!cssText.trim()) {
-      setError('Please enter CSS content')
+      setError('Please enter CSS content');
 
-      return
+      return;
     }
 
     try {
       // Here you would add more sophisticated CSS parsing validation
       // For now we'll just do a simple check
       if (!cssText.includes('--') || !cssText.includes(':')) {
-        setError('Invalid CSS format. CSS should contain variable definitions like --primary: #color')
+        setError(
+          'Invalid CSS format. CSS should contain variable definitions like --primary: #color'
+        );
 
-        return
+        return;
       }
 
-      onImport(cssText)
-      setCssText('')
-      setError(null)
-      onOpenChange(false)
+      onImport(cssText);
+      setCssText('');
+      setError(null);
+      onOpenChange(false);
     } catch (err) {
-      setError('Failed to parse CSS. Please check your syntax.')
+      setError('Failed to parse CSS. Please check your syntax.');
     }
-  }
+  };
 
   const handleClose = () => {
-    setCssText('')
-    setError(null)
-    onOpenChange(false)
-  }
+    setCssText('');
+    setError(null);
+    onOpenChange(false);
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className='max-h-[90vh] sm:max-w-[600px]'>
+      <DialogContent className="max-h-[90vh] sm:max-w-[600px]">
         <DialogHeader>
-          <DialogTitle className='text-foreground'>Import Custom CSS</DialogTitle>
+          <DialogTitle className="text-foreground">Import Custom CSS</DialogTitle>
           <DialogDescription>
-            Paste your CSS file below to customize the theme colors. Make sure to include variables like --primary,
-            --background, etc.
+            Paste your CSS file below to customize the theme colors. Make sure to include variables
+            like --primary, --background, etc.
           </DialogDescription>
         </DialogHeader>
 
         {error && (
-          <Alert variant='destructive' className='mb-4'>
-            <AlertCircle className='mr-2 h-4 w-4' />
+          <Alert variant="destructive" className="mb-4">
+            <AlertCircle className="mr-2 h-4 w-4" />
             <AlertDescription>{error}</AlertDescription>
           </Alert>
         )}
 
-        <div className='grid gap-4 py-4'>
+        <div className="grid gap-4 py-4">
           <Textarea
             placeholder={`:root {
   --background: 0 0% 100%;
@@ -93,25 +95,29 @@ const CssImportDialog = ({ open, onOpenChange, onImport }: CssImportDialogProps)
   /* And more */
 }
   `}
-            className='text-foreground max-h-[500px] min-h-[300px] font-mono text-sm'
+            className="text-foreground max-h-[500px] min-h-[300px] font-mono text-sm"
             value={cssText}
-            onChange={e => {
-              setCssText(e.target.value)
-              if (error) setError(null)
+            onChange={(e) => {
+              setCssText(e.target.value);
+              if (error) setError(null);
             }}
           />
         </div>
         <DialogFooter>
-          <Button variant='outline' onClick={handleClose} className='text-foreground cursor-pointer'>
+          <Button
+            variant="outline"
+            onClick={handleClose}
+            className="text-foreground cursor-pointer"
+          >
             Cancel
           </Button>
-          <Button onClick={handleImport} className='cursor-pointer'>
+          <Button onClick={handleImport} className="cursor-pointer">
             Import
           </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  )
-}
+  );
+};
 
-export default CssImportDialog
+export default CssImportDialog;

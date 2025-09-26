@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { LayoutDashboardIcon, EditIcon } from 'lucide-react';
+import { LayoutDashboardIcon, EditIcon, File } from 'lucide-react';
 import { ThemeCustomizer } from '@/components/customizer';
 import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
@@ -35,7 +35,6 @@ export function FormHeader({ tab, onTabChange }: HeaderProps) {
             </div>
 
             <div className="ml-auto flex gap-2">
-              <Button variant="outline">Save</Button>
               <Button>Publish</Button>
             </div>
           </div>
@@ -51,9 +50,15 @@ export function FormHeader({ tab, onTabChange }: HeaderProps) {
               </TabsTrigger>
             </TabsList>
           </Tabs>
-          <Button asChild={true} variant="secondary">
-            <Link href="/p/resume">Preview</Link>
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" className="shadow-none">
+              <File className="size-4" />
+              Save
+            </Button>
+            <Button asChild={true} variant="secondary" className="shadow-none">
+              <Link href="/p/resume">Preview</Link>
+            </Button>
+          </div>
         </div>
       </CardContent>
 

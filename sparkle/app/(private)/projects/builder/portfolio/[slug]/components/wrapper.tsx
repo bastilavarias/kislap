@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Form } from '@/app/(private)/projects/builder/portfolio/new/components/form';
+import { Form } from '@/app/(private)/projects/builder/portfolio/[slug]/components/form';
 import { FormHeader } from '@/components/form-header';
 import { BackButton } from '@/components/back-button';
 
