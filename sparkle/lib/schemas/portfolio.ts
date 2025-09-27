@@ -10,16 +10,20 @@ const workExperienceSchema = z.object({
   jobTitle: z.string(),
   company: z.string(),
   location: z.string(),
-  startDate: z.string(),
-  endDate: z.string(),
+  startDate: z.date(),
+  endDate: z.date(),
   description: z.string(),
 });
 
 const educationSchema = z.object({
   degree: z.string(),
   school: z.string(),
-  startDate: z.string(),
-  endDate: z.string(),
+  startDate: z.date(),
+  endDate: z.date(),
+});
+
+const skillSchema = z.object({
+  name: z.string(),
 });
 
 export const PortfolioSchema = z.object({
@@ -31,8 +35,8 @@ export const PortfolioSchema = z.object({
   about: z.string(),
   socialLinks: z.array(socialLinkSchema),
   workExperiences: z.array(workExperienceSchema),
-  educations: z.array(educationSchema),
-  skills: z.array(z.string()),
+  education: z.array(educationSchema),
+  skills: z.array(skillSchema),
 });
 
 export type PortfolioFormValues = z.infer<typeof PortfolioSchema>;

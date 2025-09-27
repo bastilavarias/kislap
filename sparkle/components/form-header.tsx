@@ -31,7 +31,7 @@ export function FormHeader({ tab, onTabChange }: HeaderProps) {
                 onChange={(e) => setSlug(e.target.value)}
                 className="w-32 shadow"
               />
-              <span className="text-gray-500 font-mono ml-1">.kislap.com</span>
+              <span className="text-gray-500 dark:text-gray-400 font-mono ml-1">.kislap.com</span>
             </div>
 
             <div className="ml-auto flex gap-2">
