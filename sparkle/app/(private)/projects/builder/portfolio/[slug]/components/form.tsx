@@ -29,14 +29,13 @@ import {
   SheetFooter,
   SheetClose,
 } from '@/components/ui/sheet';
-import { Container } from '@/components/container';
 
 interface Props {
   onSubmit: SubmitHandler<PortfolioFormValues>;
 }
 
 export function Form({ onSubmit }: Props) {
-  const [newSkill, setNewSkill] = useState('');
+  const [files, setFiles] = useState<File[] | []>([]);
 
   const {
     register,
@@ -108,74 +107,7 @@ export function Form({ onSubmit }: Props) {
     });
   };
 
-  const onAddSkill = () => {
-    appendSkill({
-      name: '',
-    });
-  };
-
-  const confirmAddSkill = () => {
-    if (newSkill.trim() !== '') {
-      appendSkill({ name: newSkill.trim() });
-    }
-    setNewSkill('');
-  };
-
-  function AddSkillDrawer({ onAdd }: { onAdd: (skill: string) => void }) {
-    const [value, setValue] = useState('');
-
-    const handleSave = () => {
-      if (value.trim() !== '') {
-        onAdd(value.trim());
-        setValue('');
-      }
-    };
-
-    return (
-      <Sheet>
-        <SheetTrigger asChild>
-          <Button type="button" variant="outline" className="mt-6 shadow-none font-semibold">
-            <Plus className="w-4 h-4 mr-2" />
-            Add New Skill
-          </Button>
-        </SheetTrigger>
-
-        <SheetContent side="bottom" className="rounded-t-2xl p-6 max-h-[40%] flex flex-col">
-          <SheetHeader>
-            <SheetTitle className="text-lg font-bold">✨ Add a new Skill</SheetTitle>
-            <p className="text-sm text-muted-foreground">
-              Type your skill and press <kbd>Enter</kbd> or click save.
-            </p>
-          </SheetHeader>
-
-          <div className="mt-6">
-            <Label className="mb-2 block text-sm font-medium">Skill Name</Label>
-            <Input
-              placeholder="e.g. TypeScript, React, Laravel..."
-              value={value}
-              onChange={(e) => setValue(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  e.preventDefault();
-                  handleSave();
-                }
-              }}
-              className="h-12 text-base rounded-xl"
-              autoFocus
-            />
-          </div>
-
-          <SheetFooter className="mt-auto flex justify-end gap-2">
-            <SheetClose asChild>
-              <Button onClick={handleSave} className="px-6 py-2 rounded-xl shadow-sm">
-                Save
-              </Button>
-            </SheetClose>
-          </SheetFooter>
-        </SheetContent>
-      </Sheet>
-    );
-  }
+  const onProcessResumeFile = () => {};
 
   return (
     <Card>
@@ -188,7 +120,11 @@ export function Form({ onSubmit }: Props) {
 
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-medium">Resume</h3>
-              <FileUploadDialog />
+              <FileUploadDialog
+                onProcess={onProcessResumeFile}
+                files={files}
+                onChangeFiles={setFiles}
+              />
             </div>
 
             <div className="flex flex-col gap-4">
@@ -575,5 +511,61 @@ export function Form({ onSubmit }: Props) {
         </form>
       </CardContent>
     </Card>
+  );
+}
+
+function AddSkillDrawer({ onAdd }: { onAdd: (skill: string) => void }) {
+  const [value, setValue] = useState('');
+
+  const handleSave = () => {
+    if (value.trim() !== '') {
+      onAdd(value.trim());
+      setValue('');
+    }
+  };
+
+  return (
+    <Sheet>
+      <SheetTrigger asChild>
+        <Button type="button" variant="outline" className="mt-6 shadow-none font-semibold">
+          <Plus className="w-4 h-4 mr-2" />
+          Add New Skill
+        </Button>
+      </SheetTrigger>
+
+      <SheetContent side="bottom" className="rounded-t-2xl p-6 max-h-[40%] flex flex-col">
+        <SheetHeader>
+          <SheetTitle className="text-lg font-bold">✨ Add a new Skill</SheetTitle>
+          <p className="text-sm text-muted-foreground">
+            Type your skill and press <kbd>Enter</kbd> or click save.
+          </p>
+        </SheetHeader>
+
+        <div className="mt-6">
+          <Label className="mb-2 block text-sm font-medium">Skill Name</Label>
+          <Input
+            placeholder="e.g. TypeScript, React, Laravel..."
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                handleSave();
+              }
+            }}
+            className="h-12 text-base rounded-xl"
+            autoFocus
+          />
+        </div>
+
+        <SheetFooter className="mt-auto flex justify-end gap-2">
+          <SheetClose asChild>
+            <Button onClick={handleSave} className="px-6 py-2 rounded-xl shadow-sm">
+              Save
+            </Button>
+          </SheetClose>
+        </SheetFooter>
+      </SheetContent>
+    </Sheet>
   );
 }
