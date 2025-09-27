@@ -1,6 +1,6 @@
 import { useApi } from '@/lib/api';
 import { useState } from 'react';
-import { useLocalStorage } from '@/hooks/useLocalStorage';
+import { useLocalStorage } from '@/hooks/use-local-storage';
 
 export type AuthUser = {
   id: number;

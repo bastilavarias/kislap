@@ -1,4 +1,4 @@
-export function objectToFormData(
+export function useFormData(
   data: Record<string, any>,
   form?: FormData,
   parentKey?: string
@@ -16,10 +16,10 @@ export function objectToFormData(
       formData.append(fullKey, value);
     } else if (Array.isArray(value)) {
       value.forEach((item, index) => {
-        objectToFormData({ [index]: item }, formData, fullKey);
+        useFormData({ [index]: item }, formData, fullKey);
       });
     } else if (typeof value === 'object' && !(value instanceof Date)) {
-      objectToFormData(value, formData, fullKey);
+      useFormData(value, formData, fullKey);
     } else {
       formData.append(fullKey, String(value));
     }

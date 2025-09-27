@@ -1,42 +1,44 @@
 import { z } from 'zod';
 
-const socialLinkSchema = z.object({
-  name: z.string(),
-  url: z.string(),
-  icon: z.string(),
-});
-
-const workExperienceSchema = z.object({
-  jobTitle: z.string(),
-  company: z.string(),
-  location: z.string(),
-  startDate: z.date(),
-  endDate: z.date(),
-  description: z.string(),
-});
-
-const educationSchema = z.object({
-  degree: z.string(),
-  school: z.string(),
-  startDate: z.date(),
-  endDate: z.date(),
-});
-
-const skillSchema = z.object({
-  name: z.string(),
-});
-
 export const PortfolioSchema = z.object({
   name: z.string(),
-  location: z.string(),
   introduction: z.string(),
+  about: z.string(),
   email: z.string().email(),
   phone: z.string(),
-  about: z.string(),
-  socialLinks: z.array(socialLinkSchema),
-  workExperiences: z.array(workExperienceSchema),
-  education: z.array(educationSchema),
-  skills: z.array(skillSchema),
+  website: z.string().url().nullable(),
+  github: z.string().url().nullable(),
+  linkedin: z.string().nullable(),
+  twitter: z.string().nullable(),
+
+  workExperiences: z.array(
+    z.object({
+      company: z.string(),
+      role: z.string(),
+      location: z.string(),
+      startDate: z.date().nullable(), // keep string if from API (ISO), or use z.coerce.date() if you want real Date
+      endDate: z.date().nullable(),
+      about: z.string(),
+    })
+  ),
+
+  education: z.array(
+    z.object({
+      school: z.string(),
+      level: z.string().nullable(),
+      degree: z.string().nullable(),
+      location: z.string().nullable(),
+      yearStart: z.date().nullable(),
+      yearEnd: z.date().nullable(),
+      about: z.string().nullable(),
+    })
+  ),
+
+  skills: z.array(
+    z.object({
+      name: z.string(),
+    })
+  ),
 });
 
 export type PortfolioFormValues = z.infer<typeof PortfolioSchema>;

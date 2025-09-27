@@ -1,8 +1,8 @@
 'use client';
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useLocalStorage } from '@/hooks/useLocalStorage';
-import { useAuth } from '@/hooks/api/useAuth';
+import { useLocalStorage } from '@/hooks/use-local-storage';
+import { useAuth } from '@/hooks/api/use-auth';
 
 export default function ClientAuthGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();

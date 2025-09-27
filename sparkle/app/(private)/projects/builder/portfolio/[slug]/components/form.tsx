@@ -29,6 +29,7 @@ import {
   SheetFooter,
   SheetClose,
 } from '@/components/ui/sheet';
+import { DocumentResume, useDocument } from '@/hooks/api/use-document';
 
 interface Props {
   onSubmit: SubmitHandler<PortfolioFormValues>;
@@ -36,6 +37,8 @@ interface Props {
 
 export function Form({ onSubmit }: Props) {
   const [files, setFiles] = useState<File[] | []>([]);
+  const [isFileProcessing, setIsFileProcessing] = useState(false);
+  const { parse } = useDocument();
 
   const {
     register,
@@ -48,12 +51,11 @@ export function Form({ onSubmit }: Props) {
     resolver: zodResolver(PortfolioSchema),
     defaultValues: {
       name: '',
-      location: '',
       introduction: '',
+      about: '',
       email: '',
       phone: '',
-      about: '',
-      socialLinks: [],
+      website: '',
       workExperiences: [],
       education: [],
       skills: [],
@@ -89,25 +91,83 @@ export function Form({ onSubmit }: Props) {
 
   const onAddWorkExperience = () => {
     appendWork({
-      jobTitle: '',
+      role: '',
       company: '',
       location: '',
       startDate: new Date(),
       endDate: new Date(),
-      description: '',
+      about: '',
     });
   };
 
   const onAddEducation = () => {
     appendEducation({
-      degree: '',
       school: '',
-      startDate: new Date(),
-      endDate: new Date(),
+      degree: '',
+      level: '',
+      location: '',
+      yearStart: new Date(),
+      yearEnd: new Date(),
+      about: '',
     });
   };
 
-  const onProcessResumeFile = () => {};
+  function mapResumeToFormValues(resume: DocumentResume): PortfolioFormValues {
+    return {
+      name: resume.name || '',
+      introduction: resume.introduction || '',
+      about: resume.about || '',
+      email: resume.email || '',
+      phone: resume.phone || '',
+      website: resume.phone || '',
+      github: resume.github || '',
+      linkedin: resume.linkedin || '',
+      twitter: resume.twitter || '',
+      workExperiences: (resume.work_experiences || []).map((w: any) => ({
+        company: w.company || '',
+        role: w.role || '',
+        location: w.location || '',
+        startDate: w.start_date ? new Date(w.start_date) : null,
+        endDate: w.end_date ? new Date(w.end_date) : null,
+        about: w.about || '',
+      })),
+      education: (resume.education || []).map((e) => ({
+        school: e.school || '',
+        level: e.level || null,
+        degree: e.degree || null,
+        location: e.location || null,
+        yearStart: e.year_start ? new Date(`${e.year_start}-01-01`) : null,
+        yearEnd: e.year_end ? new Date(`${e.year_end}-01-01`) : null,
+        about: e.about || null,
+      })),
+      skills: (resume.showcases || []).map((s: any) => ({
+        name: s.name,
+      })),
+    };
+  }
+
+  const onProcessResumeFile = async () => {
+    setIsFileProcessing(true);
+    const { success, data, message } = await parse(files[0], 'resume');
+    console.log(success);
+    console.log(data);
+    console.log(message);
+
+    if (success && data) {
+      console.log('Raw resume:', data);
+
+      const mappedValues = mapResumeToFormValues(data);
+
+      // Prefill form
+      Object.entries(mappedValues).forEach(([key, value]) => {
+        setValue(key as keyof PortfolioFormValues, value, { shouldValidate: true });
+      });
+
+      setIsFileProcessing(false);
+      return;
+    }
+    setIsFileProcessing(false);
+  };
 
   return (
     <Card>
@@ -124,6 +184,7 @@ export function Form({ onSubmit }: Props) {
                 onProcess={onProcessResumeFile}
                 files={files}
                 onChangeFiles={setFiles}
+                loading={isFileProcessing}
               />
             </div>
 
@@ -142,13 +203,13 @@ export function Form({ onSubmit }: Props) {
                           <p className="text-destructive text-sm mt-1">{errors.name.message}</p>
                         )}
                       </div>
-                      <div>
+                      {/* <div>
                         <Label className="font-medium mb-2">Location</Label>
                         <Input {...register('location')} className="w-full shadow-none" />
                         {errors.location && (
                           <p className="text-destructive text-sm mt-1">{errors.location.message}</p>
                         )}
-                      </div>
+                      </div> */}
                     </div>
 
                     <div>
@@ -219,12 +280,12 @@ export function Form({ onSubmit }: Props) {
                               <div>
                                 <Label className="font-medium mb-2">Job Title</Label>
                                 <Input
-                                  {...register(`workExperiences.${index}.jobTitle` as const)}
+                                  {...register(`workExperiences.${index}.role` as const)}
                                   className="w-full shadow-none"
                                 />
-                                {errors.workExperiences?.[index]?.jobTitle && (
+                                {errors.workExperiences?.[index]?.role && (
                                   <p className="text-destructive text-sm mt-1">
-                                    {errors.workExperiences[index]?.jobTitle?.message}
+                                    {errors.workExperiences[index]?.role?.message}
                                   </p>
                                 )}
                               </div>
@@ -294,9 +355,14 @@ export function Form({ onSubmit }: Props) {
                               <div>
                                 <Label className="font-medium mb-2">Description</Label>
                                 <Textarea
-                                  {...register(`workExperiences.${index}.description` as const)}
+                                  {...register(`workExperiences.${index}.about` as const)}
                                   className="w-full shadow-none h-24 resize-none"
-                                />
+                                />{' '}
+                                {errors.workExperiences?.[index]?.about && (
+                                  <p className="text-destructive text-sm mt-1">
+                                    {errors.workExperiences[index]?.about?.message}
+                                  </p>
+                                )}
                               </div>
 
                               <div className="flex justify-between items-center">
@@ -384,7 +450,7 @@ export function Form({ onSubmit }: Props) {
                                 <div className="flex flex-col">
                                   <Label className="text-xs mb-2">Start Date</Label>
                                   <Controller
-                                    name={`education.${index}.startDate`}
+                                    name={`education.${index}.yearStart`}
                                     control={control}
                                     render={({ field }) => (
                                       <DateInput
@@ -394,16 +460,16 @@ export function Form({ onSubmit }: Props) {
                                       />
                                     )}
                                   />
-                                  {errors.education?.[index]?.startDate && (
+                                  {errors.education?.[index]?.yearStart && (
                                     <p className="text-destructive text-sm mt-1">
-                                      {errors.education[index]?.startDate?.message}
+                                      {errors.education[index]?.yearStart?.message}
                                     </p>
                                   )}
                                 </div>
                                 <div>
                                   <Label className="text-xs mb-2">End Date</Label>
                                   <Controller
-                                    name={`education.${index}.endDate`}
+                                    name={`education.${index}.yearEnd`}
                                     control={control}
                                     render={({ field }) => (
                                       <DateInput
@@ -414,9 +480,9 @@ export function Form({ onSubmit }: Props) {
                                       />
                                     )}
                                   />
-                                  {errors.education?.[index]?.endDate && (
+                                  {errors.education?.[index]?.yearEnd && (
                                     <p className="text-destructive text-sm mt-1">
-                                      {errors.education[index]?.endDate?.message}
+                                      {errors.education[index]?.yearEnd?.message}
                                     </p>
                                   )}
                                 </div>

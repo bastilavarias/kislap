@@ -8,7 +8,7 @@ import type { ReactNode } from 'react';
 import type { ThemeStyleProps, ThemeStyles } from '@/types/theme';
 
 // Hook Imports
-import { useSettings } from '@/hooks/useSettings';
+import { useSettings } from '@/hooks/use-settings';
 
 // Utils Imports
 import { colorFormatter } from '@/lib/color-converter';

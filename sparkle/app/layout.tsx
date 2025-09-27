@@ -7,7 +7,7 @@ import type { Metadata } from 'next';
 
 // Component Imports
 import NextProvider from '@/providers/NextProvider';
-import { SettingsProvider } from '@/contexts/settingsContext';
+import { SettingsProvider } from '@/contexts/settings-context';
 import { ThemeProvider } from '@/providers/ThemesProvider';
 import { Toaster } from '@/components/ui/sonner';
 

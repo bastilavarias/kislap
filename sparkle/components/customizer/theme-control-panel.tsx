@@ -30,7 +30,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { DEFAULT_FONT_SANS, DEFAULT_FONT_SERIF, DEFAULT_FONT_MONO } from '@/config/theme';
 
 // Hook Imports
-import { useSettings } from '@/hooks/useSettings';
+import { useSettings } from '@/hooks/use-settings';
 
 // Util Imports
 import { getPresetThemeStyles, presets } from '@/lib/theme-presets';

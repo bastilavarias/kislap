@@ -18,9 +18,10 @@ interface Props {
   files: File[];
   onChangeFiles: any;
   onProcess: any;
+  loading: boolean;
 }
 
-export function FileUploadDialog({ files, onChangeFiles, onProcess }: Props) {
+export function FileUploadDialog({ files, onChangeFiles, onProcess, loading }: Props) {
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -57,8 +58,8 @@ export function FileUploadDialog({ files, onChangeFiles, onProcess }: Props) {
           <DialogClose asChild>
             <Button variant="outline">Cancel</Button>
           </DialogClose>
-          <Button className="w-24" onClick={onProcess}>
-            Process
+          <Button className="w-24" onClick={onProcess} disabled={loading}>
+            {loading ? 'Processing' : 'Process'}
           </Button>
         </DialogFooter>
       </DialogContent>

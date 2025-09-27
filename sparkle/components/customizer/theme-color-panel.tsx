@@ -4,7 +4,7 @@ import type { InputHTMLAttributes } from 'react';
 
 // Type Imports
 import type { ThemePreset, ThemeStyleProps } from '@/types/theme';
-import type { Settings, ThemeSettings } from '@/contexts/settingsContext';
+import type { Settings, ThemeSettings } from '@/contexts/settings-context';
 
 // Component Imports
 import {
@@ -15,7 +15,7 @@ import {
 } from '@/components/ui/accordion';
 
 // Hook Imports
-import { useSettings } from '@/hooks/useSettings';
+import { useSettings } from '@/hooks/use-settings';
 
 // Utils Imports
 import { colorFormatter } from '@/lib/color-converter';

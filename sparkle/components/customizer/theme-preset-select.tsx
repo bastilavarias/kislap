@@ -25,7 +25,7 @@ import CssImportDialog from './css-import-dialog';
 import { defaultThemeState } from '@/config/theme';
 
 // Hook Imports
-import { useSettings } from '@/hooks/useSettings';
+import { useSettings } from '@/hooks/use-settings';
 
 // Util Imports
 import { toast } from '@/lib/toast';

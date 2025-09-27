@@ -1,7 +1,7 @@
 'use client';
 
 import useSWR from 'swr';
-import { Mode } from '@/contexts/settingsContext';
+import { Mode } from '@/contexts/settings-context';
 import { Preview } from '@/app/(preview)/p/resume/components/preview';
 import { ComponentThemeProvider } from '@/providers/ComponentThemesProvider';
 import { FloatingToolbar } from '@/app/(preview)/p/resume/components/floating-toolbar';

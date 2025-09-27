@@ -33,6 +33,7 @@ func (controller Controller) List(context *gin.Context) {
 	}
 
 	utils.APIRespondSuccess(context, http.StatusOK, projects)
+
 }
 
 func (controller Controller) Create(context *gin.Context) {

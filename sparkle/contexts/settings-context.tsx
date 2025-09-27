@@ -11,8 +11,8 @@ import type { ThemePreset } from '@/types/theme';
 import { defaultThemeState } from '@/config/theme';
 
 // Hook Imports
-import { useObjectCookie } from '@/hooks/useObjectCookie';
-import { useLocalStorage } from '@/hooks/useLocalStorage';
+import { useObjectCookie } from '@/hooks/use-object-cookie';
+import { useLocalStorage } from '@/hooks/use-local-storage';
 
 // Util Imports
 import { getPresetThemeStyles } from '@/lib/theme-presets';

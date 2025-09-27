@@ -25,8 +25,9 @@ func NewController(db *gorm.DB, llm llm.Provider) *Controller {
 func (controller Controller) Parse(context *gin.Context) {
 	docType := context.PostForm("type")
 	if docType == "" {
-		context.JSON(http.StatusBadRequest, gin.H{"error": "type is required"})
-		return
+		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
+		context.Abort()
+		return;
 	}
 
 	request := ParseDocumentRequest{
@@ -35,33 +36,38 @@ func (controller Controller) Parse(context *gin.Context) {
 
 	file, err := context.FormFile("file")
 	if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"error": "file is required"})
-		return
+		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
+		context.Abort()
+		return;
 	}
 
 	theFile, err := file.Open()
 	if err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"error": "failed to open file"})
-		return
+		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
+		context.Abort()
+		return;
 	}
 	defer func(theFile multipart.File) {
 		err := theFile.Close()
 		if err != nil {
-			context.JSON(http.StatusInternalServerError, gin.H{"error": "failed to close file"})
-			return
+		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
+		context.Abort()
+		return;
 		}
 	}(theFile)
 
 	if err := utils.ValidateRequestPDF(theFile, file.Filename, 5<<20); err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
+		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
+		context.Abort()
+		return;
 	}
 
 	data, err := controller.Service.Parse(request.ToServicePayload(theFile))
 	if err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
+		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
+		context.Abort()
+		return;
 	}
 
-	context.JSON(http.StatusOK, data)
+	utils.APIRespondSuccess(context, http.StatusOK, data)
 }

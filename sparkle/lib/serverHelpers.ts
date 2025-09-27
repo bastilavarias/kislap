@@ -1,52 +1,52 @@
 // Next Imports
-import { cookies } from 'next/headers'
+import { cookies } from 'next/headers';
 
 // Third-party Imports
-import 'server-only'
+import 'server-only';
 
 // Type Imports
-import type { Mode, ModeSettings } from '@/contexts/settingsContext'
+import type { Mode, ModeSettings } from '@/contexts/settings-context';
 
 export const getMode = async (): Promise<Mode> => {
   try {
-    const cookieStore = await cookies()
-    const settings = cookieStore.get('shadcn-studio-mode')
+    const cookieStore = await cookies();
+    const settings = cookieStore.get('shadcn-studio-mode');
 
-    if (!settings?.value) return 'light'
+    if (!settings?.value) return 'light';
 
     try {
-      const parsedSettings = JSON.parse(settings.value) as ModeSettings
+      const parsedSettings = JSON.parse(settings.value) as ModeSettings;
 
-      return parsedSettings.mode || 'light'
+      return parsedSettings.mode || 'light';
     } catch {
-      return 'light'
+      return 'light';
     }
   } catch {
-    return 'light'
+    return 'light';
   }
-}
+};
 
 export const getSettingsFromCookie = async (): Promise<ModeSettings> => {
   try {
-    const cookieStore = await cookies()
-    const settings = cookieStore.get('shadcn-studio-mode')
+    const cookieStore = await cookies();
+    const settings = cookieStore.get('shadcn-studio-mode');
 
     if (!settings?.value) {
       return {
-        mode: 'light'
-      }
+        mode: 'light',
+      };
     }
 
     try {
-      return JSON.parse(settings.value) as ModeSettings
+      return JSON.parse(settings.value) as ModeSettings;
     } catch {
       return {
-        mode: 'light'
-      }
+        mode: 'light',
+      };
     }
   } catch {
     return {
-      mode: 'light'
-    }
+      mode: 'light',
+    };
   }
-}
+};

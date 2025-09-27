@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ProjectFormValues, ProjectSchema } from '@/lib/schemas/project';
-import { useProject } from '@/hooks/api/useProject';
+import { useProject } from '@/hooks/api/use-project';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,

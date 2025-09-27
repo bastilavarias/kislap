@@ -21,7 +21,7 @@ import {
 import { Input } from '@/components/ui/input';
 
 // Hook Imports
-import { useSettings } from '@/hooks/useSettings';
+import { useSettings } from '@/hooks/use-settings';
 
 // Utils Imports
 import { toast } from '@/lib/toast';
