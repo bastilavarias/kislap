@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { MouseEventHandler, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -10,12 +10,13 @@ import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 
-type HeaderProps = {
+type HeaderProps<T> = {
   tab: string;
   onTabChange: (value: string) => void;
+  onSave: (e?: React.BaseSyntheticEvent) => void | Promise<void>;
 };
 
-export function FormHeader({ tab, onTabChange }: HeaderProps) {
+export function FormHeader<T>({ tab, onTabChange, onSave }: HeaderProps<T>) {
   const [slug, setSlug] = useState('sebastech');
   const [isThemeCustomizerOpen, setIsThemeCustomizerOpen] = useState(false);
 
@@ -51,7 +52,7 @@ export function FormHeader({ tab, onTabChange }: HeaderProps) {
             </TabsList>
           </Tabs>
           <div className="flex items-center gap-2">
-            <Button variant="outline" className="shadow-none">
+            <Button variant="outline" className="shadow-none" onClick={onSave}>
               <File className="size-4" />
               Save
             </Button>

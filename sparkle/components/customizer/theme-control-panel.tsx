@@ -40,6 +40,8 @@ import { Settings } from '@/contexts/settings-context';
 type Mode = 'light' | 'dark';
 
 type Props = {
+  settings?: Settings | null;
+  setSettings?: any;
   stateless?: boolean;
   hideTopActionButtons?: boolean;
   hideModeToggle?: boolean;
@@ -55,18 +57,26 @@ const ThemeControlPanel = ({
   hideScrollArea = false,
   hideThemeSaverButton = false,
   hideImportButton = false,
+
+  settings: localSettings,
+  setSettings: setLocalSettings,
 }: Props) => {
   // Hooks
   const { setTheme } = useTheme();
   const { settings, updateSettings, applyThemePreset, resetToDefault } = useSettings();
 
-  const [localSettings, setLocalSettings] = useState({ ...settings });
+  const onLocalUpdateSettings = (newSettings: Partial<Settings>) => {
+    if (stateless && newSettings) {
+      setLocalSettings({
+        ...localSettings,
+        ...settings,
+        mode: settings.mode,
+      });
 
-  const onLocalUpdateSettings = (settings: Partial<Settings>) => {
-    console.log(settings);
-    console.log('onLocalUpdateSettings');
-    return;
-    // updateSettings(settings);
+      return;
+    }
+
+    updateSettings(settings);
   };
 
   const handleModeChange = (value: string) => {
@@ -75,13 +85,13 @@ const ThemeControlPanel = ({
 
       // Ensure both themes exist before switching
       const updatedSettings = {
-        ...localSettings,
+        ...settings,
         mode: newMode,
         theme: {
-          ...localSettings.theme,
+          ...settings.theme,
           styles: {
-            light: localSettings.theme.styles?.light || {},
-            dark: localSettings.theme.styles?.dark || {},
+            light: settings.theme.styles?.light || {},
+            dark: settings.theme.styles?.dark || {},
           },
         },
       };
@@ -94,13 +104,13 @@ const ThemeControlPanel = ({
 
   // Helper function to ensure both themes are updated together
   const updateBothThemes = (updates: Partial<ThemeStyleProps>) => {
-    const currentLight = localSettings.theme.styles?.light || {};
-    const currentDark = localSettings.theme.styles?.dark || {};
+    const currentLight = settings.theme.styles?.light || {};
+    const currentDark = settings.theme.styles?.dark || {};
 
     const updatedSettings = {
-      ...localSettings,
+      ...settings,
       theme: {
-        ...localSettings.theme,
+        ...settings.theme,
         styles: {
           light: { ...currentLight, ...updates },
           dark: { ...currentDark, ...updates },
@@ -124,22 +134,22 @@ const ThemeControlPanel = ({
 
   const handleStyleChange = useCallback(
     (key: keyof ThemeStyleProps, value: string) => {
-      if (!localSettings.mode) return;
+      if (!settings.mode) return;
 
       onLocalUpdateSettings({
         theme: {
-          ...localSettings.theme,
+          ...settings.theme,
           styles: {
-            ...localSettings.theme.styles,
-            [localSettings.mode as Mode]: {
-              ...localSettings.theme.styles?.[localSettings.mode as Mode],
+            ...settings.theme.styles,
+            [settings.mode as Mode]: {
+              ...settings.theme.styles?.[settings.mode as Mode],
               [key]: value,
             },
           },
         },
       });
     },
-    [localSettings.theme, localSettings.mode, updateSettings]
+    [settings.theme, settings.mode, updateSettings]
   );
 
   const handleLetterSpacingChange = (value: number) => {
@@ -160,10 +170,10 @@ const ThemeControlPanel = ({
       const updatedSettings = {
         ...settings,
         theme: {
-          ...localSettings.theme,
+          ...settings.theme,
           styles: {
-            light: localSettings.theme.styles?.light || {},
-            dark: localSettings.theme.styles?.dark || {},
+            light: settings.theme.styles?.light || {},
+            dark: settings.theme.styles?.dark || {},
           },
         },
       };
@@ -174,27 +184,27 @@ const ThemeControlPanel = ({
   }, []);
 
   useEffect(() => {
-    if (localSettings.mode) {
-      setTheme(localSettings.mode);
+    if (settings.mode) {
+      setTheme(settings.mode);
     }
-  }, [localSettings.mode, setTheme]);
+  }, [settings.mode, setTheme]);
 
-  const currentStyles = localSettings.theme.styles?.[localSettings.mode as Mode] || {};
+  const currentStyles = settings.theme.styles?.[settings.mode as Mode] || {};
 
   const form = (
     <div className="flex flex-col gap-6">
       {!hideTopActionButtons && (
         <div className="flex gap-3">
           <ThemeVariablesDialog
-            lightTheme={localSettings.theme.styles?.light}
-            darkTheme={localSettings.theme.styles?.dark}
+            lightTheme={settings.theme.styles?.light}
+            darkTheme={settings.theme.styles?.dark}
             trigger={
               <Button variant="outline" className="flex-1 cursor-pointer gap-2" size="lg">
                 <Copy className="h-4 w-4" />
                 Copy
               </Button>
             }
-            activeTheme={localSettings.theme.preset ?? ''}
+            activeTheme={settings.theme.preset ?? ''}
           />
           <Button
             variant="outline"
@@ -213,7 +223,7 @@ const ThemeControlPanel = ({
           <h3 className="text-lg font-medium">Mode</h3>
           <ToggleGroup
             type="single"
-            value={localSettings.mode}
+            value={settings.mode}
             onValueChange={handleModeChange}
             className="gap-4"
           >
@@ -240,7 +250,7 @@ const ThemeControlPanel = ({
       {/* Themes Selection */}
       <ThemePresetSelect
         presets={presets}
-        currentPreset={localSettings.theme.preset || null}
+        currentPreset={settings.theme.preset || null}
         onPresetChange={handleApplyThemePreset}
         hideImportButton={hideImportButton}
       />
@@ -260,7 +270,11 @@ const ThemeControlPanel = ({
 
         <TabsContent value="colors">
           {/* CSS Variables Section */}
-          <ThemeColorPanel settings={localSettings} />
+          <ThemeColorPanel
+            stateles={stateless}
+            settings={settings}
+            setSettings={(settings: Partial<Settings>) => onLocalUpdateSettings(settings)}
+          />
         </TabsContent>
 
         {/* Text Selection */}
@@ -273,7 +287,7 @@ const ThemeControlPanel = ({
               fonts={sansSerifFonts}
               defaultValue={DEFAULT_FONT_SANS}
               currentFont={getAppliedThemeFont(
-                localSettings.theme.styles?.[localSettings.mode as Mode],
+                settings.theme.styles?.[settings.mode as Mode],
                 'font-sans'
               )}
               onFontChange={(value) => handleFontChange('font-sans', value)}
@@ -288,7 +302,7 @@ const ThemeControlPanel = ({
               fonts={serifFonts}
               defaultValue={DEFAULT_FONT_SERIF}
               currentFont={getAppliedThemeFont(
-                localSettings.theme.styles?.[localSettings.mode as Mode],
+                settings.theme.styles?.[settings.mode as Mode],
                 'font-serif'
               )}
               onFontChange={(value) => handleFontChange('font-serif', value)}
@@ -303,7 +317,7 @@ const ThemeControlPanel = ({
               fonts={monoFonts}
               defaultValue={DEFAULT_FONT_MONO}
               currentFont={getAppliedThemeFont(
-                localSettings.theme.styles?.[localSettings.mode as Mode],
+                settings.theme.styles?.[settings.mode as Mode],
                 'font-mono'
               )}
               onFontChange={(value) => handleFontChange('font-mono', value)}
@@ -313,9 +327,10 @@ const ThemeControlPanel = ({
           <div className="mt-6">
             <SliderWithInput
               value={parseFloat(
-                localSettings.theme.styles?.[localSettings.mode as Mode]?.[
-                  'letter-spacing'
-                ]?.replace('em', '') || '0'
+                settings.theme.styles?.[settings.mode as Mode]?.['letter-spacing']?.replace(
+                  'em',
+                  ''
+                ) || '0'
               )}
               onChange={handleLetterSpacingChange}
               min={-0.25}
@@ -360,10 +375,8 @@ const ThemeControlPanel = ({
           <div className="mt-6">
             <SliderWithInput
               value={parseFloat(
-                localSettings.theme.styles?.[localSettings.mode as Mode]?.spacing?.replace(
-                  'rem',
-                  ''
-                ) || '0.25'
+                settings.theme.styles?.[settings.mode as Mode]?.spacing?.replace('rem', '') ||
+                  '0.25'
               )}
               onChange={handleSpacingChange}
               min={0.15}

@@ -1,57 +1,67 @@
 import { z } from 'zod';
 
 export const PortfolioSchema = z.object({
-  name: z.string(),
-  introduction: z.string(),
-  about: z.string(),
-  email: z.string().email(),
-  phone: z.string(),
-  website: z.string().url().nullable(),
-  github: z.string().url().nullable(),
-  linkedin: z.string().nullable(),
-  twitter: z.string().nullable(),
+  name: z.string().optional(),
+  introduction: z.string().optional(),
+  about: z.string().optional(),
+  email: z.string().optional(),
+  phone: z.string().optional(),
+  website: z.string().optional(),
+  github: z.string().optional(),
+  linkedin: z.string().optional(),
+  twitter: z.string().optional(),
 
-  workExperiences: z.array(
-    z.object({
-      company: z.string(),
-      role: z.string(),
-      location: z.string(),
-      startDate: z.date().nullable(), // keep string if from API (ISO), or use z.coerce.date() if you want real Date
-      endDate: z.date().nullable(),
-      about: z.string(),
-    })
-  ),
+  workExperiences: z
+    .array(
+      z.object({
+        company: z.string().optional(),
+        role: z.string().optional(),
+        location: z.string().optional(),
+        startDate: z.string().optional(), // or z.coerce.date().optional() if string from API
+        endDate: z.string().optional(),
+        about: z.string().optional(),
+      })
+    )
+    .optional(),
 
-  education: z.array(
-    z.object({
-      school: z.string(),
-      level: z.string().nullable(),
-      degree: z.string().nullable(),
-      location: z.string().nullable(),
-      yearStart: z.date().nullable(),
-      yearEnd: z.date().nullable(),
-      about: z.string().nullable(),
-    })
-  ),
+  education: z
+    .array(
+      z.object({
+        school: z.string().optional(),
+        level: z.string().optional(),
+        degree: z.string().optional(),
+        location: z.string().optional(),
+        yearStart: z.string().optional(),
+        yearEnd: z.string().optional(),
+        about: z.string().optional(),
+      })
+    )
+    .optional(),
 
-  showcases: z.array(
-    z.object({
-      name: z.string(),
-      description: z.string().nullable(),
-      role: z.string().nullable(),
-      technologies: z.array(
-        z.object({
-          name: z.string(),
-        })
-      ),
-    })
-  ),
+  showcases: z
+    .array(
+      z.object({
+        name: z.string().optional(),
+        description: z.string().optional(),
+        role: z.string().optional(),
+        technologies: z
+          .array(
+            z.object({
+              name: z.string().optional(),
+            })
+          )
+          .optional(),
+      })
+    )
+    .optional(),
 
-  skills: z.array(
-    z.object({
-      name: z.string(),
-    })
-  ),
+  skills: z
+    .array(
+      z.object({
+        name: z.string().optional(),
+      })
+    )
+    .optional(),
 });
 
 export type PortfolioFormValues = z.infer<typeof PortfolioSchema>;

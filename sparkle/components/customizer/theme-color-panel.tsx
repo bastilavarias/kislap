@@ -20,9 +20,17 @@ import { useSettings } from '@/hooks/use-settings';
 // Utils Imports
 import { colorFormatter } from '@/lib/color-converter';
 
-type ThemeColorPanelProps = {
-  settings?: Settings;
-};
+type ThemeColorPanelProps =
+  | {
+      stateles: boolean;
+      settings?: Partial<Settings>;
+      setSettings: (settings: Partial<Settings>) => void;
+    }
+  | {
+      stateles?: boolean;
+      settings?: Partial<Settings>;
+      setSettings?: never;
+    };
 
 type ColorSwatchProps = {
   label: string;
@@ -119,6 +127,12 @@ const ThemeColorPanel = (props: ThemeColorPanelProps) => {
   ] as Partial<ThemeStyleProps> | undefined;
 
   const handleUpdateSettings = (settings: ThemeSettings) => {
+    if (props.stateles && settings) {
+      props.setSettings(settings);
+
+      return;
+    }
+
     updateSettings(settings);
   };
 
