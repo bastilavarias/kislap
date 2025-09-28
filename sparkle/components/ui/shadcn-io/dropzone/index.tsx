@@ -1,202 +1,159 @@
 'use client';
 
-import { UploadIcon } from 'lucide-react';
-import type { ReactNode } from 'react';
-import { createContext, useContext } from 'react';
-import type { DropEvent, DropzoneOptions, FileRejection } from 'react-dropzone';
-import { useDropzone } from 'react-dropzone';
-import { Button } from '@/components/ui/button';
+import type React from 'react';
+
+import { useCallback, useState } from 'react';
 import { cn } from '@/lib/utils';
 
-type DropzoneContextType = {
-  src?: File[];
-  accept?: DropzoneOptions['accept'];
-  maxSize?: DropzoneOptions['maxSize'];
-  minSize?: DropzoneOptions['minSize'];
-  maxFiles?: DropzoneOptions['maxFiles'];
-};
-
-const renderBytes = (bytes: number) => {
-  const units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
-  let size = bytes;
-  let unitIndex = 0;
-
-  while (size >= 1024 && unitIndex < units.length - 1) {
-    size /= 1024;
-    unitIndex++;
-  }
-
-  return `${size.toFixed(2)}${units[unitIndex]}`;
-};
-
-const DropzoneContext = createContext<DropzoneContextType | undefined>(
-  undefined
-);
-
-export type DropzoneProps = Omit<DropzoneOptions, 'onDrop'> & {
-  src?: File[];
+interface DropzoneProps {
+  onDrop: (files: File[]) => void;
+  onError?: (error: string) => void;
+  accept?: Record<string, string[]>;
+  maxFiles?: number;
+  maxSize?: number;
+  minSize?: number;
   className?: string;
-  onDrop?: (
-    acceptedFiles: File[],
-    fileRejections: FileRejection[],
-    event: DropEvent
-  ) => void;
-  children?: ReactNode;
-};
+  children: React.ReactNode;
+  src?: File[];
+}
 
-export const Dropzone = ({
+export function Dropzone({
+  onDrop,
+  onError,
   accept,
   maxFiles = 1,
   maxSize,
   minSize,
-  onDrop,
-  onError,
-  disabled,
-  src,
   className,
   children,
-  ...props
-}: DropzoneProps) => {
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    accept,
-    maxFiles,
-    maxSize,
-    minSize,
-    onError,
-    disabled,
-    onDrop: (acceptedFiles, fileRejections, event) => {
-      if (fileRejections.length > 0) {
-        const message = fileRejections.at(0)?.errors.at(0)?.message;
-        onError?.(new Error(message));
-        return;
+  src = [],
+}: DropzoneProps) {
+  const [isDragOver, setIsDragOver] = useState(false);
+
+  const validateFiles = useCallback(
+    (files: File[]) => {
+      const validFiles: File[] = [];
+
+      for (const file of files) {
+        // Check file type
+        if (accept) {
+          const acceptedTypes = Object.keys(accept);
+          const isValidType = acceptedTypes.some((type) => {
+            if (type.includes('*')) {
+              const baseType = type.split('/')[0];
+              return file.type.startsWith(baseType);
+            }
+            return file.type === type;
+          });
+
+          if (!isValidType) {
+            onError?.(`File type ${file.type} is not accepted`);
+            continue;
+          }
+        }
+
+        // Check file size
+        if (maxSize && file.size > maxSize) {
+          onError?.(`File size exceeds ${maxSize} bytes`);
+          continue;
+        }
+
+        if (minSize && file.size < minSize) {
+          onError?.(`File size is below ${minSize} bytes`);
+          continue;
+        }
+
+        validFiles.push(file);
       }
 
-      onDrop?.(acceptedFiles, fileRejections, event);
+      // Check max files
+      if (maxFiles && validFiles.length > maxFiles) {
+        onError?.(`Maximum ${maxFiles} files allowed`);
+        return validFiles.slice(0, maxFiles);
+      }
+
+      return validFiles;
     },
-    ...props,
-  });
-
-  return (
-    <DropzoneContext.Provider
-      key={JSON.stringify(src)}
-      value={{ src, accept, maxSize, minSize, maxFiles }}
-    >
-      <Button
-        className={cn(
-          'relative h-auto w-full flex-col overflow-hidden p-8',
-          isDragActive && 'outline-none ring-1 ring-ring',
-          className
-        )}
-        disabled={disabled}
-        type="button"
-        variant="outline"
-        {...getRootProps()}
-      >
-        <input {...getInputProps()} disabled={disabled} />
-        {children}
-      </Button>
-    </DropzoneContext.Provider>
+    [accept, maxFiles, maxSize, minSize, onError]
   );
-};
 
-const useDropzoneContext = () => {
-  const context = useContext(DropzoneContext);
+  const handleDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      setIsDragOver(false);
 
-  if (!context) {
-    throw new Error('useDropzoneContext must be used within a Dropzone');
-  }
+      const files = Array.from(e.dataTransfer.files);
+      const validFiles = validateFiles(files);
 
-  return context;
-};
-
-export type DropzoneContentProps = {
-  children?: ReactNode;
-  className?: string;
-};
-
-const maxLabelItems = 3;
-
-export const DropzoneContent = ({
-  children,
-  className,
-}: DropzoneContentProps) => {
-  const { src } = useDropzoneContext();
-
-  if (!src) {
-    return null;
-  }
-
-  if (children) {
-    return children;
-  }
-
-  return (
-    <div className={cn('flex flex-col items-center justify-center', className)}>
-      <div className="flex size-8 items-center justify-center rounded-md bg-muted text-muted-foreground">
-        <UploadIcon size={16} />
-      </div>
-      <p className="my-2 w-full truncate font-medium text-sm">
-        {src.length > maxLabelItems
-          ? `${new Intl.ListFormat('en').format(
-              src.slice(0, maxLabelItems).map((file) => file.name)
-            )} and ${src.length - maxLabelItems} more`
-          : new Intl.ListFormat('en').format(src.map((file) => file.name))}
-      </p>
-      <p className="w-full text-wrap text-muted-foreground text-xs">
-        Drag and drop or click to replace
-      </p>
-    </div>
+      if (validFiles.length > 0) {
+        onDrop(validFiles);
+      }
+    },
+    [onDrop, validateFiles]
   );
-};
 
-export type DropzoneEmptyStateProps = {
-  children?: ReactNode;
-  className?: string;
-};
+  const handleFileInput = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const files = Array.from(e.target.files || []);
+      const validFiles = validateFiles(files);
 
-export const DropzoneEmptyState = ({
-  children,
-  className,
-}: DropzoneEmptyStateProps) => {
-  const { src, accept, maxSize, minSize, maxFiles } = useDropzoneContext();
+      if (validFiles.length > 0) {
+        onDrop(validFiles);
+      }
 
-  if (src) {
-    return null;
-  }
+      // Reset input
+      e.target.value = '';
+    },
+    [onDrop, validateFiles]
+  );
 
-  if (children) {
-    return children;
-  }
-
-  let caption = '';
-
-  if (accept) {
-    caption += 'Accepts ';
-    caption += new Intl.ListFormat('en').format(Object.keys(accept));
-  }
-
-  if (minSize && maxSize) {
-    caption += ` between ${renderBytes(minSize)} and ${renderBytes(maxSize)}`;
-  } else if (minSize) {
-    caption += ` at least ${renderBytes(minSize)}`;
-  } else if (maxSize) {
-    caption += ` less than ${renderBytes(maxSize)}`;
-  }
+  const acceptString = accept ? Object.keys(accept).join(',') : undefined;
 
   return (
-    <div className={cn('flex flex-col items-center justify-center', className)}>
-      <div className="flex size-8 items-center justify-center rounded-md bg-muted text-muted-foreground">
-        <UploadIcon size={16} />
-      </div>
-      <p className="my-2 w-full truncate text-wrap font-medium text-sm">
-        Upload {maxFiles === 1 ? 'a file' : 'files'}
-      </p>
-      <p className="w-full truncate text-wrap text-muted-foreground text-xs">
-        Drag and drop or click to upload
-      </p>
-      {caption && (
-        <p className="text-wrap text-muted-foreground text-xs">{caption}.</p>
+    <div
+      className={cn(
+        'relative border-2 border-dashed rounded-lg transition-colors cursor-pointer',
+        isDragOver ? 'border-primary bg-primary/5' : 'border-muted-foreground/25',
+        className
       )}
+      onDragOver={(e) => {
+        e.preventDefault();
+        setIsDragOver(true);
+      }}
+      onDragLeave={() => setIsDragOver(false)}
+      onDrop={handleDrop}
+      onClick={() => document.getElementById('file-input')?.click()}
+    >
+      <input
+        id="file-input"
+        type="file"
+        className="sr-only"
+        accept={acceptString}
+        multiple={maxFiles !== 1}
+        onChange={handleFileInput}
+      />
+      {children}
     </div>
   );
-};
+}
+
+export function DropzoneEmptyState({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex flex-col items-center justify-center p-8 text-center">{children}</div>
+  );
+}
+
+export function DropzoneContent({ files }: { files?: File[] }) {
+  if (!files || files.length === 0) return null;
+
+  return (
+    <div className="mt-4 space-y-2">
+      {files.map((file, index) => (
+        <div key={index} className="flex items-center gap-2 p-2 bg-muted rounded text-sm">
+          <span className="truncate">{file.name}</span>
+          <span className="text-muted-foreground">({(file.size / 1024 / 1024).toFixed(2)} MB)</span>
+        </div>
+      ))}
+    </div>
+  );
+}

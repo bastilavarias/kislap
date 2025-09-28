@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Plus, X, FilePlus2 } from 'lucide-react'; // Added X icon for removing technologies/skills
 import ThemeControlPanel from '@/components/customizer/theme-control-panel';
-import { FileUploadDialog } from '@/app/(private)/projects/builder/portfolio/[slug]/components/file-upload-dialog';
+import { FileParserDialog } from '@/app/(private)/projects/builder/portfolio/[slug]/components/file-parser-dialog';
 import { PortfolioFormValues, PortfolioSchema } from '@/lib/schemas/portfolio';
 import { SubmitHandler, useForm, useFieldArray, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -292,6 +292,7 @@ export function Form({ onSubmit }: Props) {
   }
 
   const onProcessResumeFile = async () => {
+    setFileProcessingError('');
     setIsFileProcessing(true);
     const { success, data, message } = await parse(files[0], 'resume');
 
@@ -305,6 +306,8 @@ export function Form({ onSubmit }: Props) {
       setIsFileUploadDialogOpen(false);
       toast('Resume successfully parsed!');
       setIsFileProcessing(false);
+      setFiles([]);
+      setFileProcessingError('');
       return;
     }
     setFileProcessingError(message);
@@ -323,12 +326,10 @@ export function Form({ onSubmit }: Props) {
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-medium">Resume</h3>
               <Button
-                variant="outline"
-                className="cursor-pointer shadow-none"
+                className="shadow-none flex items-center gap-2 min-w-32 justify-center bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white border-0"
                 onClick={() => setIsFileUploadDialogOpen(true)}
               >
-                <FilePlus2 className="size-4" />
-                Upload
+                🤖 Parse with AI
               </Button>
             </div>
 
@@ -856,7 +857,7 @@ export function Form({ onSubmit }: Props) {
         </form>
       </CardContent>
 
-      <FileUploadDialog
+      <FileParserDialog
         onProcess={onProcessResumeFile}
         files={files}
         onChangeFiles={setFiles}

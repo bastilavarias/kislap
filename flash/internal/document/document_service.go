@@ -23,6 +23,11 @@ func (service Service) Parse(payload Payload) (*PortfolioResponse, error) {
 		return nil, err
 	}
 
+	if content == "" {
+		return nil, errors.New("failed-pdf-extraction")
+	}
+
+
 	var generatedPrompt string
 	givenType := payload.Type
 
@@ -36,6 +41,7 @@ func (service Service) Parse(payload Payload) (*PortfolioResponse, error) {
 	if err != nil || aiResp == "" || aiResp == "null" {
 		return nil, err
 	}
+
 
 	structData, err := utils.ParseLLMJSON[PortfolioResponse](aiResp)
 	if err != nil {

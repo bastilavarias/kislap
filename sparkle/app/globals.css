@@ -1,5 +1,5 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -37,22 +37,18 @@
   --sidebar-ring: oklch(58.9% 0.232 282.7);
 
   --font-sans: DM Sans, sans-serif;
-  --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-serif: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
   --font-mono: Space Mono, monospace;
 
   --radius: 0px;
 
   --shadow-2xs: 4px 4px 0px 0px oklch(0 0 0 / 0.5);
   --shadow-xs: 4px 4px 0px 0px oklch(0 0 0 / 0.5);
-  --shadow-sm:
-    4px 4px 0px 0px oklch(0 0 0 / 1), 4px 1px 2px -1px oklch(0 0 0 / 1);
+  --shadow-sm: 4px 4px 0px 0px oklch(0 0 0 / 1), 4px 1px 2px -1px oklch(0 0 0 / 1);
   --shadow: 4px 4px 0px 0px oklch(0 0 0 / 1), 4px 1px 2px -1px oklch(0 0 0 / 1);
-  --shadow-md:
-    4px 4px 0px 0px oklch(0 0 0 / 1), 4px 2px 4px -1px oklch(0 0 0 / 1);
-  --shadow-lg:
-    4px 4px 0px 0px oklch(0 0 0 / 1), 4px 4px 6px -1px oklch(0 0 0 / 1);
-  --shadow-xl:
-    4px 4px 0px 0px oklch(0 0 0 / 1), 4px 8px 10px -1px oklch(0 0 0 / 1);
+  --shadow-md: 4px 4px 0px 0px oklch(0 0 0 / 1), 4px 2px 4px -1px oklch(0 0 0 / 1);
+  --shadow-lg: 4px 4px 0px 0px oklch(0 0 0 / 1), 4px 4px 6px -1px oklch(0 0 0 / 1);
+  --shadow-xl: 4px 4px 0px 0px oklch(0 0 0 / 1), 4px 8px 10px -1px oklch(0 0 0 / 1);
   --shadow-2xl: 4px 4px 0px 0px oklch(0 0 0 / 2.5);
 }
 
@@ -91,15 +87,11 @@
 
   --shadow-2xs: 0 1px 3px 0px oklch(0 0 0 / 0.05);
   --shadow-xs: 0 1px 3px 0px oklch(0 0 0 / 0.05);
-  --shadow-sm:
-    0 1px 3px 0px oklch(0 0 0 / 0.1), 0 1px 2px -1px oklch(0 0 0 / 0.1);
+  --shadow-sm: 0 1px 3px 0px oklch(0 0 0 / 0.1), 0 1px 2px -1px oklch(0 0 0 / 0.1);
   --shadow: 0 1px 3px 0px oklch(0 0 0 / 0.1), 0 1px 2px -1px oklch(0 0 0 / 0.1);
-  --shadow-md:
-    0 1px 3px 0px oklch(0 0 0 / 0.1), 0 2px 4px -1px oklch(0 0 0 / 0.1);
-  --shadow-lg:
-    0 1px 3px 0px oklch(0 0 0 / 0.1), 0 4px 6px -1px oklch(0 0 0 / 0.1);
-  --shadow-xl:
-    0 1px 3px 0px oklch(0 0 0 / 0.1), 0 8px 10px -1px oklch(0 0 0 / 0.1);
+  --shadow-md: 0 1px 3px 0px oklch(0 0 0 / 0.1), 0 2px 4px -1px oklch(0 0 0 / 0.1);
+  --shadow-lg: 0 1px 3px 0px oklch(0 0 0 / 0.1), 0 4px 6px -1px oklch(0 0 0 / 0.1);
+  --shadow-xl: 0 1px 3px 0px oklch(0 0 0 / 0.1), 0 8px 10px -1px oklch(0 0 0 / 0.1);
   --shadow-2xl: 0 1px 3px 0px oklch(0 0 0 / 0.25);
 }
 
@@ -229,4 +221,55 @@
   background-image:
     linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+}
+
+@layer utilities {
+  @keyframes spin-slow {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes gradient-x {
+    0%,
+    100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+
+  @keyframes border-circle {
+    0% {
+      background-position: 0% 0%;
+    }
+    25% {
+      background-position: 100% 0%;
+    }
+    50% {
+      background-position: 100% 100%;
+    }
+    75% {
+      background-position: 0% 100%;
+    }
+    100% {
+      background-position: 0% 0%;
+    }
+  }
+
+  .animate-spin-slow {
+    animation: spin-slow 3s linear infinite;
+  }
+
+  .animate-gradient-x {
+    animation: gradient-x 2s ease infinite;
+  }
+
+  .animate-border-circle {
+    animation: border-circle 2s linear infinite;
+  }
 }
