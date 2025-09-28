@@ -6,6 +6,8 @@ var defaultProvider Provider
 
 func Default(provider Provider) Provider {
 	defaultProvider = provider
+
+	fmt.Println(provider);
 	return defaultProvider
 }
 

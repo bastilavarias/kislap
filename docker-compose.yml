@@ -28,6 +28,7 @@ services:
       - ./flash/.env
     volumes:
       - ./flash:/app
+      - ./flash/tmp:/app/tmp
       - kislap_flash_go_mod:/go/pkg/mod
       - kislap_flash_go_build:/root/.cache/go-build
     ports:
@@ -42,6 +43,7 @@ services:
     depends_on:
       kislap_database:
         condition: service_healthy
+    command: air -c /app/air.toml
 
   kislap_database:
     image: mysql:8

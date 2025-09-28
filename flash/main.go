@@ -40,7 +40,12 @@ func main() {
 	)
 	databaseClient := database.Default(dsn)
 
-	llmProvider := llm.Default(&llm.Gemini{
+	// llmProvider := llm.Default(&llm.Gemini{
+	// 	ApiKey: os.Getenv("LLM_API_KEY"),
+	// 	Model:  os.Getenv("LLM_MODEL"),
+	// })
+
+	llmProvider := llm.Default(&llm.OpenAI{
 		ApiKey: os.Getenv("LLM_API_KEY"),
 		Model:  os.Getenv("LLM_MODEL"),
 	})

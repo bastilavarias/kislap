@@ -25,7 +25,7 @@ func NewController(db *gorm.DB, llm llm.Provider) *Controller {
 func (controller Controller) Parse(context *gin.Context) {
 	docType := context.PostForm("type")
 	if docType == "" {
-		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
+		utils.APIRespondError(context, http.StatusBadRequest, "invalid document type.")
 		context.Abort()
 		return;
 	}

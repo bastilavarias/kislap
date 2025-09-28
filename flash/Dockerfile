@@ -19,4 +19,4 @@ COPY . .
 EXPOSE 5000
 
 # Run Air with config
-CMD ["air"]
+CMD ["air", "-c", "air.toml"]

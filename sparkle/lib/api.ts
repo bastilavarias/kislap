@@ -76,9 +76,6 @@ export function useApi() {
       };
     }
 
-    console.log(response);
-    console.log(payload);
-
     if (!payload || !response?.ok) {
       return {
         success: false,
