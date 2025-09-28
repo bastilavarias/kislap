@@ -36,9 +36,15 @@ type ThemePresetSelectProps = {
   presets: Record<string, ThemePreset>;
   currentPreset: string | null;
   onPresetChange: (preset: string) => void;
+  hideImportButton?: boolean;
 };
 
-const ThemePresetSelect = ({ presets, currentPreset, onPresetChange }: ThemePresetSelectProps) => {
+const ThemePresetSelect = ({
+  presets,
+  currentPreset,
+  onPresetChange,
+  hideImportButton,
+}: ThemePresetSelectProps) => {
   // States
   const [cssImportOpen, setCssImportOpen] = useState(false);
 
@@ -134,19 +140,23 @@ const ThemePresetSelect = ({ presets, currentPreset, onPresetChange }: ThemePres
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-medium">Themes</h3>
         <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            onClick={() => setCssImportOpen(true)}
-            className="cursor-pointer shadow-none"
-          >
-            <FileCode className="size-4" />
-            Import
-          </Button>
-          <CssImportDialog
-            open={cssImportOpen}
-            onOpenChange={setCssImportOpen}
-            onImport={handleCssImport}
-          />
+          {hideImportButton && (
+            <div>
+              <Button
+                variant="outline"
+                onClick={() => setCssImportOpen(true)}
+                className="cursor-pointer shadow-none"
+              >
+                <FileCode className="size-4" />
+                Import
+              </Button>
+              <CssImportDialog
+                open={cssImportOpen}
+                onOpenChange={setCssImportOpen}
+                onImport={handleCssImport}
+              />
+            </div>
+          )}
           <Button variant="outline" onClick={randomize} className="cursor-pointer shadow-none">
             <Dices className="size-4" />
             Random

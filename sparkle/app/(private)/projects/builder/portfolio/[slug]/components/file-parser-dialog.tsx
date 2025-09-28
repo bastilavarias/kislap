@@ -176,7 +176,7 @@ export function FileParserDialog({
           <div className="flex items-center justify-center gap-2">
             <Sparkles className="w-4 h-4 text-yellow-500 animate-pulse" />
             <p className="text-lg font-semibold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              AI Neural Network Active
+              LLM Active
             </p>
             <Sparkles className="w-4 h-4 text-yellow-500 animate-pulse" />
           </div>

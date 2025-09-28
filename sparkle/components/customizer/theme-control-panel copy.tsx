@@ -35,7 +35,6 @@ import { useSettings } from '@/hooks/use-settings';
 // Util Imports
 import { getPresetThemeStyles, presets } from '@/lib/theme-presets';
 import { getAppliedThemeFont, sansSerifFonts, serifFonts, monoFonts } from '@/lib/theme-fonts';
-import { Settings } from '@/contexts/settings-context';
 
 type Mode = 'light' | 'dark';
 
@@ -62,13 +61,6 @@ const ThemeControlPanel = ({
 
   const [localSettings, setLocalSettings] = useState({ ...settings });
 
-  const onLocalUpdateSettings = (settings: Partial<Settings>) => {
-    console.log(settings);
-    console.log('onLocalUpdateSettings');
-    return;
-    // updateSettings(settings);
-  };
-
   const handleModeChange = (value: string) => {
     if (value) {
       const newMode = value as Mode;
@@ -86,7 +78,7 @@ const ThemeControlPanel = ({
         },
       };
 
-      onLocalUpdateSettings(updatedSettings);
+      updateSettings(updatedSettings);
 
       setTheme(newMode);
     }
@@ -109,7 +101,7 @@ const ThemeControlPanel = ({
     };
 
     // Update settings and persist to storage
-    onLocalUpdateSettings(updatedSettings);
+    updateSettings(updatedSettings);
   };
 
   // Update font change handlers to use the new helper
@@ -126,7 +118,7 @@ const ThemeControlPanel = ({
     (key: keyof ThemeStyleProps, value: string) => {
       if (!localSettings.mode) return;
 
-      onLocalUpdateSettings({
+      updateSettings({
         theme: {
           ...localSettings.theme,
           styles: {
@@ -151,6 +143,22 @@ const ThemeControlPanel = ({
   };
 
   const handleApplyThemePreset = (preset: string) => {
+    if (stateless) {
+      const updatedSettings = {
+        ...localSettings,
+        theme: {
+          preset,
+          styles: getPresetThemeStyles(preset),
+        },
+      };
+
+      setLocalSettings({
+        ...localSettings,
+        ...updatedSettings,
+      });
+      return;
+    }
+
     applyThemePreset(preset);
   };
 
@@ -168,7 +176,7 @@ const ThemeControlPanel = ({
         },
       };
 
-      onLocalUpdateSettings(updatedSettings);
+      updateSettings(updatedSettings);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -260,7 +268,7 @@ const ThemeControlPanel = ({
 
         <TabsContent value="colors">
           {/* CSS Variables Section */}
-          <ThemeColorPanel settings={localSettings} />
+          <ThemeColorPanel stateless={stateless} settings={localSettings} />
         </TabsContent>
 
         {/* Text Selection */}

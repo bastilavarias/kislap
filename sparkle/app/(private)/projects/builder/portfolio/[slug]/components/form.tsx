@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-import { Plus, X, FilePlus2 } from 'lucide-react'; // Added X icon for removing technologies/skills
+import { Plus, X } from 'lucide-react'; // Added X icon for removing technologies/skills
 import ThemeControlPanel from '@/components/customizer/theme-control-panel';
 import { FileParserDialog } from '@/app/(private)/projects/builder/portfolio/[slug]/components/file-parser-dialog';
 import { PortfolioFormValues, PortfolioSchema } from '@/lib/schemas/portfolio';
@@ -31,6 +31,7 @@ import {
 } from '@/components/ui/sheet';
 import { DocumentResume, useDocument } from '@/hooks/api/use-document';
 import { toast } from 'sonner';
+import type { ThemeStyleProps } from '@/types/theme';
 
 interface Props {
   onSubmit: SubmitHandler<PortfolioFormValues>;
@@ -105,6 +106,8 @@ export function Form({ onSubmit }: Props) {
   const [isFileUploadDialogOpen, setIsFileUploadDialogOpen] = useState(false);
   const [isFileProcessing, setIsFileProcessing] = useState(false);
   const [fileProcessingError, setFileProcessingError] = useState('');
+  const [localThemeSettings, setLocalThemeSettings] = useState<ThemeStyleProps | null>(null);
+
   const { parse } = useDocument();
 
   const {

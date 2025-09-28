@@ -21,7 +21,6 @@ import { useSettings } from '@/hooks/use-settings';
 import { colorFormatter } from '@/lib/color-converter';
 
 type ThemeColorPanelProps = {
-  stateless?: boolean;
   settings?: Settings;
 };
 
@@ -120,13 +119,6 @@ const ThemeColorPanel = (props: ThemeColorPanelProps) => {
   ] as Partial<ThemeStyleProps> | undefined;
 
   const handleUpdateSettings = (settings: ThemeSettings) => {
-    if (props.stateless) {
-      setLocalSettings({
-        ...localSettings,
-        ...settings,
-      });
-      return;
-    }
     updateSettings(settings);
   };
 
