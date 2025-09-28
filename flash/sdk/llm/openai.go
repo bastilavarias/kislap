@@ -1,71 +1,32 @@
 package llm
 
 import (
-	"bytes"
-	"encoding/json"
-	"fmt"
-	"io/ioutil"
-	"net/http"
+	"context"
+
+	"github.com/openai/openai-go/v2"
+	"github.com/openai/openai-go/v2/option"
 )
 
-type OpenAI struct {
+type OpenAISDK struct {
 	ApiKey string
 	Model  string
 }
 
-type openAIRequest struct {
-	Model    string `json:"model"`
-	Prompt   string `json:"prompt"`
-	MaxTokens int    `json:"max_tokens"`
-}
+func (sdk *OpenAISDK) Generate(prompt string) (string, error) {
+	client := openai.NewClient(
+		option.WithAPIKey(sdk.ApiKey), 
+	)
 
-type openAIResponse struct {
-	Choices []struct {
-		Text string `json:"text"`
-	} `json:"choices"`
-}
+	chatCompletion, err := client.Chat.Completions.New(context.TODO(), openai.ChatCompletionNewParams{
+		Messages: []openai.ChatCompletionMessageParamUnion{
+			openai.UserMessage(prompt),
+		},
+		Model: openai.ChatModelGPT4o,
+	})
 
-func (openAI *OpenAI) Generate(prompt string) (string, error) {
-	reqBody := openAIRequest{
-		Model:    openAI.Model,
-		Prompt:   prompt,
-		MaxTokens: 150,
-	}
-
-	data, err := json.Marshal(reqBody)
 	if err != nil {
-		return "", err
+		panic(err.Error())
 	}
 
-	request, err := http.NewRequest("POST", "https://api.openai.com/v1/completions", bytes.NewBuffer(data))
-	if err != nil {
-		return "", err
-	}
-
-	request.Header.Set("Content-Type", "application/json")
-	request.Header.Set("Authorization", fmt.Sprintf("Bearer %s", openAI.ApiKey))
-
-	client := &http.Client{}
-	resp, err := client.Do(request)
-	if err != nil {
-		return "", err
-	}
-	defer resp.Body.Close()
-
-	body, _ := ioutil.ReadAll(resp.Body)
-
-	if resp.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("OpenAI API error: %s", body)
-	}
-
-	var res openAIResponse
-	if err := json.Unmarshal(body, &res); err != nil {
-		return "", err
-	}
-
-	if len(res.Choices) == 0 {
-		return "", fmt.Errorf("no response from OpenAI")
-	}
-
-	return res.Choices[0].Text, nil
+ 	return chatCompletion.Choices[0].Message.Content, nil
 }

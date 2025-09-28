@@ -34,6 +34,19 @@ export const PortfolioSchema = z.object({
     })
   ),
 
+  showcases: z.array(
+    z.object({
+      name: z.string(),
+      description: z.string().nullable(),
+      role: z.string().nullable(),
+      technologies: z.array(
+        z.object({
+          name: z.string(),
+        })
+      ),
+    })
+  ),
+
   skills: z.array(
     z.object({
       name: z.string(),

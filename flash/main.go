@@ -45,7 +45,7 @@ func main() {
 	// 	Model:  os.Getenv("LLM_MODEL"),
 	// })
 
-	llmProvider := llm.Default(&llm.OpenAI{
+	llmProvider := llm.Default(&llm.OpenAISDK{
 		ApiKey: os.Getenv("LLM_API_KEY"),
 		Model:  os.Getenv("LLM_MODEL"),
 	})

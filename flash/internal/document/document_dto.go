@@ -42,8 +42,8 @@ type PortfolioResponse struct {
 		Level     *string `json:"level"`
 		Degree    *string `json:"degree"`
 		Location  *string `json:"location"`
-		YearStart *int    `json:"year_start"`
-		YearEnd   *int    `json:"year_end"`
+		YearStart *string    `json:"year_start"`
+		YearEnd   *string    `json:"year_end"`
 		About     *string `json:"about"`
 	} `json:"education"`
 	Skills []struct {

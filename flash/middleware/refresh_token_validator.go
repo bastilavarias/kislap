@@ -2,10 +2,10 @@ package middleware
 
 import (
 	"flash/utils"
-	"fmt"
 	"net/http"
 
 	sharedjwt "flash/shared/jwt"
+
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
@@ -13,9 +13,6 @@ import (
 func RefreshTokenValidatorMiddleware(db *gorm.DB) gin.HandlerFunc {
 	return func(context *gin.Context) {
 		refreshToken, err := context.Cookie("refresh_token")
-		fmt.Println("the refresh token")
-		fmt.Println(refreshToken)
-		fmt.Println("----")
 		if err != nil || refreshToken == "" {
 			utils.APIRespondError(context, http.StatusUnauthorized, "Missing refresh token cookie.")
 			context.Abort()

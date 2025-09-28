@@ -10,26 +10,31 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
-import { FilePlus2 } from 'lucide-react';
+import { AlertCircleIcon } from 'lucide-react';
+import { Alert, AlertTitle } from '@/components/ui/alert';
 
 interface Props {
   files: File[];
   onChangeFiles: any;
   onProcess: any;
   loading: boolean;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  error: string;
 }
 
-export function FileUploadDialog({ files, onChangeFiles, onProcess, loading }: Props) {
+export function FileUploadDialog({
+  files,
+  onChangeFiles,
+  onProcess,
+  loading,
+  open,
+  onOpenChange,
+  error,
+}: Props) {
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="outline" className="cursor-pointer shadow-none">
-          <FilePlus2 className="size-4" />
-          Upload
-        </Button>
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[420px] md:max-w-[620px] lg:max-w-[820px]">
         <DialogHeader>
           <DialogTitle>Upload Resume</DialogTitle>
@@ -39,6 +44,13 @@ export function FileUploadDialog({ files, onChangeFiles, onProcess, loading }: P
         </DialogHeader>
 
         <div className="grid grid-cols-1 gap-6">
+          {error && (
+            <Alert variant="destructive">
+              <AlertCircleIcon />
+              <AlertTitle className="capitalize">{error}</AlertTitle>
+            </Alert>
+          )}
+
           <Dropzone
             className="shadow-none"
             accept={{ 'pdf/*': [] }}
@@ -55,9 +67,12 @@ export function FileUploadDialog({ files, onChangeFiles, onProcess, loading }: P
         </div>
 
         <DialogFooter>
+          {/* Use DialogClose to let the Cancel button close the dialog via onOpenChange(false) */}
           <DialogClose asChild>
             <Button variant="outline">Cancel</Button>
           </DialogClose>
+
+          {/* The Process button now calls our internal handler */}
           <Button className="w-24" onClick={onProcess} disabled={loading}>
             {loading ? 'Processing' : 'Process'}
           </Button>

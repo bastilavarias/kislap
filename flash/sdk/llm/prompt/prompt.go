@@ -5,14 +5,13 @@ import "fmt"
 const rawPrompt = `
 You are a parser that converts resume-like text into structured JSON. 
 The input is raw extracted text from a PDF. 
-Return ONLY valid JSON, without explanations or comments. 
+Return ONLY a single **valid JSON object**, without explanations, markdown, or comments.
 
 Follow this schema:
 
 {
     "name": "string",
-    "job_title": "string",
-    "introduction": "string",
+    "introduction": "string" (This could be their job title now or anything.),
     "about": "string",
     "email": "string",
     "phone": "string",
@@ -26,9 +25,9 @@ Follow this schema:
         "company": "string",
         "role": "string",
         "location": "string",
-        "start_date": "YYYY-MM-DD",
-        "end_date": "YYYY-MM-DD",
-        "about": "string"
+        "start_date": "string",
+        "end_date": "string",
+        "about": "string" (Get any information you could get about their job experience. Don't leave this empty.)
       }
     ],
 
@@ -36,10 +35,10 @@ Follow this schema:
       {
         "school": "string",
         "level": "string",
-        "degree": "string",
+        "degree": "string" (If this is empty, fill this with the education 'level'.),
         "location": "string",
-        "year_start": int,
-        "year_end": int,
+        "year_start": string,
+        "year_end": string,
         "about": "string"
       }
     ],
@@ -47,7 +46,6 @@ Follow this schema:
     "skills": [
       {
         "name": "string",
-        "url": "string"
       }
     ],
 

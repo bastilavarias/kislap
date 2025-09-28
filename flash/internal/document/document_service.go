@@ -33,7 +33,7 @@ func (service Service) Parse(payload Payload) (*PortfolioResponse, error) {
 	}
 
 	aiResp, err := service.LLM.Generate(generatedPrompt)
-	if err != nil {
+	if err != nil || aiResp == "" || aiResp == "null" {
 		return nil, err
 	}
 

@@ -3,26 +3,26 @@ package utils
 import (
 	"encoding/json"
 	"fmt"
-	"regexp"
 	"strings"
 )
 
+// ParseLLMJSON tries to handle outputs from LLMs that may be wrapped in code blocks.
 func ParseLLMJSON[T any](raw string) (*T, error) {
 	var target T
 
 	clean := strings.TrimSpace(raw)
-	clean = strings.TrimPrefix(clean, "```json")
-	clean = strings.TrimPrefix(clean, "```")
-	clean = strings.TrimSuffix(clean, "```")
-	clean = strings.TrimSpace(clean)
-	clean = strings.ReplaceAll(clean, "`", "")
 
-	re := regexp.MustCompile(`\{.*\}`)
-	match := re.FindString(clean)
-	if match != "" {
-		clean = match
+	if strings.HasPrefix(clean, "```json") {
+		clean = strings.TrimPrefix(clean, "```json")
+		clean = strings.TrimSuffix(clean, "```")
+	} else if strings.HasPrefix(clean, "```") {
+		clean = strings.TrimPrefix(clean, "```")
+		clean = strings.TrimSuffix(clean, "```")
 	}
 
+	clean = strings.TrimSpace(clean)
+
+	// Attempt to unmarshal directly
 	if err := json.Unmarshal([]byte(clean), &target); err != nil {
 		return nil, fmt.Errorf("failed to parse JSON: %w", err)
 	}
