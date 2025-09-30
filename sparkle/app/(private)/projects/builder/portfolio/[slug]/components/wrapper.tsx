@@ -30,8 +30,8 @@ function mapResumeToFormValues(resume: DocumentResume): PortfolioFormValues {
       company: work.company || '',
       role: work.role || '',
       location: work.location || '',
-      startDate: work.start_date ? new Date(work.start_date) : null,
-      endDate: work.end_date ? new Date(work.end_date) : null,
+      startDate: work.start_date || null,
+      endDate: work.end_date || null,
       about: work.about || '',
     })),
 
@@ -40,8 +40,8 @@ function mapResumeToFormValues(resume: DocumentResume): PortfolioFormValues {
       level: education.level || '',
       degree: education.degree || '',
       location: education.location || '',
-      yearStart: education.year_start ? new Date(`${education.year_start}-01-01`) : null,
-      yearEnd: education.year_end ? new Date(`${education.year_end}-01-01`) : null,
+      yearStart: education.year_start || null,
+      yearEnd: education.year_end || null,
       about: education.about || '',
     })),
 
@@ -132,17 +132,21 @@ export function Wrapper() {
     });
   };
 
-  const onAddTechnologyToShowcase = (index: number, name: string) => {
-    const currentShowcases = watch('showcases');
-    const currentTechnologies = currentShowcases[index]?.technologies || [];
-    setValue(`showcases.${index}.technologies`, [...currentTechnologies, { name }], {
-      shouldValidate: true,
-    });
+  const onAddTechnologyToShowcase = (showcaseTechnologyIndex: number, name: string) => {
+    const currentShowcases = watch('showcases') ?? [];
+    const currentTechnologies = currentShowcases[showcaseTechnologyIndex]?.technologies || [];
+    setValue(
+      `showcases.${showcaseTechnologyIndex}.technologies`,
+      [...currentTechnologies, { name }],
+      {
+        shouldValidate: true,
+      }
+    );
   };
 
   const onRemoveTechnologyFromShowcase = (showcaseIndex: number, technologyIndex: number) => {
-    const currentShowcases = watch('showcases');
-    const updatedTechnologies = currentShowcases[showcaseIndex].technologies.filter(
+    const currentShowcases = watch('showcases') ?? [];
+    const updatedTechnologies = currentShowcases?[showcaseIndex]?.technologies.filter(
       (_, i) => i !== technologyIndex
     );
     setValue(`showcases.${showcaseIndex}.technologies`, updatedTechnologies, {

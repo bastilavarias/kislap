@@ -42,9 +42,7 @@ const PdfExtractionAlert = ({ error }: { error: string }) => {
   const isExtractionError = error === 'failed-pdf-extraction';
 
   return (
-    // The variant="destructive" handles the red background and text color based on shadcn/ui theming
     <Alert variant="destructive" className="mt-4">
-      {/* Icon placed correctly, often provided by the Alert component wrapper */}
       <AlertCircle className="h-4 w-4" />
 
       {isExtractionError ? (
@@ -268,8 +266,8 @@ export function FileParserDialog({
             </div>
           </div>
           <DialogDescription className="text-base">
-            Upload your resume and watch our advanced AI neural network automatically extract and
-            analyze your work experience, education, skills, and achievements with lightning speed.
+            Upload your resume and watch Kislap's LLM automatically extract and analyze your work
+            experience, education, skills, and achievements with ease!
           </DialogDescription>
         </DialogHeader>
 

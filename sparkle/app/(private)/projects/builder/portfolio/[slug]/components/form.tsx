@@ -326,16 +326,9 @@ export function Form({
                               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                   <Label className="text-xs mb-2">Start Date</Label>
-                                  <Controller
-                                    name={`workExperiences.${index}.startDate`}
-                                    control={control} // Use passed control
-                                    render={({ field }) => (
-                                      <DateInput
-                                        value={field.value}
-                                        onChange={field.onChange}
-                                        className="w-full shadow-none"
-                                      />
-                                    )}
+                                  <Input
+                                    {...register(`workExperiences.${index}.startDate` as const)}
+                                    className="w-full shadow-none"
                                   />
                                   {errors.workExperiences?.[index]?.startDate && (
                                     <p className="text-destructive text-sm mt-1">
@@ -345,7 +338,7 @@ export function Form({
                                 </div>
                                 <div>
                                   <Label className="text-xs mb-2">End Date</Label>
-                                  <Controller
+                                  {/* <Controller
                                     name={`workExperiences.${index}.endDate`}
                                     control={control} // Use passed control
                                     render={({ field }) => (
@@ -356,6 +349,10 @@ export function Form({
                                         placeholder="Start Date"
                                       />
                                     )}
+                                  /> */}
+                                  <Input
+                                    {...register(`workExperiences.${index}.endDate` as const)}
+                                    className="w-full shadow-none"
                                   />
                                   {errors.workExperiences?.[index]?.endDate && (
                                     <p className="text-destructive text-sm mt-1">
@@ -464,7 +461,7 @@ export function Form({
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                               <div className="flex flex-col">
                                 <Label className="text-xs mb-2">Start Date</Label>
-                                <Controller
+                                {/* <Controller
                                   name={`education.${index}.yearStart`}
                                   control={control} // Use passed control
                                   render={({ field }) => (
@@ -474,6 +471,10 @@ export function Form({
                                       className="w-full shadow-none"
                                     />
                                   )}
+                                /> */}
+                                <Input
+                                  {...register(`education.${index}.yearStart` as const)}
+                                  className="w-full shadow-none"
                                 />
                                 {errors.education?.[index]?.yearStart && (
                                   <p className="text-destructive text-sm mt-1">
@@ -483,7 +484,7 @@ export function Form({
                               </div>
                               <div>
                                 <Label className="text-xs mb-2">End Date</Label>
-                                <Controller
+                                {/* <Controller
                                   name={`education.${index}.yearEnd`}
                                   control={control} // Use passed control
                                   render={({ field }) => (
@@ -494,6 +495,10 @@ export function Form({
                                       placeholder="Start Date"
                                     />
                                   )}
+                                /> */}
+                                <Input
+                                  {...register(`education.${index}.yearEnd` as const)}
+                                  className="w-full shadow-none"
                                 />
                                 {errors.education?.[index]?.yearEnd && (
                                   <p className="text-destructive text-sm mt-1">
@@ -589,21 +594,22 @@ export function Form({
                           <div>
                             <Label className="font-medium mb-2 block">Technologies</Label>
                             <div className="flex flex-wrap gap-2">
-                              {/* Use watch from formMethods prop */}
-                              {watch(`showcases.${index}.technologies`).map((tech, techIndex) => (
-                                <Badge key={techIndex}>
-                                  {tech.name}
-                                  <button
-                                    type="button"
-                                    className="ml-2 text-xs"
-                                    onClick={
-                                      () => onRemoveTechnologyFromShowcase(index, techIndex) // Use passed handler
-                                    }
-                                  >
-                                    <X className="w-3 h-3" />
-                                  </button>
-                                </Badge>
-                              ))}
+                              {(watch(`showcases.${index}.technologies`) ?? []).map(
+                                (tech, techIndex) => (
+                                  <Badge key={techIndex}>
+                                    {tech.name}
+                                    <button
+                                      type="button"
+                                      className="ml-2 text-xs"
+                                      onClick={
+                                        () => onRemoveTechnologyFromShowcase(index, techIndex) // Use passed handler
+                                      }
+                                    >
+                                      <X className="w-3 h-3" />
+                                    </button>
+                                  </Badge>
+                                )
+                              )}
                             </div>
                             <AddItemDrawer
                               title="Add New Technology"
