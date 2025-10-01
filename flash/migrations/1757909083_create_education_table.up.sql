@@ -6,8 +6,8 @@ CREATE TABLE IF NOT EXISTS `education` (
     `level` VARCHAR(255) NOT NULL,
     `degree` VARCHAR(255) NULL,
     `location` VARCHAR(255) NULL,
-    `year_start` INT NULL,
-    `year_end` INT NULL,
+    `year_start` VARCHAR(255) NULL,
+    `year_end` VARCHAR(255) NULL,
     `about` TEXT NULL,
 
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,

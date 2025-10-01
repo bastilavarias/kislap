@@ -13,6 +13,7 @@ import { PortfolioFormValues, PortfolioSchema } from '@/lib/schemas/portfolio';
 import { DocumentResume, useDocument } from '@/hooks/api/use-document';
 import { toast } from 'sonner';
 import { Settings } from '@/contexts/settings-context';
+import { usePortfolio } from '@/hooks/api/use-portfolio';
 
 function mapResumeToFormValues(resume: DocumentResume): PortfolioFormValues {
   return {
@@ -65,6 +66,9 @@ export function Wrapper() {
   const [isFileProcessing, setIsFileProcessing] = useState(false);
   const [fileProcessingError, setFileProcessingError] = useState('');
   const [localThemeSettings, setLocalThemeSettings] = useState<Settings | null>(null);
+  const { create } = usePortfolio();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const { parse } = useDocument();
 
@@ -87,13 +91,7 @@ export function Wrapper() {
     },
   });
 
-  const {
-    handleSubmit,
-    setValue,
-    watch,
-    control,
-    formState: { errors },
-  } = formMethods;
+  const { setValue, watch, control } = formMethods;
 
   const workFieldArray = useFieldArray({ control, name: 'workExperiences' });
   const educationFieldArray = useFieldArray({ control, name: 'education' });
@@ -177,10 +175,23 @@ export function Wrapper() {
     setIsFileProcessing(false);
   };
 
-  const onSubmit = (form: PortfolioFormValues) => {
-    console.log('✅ Submitted!');
-    console.log(form);
-    console.log(localThemeSettings);
+  const onSubmit = async (form: PortfolioFormValues) => {
+    setError('');
+    setLoading(true);
+    const { success, data, message } = await create({
+      user_id: 1,
+      project_id: 1,
+      ...form,
+      theme: {
+        ...localThemeSettings?.theme,
+      },
+    });
+    if (success && data) {
+      alert('Portfolio successfully saved!');
+      return;
+    }
+    setLoading(false);
+    setError(message);
   };
 
   const onError = (errors: any) => {
@@ -222,7 +233,7 @@ export function Wrapper() {
               setLocalThemeSettings={setLocalThemeSettings}
             />
           ) : (
-            <h1>Overview</h1>
+            <h1>DashboardOverview</h1>
           )}
         </div>
       </div>

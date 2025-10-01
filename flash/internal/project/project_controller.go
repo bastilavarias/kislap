@@ -3,6 +3,7 @@ package project
 import (
 	"flash/sdk/dns"
 	"flash/utils"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -51,6 +52,8 @@ func (controller Controller) Create(context *gin.Context) {
 		context.Abort()
 		return
 	}
+
+	fmt.Println("wew")
 
 	utils.APIRespondSuccess(context, http.StatusOK, project)
 }

@@ -1,7 +1,10 @@
 package portfolio
 
 import (
+	"encoding/json"
 	"flash/models"
+	"fmt"
+
 	"gorm.io/gorm"
 )
 
@@ -10,6 +13,8 @@ type Service struct {
 }
 
 func (service Service) Create(payload Payload) (*models.Portfolio, error) {
+	fmt.Println(payload)
+
 	var workExperiences []models.WorkExperience
 	for _, workExperience := range payload.WorkExperiences {
 		workExperiences = append(workExperiences, models.WorkExperience{
@@ -17,8 +22,8 @@ func (service Service) Create(payload Payload) (*models.Portfolio, error) {
 			Role:      workExperience.Role,
 			Location:  &workExperience.Location,
 			StartDate: &workExperience.StartDate,
-			EndDate:   workExperience.EndDate,
-			About:     workExperience.About,
+			EndDate:   &workExperience.EndDate,
+			About:     &workExperience.About,
 		})
 	}
 
@@ -27,11 +32,11 @@ func (service Service) Create(payload Payload) (*models.Portfolio, error) {
 		education = append(education, models.Education{
 			School:    edu.School,
 			Level:     edu.Level,
-			Degree:    edu.Degree,
-			Location:  edu.Location,
+			Degree:    &edu.Degree,
+			Location:  &edu.Location,
 			YearStart: edu.YearStart,
 			YearEnd:   edu.YearEnd,
-			About:     edu.About,
+			About:     &edu.About,
 		})
 	}
 
@@ -59,11 +64,24 @@ func (service Service) Create(payload Payload) (*models.Portfolio, error) {
 		}
 	}
 
+	var themeRaw *json.RawMessage 
+
+	if payload.Theme != nil {
+		themeJSON, err := json.Marshal(payload.Theme)
+		if err != nil {
+    		return nil, err 
+		}
+		rawJSON := json.RawMessage(themeJSON)
+		themeRaw = &rawJSON
+	} else {
+		themeRaw = nil
+	}
+
+
 	rawPortfolio := models.Portfolio{
 		UserID:       uint64(payload.UserID),
 		ProjectID:    uint64(payload.ProjectID),
 		Name:         payload.Name,
-		JobTitle:     &payload.JobTitle,
 		Introduction: &payload.Introduction,
 		About:        &payload.About,
 		Email:        &payload.Email,
@@ -72,11 +90,15 @@ func (service Service) Create(payload Payload) (*models.Portfolio, error) {
 		Github:       &payload.Github,
 		Linkedin:     &payload.Linkedin,
 		Twitter:      &payload.Twitter,
+		
+		ThemeName: 		&payload.Theme.Preset,
+		ThemeObject: 	themeRaw,
 
 		WorkExperiences: workExperiences,
 		Education:       education,
 		Skills:          skills,
 		Showcases:       showcases,
+		
 	}
 
 	if err := service.DB.
@@ -121,7 +143,6 @@ func (service Service) Update(portfolioID uint64, payload Payload) (*models.Port
 	}
 
 	portfolio.Name = payload.Name
-	portfolio.JobTitle = &payload.JobTitle
 	portfolio.Introduction = &payload.Introduction
 	portfolio.About = &payload.About
 	portfolio.Email = &payload.Email
@@ -147,8 +168,8 @@ func (service Service) Update(portfolioID uint64, payload Payload) (*models.Port
 			Role:        workExperience.Role,
 			Location:    &workExperience.Location,
 			StartDate:   &workExperience.StartDate,
-			EndDate:     workExperience.EndDate,
-			About:       workExperience.About,
+			EndDate:     &workExperience.EndDate,
+			About:       &workExperience.About,
 		})
 	}
 	portfolio.WorkExperiences = workExperiences
@@ -159,11 +180,11 @@ func (service Service) Update(portfolioID uint64, payload Payload) (*models.Port
 			PortfolioID: portfolioID,
 			School:      edu.School,
 			Level:       edu.Level,
-			Degree:      edu.Degree,
-			Location:    edu.Location,
+			Degree:      &edu.Degree,
+			Location:    &edu.Location,
 			YearStart:   edu.YearStart,
 			YearEnd:     edu.YearEnd,
-			About:       edu.About,
+			About:       &edu.About,
 		})
 	}
 	portfolio.Education = education

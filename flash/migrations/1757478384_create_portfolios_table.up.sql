@@ -14,6 +14,10 @@ CREATE TABLE IF NOT EXISTS `portfolios` (
     `linkedin` VARCHAR(255) NULL,
     `twitter` VARCHAR(255) NULL,
 
+    `theme_name` VARCHAR(255) NULL,
+    `theme_object` JSON NULL,
+    `layout_name` VARCHAR(255) NOT NULL DEFAULT 'default',
+
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted_at` DATETIME NULL DEFAULT NULL,

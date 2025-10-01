@@ -1,5 +1,7 @@
 @no-cookie-jar=false
 
+@host = "http://api.kislap.test"
+
 ### Login User
 POST {{host}}/api/auth/login
 Content-Type: application/json

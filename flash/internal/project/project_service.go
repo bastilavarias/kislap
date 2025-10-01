@@ -48,10 +48,11 @@ func (service Service) Create(payload Payload) (*models.Project, error) {
 		return nil, err
 	}
 
-	err := service.DNS.Insert(*newProj.SubDomain)
-	if err != nil {
-		return nil, err
-	}
+	// Implement this if the overall logic is done.
+	// err := service.DNS.Insert(*newProj.SubDomain)
+	// if err != nil {
+	// 	return nil, err
+	// }
 
 	return &newProj, nil
 }
@@ -73,7 +74,13 @@ func (service Service) Update(projectID int, payload Payload) (*models.Project, 
 
 func (service Service) Show(projectID int) (*models.Project, error) {
 	var proj models.Project
-	if err := service.DB.First(&proj, projectID).Error; err != nil {
+	if err := service.DB.
+	Preload("Portfolio").
+	Preload("Portfolio.WorkExperiences").
+	Preload("Portfolio.Education").
+	Preload("Portfolio.Showcases").
+	Preload("Portfolio.Skills").
+	First(&proj, projectID).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return nil, err
 		}

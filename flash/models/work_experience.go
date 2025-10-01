@@ -13,8 +13,8 @@ type WorkExperience struct {
 	Company   string     `gorm:"size:255" json:"company"`
 	Role      string     `gorm:"size:255" json:"role"`
 	Location  *string    `gorm:"size:255" json:"location"`
-	StartDate *time.Time `json:"start_date,omitempty"`
-	EndDate   *time.Time `json:"end_date,omitempty"`
+	StartDate *string 	 `gorm:"string,omitempty" json:"start_date"`
+	EndDate   *string 	 `gorm:"string,omitempty" json:"end_date"`
 	About     *string    `gorm:"type:text" json:"about"`
 
 	CreatedAt time.Time      `gorm:"autoCreateTime" json:"created_at"`

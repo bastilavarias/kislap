@@ -6,8 +6,8 @@ CREATE TABLE IF NOT EXISTS `work_experiences` (
     `company` VARCHAR(255) NOT NULL,
     `role` VARCHAR(255) NOT NULL,
     `location` VARCHAR(255) NULL,
-    `start_date` DATE NULL,
-    `end_date` DATE NULL,
+    `start_date` VARCHAR(255) NULL,
+    `end_date` VARCHAR(255) NULL,
     `about` TEXT NULL,
 
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,

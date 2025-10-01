@@ -234,17 +234,6 @@ export function FileParserDialog({
             })}
           </div>
         </div>
-
-        {/* Neural network visualization */}
-        <div className="flex items-center gap-1 opacity-60">
-          {Array.from({ length: 8 }).map((_, i) => (
-            <div
-              key={i}
-              className="w-1 h-8 bg-gradient-to-t from-blue-500 to-purple-500 rounded-full animate-pulse"
-              style={{ animationDelay: `${i * 0.1}s` }}
-            />
-          ))}
-        </div>
       </div>
     );
   };

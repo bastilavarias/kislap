@@ -12,6 +12,7 @@ import (
 	"github.com/joho/godotenv"
 
 	"database/sql"
+
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/mysql"

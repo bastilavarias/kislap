@@ -1,29 +1,27 @@
 package portfolio
 
-import "time"
-
 type WorkExperienceRequest struct {
-	Company   string     `json:"company" binding:"required"`
-	Role      string     `json:"role" binding:"required"`
-	Location  string     `json:"location"`
-	StartDate time.Time  `json:"start_date" binding:"required"`
-	EndDate   *time.Time `json:"end_date" binding:"omitempty"`
-	About     *string    `json:"about"`
+	Company   string `json:"company" binding:"required"`
+	Role      string `json:"role" binding:"required"`
+	Location  string `json:"location"`
+	StartDate string `json:"startDate" binding:"required"` // frontend sends string "2024"
+	EndDate   string `json:"endDate"`                      // can be "Present" or "2022"
+	About     string `json:"about"`
 }
 
 type EducationRequest struct {
 	School    string  `json:"school" binding:"required"`
 	Level     string  `json:"level" binding:"required"`
-	Degree    *string `json:"degree"`
-	Location  *string `json:"location"`
-	YearStart *int    `json:"year_start"`
-	YearEnd   *int    `json:"year_end"`
-	About     *string `json:"about"`
+	Degree    string  `json:"degree"`
+	Location  string  `json:"location"`
+	YearStart *string `json:"yearStart"` // can be null → pointer
+	YearEnd   *string `json:"yearEnd"`   // can be null → pointer
+	About     string  `json:"about"`
 }
 
 type SkillRequest struct {
 	Name string  `json:"name" binding:"required"`
-	URL  *string `json:"url" binding:"omitempty,url"`
+	URL  *string `json:"url,omitempty"`
 }
 
 type ShowcaseTechnologyRequest struct {
@@ -34,68 +32,83 @@ type ShowcaseRequest struct {
 	Name         string                      `json:"name" binding:"required"`
 	Description  string                      `json:"description"`
 	Role         string                      `json:"role"`
-	Technologies []ShowcaseTechnologyRequest `json:"technologies" binding:"dive"`
+	Technologies []ShowcaseTechnologyRequest `json:"technologies"`
+}
+
+type ThemeStyle struct {
+	Background               string `json:"background"`
+	Foreground               string `json:"foreground"`
+	Card                     string `json:"card"`
+	CardForeground           string `json:"card-foreground"`
+	Popover                  string `json:"popover"`
+	PopoverForeground        string `json:"popover-foreground"`
+	Primary                  string `json:"primary"`
+	PrimaryForeground        string `json:"primary-foreground"`
+	Secondary                string `json:"secondary"`
+	SecondaryForeground      string `json:"secondary-foreground"`
+	Muted                    string `json:"muted"`
+	MutedForeground          string `json:"muted-foreground"`
+	Accent                   string `json:"accent"`
+	AccentForeground         string `json:"accent-foreground"`
+	Destructive              string `json:"destructive"`
+	Border                   string `json:"border"`
+	Input                    string `json:"input"`
+	Ring                     string `json:"ring"`
+	Chart1                   string `json:"chart-1"`
+	Chart2                   string `json:"chart-2"`
+	Chart3                   string `json:"chart-3"`
+	Chart4                   string `json:"chart-4"`
+	Chart5                   string `json:"chart-5"`
+	Radius                   string `json:"radius"`
+	Sidebar                  string `json:"sidebar"`
+	SidebarForeground        string `json:"sidebar-foreground"`
+	SidebarPrimary           string `json:"sidebar-primary"`
+	SidebarPrimaryForeground string `json:"sidebar-primary-foreground"`
+	SidebarAccent            string `json:"sidebar-accent"`
+	SidebarAccentForeground  string `json:"sidebar-accent-foreground"`
+	SidebarBorder            string `json:"sidebar-border"`
+	SidebarRing              string `json:"sidebar-ring"`
+	FontSans                 string `json:"font-sans"`
+	FontSerif                string `json:"font-serif"`
+	FontMono                 string `json:"font-mono"`
+	ShadowColor              string `json:"shadow-color"`
+	ShadowOpacity            string `json:"shadow-opacity"`
+	ShadowBlur               string `json:"shadow-blur"`
+	ShadowSpread             string `json:"shadow-spread"`
+	ShadowOffsetX            string `json:"shadow-offset-x"`
+	ShadowOffsetY            string `json:"shadow-offset-y"`
+	LetterSpacing            string `json:"letter-spacing"`
+	Spacing                  string `json:"spacing"`
+}
+
+type Theme struct {
+	Preset string                `json:"preset"`
+	Styles map[string]ThemeStyle `json:"styles"` // light & dark
 }
 
 type CreateUpdatePortfolioRequest struct {
 	UserID          int64                   `json:"user_id" binding:"required"`
 	ProjectID       int64                   `json:"project_id" binding:"required"`
 	Name            string                  `json:"name" binding:"required"`
-	JobTitle        string                  `json:"job_title" binding:"required"`
 	Introduction    string                  `json:"introduction"`
 	About           string                  `json:"about"`
 	Email           string                  `json:"email" binding:"required,email"`
 	Phone           string                  `json:"phone" binding:"required"`
-	Website         string                  `json:"website" binding:"omitempty,url"`
-	Github          string                  `json:"github" binding:"omitempty,url"`
-	Linkedin        string                  `json:"linkedin" binding:"omitempty,url"`
-	Twitter         string                  `json:"twitter" binding:"omitempty,url"`
-	WorkExperiences []WorkExperienceRequest `json:"work_experiences" binding:"dive"`
-	Education       []EducationRequest      `json:"education" binding:"dive"`
-	Skills          []SkillRequest          `json:"skills" binding:"dive"`
-	Showcases       []ShowcaseRequest       `json:"showcases" binding:"dive"`
-}
-
-type WorkExperiencePayload struct {
-	Company   string
-	Role      string
-	Location  string
-	StartDate time.Time
-	EndDate   *time.Time
-	About     *string
-}
-
-type EducationPayload struct {
-	School    string
-	Level     string
-	Degree    *string
-	Location  *string
-	YearStart *int
-	YearEnd   *int
-	About     *string
-}
-
-type SkillPayload struct {
-	Name string
-	URL  *string
-}
-
-type ShowcaseTechnologyPayload struct {
-	Name string
-}
-
-type ShowcasePayload struct {
-	Name         string
-	Description  string
-	Role         string
-	Technologies []ShowcaseTechnologyPayload
+	Website         string                  `json:"website"`
+	Github          string                  `json:"github"`
+	Linkedin        string                  `json:"linkedin"`
+	Twitter         string                  `json:"twitter"`
+	Theme           *Theme                  `json:"theme"`
+	WorkExperiences []WorkExperienceRequest `json:"workExperiences"`
+	Education       []EducationRequest      `json:"education"`
+	Skills          []SkillRequest          `json:"skills"`
+	Showcases       []ShowcaseRequest       `json:"showcases"`
 }
 
 type Payload struct {
-	UserID          int
-	ProjectID       int
+	UserID          int64
+	ProjectID       int64
 	Name            string
-	JobTitle        string
 	Introduction    string
 	About           string
 	Email           string
@@ -104,88 +117,13 @@ type Payload struct {
 	Github          string
 	Linkedin        string
 	Twitter         string
-	WorkExperiences []WorkExperiencePayload
-	Education       []EducationPayload
-	Skills          []SkillPayload
-	Showcases       []ShowcasePayload
+	Theme           *Theme
+	WorkExperiences []WorkExperienceRequest
+	Education       []EducationRequest
+	Skills          []SkillRequest
+	Showcases       []ShowcaseRequest
 }
 
-func (req CreateUpdatePortfolioRequest) ToServicePayload() Payload {
-	return Payload{
-		UserID:          int(req.UserID),
-		ProjectID:       int(req.ProjectID),
-		Name:            req.Name,
-		JobTitle:        req.JobTitle,
-		Introduction:    req.Introduction,
-		About:           req.About,
-		Email:           req.Email,
-		Phone:           req.Phone,
-		Website:         req.Website,
-		Github:          req.Github,
-		Linkedin:        req.Linkedin,
-		Twitter:         req.Twitter,
-		WorkExperiences: mapWorkExperiences(req.WorkExperiences),
-		Education:       mapEducation(req.Education),
-		Skills:          mapSkills(req.Skills),
-		Showcases:       mapShowcases(req.Showcases),
-	}
-}
-
-func mapWorkExperiences(reqs []WorkExperienceRequest) []WorkExperiencePayload {
-	result := make([]WorkExperiencePayload, len(reqs))
-	for i, we := range reqs {
-		result[i] = WorkExperiencePayload{
-			Company:   we.Company,
-			Role:      we.Role,
-			Location:  we.Location,
-			StartDate: we.StartDate,
-			EndDate:   we.EndDate,
-			About:     we.About,
-		}
-	}
-	return result
-}
-
-func mapEducation(reqs []EducationRequest) []EducationPayload {
-	result := make([]EducationPayload, len(reqs))
-	for i, edu := range reqs {
-		result[i] = EducationPayload{
-			School:    edu.School,
-			Level:     edu.Level,
-			Degree:    edu.Degree,
-			Location:  edu.Location,
-			YearStart: edu.YearStart,
-			YearEnd:   edu.YearEnd,
-			About:     edu.About,
-		}
-	}
-	return result
-}
-
-func mapSkills(reqs []SkillRequest) []SkillPayload {
-	result := make([]SkillPayload, len(reqs))
-	for i, s := range reqs {
-		result[i] = SkillPayload{
-			Name: s.Name,
-			URL:  s.URL,
-		}
-	}
-	return result
-}
-
-func mapShowcases(reqs []ShowcaseRequest) []ShowcasePayload {
-	result := make([]ShowcasePayload, len(reqs))
-	for i, sc := range reqs {
-		techs := make([]ShowcaseTechnologyPayload, len(sc.Technologies))
-		for j, t := range sc.Technologies {
-			techs[j] = ShowcaseTechnologyPayload{Name: t.Name}
-		}
-		result[i] = ShowcasePayload{
-			Name:         sc.Name,
-			Description:  sc.Description,
-			Role:         sc.Role,
-			Technologies: techs,
-		}
-	}
-	return result
+func (request CreateUpdatePortfolioRequest) ToServicePayload() Payload {
+	return Payload(request)
 }

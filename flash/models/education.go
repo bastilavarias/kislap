@@ -14,8 +14,8 @@ type Education struct {
 	Level     string  `gorm:"size:255" json:"level"`
 	Degree    *string `gorm:"size:255" json:"degree"`
 	Location  *string `gorm:"size:255" json:"location"`
-	YearStart *int    `json:"year_start,omitempty"`
-	YearEnd   *int    `json:"year_end,omitempty"`
+	YearStart *string    `json:"year_start,omitempty"`
+	YearEnd   *string    `json:"year_end,omitempty"`
 	About     *string `gorm:"type:text" json:"about"`
 
 	CreatedAt time.Time      `gorm:"autoCreateTime" json:"created_at"`

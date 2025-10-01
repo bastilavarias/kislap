@@ -13,14 +13,12 @@ export function Wrapper() {
   if (error) return <div>failed to load</div>;
   if (isLoading) return <div>loading...</div>;
 
-  console.log(data);
-
   const mode: Mode = 'light';
+
+  const project = data.data;
+
   const settings = {
-    theme: {
-      preset: 'nature',
-      styles: JSON.parse(JSON.stringify(data.theme_object)),
-    },
+    theme: JSON.parse(JSON.stringify(project.portfolio.theme_object)),
     mode,
   };
 
@@ -34,7 +32,7 @@ export function Wrapper() {
           className="relative bg-card"
         >
           <div className="container mx-auto max-w-5xl">
-            <Preview />
+            <Preview portfolio={project.portfolio} />
           </div>
         </div>
       </ComponentThemeProvider>
