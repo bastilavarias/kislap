@@ -1,13 +1,6 @@
-// React Imports
 import { useMemo, useCallback, useState } from 'react';
-
-// Third-party Imports
 import { Dices, FileCode } from 'lucide-react';
-
-// Type Imports
 import type { ThemePreset, ThemeStyleProps } from '@/types/theme';
-
-// Component Imports
 import { Button } from '@/components/ui/button';
 import {
   Select,
@@ -20,23 +13,22 @@ import {
 } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import CssImportDialog from './css-import-dialog';
-
-// Config Imports
 import { defaultThemeState } from '@/config/theme';
-
-// Hook Imports
 import { useSettings } from '@/hooks/use-settings';
-
-// Util Imports
 import { toast } from '@/lib/toast';
 import { cn } from '@/lib/utils';
 import { parseCssInput, parseLetterSpacing, parseShadowVariables } from '@/lib/parse-css-input';
+import { Settings } from '@/contexts/settings-context';
 
 type ThemePresetSelectProps = {
   presets: Record<string, ThemePreset>;
   currentPreset: string | null;
   onPresetChange: (preset: string) => void;
   hideImportButton?: boolean;
+  stateless?: boolean;
+
+  themeSettings?: Settings | null;
+  setThemeSettings?: any;
 };
 
 const ThemePresetSelect = ({
@@ -44,15 +36,30 @@ const ThemePresetSelect = ({
   currentPreset,
   onPresetChange,
   hideImportButton,
-}: ThemePresetSelectProps) => {
-  // States
-  const [cssImportOpen, setCssImportOpen] = useState(false);
+  stateless,
 
-  // Hooks
+  themeSettings: localSettings,
+  setThemeSettings: setLocalSettings,
+}: ThemePresetSelectProps) => {
+  const [cssImportOpen, setCssImportOpen] = useState(false);
   const { settings, updateSettings } = useSettings();
 
+  const onLocalUpdateSettings = (newSettings: Partial<Settings>) => {
+    if (stateless) {
+      setLocalSettings({
+        ...settings,
+        ...localSettings,
+        ...newSettings,
+        mode: settings.mode,
+      });
+
+      return;
+    }
+
+    updateSettings(settings);
+  };
+
   const presetNames = useMemo(() => {
-    // First get all preset names
     const allPresets = Object.keys(presets);
 
     // Separate presets with badges and those without
@@ -126,7 +133,7 @@ const ThemePresetSelect = ({
     };
 
     // Update settings and persist to storage
-    updateSettings(updatedSettings);
+    onLocalUpdateSettings(updatedSettings);
 
     // Show success message with details
     toast('success', 'Theme imported successfully', {

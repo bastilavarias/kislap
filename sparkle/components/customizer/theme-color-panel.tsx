@@ -19,18 +19,13 @@ import { useSettings } from '@/hooks/use-settings';
 
 // Utils Imports
 import { colorFormatter } from '@/lib/color-converter';
+import { object } from 'zod';
 
-type ThemeColorPanelProps =
-  | {
-      stateles: boolean;
-      settings?: Partial<Settings>;
-      setSettings: (settings: Partial<Settings>) => void;
-    }
-  | {
-      stateles?: boolean;
-      settings?: Partial<Settings>;
-      setSettings?: never;
-    };
+type ThemeColorPanelProps = {
+  stateless: boolean;
+  settings?: Settings | null;
+  setSettings: (settings: Settings) => void;
+};
 
 type ColorSwatchProps = {
   label: string;
@@ -116,24 +111,32 @@ export const ColorSwatch = ({ label, value, onChange }: ColorSwatchProps) => {
   );
 };
 
-const ThemeColorPanel = (props: ThemeColorPanelProps) => {
-  // Hooks
+const ThemeColorPanel = ({
+  stateless,
+  settings: localSettings,
+  setSettings: setLocalSettings,
+}: ThemeColorPanelProps) => {
   const { settings, updateSettings } = useSettings();
 
-  const [localSettings, setLocalSettings] = useState(props.settings ? props.settings : settings);
+  const [currentTheme, setCurrentTheme] = useState<Partial<ThemeStyleProps> | undefined>(
+    settings?.theme.styles?.[settings.mode === 'system' ? 'light' : settings.mode]
+  );
 
-  const currentTheme = localSettings.theme.styles?.[
-    localSettings.mode === 'system' ? 'light' : localSettings.mode
-  ] as Partial<ThemeStyleProps> | undefined;
-
-  const handleUpdateSettings = (settings: ThemeSettings) => {
-    if (props.stateles && settings) {
-      props.setSettings(settings);
-
+  const onLocalUpdateSettings = (newSettings: Settings) => {
+    if (stateless) {
+      setLocalSettings(newSettings);
+      setCurrentTheme(
+        newSettings?.theme.styles?.[newSettings.mode === 'system' ? 'light' : newSettings.mode] as
+          | Partial<ThemeStyleProps>
+          | undefined
+      );
+      console.log('new theme:');
+      console.log(currentTheme);
+      console.log('---');
       return;
     }
 
-    updateSettings(settings);
+    updateSettings(newSettings);
   };
 
   const updateColor = useCallback(
@@ -142,42 +145,30 @@ const ThemeColorPanel = (props: ThemeColorPanelProps) => {
 
       // apply common styles to both light and dark modes
       if (key === 'font-sans' || key === 'font-serif' || key === 'font-mono' || key === 'radius') {
-        handleUpdateSettings({
+        onLocalUpdateSettings({
+          mode: 'light',
           theme: {
-            ...localSettings.theme,
+            ...localSettings?.theme,
             styles: {
-              ...localSettings.theme.styles,
-              light: { ...localSettings.theme.styles?.light, [key]: value },
-              dark: { ...localSettings.theme.styles?.dark, [key]: value },
+              ...localSettings?.theme.styles,
+              light: { ...localSettings?.theme.styles?.light, [key]: value },
+              dark: { ...localSettings?.theme.styles?.dark, [key]: value },
             },
           },
         });
 
         return;
       }
-
-      handleUpdateSettings({
-        theme: {
-          ...localSettings.theme,
-          styles: {
-            ...localSettings.theme.styles,
-            [localSettings.mode]: {
-              ...localSettings.theme.styles?.[localSettings.mode as keyof ThemePreset],
-              [key]: value,
-            },
-          },
-        },
-      });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [currentTheme, localSettings.theme.styles]
+    [currentTheme, settings.theme.styles, localSettings?.theme.styles]
   );
 
   useEffect(() => {
-    if (props.settings) {
-      setLocalSettings(props.settings);
+    if (localSettings) {
+      onLocalUpdateSettings(localSettings);
     }
-  }, [props.settings]);
+  }, [localSettings]);
 
   return (
     <div className="space-y-6">

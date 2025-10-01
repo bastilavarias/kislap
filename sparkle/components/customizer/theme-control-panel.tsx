@@ -40,14 +40,15 @@ import { Settings } from '@/contexts/settings-context';
 type Mode = 'light' | 'dark';
 
 type Props = {
-  settings?: Settings | null;
-  setSettings?: any;
   stateless?: boolean;
   hideTopActionButtons?: boolean;
   hideModeToggle?: boolean;
   hideScrollArea?: boolean;
   hideThemeSaverButton?: boolean;
   hideImportButton?: boolean;
+
+  themeSettings?: Settings | null;
+  setThemeSettings?: any;
 };
 
 const ThemeControlPanel = ({
@@ -58,25 +59,41 @@ const ThemeControlPanel = ({
   hideThemeSaverButton = false,
   hideImportButton = false,
 
-  settings: localSettings,
-  setSettings: setLocalSettings,
+  themeSettings: localSettings,
+  setThemeSettings: setLocalSettings,
 }: Props) => {
-  // Hooks
   const { setTheme } = useTheme();
   const { settings, updateSettings, applyThemePreset, resetToDefault } = useSettings();
 
   const onLocalUpdateSettings = (newSettings: Partial<Settings>) => {
-    if (stateless && newSettings) {
-      setLocalSettings({
-        ...localSettings,
-        ...settings,
-        mode: settings.mode,
-      });
+    if (stateless) {
+      setLocalSettings(newSettings);
 
       return;
     }
 
     updateSettings(settings);
+  };
+
+  const onLocalApplyThemePreset = (preset: string) => {
+    if (stateless) {
+      onLocalUpdateSettings({
+        ...settings,
+        ...localSettings,
+        theme: {
+          ...settings.theme,
+          ...localSettings?.theme,
+          preset,
+          styles: {
+            ...getPresetThemeStyles(preset),
+          },
+        },
+      });
+
+      return;
+    }
+
+    applyThemePreset(preset); // This will apply globally.
   };
 
   const handleModeChange = (value: string) => {
@@ -160,12 +177,7 @@ const ThemeControlPanel = ({
     updateBothThemes({ spacing: `${value}rem` });
   };
 
-  const handleApplyThemePreset = (preset: string) => {
-    applyThemePreset(preset);
-  };
-
   useEffect(() => {
-    // Ensure theme styles exist when component mounts
     if (!settings.theme.styles?.light || !settings.theme.styles?.dark) {
       const updatedSettings = {
         ...settings,
@@ -180,7 +192,6 @@ const ThemeControlPanel = ({
 
       onLocalUpdateSettings(updatedSettings);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -250,9 +261,12 @@ const ThemeControlPanel = ({
       {/* Themes Selection */}
       <ThemePresetSelect
         presets={presets}
-        currentPreset={settings.theme.preset || null}
-        onPresetChange={handleApplyThemePreset}
+        currentPreset={localSettings?.theme.preset || null}
+        onPresetChange={onLocalApplyThemePreset}
         hideImportButton={hideImportButton}
+        stateless={stateless}
+        themeSettings={localSettings}
+        setThemeSettings={setLocalSettings}
       />
 
       <Tabs defaultValue="colors" className="h-full w-full">
@@ -271,8 +285,8 @@ const ThemeControlPanel = ({
         <TabsContent value="colors">
           {/* CSS Variables Section */}
           <ThemeColorPanel
-            stateles={stateless}
-            settings={settings}
+            stateless={stateless}
+            settings={localSettings}
             setSettings={(settings: Partial<Settings>) => onLocalUpdateSettings(settings)}
           />
         </TabsContent>

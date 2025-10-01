@@ -157,10 +157,6 @@ export function Form({
   const { fields: showcaseFields, remove: removeShowcase } = showcaseFieldArray;
   const { fields: skillFields, remove: removeSkill, append: appendSkill } = skillFieldArray;
 
-  // REMOVED: All useForm, useFieldArray, useDocument, mapResumeToFormValues, and onProcessResumeFile logic.
-  // The component now relies entirely on its props.
-  // REMOVED: The local state for file/theme is now passed down.
-
   return (
     <Card>
       <CardContent className="grid grid-cols-12 gap-4">
@@ -172,7 +168,10 @@ export function Form({
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-medium">Resume</h3>
             <Button
-              className="shadow-none flex items-center gap-2 min-w-32 justify-center bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white border-0"
+              className="shadow-none flex items-center min-w-32 justify-center 
+             bg-gradient-to-r from-blue-500 to-purple-500 
+             hover:from-blue-600 hover:to-purple-600 
+             text-white border-0"
               onClick={() => setIsFileUploadDialogOpen(true)}
             >
               🤖 Parse with AI
@@ -192,7 +191,6 @@ export function Form({
                   {errors.name && (
                     <p className="text-destructive text-sm mt-1">{errors.name.message}</p>
                   )}
-                  {/* ... other header fields (introduction, email, phone, etc.) */}
                   <div>
                     <Label className="font-medium mb-2">Introduction</Label>
                     <Textarea
@@ -702,8 +700,8 @@ export function Form({
             <h1 className="text-2xl font-bold mb-6">Customization</h1>
             <ThemeControlPanel
               stateless={true}
-              settings={localThemeSettings}
-              setSettings={setLocalThemeSettings}
+              themeSettings={localThemeSettings}
+              setThemeSettings={setLocalThemeSettings}
               hideTopActionButtons={true}
               hideModeToggle={true}
               hideScrollArea={true}

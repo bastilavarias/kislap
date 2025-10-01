@@ -146,15 +146,14 @@ export function Wrapper() {
 
   const onRemoveTechnologyFromShowcase = (showcaseIndex: number, technologyIndex: number) => {
     const currentShowcases = watch('showcases') ?? [];
-    const updatedTechnologies = currentShowcases?[showcaseIndex]?.technologies.filter(
-      (_, i) => i !== technologyIndex
-    );
+    const updatedTechnologies =
+      currentShowcases?.[showcaseIndex]?.technologies?.filter((_, i) => i !== technologyIndex) ??
+      [];
     setValue(`showcases.${showcaseIndex}.technologies`, updatedTechnologies, {
       shouldValidate: true,
     });
   };
 
-  // 5. RESUME LOGIC: The onProcessResumeFile logic is moved here
   const onProcessResumeFile = async () => {
     setFileProcessingError('');
     setIsFileProcessing(true);
@@ -181,6 +180,7 @@ export function Wrapper() {
   const onSubmit = (form: PortfolioFormValues) => {
     console.log('✅ Submitted!');
     console.log(form);
+    console.log(localThemeSettings);
   };
 
   const onError = (errors: any) => {
