@@ -13,7 +13,7 @@ import type { ThemeStyleProps } from '@/types/theme';
 
 // Component Imports
 import ShadowControl from './shadow-control';
-import ThemeFontSelect from './theme-font-select';
+import { ThemeFontSelect } from './theme-font-select';
 import SliderWithInput from './slider-with-input';
 import ThemeColorPanel from './theme-color-panel';
 import HoldToSaveTheme from './hold-to-save-theme';

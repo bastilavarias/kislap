@@ -1,47 +1,55 @@
 // React Imports
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react';
 
 // Component Imports
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 type ThemeFontSelectProps = {
-  fonts: Record<string, string>
-  defaultValue: string
-  currentFont: string | null
-  onFontChange: (font: string) => void
-}
+  fonts: Record<string, string>;
+  defaultValue: string;
+  currentFont: string | null;
+  onFontChange: (font: string) => void;
+};
 
-const ThemeFontSelect = ({ fonts, defaultValue, currentFont, onFontChange }: ThemeFontSelectProps) => {
-  // States
-  const [value, setValue] = useState(fonts[currentFont ?? defaultValue])
+export const ThemeFontSelect = ({
+  fonts,
+  defaultValue,
+  currentFont,
+  onFontChange,
+}: ThemeFontSelectProps) => {
+  const [value, setValue] = useState(currentFont ?? defaultValue);
 
-  const fontNames = useMemo(() => ['System', ...Object.keys(fonts)], [fonts])
+  const fontNames = useMemo(() => ['System', ...Object.keys(fonts)], [fonts]);
 
-  const onValueChange = (value: string) => {
-    setValue(value)
-    onFontChange(value)
-  }
+  const onValueChange = (fontName: string) => {
+    setValue(fontName);
+    onFontChange(fontName);
+  };
+
+  useEffect(() => {
+    if (currentFont) {
+      onValueChange(currentFont);
+    }
+  }, [currentFont]);
 
   return (
     <Select value={value} onValueChange={onValueChange}>
-      <SelectTrigger className='h-12 w-full cursor-pointer'>
-        <SelectValue placeholder='Select theme font' />
+      <SelectTrigger className="h-12 w-full cursor-pointer">
+        <SelectValue placeholder="Select theme font" />
       </SelectTrigger>
       <SelectContent>
-        {fontNames.map(fontName => (
-          <SelectItem key={fontName} value={fonts[fontName] ?? defaultValue}>
-            <span
-              style={{
-                fontFamily: fonts[fontName] ?? defaultValue
-              }}
-            >
-              {fontName}
-            </span>
+        {fontNames.map((fontName) => (
+          <SelectItem key={fontName} value={fontName}>
+            <span style={{ fontFamily: fonts[fontName] ?? 'inherit' }}>{fontName}</span>
           </SelectItem>
         ))}
       </SelectContent>
     </Select>
-  )
-}
-
-export default ThemeFontSelect
+  );
+};
