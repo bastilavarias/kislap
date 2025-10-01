@@ -65,6 +65,8 @@ const ThemeControlPanel = ({
   const { setTheme } = useTheme();
   const { settings, updateSettings, applyThemePreset, resetToDefault } = useSettings();
 
+  const currentStyles = localSettings?.theme.styles?.[localSettings?.mode as Mode] || {};
+
   const onLocalUpdateSettings = (newSettings: Partial<Settings>) => {
     if (stateless) {
       setLocalSettings(newSettings);
@@ -103,9 +105,11 @@ const ThemeControlPanel = ({
       // Ensure both themes exist before switching
       const updatedSettings = {
         ...settings,
+        ...localSettings,
         mode: newMode,
         theme: {
           ...settings.theme,
+          ...localSettings?.theme,
           styles: {
             light: settings.theme.styles?.light || {},
             dark: settings.theme.styles?.dark || {},
@@ -115,28 +119,27 @@ const ThemeControlPanel = ({
 
       onLocalUpdateSettings(updatedSettings);
 
-      setTheme(newMode);
+      // setTheme(newMode);
     }
   };
 
   // Helper function to ensure both themes are updated together
   const updateBothThemes = (updates: Partial<ThemeStyleProps>) => {
-    const currentLight = settings.theme.styles?.light || {};
-    const currentDark = settings.theme.styles?.dark || {};
+    const currentLight = localSettings?.theme.styles?.light || {};
+    const currentDark = localSettings?.theme.styles?.dark || {};
 
-    const updatedSettings = {
+    onLocalUpdateSettings({
       ...settings,
+      ...localSettings,
       theme: {
         ...settings.theme,
+        ...localSettings?.theme,
         styles: {
           light: { ...currentLight, ...updates },
           dark: { ...currentDark, ...updates },
         },
       },
-    };
-
-    // Update settings and persist to storage
-    onLocalUpdateSettings(updatedSettings);
+    });
   };
 
   // Update font change handlers to use the new helper
@@ -151,22 +154,23 @@ const ThemeControlPanel = ({
 
   const handleStyleChange = useCallback(
     (key: keyof ThemeStyleProps, value: string) => {
-      if (!settings.mode) return;
+      if (!localSettings?.mode) return;
 
       onLocalUpdateSettings({
+        mode: localSettings.mode || 'system',
         theme: {
-          ...settings.theme,
+          ...localSettings.theme,
           styles: {
-            ...settings.theme.styles,
-            [settings.mode as Mode]: {
-              ...settings.theme.styles?.[settings.mode as Mode],
+            ...localSettings.theme.styles,
+            [localSettings.mode as Mode]: {
+              ...localSettings.theme.styles?.[localSettings.mode as Mode],
               [key]: value,
             },
           },
         },
       });
     },
-    [settings.theme, settings.mode, updateSettings]
+    [localSettings?.theme, localSettings?.mode, updateSettings]
   );
 
   const handleLetterSpacingChange = (value: number) => {
@@ -194,13 +198,11 @@ const ThemeControlPanel = ({
     }
   }, []);
 
-  useEffect(() => {
-    if (settings.mode) {
-      setTheme(settings.mode);
-    }
-  }, [settings.mode, setTheme]);
-
-  const currentStyles = settings.theme.styles?.[settings.mode as Mode] || {};
+  // useEffect(() => {
+  //   if (settings.mode) {
+  //     setTheme(settings.mode);
+  //   }
+  // }, [settings.mode, setTheme]);
 
   const form = (
     <div className="flex flex-col gap-6">
@@ -301,7 +303,7 @@ const ThemeControlPanel = ({
               fonts={sansSerifFonts}
               defaultValue={DEFAULT_FONT_SANS}
               currentFont={getAppliedThemeFont(
-                settings.theme.styles?.[settings.mode as Mode],
+                localSettings?.theme.styles?.[localSettings.mode as Mode],
                 'font-sans'
               )}
               onFontChange={(value) => handleFontChange('font-sans', value)}
@@ -316,7 +318,7 @@ const ThemeControlPanel = ({
               fonts={serifFonts}
               defaultValue={DEFAULT_FONT_SERIF}
               currentFont={getAppliedThemeFont(
-                settings.theme.styles?.[settings.mode as Mode],
+                localSettings?.theme.styles?.[localSettings?.mode as Mode],
                 'font-serif'
               )}
               onFontChange={(value) => handleFontChange('font-serif', value)}
@@ -331,7 +333,7 @@ const ThemeControlPanel = ({
               fonts={monoFonts}
               defaultValue={DEFAULT_FONT_MONO}
               currentFont={getAppliedThemeFont(
-                settings.theme.styles?.[settings.mode as Mode],
+                localSettings?.theme.styles?.[localSettings?.mode as Mode],
                 'font-mono'
               )}
               onFontChange={(value) => handleFontChange('font-mono', value)}
@@ -341,10 +343,9 @@ const ThemeControlPanel = ({
           <div className="mt-6">
             <SliderWithInput
               value={parseFloat(
-                settings.theme.styles?.[settings.mode as Mode]?.['letter-spacing']?.replace(
-                  'em',
-                  ''
-                ) || '0'
+                localSettings?.theme.styles?.[localSettings.mode as Mode]?.[
+                  'letter-spacing'
+                ]?.replace('em', '') || '0'
               )}
               onChange={handleLetterSpacingChange}
               min={-0.25}
@@ -389,8 +390,10 @@ const ThemeControlPanel = ({
           <div className="mt-6">
             <SliderWithInput
               value={parseFloat(
-                settings.theme.styles?.[settings.mode as Mode]?.spacing?.replace('rem', '') ||
-                  '0.25'
+                localSettings?.theme.styles?.[localSettings?.mode as Mode]?.spacing?.replace(
+                  'rem',
+                  ''
+                ) || '0.25'
               )}
               onChange={handleSpacingChange}
               min={0.15}

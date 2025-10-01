@@ -118,9 +118,7 @@ const ThemeColorPanel = ({
 }: ThemeColorPanelProps) => {
   const { settings, updateSettings } = useSettings();
 
-  const [currentTheme, setCurrentTheme] = useState<Partial<ThemeStyleProps> | undefined>(
-    settings?.theme.styles?.[settings.mode === 'system' ? 'light' : settings.mode]
-  );
+  const [currentTheme, setCurrentTheme] = useState<Partial<ThemeStyleProps> | undefined>(undefined);
 
   const onLocalUpdateSettings = (newSettings: Settings) => {
     if (stateless) {
@@ -130,9 +128,6 @@ const ThemeColorPanel = ({
           | Partial<ThemeStyleProps>
           | undefined
       );
-      console.log('new theme:');
-      console.log(currentTheme);
-      console.log('---');
       return;
     }
 
