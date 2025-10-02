@@ -105,6 +105,7 @@ func (service Service) ShowBySlug(slug string, level string) (*models.Project, e
             Preload("Portfolio.WorkExperiences").
             Preload("Portfolio.Education").
             Preload("Portfolio.Showcases").
+            Preload("Portfolio.Showcases.ShowcaseTechnologies").
             Preload("Portfolio.Skills").
             First(&project, project.ID).Error; err != nil {
             return nil, err
