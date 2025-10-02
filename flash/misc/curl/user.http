@@ -4,7 +4,6 @@
 
 ### Register a new user
 POST http://api.kislap.test/api/user
-Authorization: Bearer {{access_token}}
 Content-Type: application/json
 
 {

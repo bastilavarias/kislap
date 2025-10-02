@@ -1,25 +1,11 @@
 import { useApi } from '@/lib/api';
-
-export type Project = {
-  id: number;
-  name: string;
-  description?: string;
-  slug: string;
-  sub_domain?: string | null;
-  type: 'portfolio' | 'biz' | 'links' | 'waitlist';
-  layout: string;
-  theme_name: string;
-  theme_object: object;
-  created_at: string;
-  updated_at: string;
-  deleted_at?: string;
-};
+import { APIResponseProject } from '@/types/api-response';
 
 export function useProject() {
-  const { apiPost } = useApi();
+  const { apiPost, apiGet } = useApi();
 
   const create = async (name: string, description: string, sub_domain: string, type: string) => {
-    return await apiPost<Project>('api/projects', {
+    return await apiPost<APIResponseProject>('api/projects', {
       name,
       description,
       sub_domain,
@@ -27,7 +13,12 @@ export function useProject() {
     });
   };
 
+  const getBySlug = async (slug: string, level: string) => {
+    return await apiGet<APIResponseProject>(`api/projects/show/slug/${slug}?level=${level}`);
+  };
+
   return {
     create,
+    getBySlug,
   };
 }

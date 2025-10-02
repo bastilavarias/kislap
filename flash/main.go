@@ -40,10 +40,20 @@ func main() {
 	)
 	databaseClient := database.Default(dsn)
 
-	llmProvider := llm.Default(&llm.OpenAISDK{
-		ApiKey: os.Getenv("LLM_API_KEY"),
-		Model:  os.Getenv("LLM_MODEL"),
-	})
+
+	var llmProvider llm.Provider
+	if os.Getenv("LLM_PROVIDER") == "gemini" {
+		llmProvider = llm.Default(&llm.GeminiSDK{
+			ApiKey: os.Getenv("LLM_API_KEY"),
+			Model:  os.Getenv("LLM_MODEL"),
+		})
+	} else {
+		llmProvider = llm.Default(&llm.OpenAISDK{
+			ApiKey: os.Getenv("LLM_API_KEY"),
+			Model:  os.Getenv("LLM_MODEL"),
+		})
+	}
+
 
 	rootDomain := os.Getenv("APP_ROOT_DOMAIN")
 	dnsProvider := dns.Default(envDev, rootDomain)

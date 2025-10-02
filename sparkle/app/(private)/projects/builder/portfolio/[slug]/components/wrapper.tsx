@@ -1,12 +1,9 @@
-// PortfolioFormWrapper.tsx
-// (You'll need to create this file, or put its content in the original wrapper.tsx)
-
 'use client';
 
 import { Form } from '@/app/(private)/projects/builder/portfolio/[slug]/components/form'; // Import the modified Form component
 import { FormHeader } from '@/components/form-header';
 import { BackButton } from '@/components/back-button';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { PortfolioFormValues, PortfolioSchema } from '@/lib/schemas/portfolio';
@@ -14,6 +11,9 @@ import { DocumentResume, useDocument } from '@/hooks/api/use-document';
 import { toast } from 'sonner';
 import { Settings } from '@/contexts/settings-context';
 import { usePortfolio } from '@/hooks/api/use-portfolio';
+import { Project, useProject } from '@/hooks/api/use-project';
+import { useParams } from 'next/navigation';
+import { useAuth } from '@/hooks/api/use-auth';
 
 function mapResumeToFormValues(resume: DocumentResume): PortfolioFormValues {
   return {
@@ -60,6 +60,7 @@ function mapResumeToFormValues(resume: DocumentResume): PortfolioFormValues {
 }
 
 export function Wrapper() {
+  const [project, setProject] = useState<Project | null>(null);
   const [tab, setTab] = useState('edit');
   const [files, setFiles] = useState<File[] | []>([]);
   const [isFileUploadDialogOpen, setIsFileUploadDialogOpen] = useState(false);
@@ -71,6 +72,9 @@ export function Wrapper() {
   const [error, setError] = useState('');
 
   const { parse } = useDocument();
+  const { getBySlug } = useProject();
+  const params = useParams();
+  const { authUser } = useAuth();
 
   const formMethods = useForm<PortfolioFormValues>({
     resolver: zodResolver(PortfolioSchema),
@@ -175,12 +179,40 @@ export function Wrapper() {
     setIsFileProcessing(false);
   };
 
+  const onGetProject = async () => {
+    const slug = params.slug;
+    const view = 'full';
+
+    if (slug == null || typeof slug != 'string') {
+      alert('Invalid route.');
+      return;
+    }
+
+    const { success, data, message } = await getBySlug(slug, view);
+
+    if (success && data) {
+      setProject(data);
+
+      if (data.portfolio) {
+        console.log(data.portfolio);
+        // const mappedValues = mapResumeToFormValues(data.portfolio);
+
+        // Object.entries(mappedValues).forEach(([key, value]) => {
+        //   setValue(key as keyof PortfolioFormValues, value, { shouldValidate: true });
+        // });
+      }
+      return;
+    }
+
+    alert(message);
+  };
+
   const onSubmit = async (form: PortfolioFormValues) => {
     setError('');
     setLoading(true);
     const { success, data, message } = await create({
-      user_id: 1,
-      project_id: 1,
+      user_id: authUser?.id ?? 1,
+      project_id: project?.id,
       ...form,
       theme: {
         ...localThemeSettings?.theme,
@@ -190,13 +222,19 @@ export function Wrapper() {
       alert('Portfolio successfully saved!');
       return;
     }
+
     setLoading(false);
     setError(message);
+    toast('Someting went wrong!');
   };
 
   const onError = (errors: any) => {
     console.log('❌ Errors:', errors);
   };
+
+  useEffect(() => {
+    onGetProject();
+  }, []);
 
   return (
     <div>

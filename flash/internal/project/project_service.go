@@ -90,6 +90,30 @@ func (service Service) Show(projectID int) (*models.Project, error) {
 	return &proj, nil
 }
 
+func (service Service) ShowBySlug(slug string, level string) (*models.Project, error) {
+	var project models.Project
+
+	query := service.DB
+
+    if err := query.First(&project, "slug = ?", slug).Error; err != nil {
+        return nil, err
+    }
+
+    if level == "full" && project.Type == "portfolio" {
+        if err := service.DB.
+            Preload("Portfolio").
+            Preload("Portfolio.WorkExperiences").
+            Preload("Portfolio.Education").
+            Preload("Portfolio.Showcases").
+            Preload("Portfolio.Skills").
+            First(&project, project.ID).Error; err != nil {
+            return nil, err
+        }
+    }
+
+	return &project, nil
+}
+
 func (service Service) Delete(projectID int) (*models.Project, error) {
 	var proj models.Project
 	if err := service.DB.Delete(&models.Project{}, projectID).Error; err != nil {

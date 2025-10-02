@@ -58,7 +58,7 @@ func (controller Controller) Create(context *gin.Context) {
 	utils.APIRespondSuccess(context, http.StatusOK, project)
 }
 
-func (controller Controller) Show(context *gin.Context) {
+func (controller Controller) ShowByID(context *gin.Context) {
 	idStr := context.Param("id")
 	projectID, err := strconv.Atoi(idStr)
 
@@ -69,6 +69,20 @@ func (controller Controller) Show(context *gin.Context) {
 	}
 
 	project, err := controller.Service.Show(projectID)
+	if err != nil {
+		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
+		context.Abort()
+		return
+	}
+
+	utils.APIRespondSuccess(context, http.StatusOK, project)
+}
+
+func (controller Controller) ShowBySlug(context *gin.Context) {
+	slug := context.Param("slug")
+	level := context.Query("level")
+	
+	project, err := controller.Service.ShowBySlug(slug, level)
 	if err != nil {
 		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
 		context.Abort()

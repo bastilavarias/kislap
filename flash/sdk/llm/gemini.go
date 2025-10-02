@@ -8,7 +8,7 @@ import (
 	"google.golang.org/genai"
 )
 
-type Gemini struct {
+type GeminiSDK struct {
 	ApiKey string
 	Model  string
 
@@ -17,7 +17,7 @@ type Gemini struct {
 	err    error
 }
 
-func (g *Gemini) init() {
+func (g *GeminiSDK) init() {
 	g.once.Do(func() {
 		ctx := context.Background()
 		client, err := genai.NewClient(ctx, &genai.ClientConfig{
@@ -35,7 +35,7 @@ func (g *Gemini) init() {
 	})
 }
 
-func (g *Gemini) Generate(prompt string) (string, error) {
+func (g *GeminiSDK) Generate(prompt string) (string, error) {
 	g.init()
 	if g.err != nil {
 		return "", g.err
