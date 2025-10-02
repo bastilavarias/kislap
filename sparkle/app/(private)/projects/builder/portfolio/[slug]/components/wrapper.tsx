@@ -7,27 +7,34 @@ import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { PortfolioFormValues, PortfolioSchema } from '@/lib/schemas/portfolio';
-import { DocumentResume, useDocument } from '@/hooks/api/use-document';
+import { useDocument } from '@/hooks/api/use-document';
 import { toast } from 'sonner';
 import { Settings } from '@/contexts/settings-context';
 import { usePortfolio } from '@/hooks/api/use-portfolio';
-import { Project, useProject } from '@/hooks/api/use-project';
+import { useProject } from '@/hooks/api/use-project';
 import { useParams } from 'next/navigation';
-import { useAuth } from '@/hooks/api/use-auth';
+import { AuthUser, useAuth } from '@/hooks/api/use-auth';
+import {
+  APIResponseDocumentResume,
+  APIResponsePortfolio,
+  APIResponseProject,
+} from '@/types/api-response';
 
-function mapResumeToFormValues(resume: DocumentResume): PortfolioFormValues {
+function mapToFormValues<T extends APIResponseDocumentResume | APIResponsePortfolio>(
+  source: T
+): PortfolioFormValues {
   return {
-    name: resume.name || '',
-    introduction: resume.introduction || '',
-    about: resume.about || '',
-    email: resume.email || '',
-    phone: resume.phone || '',
-    website: resume.website || '',
-    github: resume.github || '',
-    linkedin: resume.linkedin || '',
-    twitter: resume.twitter || '',
+    name: source.name || '',
+    introduction: source.introduction || '',
+    about: source.about || '',
+    email: source.email || '',
+    phone: source.phone || '',
+    website: source.website || '',
+    github: source.github || '',
+    linkedin: source.linkedin || '',
+    twitter: source.twitter || '',
 
-    workExperiences: (resume.work_experiences || []).map((work: any) => ({
+    workExperiences: (source.work_experiences || []).map((work: any) => ({
       company: work.company || '',
       role: work.role || '',
       location: work.location || '',
@@ -36,7 +43,7 @@ function mapResumeToFormValues(resume: DocumentResume): PortfolioFormValues {
       about: work.about || '',
     })),
 
-    education: (resume.education || []).map((education: any) => ({
+    education: (source.education || []).map((education: any) => ({
       school: education.school,
       level: education.level || '',
       degree: education.degree || '',
@@ -46,21 +53,21 @@ function mapResumeToFormValues(resume: DocumentResume): PortfolioFormValues {
       about: education.about || '',
     })),
 
-    showcases: (resume.showcases || []).map((showcase: any) => ({
+    showcases: (source.showcases || []).map((showcase: any) => ({
       name: showcase.name,
       description: showcase.description || '',
       role: showcase.role || '',
       technologies: showcase.technologies || [],
     })),
 
-    skills: (resume.skills || []).map((skill: { name: string }) => ({
+    skills: (source.skills || []).map((skill: { name: string }) => ({
       name: skill.name,
     })),
   };
 }
 
 export function Wrapper() {
-  const [project, setProject] = useState<Project | null>(null);
+  const [project, setProject] = useState<APIResponseProject | null>(null);
   const [tab, setTab] = useState('edit');
   const [files, setFiles] = useState<File[] | []>([]);
   const [isFileUploadDialogOpen, setIsFileUploadDialogOpen] = useState(false);
@@ -70,11 +77,12 @@ export function Wrapper() {
   const { create } = usePortfolio();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [user, setUser] = useState<AuthUser | null>(null);
 
+  const { authUser } = useAuth();
   const { parse } = useDocument();
   const { getBySlug } = useProject();
   const params = useParams();
-  const { authUser } = useAuth();
 
   const formMethods = useForm<PortfolioFormValues>({
     resolver: zodResolver(PortfolioSchema),
@@ -162,7 +170,7 @@ export function Wrapper() {
     const { success, data, message } = await parse(files[0], 'resume');
 
     if (success && data) {
-      const mappedValues = mapResumeToFormValues(data);
+      const mappedValues = mapToFormValues(data);
 
       Object.entries(mappedValues).forEach(([key, value]) => {
         setValue(key as keyof PortfolioFormValues, value, { shouldValidate: true });
@@ -184,9 +192,11 @@ export function Wrapper() {
     const view = 'full';
 
     if (slug == null || typeof slug != 'string') {
-      alert('Invalid route.');
+      toast('Invalid route.');
       return;
     }
+
+    setError('');
 
     const { success, data, message } = await getBySlug(slug, view);
 
@@ -194,24 +204,26 @@ export function Wrapper() {
       setProject(data);
 
       if (data.portfolio) {
-        console.log(data.portfolio);
-        // const mappedValues = mapResumeToFormValues(data.portfolio);
-
-        // Object.entries(mappedValues).forEach(([key, value]) => {
-        //   setValue(key as keyof PortfolioFormValues, value, { shouldValidate: true });
-        // });
+        const mappedValues = mapToFormValues(data.portfolio);
+        Object.entries(mappedValues).forEach(([key, value]) => {
+          setValue(key as keyof PortfolioFormValues, value, { shouldValidate: true });
+        });
+        setLocalThemeSettings({
+          mode: 'system',
+          theme: data.portfolio.theme_object,
+        });
       }
       return;
     }
 
-    alert(message);
+    toast(message);
   };
 
   const onSubmit = async (form: PortfolioFormValues) => {
     setError('');
     setLoading(true);
     const { success, data, message } = await create({
-      user_id: authUser?.id ?? 1,
+      user_id: user?.id ?? 1,
       project_id: project?.id,
       ...form,
       theme: {
@@ -219,18 +231,24 @@ export function Wrapper() {
       },
     });
     if (success && data) {
-      alert('Portfolio successfully saved!');
+      toast('Portfolio details saved!');
       return;
     }
 
     setLoading(false);
     setError(message);
-    toast('Someting went wrong!');
+    toast('Something went wrong!');
   };
 
   const onError = (errors: any) => {
     console.log('❌ Errors:', errors);
   };
+
+  useEffect(() => {
+    if (authUser) {
+      setUser(authUser);
+    }
+  }, [authUser]);
 
   useEffect(() => {
     onGetProject();
@@ -244,6 +262,7 @@ export function Wrapper() {
       <div className="flex flex-col gap-10">
         <FormHeader
           tab={tab}
+          error={error}
           onTabChange={setTab}
           onSave={() => formMethods.handleSubmit(onSubmit, onError)()}
         />

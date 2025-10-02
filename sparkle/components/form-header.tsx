@@ -1,28 +1,38 @@
 'use client';
 
-import { MouseEventHandler, useState } from 'react';
+import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { LayoutDashboardIcon, EditIcon, File } from 'lucide-react';
+import { LayoutDashboardIcon, EditIcon, File, AlertCircle } from 'lucide-react';
 import { ThemeCustomizer } from '@/components/customizer';
 import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 
 type HeaderProps<T> = {
   tab: string;
+  error?: string;
   onTabChange: (value: string) => void;
   onSave: (e?: React.BaseSyntheticEvent) => void | Promise<void>;
 };
 
-export function FormHeader<T>({ tab, onTabChange, onSave }: HeaderProps<T>) {
+export function FormHeader<T>({ tab, onTabChange, onSave, error }: HeaderProps<T>) {
   const [slug, setSlug] = useState('sebastech');
   const [isThemeCustomizerOpen, setIsThemeCustomizerOpen] = useState(false);
 
   return (
     <Card>
       <CardContent className="flex flex-col gap-4">
+        {error && (
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle className="capitalize font-semibold">An Error Occurred</AlertTitle>
+            <AlertDescription className="text-sm">{error}</AlertDescription>
+          </Alert>
+        )}
+
         <div className="flex flex-col gap-4">
           <Label className="">Domain</Label>
           <div className="flex items-center gap-4">
@@ -40,6 +50,7 @@ export function FormHeader<T>({ tab, onTabChange, onSave }: HeaderProps<T>) {
             </div>
           </div>
         </div>
+
         <div className="flex justify-between items-center">
           <Tabs value={tab} onValueChange={onTabChange}>
             <TabsList>
