@@ -26,12 +26,12 @@ import { useEffect, useState } from 'react';
 
 interface Props {
   files: File[];
-  onChangeFiles: (files: File[]) => void;
-  onProcess: () => void;
   loading: boolean;
   open: boolean;
-  onOpenChange: (open: boolean) => void;
   error: string;
+  onChangeFiles: (files: File[]) => void;
+  onProcess: () => void;
+  onOpenChange: (open: boolean) => void;
 }
 
 const PdfExtractionAlert = ({ error }: { error: string }) => {

@@ -35,16 +35,10 @@ import { Settings } from '@/contexts/settings-context';
 interface Props {
   formMethods: UseFormReturn<PortfolioFormValues>;
 
-  workFieldArray: UseFieldArrayReturn<PortfolioFormValues, 'workExperiences', 'id'>;
+  workFieldArray: UseFieldArrayReturn<PortfolioFormValues, 'work_experiences', 'id'>;
   educationFieldArray: UseFieldArrayReturn<PortfolioFormValues, 'education', 'id'>;
   showcaseFieldArray: UseFieldArrayReturn<PortfolioFormValues, 'showcases', 'id'>;
   skillFieldArray: UseFieldArrayReturn<PortfolioFormValues, 'skills', 'id'>;
-
-  onAddWorkExperience: () => void;
-  onAddEducation: () => void;
-  onAddShowcase: () => void;
-  onAddTechnologyToShowcase: (index: number, name: string) => void;
-  onRemoveTechnologyFromShowcase: (showcaseIndex: number, technologyIndex: number) => void;
 
   files: File[] | [];
   setFiles: React.Dispatch<React.SetStateAction<File[] | []>>;
@@ -52,10 +46,15 @@ interface Props {
   setIsFileUploadDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
   isFileProcessing: boolean;
   fileProcessingError: string;
-  onProcessResumeFile: () => Promise<void>;
-
   localThemeSettings: Settings | null;
   setLocalThemeSettings: React.Dispatch<React.SetStateAction<Settings | null>>;
+
+  onAddWorkExperience: () => void;
+  onAddEducation: () => void;
+  onAddShowcase: () => void;
+  onAddTechnologyToShowcase: (index: number, name: string) => void;
+  onRemoveTechnologyFromShowcase: (showcaseIndex: number, technologyIndex: number) => void;
+  onProcessResumeFile: () => Promise<void>;
 }
 
 function AddItemDrawer({
@@ -186,11 +185,23 @@ export function Form({
                   Header
                 </AccordionTrigger>
                 <AccordionContent className="space-y-4 pt-2 pb-4 xl:px-5">
-                  <Label className="font-medium mb-2">Name</Label>
-                  <Input {...register('name')} className="w-full shadow-none" />
-                  {errors.name && (
-                    <p className="text-destructive text-sm mt-1">{errors.name.message}</p>
-                  )}
+                  <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                    <div className="col-span-8">
+                      <Label className="font-medium mb-2">Name</Label>
+                      <Input {...register('name')} className="w-full shadow-none" />
+                      {errors.name && (
+                        <p className="text-destructive text-sm mt-1">{errors.name.message}</p>
+                      )}
+                    </div>
+
+                    <div className="col-span-4">
+                      <Label className="font-medium mb-2">Job Title</Label>
+                      <Input {...register('job_title')} className="w-full shadow-none" />
+                      {errors.name && (
+                        <p className="text-destructive text-sm mt-1">{errors.job_title?.message}</p>
+                      )}
+                    </div>
+                  </div>
                   <div>
                     <Label className="font-medium mb-2">Introduction</Label>
                     <Textarea
@@ -292,12 +303,12 @@ export function Form({
                             <div>
                               <Label className="font-medium mb-2">Job Title</Label>
                               <Input
-                                {...register(`workExperiences.${index}.role` as const)}
+                                {...register(`work_experiences.${index}.role` as const)}
                                 className="w-full shadow-none"
                               />
-                              {errors.workExperiences?.[index]?.role && (
+                              {errors.work_experiences?.[index]?.role && (
                                 <p className="text-destructive text-sm mt-1">
-                                  {errors.workExperiences[index]?.role?.message}
+                                  {errors.work_experiences[index]?.role?.message}
                                 </p>
                               )}
                             </div>
@@ -306,14 +317,14 @@ export function Form({
                               <div>
                                 <Label className="font-medium mb-2">Company</Label>
                                 <Input
-                                  {...register(`workExperiences.${index}.company` as const)}
+                                  {...register(`work_experiences.${index}.company` as const)}
                                   className="w-full shadow-none"
                                 />
                               </div>
                               <div>
                                 <Label className="font-medium mb-2">Location</Label>
                                 <Input
-                                  {...register(`workExperiences.${index}.location` as const)}
+                                  {...register(`work_experiences.${index}.location` as const)}
                                   className="w-full shadow-none"
                                 />
                               </div>
@@ -325,19 +336,19 @@ export function Form({
                                 <div>
                                   <Label className="text-xs mb-2">Start Date</Label>
                                   <Input
-                                    {...register(`workExperiences.${index}.startDate` as const)}
+                                    {...register(`work_experiences.${index}.startDate` as const)}
                                     className="w-full shadow-none"
                                   />
-                                  {errors.workExperiences?.[index]?.startDate && (
+                                  {errors.work_experiences?.[index]?.startDate && (
                                     <p className="text-destructive text-sm mt-1">
-                                      {errors.workExperiences[index]?.startDate?.message}
+                                      {errors.work_experiences[index]?.startDate?.message}
                                     </p>
                                   )}
                                 </div>
                                 <div>
                                   <Label className="text-xs mb-2">End Date</Label>
                                   {/* <Controller
-                                    name={`workExperiences.${index}.endDate`}
+                                    name={`work_experiences.${index}.endDate`}
                                     control={control} // Use passed control
                                     render={({ field }) => (
                                       <DateInput
@@ -349,12 +360,12 @@ export function Form({
                                     )}
                                   /> */}
                                   <Input
-                                    {...register(`workExperiences.${index}.endDate` as const)}
+                                    {...register(`work_experiences.${index}.endDate` as const)}
                                     className="w-full shadow-none"
                                   />
-                                  {errors.workExperiences?.[index]?.endDate && (
+                                  {errors.work_experiences?.[index]?.endDate && (
                                     <p className="text-destructive text-sm mt-1">
-                                      {errors.workExperiences[index]?.endDate?.message}
+                                      {errors.work_experiences[index]?.endDate?.message}
                                     </p>
                                   )}
                                 </div>
@@ -364,12 +375,12 @@ export function Form({
                             <div>
                               <Label className="font-medium mb-2">Description</Label>
                               <Textarea
-                                {...register(`workExperiences.${index}.about` as const)}
+                                {...register(`work_experiences.${index}.about` as const)}
                                 className="w-full shadow-none h-24 resize-none"
                               />
-                              {errors.workExperiences?.[index]?.about && (
+                              {errors.work_experiences?.[index]?.about && (
                                 <p className="text-destructive text-sm mt-1">
-                                  {errors.workExperiences[index]?.about?.message}
+                                  {errors.work_experiences[index]?.about?.message}
                                 </p>
                               )}
                             </div>

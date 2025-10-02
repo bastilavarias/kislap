@@ -1,5 +1,6 @@
 export interface APIResponseDocumentResume {
   name: string;
+  job_title: string;
   introduction: string;
   about: string;
   email: string;

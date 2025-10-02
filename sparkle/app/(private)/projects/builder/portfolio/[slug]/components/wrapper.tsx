@@ -25,6 +25,7 @@ function mapToFormValues<T extends APIResponseDocumentResume | APIResponsePortfo
 ): PortfolioFormValues {
   return {
     name: source.name || '',
+    job_title: source.job_title || '',
     introduction: source.introduction || '',
     about: source.about || '',
     email: source.email || '',
@@ -34,7 +35,7 @@ function mapToFormValues<T extends APIResponseDocumentResume | APIResponsePortfo
     linkedin: source.linkedin || '',
     twitter: source.twitter || '',
 
-    workExperiences: (source.work_experiences || []).map((work: any) => ({
+    work_experiences: (source.work_experiences || []).map((work: any) => ({
       company: work.company || '',
       role: work.role || '',
       location: work.location || '',
@@ -78,6 +79,7 @@ export function Wrapper() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [user, setUser] = useState<AuthUser | null>(null);
+  const [porttfolioID, setPortfolioID] = useState<number | null>(null);
 
   const { authUser } = useAuth();
   const { parse } = useDocument();
@@ -88,6 +90,7 @@ export function Wrapper() {
     resolver: zodResolver(PortfolioSchema),
     defaultValues: {
       name: '',
+      job_title: '',
       introduction: '',
       about: '',
       email: '',
@@ -96,7 +99,7 @@ export function Wrapper() {
       github: '',
       linkedin: '',
       twitter: '',
-      workExperiences: [],
+      work_experiences: [],
       education: [],
       showcases: [],
       skills: [],
@@ -105,7 +108,7 @@ export function Wrapper() {
 
   const { setValue, watch, control } = formMethods;
 
-  const workFieldArray = useFieldArray({ control, name: 'workExperiences' });
+  const workFieldArray = useFieldArray({ control, name: 'work_experiences' });
   const educationFieldArray = useFieldArray({ control, name: 'education' });
   const showcaseFieldArray = useFieldArray({ control, name: 'showcases' });
   const skillFieldArray = useFieldArray({ control, name: 'skills' });
@@ -212,6 +215,7 @@ export function Wrapper() {
           mode: 'system',
           theme: data.portfolio.theme_object,
         });
+        setPortfolioID(data.portfolio.id);
       }
       return;
     }
@@ -223,6 +227,7 @@ export function Wrapper() {
     setError('');
     setLoading(true);
     const { success, data, message } = await create({
+      portfolio_id: porttfolioID ?? null,
       user_id: user?.id ?? 1,
       project_id: project?.id,
       ...form,

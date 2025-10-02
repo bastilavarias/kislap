@@ -11,8 +11,9 @@ Follow this schema:
 
 {
     "name": "string",
-    "introduction": "string" (This could be their job title now or anything.),
-    "about": "string",
+    "job_title": "string" 
+    "introduction": "string" (This could be their short introduction.),
+    "about": "string", (This could be their long message about themselves.),
     "email": "string",
     "phone": "string",
     "website": "string",

@@ -2,6 +2,7 @@ package portfolio
 
 import (
 	"encoding/json"
+	"errors"
 	"flash/models"
 	"fmt"
 
@@ -12,220 +13,110 @@ type Service struct {
 	DB *gorm.DB
 }
 
-func (service Service) Create(payload Payload) (*models.Portfolio, error) {
-	fmt.Println(payload)
-
-	var workExperiences []models.WorkExperience
-	for _, workExperience := range payload.WorkExperiences {
-		workExperiences = append(workExperiences, models.WorkExperience{
-			Company:   workExperience.Company,
-			Role:      workExperience.Role,
-			Location:  &workExperience.Location,
-			StartDate: &workExperience.StartDate,
-			EndDate:   &workExperience.EndDate,
-			About:     &workExperience.About,
-		})
-	}
-
-	var education []models.Education
-	for _, edu := range payload.Education {
-		education = append(education, models.Education{
-			School:    edu.School,
-			Level:     edu.Level,
-			Degree:    &edu.Degree,
-			Location:  &edu.Location,
-			YearStart: edu.YearStart,
-			YearEnd:   edu.YearEnd,
-			About:     &edu.About,
-		})
-	}
-
-	var skills []models.Skill
-	for _, skill := range payload.Skills {
-		skills = append(skills, models.Skill{
-			Name: skill.Name,
-			URL:  skill.URL,
-		})
-	}
-
-	var showcases []models.Showcase
-	for _, showcase := range payload.Showcases {
-		showcases = append(showcases, models.Showcase{
-			Name:        showcase.Name,
-			Description: &showcase.Description,
-			Role:        &showcase.Role,
-		})
-
-		var technologies []models.ShowcaseTechnology
-		for _, technology := range payload.Showcases {
-			technologies = append(technologies, models.ShowcaseTechnology{
-				Name: technology.Name,
-			})
-		}
-	}
-
-	var themeRaw *json.RawMessage 
-
-	if payload.Theme != nil {
-		themeJSON, err := json.Marshal(payload.Theme)
-		if err != nil {
-    		return nil, err 
-		}
-		rawJSON := json.RawMessage(themeJSON)
-		themeRaw = &rawJSON
-	} else {
-		themeRaw = nil
-	}
 
 
-	rawPortfolio := models.Portfolio{
-		UserID:       uint64(payload.UserID),
-		ProjectID:    uint64(payload.ProjectID),
-		Name:         payload.Name,
-		Introduction: &payload.Introduction,
-		About:        &payload.About,
-		Email:        &payload.Email,
-		Phone:        &payload.Phone,
-		Website:      &payload.Website,
-		Github:       &payload.Github,
-		Linkedin:     &payload.Linkedin,
-		Twitter:      &payload.Twitter,
-		
-		ThemeName: 		&payload.Theme.Preset,
-		ThemeObject: 	themeRaw,
+func (service Service) Save(payload Payload) (*models.Portfolio, error) {
+    themeRaw, err := marshalTheme(*payload.Theme)
+    if err != nil {
+        return nil, fmt.Errorf("failed to marshal theme: %w", err)
+    }
 
-		WorkExperiences: workExperiences,
-		Education:       education,
-		Skills:          skills,
-		Showcases:       showcases,
-		
-	}
+    newWorkExperiences := buildWorkExperiences(payload.WorkExperiences)
+    newEducation := buildEducation(payload.Education)
+    newSkills := buildSkills(payload.Skills)
+    newShowcases := buildShowcases(payload.Showcases)
 
-	if err := service.DB.
-		Create(&rawPortfolio).Error; err != nil {
-		return nil, err
-	}
+    var portfolio models.Portfolio
 
-	var portfolio models.Portfolio
-	err := service.DB.Find(&portfolio, rawPortfolio.ID).Error
-	if err != nil {
-		return nil, err
-	}
+    if payload.PortfolioID == nil { 
+        portfolio = models.Portfolio{
+            UserID:          uint64(payload.UserID),
+            ProjectID:       uint64(payload.ProjectID),
+            Name:            payload.Name,
+            JobTitle:        &payload.JobTitle,
+            Introduction:    &payload.Introduction,
+            About:           &payload.About,
+            Email:           &payload.Email,
+            Phone:           &payload.Phone,
+            Website:         &payload.Website,
+            Github:          &payload.Github,
+            Linkedin:        &payload.Linkedin,
+            Twitter:         &payload.Twitter,
+            ThemeName:       &payload.Theme.Preset,
+            ThemeObject:     themeRaw,
+            WorkExperiences: newWorkExperiences,
+            Education:       newEducation,
+            Skills:          newSkills,
+            Showcases:       newShowcases,
+        }
 
-	return &portfolio, nil
+        if err := service.DB.Create(&portfolio).Error; err != nil {
+            return nil, fmt.Errorf("failed to create portfolio: %w", err)
+        }
+    } else { 
+        if err := service.DB.First(&portfolio, payload.PortfolioID).Error; err != nil {
+            if errors.Is(err, gorm.ErrRecordNotFound) {
+                return nil, fmt.Errorf("portfolio with ID %d not found", payload.PortfolioID)
+            }
+            return nil, fmt.Errorf("failed to find portfolio: %w", err)
+        }
+
+        // Update the main fields
+        portfolio.Name = payload.Name
+        portfolio.JobTitle = &payload.JobTitle
+        portfolio.Introduction = &payload.Introduction
+        portfolio.About = &payload.About
+        portfolio.Email = &payload.Email
+        portfolio.Phone = &payload.Phone
+        portfolio.Website = &payload.Website
+        portfolio.Github = &payload.Github
+        portfolio.Linkedin = &payload.Linkedin
+        portfolio.Twitter = &payload.Twitter
+        portfolio.ThemeName = &payload.Theme.Preset
+        portfolio.ThemeObject = themeRaw
+
+        // Use a transaction to safely replace all nested associations
+        if err := service.DB.Transaction(func(tx *gorm.DB) error {
+            // Clear existing associations. This is a clean "replace" strategy.
+            if err := tx.Model(&portfolio).Association("WorkExperiences").Clear(); err != nil { return err }
+            if err := tx.Model(&portfolio).Association("Education").Clear(); err != nil { return err }
+            if err := tx.Model(&portfolio).Association("Skills").Clear(); err != nil { return err }
+            if err := tx.Model(&portfolio).Association("Showcases").Clear(); err != nil { return err }
+
+            // Assign the new slices
+            portfolio.WorkExperiences = newWorkExperiences
+            portfolio.Education = newEducation
+            portfolio.Skills = newSkills
+            portfolio.Showcases = newShowcases
+
+            // Save the main portfolio. GORM will create the new association rows.
+            return tx.Save(&portfolio).Error
+        }); err != nil {
+            return nil, fmt.Errorf("failed to update portfolio: %w", err)
+        }
+    }
+
+    // 4. Fetch the complete, updated portfolio from the DB to return
+    // This ensures all IDs and relationships are correctly populated.
+    return service.GetByIDWithPreloads(portfolio.ID)
 }
 
-func (service Service) Get(portfolioID uint64) (*models.Portfolio, error) {
-	var portfolio models.Portfolio
-	err := service.DB.
-		Preload("User").
-		Preload("Project").
-		Preload("WorkExperiences").
-		Preload("Education").
-		Preload("Skills").
-		Preload("Showcases").
-		First(&portfolio, portfolioID).Error
-	if err != nil {
-		return nil, err
-	}
-
-	if &portfolio.ID == nil {
-		return nil, gorm.ErrRecordNotFound
-	}
-
-	return &portfolio, nil
-}
-
-func (service Service) Update(portfolioID uint64, payload Payload) (*models.Portfolio, error) {
-	portfolio, err := service.Get(portfolioID)
-	if err != nil {
-		return nil, err
-	}
-
-	portfolio.Name = payload.Name
-	portfolio.Introduction = &payload.Introduction
-	portfolio.About = &payload.About
-	portfolio.Email = &payload.Email
-	portfolio.Phone = &payload.Phone
-	portfolio.Website = &payload.Website
-	portfolio.Github = &payload.Github
-	portfolio.Linkedin = &payload.Linkedin
-	portfolio.Twitter = &payload.Twitter
-	portfolio.ProjectID = uint64(payload.ProjectID)
-	portfolio.UserID = uint64(payload.UserID)
-
-	service.DB.Where("portfolio_id = ?", portfolioID).Delete(&models.WorkExperience{})
-	service.DB.Where("portfolio_id = ?", portfolioID).Delete(&models.Education{})
-	service.DB.Where("portfolio_id = ?", portfolioID).Delete(&models.Skill{})
-	service.DB.Where("portfolio_id = ?", portfolioID).Delete(&models.Showcase{})
-	service.DB.Where("portfolio_id = ?", portfolioID).Delete(&models.ShowcaseTechnology{})
-
-	var workExperiences []models.WorkExperience
-	for _, workExperience := range payload.WorkExperiences {
-		workExperiences = append(workExperiences, models.WorkExperience{
-			PortfolioID: portfolioID,
-			Company:     workExperience.Company,
-			Role:        workExperience.Role,
-			Location:    &workExperience.Location,
-			StartDate:   &workExperience.StartDate,
-			EndDate:     &workExperience.EndDate,
-			About:       &workExperience.About,
-		})
-	}
-	portfolio.WorkExperiences = workExperiences
-
-	var education []models.Education
-	for _, edu := range payload.Education {
-		education = append(education, models.Education{
-			PortfolioID: portfolioID,
-			School:      edu.School,
-			Level:       edu.Level,
-			Degree:      &edu.Degree,
-			Location:    &edu.Location,
-			YearStart:   edu.YearStart,
-			YearEnd:     edu.YearEnd,
-			About:       &edu.About,
-		})
-	}
-	portfolio.Education = education
-
-	var skills []models.Skill
-	for _, skill := range payload.Skills {
-		skills = append(skills, models.Skill{
-			PortfolioID: portfolioID,
-			Name:        skill.Name,
-			URL:         skill.URL,
-		})
-	}
-	portfolio.Skills = skills
-
-	var showcases []models.Showcase
-	for _, showcase := range payload.Showcases {
-		var technologies []models.ShowcaseTechnology
-		for _, technology := range showcase.Technologies {
-			technologies = append(technologies, models.ShowcaseTechnology{
-				Name: technology.Name,
-			})
-		}
-		showcases = append(showcases, models.Showcase{
-			PortfolioID:          portfolioID,
-			Name:                 showcase.Name,
-			Description:          &showcase.Description,
-			Role:                 &showcase.Role,
-			ShowcaseTechnologies: technologies,
-		})
-	}
-	portfolio.Showcases = showcases
-
-	if err := service.DB.Session(&gorm.Session{FullSaveAssociations: true}).Updates(&portfolio).Error; err != nil {
-		return nil, err
-	}
-
-	return service.Get(portfolioID)
+// Helper to fetch the full portfolio with all its data
+func (service Service) GetByIDWithPreloads(id uint64) (*models.Portfolio, error) {
+    var portfolio models.Portfolio
+    if err := service.DB.
+        Preload("WorkExperiences").
+        Preload("Education").
+        Preload("Skills").
+        Preload("Showcases.ShowcaseTechnologies"). // Don't forget nested preloads!
+        First(&portfolio, id).Error; err != nil {
+        return nil, err
+    }
+    return &portfolio, nil
 }
 
 func (service Service) Delete(portfolioID uint64) error {
-	portfolio, err := service.Get(portfolioID)
+	portfolio, err := service.GetByIDWithPreloads(portfolioID)
 
 	if err != nil {
 		return err
@@ -238,4 +129,75 @@ func (service Service) Delete(portfolioID uint64) error {
 	}
 
 	return nil
+}
+
+func buildWorkExperiences(workPayloads []WorkExperienceRequest) []models.WorkExperience {
+    var workExperiences []models.WorkExperience
+    for _, workExperience := range workPayloads {
+        workExperiences = append(workExperiences, models.WorkExperience{
+            Company:   workExperience.Company,
+            Role:      workExperience.Role,
+            Location:  &workExperience.Location,
+            StartDate: &workExperience.StartDate,
+            EndDate:   &workExperience.EndDate,
+            About:     &workExperience.About,
+        })
+    }
+    return workExperiences
+}
+
+func buildEducation(eduPayloads []EducationRequest) []models.Education {
+    var education []models.Education
+    for _, edu := range eduPayloads {
+        education = append(education, models.Education{
+            School:    edu.School,
+            Level:     edu.Level,
+            Degree:    &edu.Degree,
+            Location:  &edu.Location,
+            YearStart: edu.YearStart,
+            YearEnd:   edu.YearEnd,
+            About:     &edu.About,
+        })
+    }
+    return education
+}
+
+func buildSkills(skillPayloads []SkillRequest) []models.Skill {
+    var skills []models.Skill
+    for _, skill := range skillPayloads {
+        skills = append(skills, models.Skill{
+            Name: skill.Name,
+            URL:  skill.URL,
+        })
+    }
+    return skills
+}
+
+func buildShowcases(showcasePayloads []ShowcaseRequest) []models.Showcase {
+    var showcases []models.Showcase
+    for _, showcase := range showcasePayloads {
+        var technologies []models.ShowcaseTechnology
+        for _, technology := range showcase.Technologies {
+            technologies = append(technologies, models.ShowcaseTechnology{
+                Name: technology.Name,
+            })
+        }
+
+        showcases = append(showcases, models.Showcase{
+            Name:        showcase.Name,
+            Description: &showcase.Description,
+            Role:        &showcase.Role,
+            ShowcaseTechnologies: technologies, 
+        })
+    }
+    return showcases
+}
+
+func marshalTheme(theme ThemeRequest) (*json.RawMessage, error) {
+    themeJSON, err := json.Marshal(theme)
+    if err != nil {
+        return nil, err
+    }
+    rawJSON := json.RawMessage(themeJSON)
+    return &rawJSON, nil
 }

@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 export const PortfolioSchema = z.object({
   name: z.string().optional().nullable(),
+  job_title: z.string().optional().nullable(),
   introduction: z.string().optional().nullable(),
   about: z.string().optional().nullable(),
   email: z.string().optional().nullable(),
@@ -11,7 +12,7 @@ export const PortfolioSchema = z.object({
   linkedin: z.string().optional().nullable(),
   twitter: z.string().optional().nullable(),
 
-  workExperiences: z
+  work_experiences: z
     .array(
       z.object({
         company: z.string().optional().nullable(),

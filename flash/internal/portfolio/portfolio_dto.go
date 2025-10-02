@@ -81,15 +81,17 @@ type ThemeStyle struct {
 	Spacing                  string `json:"spacing"`
 }
 
-type Theme struct {
+type ThemeRequest struct {
 	Preset string                `json:"preset"`
 	Styles map[string]ThemeStyle `json:"styles"` // light & dark
 }
 
 type CreateUpdatePortfolioRequest struct {
+	PortfolioID     *int64                  `json:"portfolio_id"`
 	UserID          int64                   `json:"user_id" binding:"required"`
 	ProjectID       int64                   `json:"project_id" binding:"required"`
 	Name            string                  `json:"name" binding:"required"`
+	JobTitle        string                  `json:"job_title"`
 	Introduction    string                  `json:"introduction"`
 	About           string                  `json:"about"`
 	Email           string                  `json:"email" binding:"required,email"`
@@ -98,17 +100,19 @@ type CreateUpdatePortfolioRequest struct {
 	Github          string                  `json:"github"`
 	Linkedin        string                  `json:"linkedin"`
 	Twitter         string                  `json:"twitter"`
-	Theme           *Theme                  `json:"theme"`
-	WorkExperiences []WorkExperienceRequest `json:"workExperiences"`
+	Theme           *ThemeRequest           `json:"theme"`
+	WorkExperiences []WorkExperienceRequest `json:"work_experiences"`
 	Education       []EducationRequest      `json:"education"`
 	Skills          []SkillRequest          `json:"skills"`
 	Showcases       []ShowcaseRequest       `json:"showcases"`
 }
 
 type Payload struct {
+	PortfolioID     *int64
 	UserID          int64
 	ProjectID       int64
 	Name            string
+	JobTitle        string
 	Introduction    string
 	About           string
 	Email           string
@@ -117,7 +121,7 @@ type Payload struct {
 	Github          string
 	Linkedin        string
 	Twitter         string
-	Theme           *Theme
+	Theme           *ThemeRequest
 	WorkExperiences []WorkExperienceRequest
 	Education       []EducationRequest
 	Skills          []SkillRequest
