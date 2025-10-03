@@ -75,40 +75,33 @@ func (service Service) Save(payload Payload) (*models.Portfolio, error) {
         portfolio.ThemeName = &payload.Theme.Preset
         portfolio.ThemeObject = themeRaw
 
-        // Use a transaction to safely replace all nested associations
         if err := service.DB.Transaction(func(tx *gorm.DB) error {
-            // Clear existing associations. This is a clean "replace" strategy.
             if err := tx.Model(&portfolio).Association("WorkExperiences").Clear(); err != nil { return err }
             if err := tx.Model(&portfolio).Association("Education").Clear(); err != nil { return err }
             if err := tx.Model(&portfolio).Association("Skills").Clear(); err != nil { return err }
             if err := tx.Model(&portfolio).Association("Showcases").Clear(); err != nil { return err }
 
-            // Assign the new slices
             portfolio.WorkExperiences = newWorkExperiences
             portfolio.Education = newEducation
             portfolio.Skills = newSkills
             portfolio.Showcases = newShowcases
 
-            // Save the main portfolio. GORM will create the new association rows.
             return tx.Save(&portfolio).Error
         }); err != nil {
             return nil, fmt.Errorf("failed to update portfolio: %w", err)
         }
     }
 
-    // 4. Fetch the complete, updated portfolio from the DB to return
-    // This ensures all IDs and relationships are correctly populated.
     return service.GetByIDWithPreloads(portfolio.ID)
 }
 
-// Helper to fetch the full portfolio with all its data
 func (service Service) GetByIDWithPreloads(id uint64) (*models.Portfolio, error) {
     var portfolio models.Portfolio
     if err := service.DB.
         Preload("WorkExperiences").
         Preload("Education").
         Preload("Skills").
-        Preload("Showcases.ShowcaseTechnologies"). // Don't forget nested preloads!
+        Preload("Showcases.ShowcaseTechnologies"). 
         First(&portfolio, id).Error; err != nil {
         return nil, err
     }
