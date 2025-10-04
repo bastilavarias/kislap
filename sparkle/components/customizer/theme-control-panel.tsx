@@ -303,7 +303,7 @@ const ThemeControlPanel = ({
               fonts={sansSerifFonts}
               defaultValue={DEFAULT_FONT_SANS}
               currentFont={getAppliedThemeFont(
-                localSettings?.theme.styles?.[localSettings.mode as Mode],
+                localSettings?.theme.styles?.[localSettings?.mode as Mode],
                 'font-sans'
               )}
               onFontChange={(value) => handleFontChange('font-sans', value)}

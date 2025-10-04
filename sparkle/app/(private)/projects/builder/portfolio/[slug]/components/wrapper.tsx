@@ -212,7 +212,7 @@ export function Wrapper() {
           setValue(key as keyof PortfolioFormValues, value, { shouldValidate: true });
         });
         setLocalThemeSettings({
-          mode: 'system',
+          mode: 'light',
           theme: data.portfolio.theme_object,
         });
         setPortfolioID(data.portfolio.id);
