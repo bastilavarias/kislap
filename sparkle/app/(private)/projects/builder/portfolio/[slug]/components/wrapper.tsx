@@ -19,6 +19,8 @@ import {
   APIResponsePortfolio,
   APIResponseProject,
 } from '@/types/api-response';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Spinner } from '@/components/ui/shadcn-io/spinner';
 
 function mapToFormValues<T extends APIResponseDocumentResume | APIResponsePortfolio>(
   source: T
@@ -66,6 +68,18 @@ function mapToFormValues<T extends APIResponseDocumentResume | APIResponsePortfo
     })),
   };
 }
+
+const LoadingDialog = ({ open }: { open: boolean }) => {
+  return (
+    <Dialog open={open}>
+      <DialogContent>
+        <div className="w-full h-full flex items-center justify-center">
+          <Spinner size={50} />
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};
 
 export function Wrapper() {
   const [project, setProject] = useState<APIResponseProject | null>(null);
@@ -201,6 +215,7 @@ export function Wrapper() {
 
     setError('');
 
+    setLoading(true);
     const { success, data, message } = await getBySlug(slug, view);
 
     if (success && data) {
@@ -217,6 +232,8 @@ export function Wrapper() {
         });
         setPortfolioID(data.portfolio.id);
       }
+
+      setLoading(false);
       return;
     }
 
@@ -236,13 +253,14 @@ export function Wrapper() {
       },
     });
     if (success && data) {
-      toast('Portfolio details saved!');
+      toast('Portfolio succesfully details saved.');
+      setLoading(false);
       return;
     }
 
-    setLoading(false);
     setError(message);
     toast('Something went wrong!');
+    setLoading(false);
   };
 
   const onError = (errors: any) => {
@@ -299,6 +317,7 @@ export function Wrapper() {
           )}
         </div>
       </div>
+      <LoadingDialog open={loading} />
     </div>
   );
 }

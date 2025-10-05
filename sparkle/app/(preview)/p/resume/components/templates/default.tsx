@@ -45,16 +45,13 @@ interface Portfolio {
 
 export function Default({ portfolio }: { portfolio: Portfolio }) {
   return (
-    <Card className="shadow-none border-0">
+    <Card className="border-0 shadow-none">
       <CardContent className="p-6 md:p-8 space-y-8">
-        {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-start md:justify-between">
-          <div className="flex-1 mb-6 md:mb-0 md:pr-8">
-            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">{portfolio.name}</h1>
-            <p className="text-gray-600 text-base md:text-lg leading-relaxed mb-4">
-              {portfolio.introduction || portfolio.job_title}
-            </p>
-            <p className="text-gray-500 text-sm mb-4">{portfolio.location ?? 'Philippines'}</p>
+          <div className="flex-1 mb-6 md:mb-0 md:pr-8 space-y-4">
+            <h1 className="text-3xl md:text-4xl font-bold mb-2">{portfolio.name}</h1>
+            <p className="font-medium leading-relaxed text-xl mb-4">{portfolio.job_title}</p>
+            <p className="text-base">{portfolio.introduction}</p>
 
             <div className="flex items-center space-x-4">
               {portfolio.website && <Globe className="w-5 h-5 text-gray-400" />}
@@ -87,11 +84,7 @@ export function Default({ portfolio }: { portfolio: Portfolio }) {
               <h2 className="text-xl font-semibold text-gray-900 mb-4">Skills</h2>
               <div className="flex flex-wrap gap-2">
                 {portfolio.skills.map((skill) => (
-                  <Badge
-                    key={skill.id}
-                    variant="secondary"
-                    className="bg-gray-800 text-white hover:bg-gray-700 px-3 py-1 text-sm"
-                  >
+                  <Badge key={skill.id} variant="secondary" className="px-3 py-1 text-sm">
                     {skill.name}
                   </Badge>
                 ))}

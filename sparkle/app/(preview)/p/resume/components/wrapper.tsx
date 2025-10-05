@@ -7,6 +7,8 @@ import { ComponentThemeProvider } from '@/providers/ComponentThemesProvider';
 import { FloatingToolbar } from '@/app/(preview)/p/resume/components/floating-toolbar';
 import { Default } from './templates/default';
 import { Default2 } from './templates/default-2';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Spinner } from '@/components/ui/shadcn-io/spinner';
 
 interface Portfolio {
   id: number;
@@ -48,12 +50,24 @@ interface Portfolio {
 
 type TemplateName = 'default' | 'default-2';
 
+const LoadingDialog = ({ open }: { open: boolean }) => {
+  return (
+    <Dialog open={open}>
+      <DialogContent>
+        <div className="w-full h-full flex items-center justify-center">
+          <Spinner size={50} />
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
 export function Wrapper() {
   const fetcher = (url: string) => fetch(url).then((res) => res.json());
   const { data, error, isLoading } = useSWR('http://api.kislap.test/api/projects/show/1', fetcher);
 
   if (error) return <div>failed to load</div>;
-  if (isLoading) return <div>loading...</div>;
+  if (isLoading) return <LoadingDialog open={isLoading} />;
 
   const mode: Mode = 'light';
 
@@ -83,9 +97,9 @@ export function Wrapper() {
           style={{
             fontFamily: 'var(--font-sans)',
           }}
-          className="relative bg-card"
+          className="relative"
         >
-          <div className="container mx-auto max-w-5xl">{renderTemplate()}</div>
+          <div className="container mx-auto max-w-5xl py-10">{renderTemplate()}</div>
         </div>
       </ComponentThemeProvider>
 
