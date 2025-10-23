@@ -2,13 +2,13 @@
 
 import useSWR from 'swr';
 import { Mode } from '@/contexts/settings-context';
-import { Preview } from '@/app/(preview)/p/resume/components/preview';
 import { ComponentThemeProvider } from '@/providers/ComponentThemesProvider';
 import { FloatingToolbar } from '@/app/(preview)/p/resume/components/floating-toolbar';
 import { Default } from './templates/default';
 import { Default2 } from './templates/default-2';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Spinner } from '@/components/ui/shadcn-io/spinner';
+import { Heart } from 'lucide-react';
 
 interface Portfolio {
   id: number;
@@ -103,6 +103,16 @@ export function Wrapper() {
           <div className="container mx-auto max-w-5xl py-10">{renderTemplate()}</div>
         </div>
       </ComponentThemeProvider>
+
+      <footer className="border-t border-border py-8">
+        <div className="max-w-6xl mx-auto px-4 text-center text-sm text-muted-foreground">
+          <p>
+            © {new Date().getFullYear()}{' '}
+            <span className="font-medium text-foreground">Kislap</span> — sparking ideas into
+            reality ✨
+          </p>
+        </div>
+      </footer>
 
       <FloatingToolbar />
     </div>
