@@ -87,6 +87,7 @@ export function Wrapper() {
     const layoutName = project.portfolio.layout_name ?? 'default';
     const Component = templates[layoutName as TemplateName];
 
+    console.log(layoutName);
     return Component ? <Component portfolio={project.portfolio} /> : null;
   };
 

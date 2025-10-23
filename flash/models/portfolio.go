@@ -24,6 +24,7 @@ type Portfolio struct {
 
 	ThemeName   *string          	`gorm:"size:255;default:default" json:"theme_name"`
 	ThemeObject *json.RawMessage 	`gorm:"type:json" json:"theme_object"`
+	LayoutName  *string          	`gorm:"size:255" json:"layout_name"`
 
 	CreatedAt   time.Time      	`gorm:"autoCreateTime" json:"created_at"`
 	UpdatedAt   time.Time      	`gorm:"autoUpdateTime" json:"updated_at"`
