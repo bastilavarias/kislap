@@ -1,7 +1,5 @@
-import { DataTable } from '@/app/(private)/dashboard/components/data-table';
-
-import data from './data.json';
 import { ProjectFormDialog } from '@/app/(private)/projects/components/project-form-dialog';
+import { ProjectList } from '@/app/(private)/projects/components/projects-list';
 
 export default function Page() {
   return (
@@ -19,7 +17,7 @@ export default function Page() {
         <ProjectFormDialog />
       </div>
       <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-        <DataTable data={data} />
+        <ProjectList />
       </div>
     </div>
   );

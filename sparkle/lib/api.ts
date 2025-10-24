@@ -26,7 +26,6 @@ export function useApi() {
       };
 
       if (token) headers.Authorization = `Bearer ${token}`;
-      // Only set JSON content-type if not uploading FormData
       if (!isFormData) headers['Content-Type'] = 'application/json';
 
       return headers;
@@ -36,7 +35,6 @@ export function useApi() {
     let payload: APIResponse<T> | null = null;
     let message = '';
 
-    // --- TIMEOUT IMPLEMENTATION START ---
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), GATEWAY_TIMEOUT_MS);
     const isFormData = options.body instanceof FormData;
@@ -47,15 +45,14 @@ export function useApi() {
       credentials: 'include',
       signal: controller.signal, // Attach the AbortController's signal
     };
-    // --- TIMEOUT IMPLEMENTATION END ---
 
     try {
+      console.log(requestOptions);
       response = await fetch(`${API_BASE_URL}/${endpoint}`, requestOptions);
 
       clearTimeout(timeoutId); // Clear the timeout if the request finished in time
 
       if (response.status === 401) {
-        // --- REFRESH LOGIC ---
         const refreshRes = await fetch(`${API_BASE_URL}/api/auth/refresh`, {
           method: 'GET',
           headers: buildHeaders(),
@@ -74,7 +71,6 @@ export function useApi() {
           setAccessToken(newAccessToken);
           setStorageAuthUser(refreshedUserData?.user);
 
-          // --- RETRY LOGIC (Uses a new AbortController for a fresh timeout) ---
           const retryController = new AbortController();
           const retryTimeoutId = setTimeout(() => retryController.abort(), GATEWAY_TIMEOUT_MS);
 
@@ -88,7 +84,6 @@ export function useApi() {
           });
 
           clearTimeout(retryTimeoutId); // Clear the retry timeout
-          // --- END RETRY LOGIC ---
         }
       }
 

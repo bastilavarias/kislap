@@ -17,8 +17,13 @@ export function useProject() {
     return await apiGet<APIResponseProject>(`api/projects/show/slug/${slug}?level=${level}`);
   };
 
+  const getList = async () => {
+    return await apiGet<APIResponseProject[]>('api/projects/list');
+  };
+
   return {
     create,
     getBySlug,
+    getList,
   };
 }

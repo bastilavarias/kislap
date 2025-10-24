@@ -5,38 +5,43 @@ import (
 	"net/http"
 	"strings"
 
+	sharedjwt "flash/shared/jwt"
+
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
-import sharedjwt "flash/shared/jwt"
-
 func AccessTokenValidatorMiddleware(db *gorm.DB) gin.HandlerFunc {
-	return func(context *gin.Context) {
-		authHeader := context.GetHeader("Authorization")
-		if authHeader == "" && !strings.HasPrefix(authHeader, "Bearer ") {
-			utils.APIRespondError(context, http.StatusUnauthorized, "Unauthorized.")
-			context.Abort()
+	return func(c *gin.Context) {
+		if c.Request.Method == http.MethodOptions {
+			c.Next()
+			return
+		}
+
+		authHeader := c.GetHeader("Authorization")
+
+		if authHeader == "" || !strings.HasPrefix(authHeader, "Bearer ") {
+			utils.APIRespondError(c, http.StatusUnauthorized, "Unauthorized.")
+			c.Abort()
 			return
 		}
 
 		tokenString := strings.TrimPrefix(authHeader, "Bearer ")
 		validatedToken, err := sharedjwt.ValidateToken(tokenString)
-
 		if err != nil || !validatedToken.Valid {
-			utils.APIRespondError(context, http.StatusUnauthorized, err.Error())
-			context.Abort()
+			utils.APIRespondError(c, http.StatusUnauthorized, err.Error())
+			c.Abort()
 			return
 		}
 
 		user, err := sharedjwt.ExtractUser(validatedToken, db)
 		if err != nil {
-			utils.APIRespondError(context, http.StatusUnauthorized, err.Error())
-			context.Abort()
+			utils.APIRespondError(c, http.StatusUnauthorized, err.Error())
+			c.Abort()
 			return
 		}
 
-		context.Set("user_id", user.ID)
-		context.Next()
+		c.Set("user_id", user.ID)
+		c.Next()
 	}
 }

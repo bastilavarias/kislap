@@ -30,7 +30,7 @@ func RegisterRoutes(router *gin.Engine, db *gorm.DB, llm llm.Provider, dns dns.P
 		api.POST("/user", userController.Register)
 		//api.POST("/user", middleware.AccessTokenValidatorMiddleware(db), userController.Register)
 
-		api.GET("/projects", middleware.AccessTokenValidatorMiddleware(db), projectController.List)
+		api.GET("/projects/list", middleware.AccessTokenValidatorMiddleware(db), projectController.List)
 		//api.GET("/projects/show/:id", middleware.AccessTokenValidatorMiddleware(db), projectController.Show)
 		api.GET("/projects/show/:id", projectController.ShowByID)
 		api.GET("/projects/show/slug/:slug", projectController.ShowBySlug)
