@@ -189,6 +189,7 @@ export function ProjectList() {
   const [projects, setProjects] = useState<APIResponseProject[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [booted, setBooted] = useState(false);
 
   const { getList } = useProject();
 
@@ -200,18 +201,20 @@ export function ProjectList() {
     if (success && data) {
       setProjects(data);
       setLoading(false);
+      setBooted(true);
       return;
     }
 
     toast(message);
     setLoading(false);
+    setBooted(true);
   };
 
   useEffect(() => {
     onGetProjects();
   }, []);
 
-  if (loading) {
+  if (!booted || loading) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {[...Array(6)].map((_, i) => (
@@ -224,7 +227,7 @@ export function ProjectList() {
     );
   }
 
-  if (projects.length === 0 && !loading) {
+  if (booted && projects.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center">
         <div className="w-16 h-16 rounded-full bg-muted/50 flex items-center justify-center mb-4">
