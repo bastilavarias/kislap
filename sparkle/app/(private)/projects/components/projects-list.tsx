@@ -18,30 +18,18 @@ const typeConfig = {
   portfolio: {
     label: 'Portfolio',
     emoji: '🎨',
-    color:
-      'bg-blue-500/10 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-900',
-    gradient: 'from-blue-500/5 to-transparent',
   },
   biz: {
     label: 'Business',
     emoji: '💼',
-    color:
-      'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-900',
-    gradient: 'from-emerald-500/5 to-transparent',
   },
   links: {
     label: 'Links',
     emoji: '🔗',
-    color:
-      'bg-purple-500/10 text-purple-700 dark:text-purple-400 border border-purple-200 dark:border-purple-900',
-    gradient: 'from-purple-500/5 to-transparent',
   },
   waitlist: {
     label: 'Waitlist',
     emoji: '⏳',
-    color:
-      'bg-orange-500/10 text-orange-700 dark:text-orange-400 border border-orange-200 dark:border-orange-900',
-    gradient: 'from-orange-500/5 to-transparent',
   },
 };
 
@@ -77,9 +65,7 @@ function ProjectCard({ project }: ProjectCardProps) {
       <Card
         className={`group relative h-full cursor-pointer overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border-2 border-border/50 hover:border-primary/50 dark:hover:border-primary/30`}
       >
-        <div
-          className={`absolute inset-0 bg-gradient-to-br ${typeInfo.gradient} pointer-events-none`}
-        />
+        <div className={`absolute inset-0 pointer-events-none`} />
 
         <div className="relative h-40 bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-800 overflow-hidden">
           <img
@@ -90,7 +76,6 @@ function ProjectCard({ project }: ProjectCardProps) {
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
         </div>
 
-        {/* Header Section */}
         <CardHeader className="relative pb-3">
           <div className="flex items-start justify-between gap-2">
             <div className="flex-1 min-w-0">
@@ -102,16 +87,16 @@ function ProjectCard({ project }: ProjectCardProps) {
               </div>
               {project.sub_domain && (
                 <div className="flex items-center gap-1.5">
-                  <span className="text-xs">🌐</span>
-                  <CardDescription className="text-xs text-muted-foreground truncate">
-                    {project.sub_domain}
+                  <span className="text-sm">🌐</span>
+                  <CardDescription>
+                    <a href="#" className="text-sm text-muted-foreground truncate hover:underline">
+                      {project.sub_domain}.kislap.app
+                    </a>
                   </CardDescription>
                 </div>
               )}
             </div>
-            <Badge
-              className={`${typeInfo.color} whitespace-nowrap flex-shrink-0 font-semibold text-xs`}
-            >
+            <Badge className="whitespace-nowrap flex-shrink-0 font-semibold text-xs">
               {typeInfo.label}
             </Badge>
           </div>
