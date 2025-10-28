@@ -1,10 +1,3 @@
-networks:
-  kislap_subnet:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 172.20.0.0/16
-
 services:
   kislap_web_server:
     image: nginx:latest
@@ -16,10 +9,11 @@ services:
       - ./.docker/nginx/conf/local:/etc/nginx/conf.d
       - ./.docker/nginx/log:/var/log/nginx
     depends_on:
+      - kislap_database
       - kislap_flash
+      - kislap_admin
     networks:
-      kislap_subnet:
-        ipv4_address: 172.20.0.10
+      - kislap_subnet
 
   kislap_flash:
     build: ./flash
@@ -34,16 +28,31 @@ services:
     ports:
       - "5000:5000"
     restart: always
-    networks:
-      kislap_subnet:
-        ipv4_address: 172.20.0.20
-    extra_hosts:
-      - "kislap.test:127.0.0.1"
-      - "api.kislap.test:127.0.0.1"
     depends_on:
       kislap_database:
         condition: service_healthy
     command: air -c /app/air.toml
+    networks:
+      - kislap_subnet
+
+  kislap_admin:
+    build:
+      context: ./admin
+      dockerfile: Dockerfile
+    container_name: kislap_admin
+    restart: unless-stopped
+    env_file:
+      - ./admin/.env
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./admin:/var/www/html
+      - ./.docker/php/local.ini:/usr/local/etc/php/local.ini
+    depends_on:
+      kislap_database:
+        condition: service_healthy
+    networks:
+      - kislap_subnet
 
   kislap_database:
     image: mysql:8
@@ -51,11 +60,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: kislap
-    networks:
-      kislap_subnet:
-        ipv4_address: 172.20.0.40
     ports:
-      - "3307:3307"
+      - "3307:3306"
     restart: always
     volumes:
       - database_data:/var/lib/mysql
@@ -68,6 +74,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
+    networks:
+      - kislap_subnet
 
   kislap_adminer:
     image: adminer
@@ -75,11 +83,14 @@ services:
     restart: always
     ports:
       - "8080:8080"
-    networks:
-      kislap_subnet:
-        ipv4_address: 172.20.0.31
     depends_on:
       - kislap_database
+    networks:
+      - kislap_subnet
+
+networks:
+  kislap_subnet:
+    driver: bridge
 
 volumes:
   kislap_flash_go_mod:
