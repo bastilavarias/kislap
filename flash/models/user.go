@@ -11,7 +11,7 @@ type User struct {
 	FirstName    string         `gorm:"size:255;not null" json:"first_name"`
 	LastName     string         `gorm:"size:255;not null" json:"last_name"`
 	Email        string         `gorm:"size:255;not null;unique" json:"email"`
-	Password     string         `gorm:"size:255;not null" json:"-"`
+	Password     *string        `gorm:"size:255;not null" json:"-"`
 	MobileNumber *string        `gorm:"size:20" json:"mobile_number,omitempty"`
 	Role         string         `gorm:"size:50;not null;default:default" json:"role"`
 	RefreshToken *string        `gorm:"size:255" json:"refresh_token,omitempty"`

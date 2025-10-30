@@ -3,6 +3,7 @@ package user
 import (
 	"errors"
 	"flash/models"
+
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
@@ -22,11 +23,12 @@ func (service Service) Register(firstName string, lastName string, mobileNumber 
 		return nil, err
 	}
 
+	hashedPasswordStr := string(hashedPassword)
 	user := &models.User{
 		FirstName: firstName,
 		LastName:  lastName,
 		Email:     email,
-		Password:  string(hashedPassword),
+		Password:  &hashedPasswordStr,
 		Role:      "default",
 	}
 
@@ -38,7 +40,8 @@ func (service Service) Register(firstName string, lastName string, mobileNumber 
 		return nil, err
 	}
 
-	user.Password = ""
+	emptyPassword := ""
+	user.Password = &emptyPassword
 
 	return user, nil
 }

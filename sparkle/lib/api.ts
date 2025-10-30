@@ -47,7 +47,6 @@ export function useApi() {
     };
 
     try {
-      console.log(requestOptions);
       response = await fetch(`${API_BASE_URL}/${endpoint}`, requestOptions);
 
       clearTimeout(timeoutId); // Clear the timeout if the request finished in time

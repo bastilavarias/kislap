@@ -30,10 +30,17 @@ export function useAuth() {
       password,
     });
   };
+
   const syncAuthUser = () => {
     if (storageAuthUser) {
       setAuthUser(storageAuthUser);
     }
+  };
+
+  const githubLogin = async (code: string) => {
+    return await apiPost<AuthLoginData>('api/auth/github', {
+      code,
+    });
   };
 
   return {
@@ -41,5 +48,6 @@ export function useAuth() {
     authUser,
     setAuthUser,
     syncAuthUser,
+    githubLogin,
   };
 }

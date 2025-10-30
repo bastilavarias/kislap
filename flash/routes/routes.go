@@ -25,6 +25,7 @@ func RegisterRoutes(router *gin.Engine, db *gorm.DB, llm llm.Provider, dns dns.P
 		portfolioController := portfolio.NewController(db)
 
 		api.POST("/auth/login", authController.Login)
+		api.POST("/auth/github", authController.GithubLogin)
 		api.GET("/auth/refresh", middleware.RefreshTokenValidatorMiddleware(db), authController.Refresh)
 
 		api.POST("/user", userController.Register)

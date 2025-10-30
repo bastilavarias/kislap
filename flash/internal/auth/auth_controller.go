@@ -77,7 +77,34 @@ func (controller Controller) Refresh(context *gin.Context) {
 
 	cookie.SetCookie(context, "refresh_token", result.RefreshToken)
 
-	context.JSON(http.StatusOK, gin.H{
+	utils.APIRespondSuccess(context, http.StatusOK, gin.H{
+		"access_token": result.AccessToken,
+		"user":         result.User,
+	})
+}
+
+func (controller *Controller) GithubLogin(context *gin.Context) {
+	var input struct {
+		Code string `json:"code" binding:"required"`
+	}
+
+	if err := context.ShouldBindJSON(&input); err != nil {
+		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
+		context.Abort()
+		return
+	}
+
+	result, err := controller.Service.GithubLogin(input.Code)
+
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		context.Abort()
+		return
+	}
+
+	cookie.SetCookie(context, "refresh_token", result.RefreshToken)
+
+	utils.APIRespondSuccess(context, http.StatusOK, gin.H{
 		"access_token": result.AccessToken,
 		"user":         result.User,
 	})
