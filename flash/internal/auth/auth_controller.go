@@ -52,14 +52,14 @@ func (controller Controller) Refresh(context *gin.Context) {
 	userID, exists := context.Get("user_id")
 
 	if !exists {
-		context.JSON(http.StatusUnauthorized, gin.H{"error": "User not found in context"})
+		utils.APIRespondError(context, http.StatusUnauthorized, "User not exists")
 		context.Abort()
 		return
 	}
 
 	refreshToken, exists := context.Get("refresh_token")
 	if !exists {
-		context.JSON(http.StatusUnauthorized, gin.H{"error": "User not found in context"})
+		utils.APIRespondError(context, http.StatusUnauthorized, "Invalid refresh token")
 		context.Abort()
 		return
 	}
@@ -97,7 +97,7 @@ func (controller *Controller) GithubLogin(context *gin.Context) {
 	result, err := controller.Service.GithubLogin(input.Code)
 
 	if err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
 		context.Abort()
 		return
 	}

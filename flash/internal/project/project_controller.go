@@ -81,7 +81,7 @@ func (controller Controller) ShowByID(context *gin.Context) {
 func (controller Controller) ShowBySlug(context *gin.Context) {
 	slug := context.Param("slug")
 	level := context.Query("level")
-	
+
 	project, err := controller.Service.ShowBySlug(slug, level)
 	if err != nil {
 		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
@@ -152,4 +152,33 @@ func (controller Controller) CheckDomain(context *gin.Context) {
 	}
 
 	utils.APIRespondSuccess(context, http.StatusOK, subDomain)
+}
+
+func (controller Controller) Publish(context *gin.Context) {
+	idStr := context.Param("id")
+	projectID, err := strconv.Atoi(idStr)
+
+	if err != nil {
+		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
+		context.Abort()
+		return
+	}
+
+	var request PublishProjectRequest
+
+	if err := context.ShouldBindJSON(&request); err != nil {
+		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
+		context.Abort()
+		return
+	}
+
+	project, err := controller.Service.Publish(projectID, request.ToPublishServicePayload())
+
+	if err != nil {
+		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
+		context.Abort()
+		return
+	}
+
+	utils.APIRespondSuccess(context, http.StatusOK, project)
 }

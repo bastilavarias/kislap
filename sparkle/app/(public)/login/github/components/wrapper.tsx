@@ -29,7 +29,7 @@ export default function GithubCallbackPage() {
     setError('');
     setLoading(true);
     const { success, data, message } = await githubLogin(code);
-    console.log(success, data);
+
     if (success && data) {
       setAccessToken(data.access_token);
       setAuthUser(data.user);
@@ -37,6 +37,7 @@ export default function GithubCallbackPage() {
       router.push(`/dashboard`);
       return;
     }
+
     setLoading(false);
     setError(message);
   };

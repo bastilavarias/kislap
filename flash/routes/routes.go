@@ -37,6 +37,7 @@ func RegisterRoutes(router *gin.Engine, db *gorm.DB, llm llm.Provider, dns dns.P
 		api.GET("/projects/show/slug/:slug", projectController.ShowBySlug)
 		api.GET("/projects/check/sub-domain/:sub-domain", middleware.AccessTokenValidatorMiddleware(db), projectController.CheckDomain)
 		api.POST("/projects", middleware.AccessTokenValidatorMiddleware(db), projectController.Create)
+		api.PUT("/projects/publish/:id", middleware.AccessTokenValidatorMiddleware(db), projectController.Publish)
 		api.PUT("/projects/:id", middleware.AccessTokenValidatorMiddleware(db), projectController.Update)
 		api.DELETE("/projects/:id", middleware.AccessTokenValidatorMiddleware(db), projectController.Delete)
 

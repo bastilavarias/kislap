@@ -9,6 +9,10 @@ type CreateUpdateProjectRequest struct {
 	Type        string `json:"type" binding:"required,oneof=portfolio biz links waitlist"`
 }
 
+type PublishProjectRequest struct {
+	Published bool `json:"published"`
+}
+
 type Payload struct {
 	Name        string
 	Description string
@@ -16,6 +20,14 @@ type Payload struct {
 	Type        string
 }
 
-func (request CreateUpdateProjectRequest) ToServicePayload() Payload {
-	return Payload(request)
+type PublishProjectPayload struct {
+	Published bool
+}
+
+func (r CreateUpdateProjectRequest) ToServicePayload() Payload {
+	return Payload(r)
+}
+
+func (r PublishProjectRequest) ToPublishServicePayload() PublishProjectPayload {
+	return PublishProjectPayload(r)
 }

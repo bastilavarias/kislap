@@ -1,6 +1,7 @@
 package portfolio
 
 import (
+	"flash/utils"
 	"net/http"
 	"strconv"
 
@@ -23,17 +24,21 @@ func (controller Controller) Save(context *gin.Context) {
 	var request CreateUpdatePortfolioRequest
 
 	if err := context.ShouldBindJSON(&request); err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
+		context.Abort()
 		return
 	}
 
 	portfolio, err := controller.Service.Save(request.ToServicePayload())
 	if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
+		context.Abort()
 		return
 	}
 
-	context.JSON(http.StatusOK, gin.H{"data": portfolio})
+	utils.APIRespondSuccess(context, http.StatusOK, gin.H{
+		"portfolio": portfolio,
+	})
 }
 
 func (controller Controller) Get(context *gin.Context) {

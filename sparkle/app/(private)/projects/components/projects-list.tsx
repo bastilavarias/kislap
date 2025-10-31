@@ -4,9 +4,19 @@ import { useState, useEffect } from 'react';
 import { useProject } from '@/hooks/api/use-project';
 import type { APIResponseProject } from '@/types/api-response';
 import { toast } from 'sonner';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { ButtonGroup, ButtonGroupSeparator, ButtonGroupText } from '@/components/ui/button-group';
+import { Eye, Pencil, Trash2 } from 'lucide-react';
 
 export interface APIResponsePortfolio {
   id: number;
@@ -33,16 +43,6 @@ const typeConfig = {
   },
 };
 
-const getProjectStats = (projectId: number) => {
-  const baseStats = projectId * 1000;
-  return {
-    views: Math.floor(baseStats + Math.random() * 5000),
-    engagement: Math.floor(Math.random() * 100),
-    performance: Math.floor(70 + Math.random() * 30),
-    status: Math.random() > 0.3 ? 'Active' : 'Inactive',
-  };
-};
-
 interface ProjectCardProps {
   project: APIResponseProject;
 }
@@ -58,130 +58,132 @@ function ProjectCard({ project }: ProjectCardProps) {
     day: 'numeric',
   });
 
-  const stats = getProjectStats(project.id);
-
   return (
-    <Link href={`/projects/builder/portfolio/${project.slug}`}>
-      <Card
-        className={`group relative h-full cursor-pointer overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border-2 border-border/50 hover:border-primary/50 dark:hover:border-primary/30`}
-      >
-        <div className={`absolute inset-0 pointer-events-none`} />
+    <Card className="group relative h-full cursor-pointer overflow-hidden border-2 border-border/50 hover:border-primary/50 dark:hover:border-primary/30">
+      <div className="absolute inset-0 pointer-events-none" />
+      <CardHeader className="relative pb-3">
+        <CardTitle className="text-3xl font-bold line-clamp-1 flex items-center justify-between">
+          <Link href={`/projects/builder/portfolio/${project.slug}`}>{project.name}</Link>
+          <Badge
+            variant="outline"
+            className="whitespace-nowrap flex-shrink-0 font-semibold text-xs"
+          >
+            {typeInfo.label}
+          </Badge>
+        </CardTitle>
+        {project.sub_domain && (
+          <CardDescription>
+            <Link href="/p/resume" className="text-muted-foreground truncate hover:underline">
+              <span className="text-sm">🌐</span>
+              {project.sub_domain}.kislap.app
+            </Link>
+          </CardDescription>
+        )}
+      </CardHeader>
 
-        <div className="relative h-40 bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-800 overflow-hidden">
-          <img
-            src="https://placehold.co/600x400"
-            alt={`${project.name} preview`}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+      <CardContent className="relative space-y-3">
+        {project.description && (
+          <p className="text-muted-foreground line-clamp-2 leading-relaxed">
+            {project.description}
+          </p>
+        )}
+
+        <div className="space-y-2 pt-3 border-t border-border/50">
+          <div className="grid grid-cols-2 gap-2">
+            <div className="bg-muted/40 rounded-lg p-2.5 hover:bg-muted/60 transition-colors">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                  Views
+                </span>
+                <span className="text-sm">👁️</span>
+              </div>
+              <p className="text-base font-bold text-foreground">{(0 / 1000).toFixed(1)}k</p>
+            </div>
+
+            {/* Engagement Stat */}
+            <div className="bg-muted/40 rounded-lg p-2.5 hover:bg-muted/60 transition-colors">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                  Engage
+                </span>
+                <span className="text-sm">💬</span>
+              </div>
+              <p className="text-base font-bold text-foreground">1%</p>
+            </div>
+
+            <div className="bg-muted/40 rounded-lg p-2.5 hover:bg-muted/60 transition-colors">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                  Perf
+                </span>
+                <span className="text-sm">⚡</span>
+              </div>
+              <p className="text-base font-bold text-foreground">1%</p>
+            </div>
+
+            {/* Status Stat */}
+            <div className="bg-muted/40 rounded-lg p-2.5 hover:bg-muted/60 transition-colors">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                  Status
+                </span>
+                <span className="text-sm">{project.published ? '🟢' : '🔴'}</span>
+              </div>
+              <p className="text-base font-bold text-foreground">
+                {project.published ? 'Published' : 'Unpublished'}
+              </p>
+            </div>
+          </div>
         </div>
 
-        <CardHeader className="relative pb-3">
-          <div className="flex items-start justify-between gap-2">
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-2">
-                {isRecent && <span className="text-lg">✨</span>}
-                <CardTitle className="text-lg font-bold line-clamp-1 group-hover:text-primary transition-colors duration-200">
-                  {project.name}
-                </CardTitle>
-              </div>
-              {project.sub_domain && (
-                <div className="flex items-center gap-1.5">
-                  <span className="text-sm">🌐</span>
-                  <CardDescription>
-                    <a href="#" className="text-sm text-muted-foreground truncate hover:underline">
-                      {project.sub_domain}.kislap.app
-                    </a>
-                  </CardDescription>
-                </div>
-              )}
+        <div className="space-y-2 pt-3 border-t border-border/50">
+          {project.portfolio && (
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                📚 Portfolio
+              </span>
+              <span className="text-xs font-semibold text-foreground bg-muted/50 px-2 py-1 rounded-md truncate">
+                {project.portfolio.name}
+              </span>
             </div>
-            <Badge className="whitespace-nowrap flex-shrink-0 font-semibold text-xs">
-              {typeInfo.label}
-            </Badge>
-          </div>
-        </CardHeader>
-
-        <CardContent className="relative space-y-3">
-          {project.description && (
-            <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
-              {project.description}
-            </p>
           )}
 
-          <div className="space-y-2 pt-3 border-t border-border/50">
-            <div className="grid grid-cols-2 gap-2">
-              {/* Views Stat */}
-              <div className="bg-muted/40 rounded-lg p-2.5 hover:bg-muted/60 transition-colors">
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                    Views
-                  </span>
-                  <span className="text-sm">👁️</span>
-                </div>
-                <p className="text-base font-bold text-foreground">
-                  {(stats.views / 1000).toFixed(1)}k
-                </p>
-              </div>
-
-              {/* Engagement Stat */}
-              <div className="bg-muted/40 rounded-lg p-2.5 hover:bg-muted/60 transition-colors">
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                    Engage
-                  </span>
-                  <span className="text-sm">💬</span>
-                </div>
-                <p className="text-base font-bold text-foreground">{stats.engagement}%</p>
-              </div>
-
-              {/* Performance Stat */}
-              <div className="bg-muted/40 rounded-lg p-2.5 hover:bg-muted/60 transition-colors">
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                    Perf
-                  </span>
-                  <span className="text-sm">⚡</span>
-                </div>
-                <p className="text-base font-bold text-foreground">{stats.performance}%</p>
-              </div>
-
-              {/* Status Stat */}
-              <div className="bg-muted/40 rounded-lg p-2.5 hover:bg-muted/60 transition-colors">
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                    Status
-                  </span>
-                  <span className="text-sm">{stats.status === 'Active' ? '🟢' : '🔴'}</span>
-                </div>
-                <p className="text-base font-bold text-foreground">{stats.status}</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Footer Section */}
-          <div className="space-y-2 pt-3 border-t border-border/50">
-            {project.portfolio && (
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                  📚 Portfolio
-                </span>
-                <span className="text-xs font-semibold text-foreground bg-muted/50 px-2 py-1 rounded-md truncate">
-                  {project.portfolio.name}
-                </span>
-              </div>
-            )}
-
+          <div className="space-y-2">
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
                 📅 Created
               </span>
               <span className="text-xs font-semibold text-foreground">{formattedDate}</span>
             </div>
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                📅 Updated
+              </span>
+              <span className="text-xs font-semibold text-foreground">{formattedDate}</span>
+            </div>
           </div>
-        </CardContent>
-      </Card>
-    </Link>
+        </div>
+      </CardContent>
+
+      <CardAction className="flex justify-between items-center px-6 w-full">
+        <ButtonGroup>
+          <Button variant="ghost" asChild>
+            <Link href={`/projects/builder/portfolio/${project.slug}`}>
+              <Eye /> View
+            </Link>
+          </Button>
+          <Button variant="ghost">
+            <Pencil /> Edit
+          </Button>
+        </ButtonGroup>
+
+        <ButtonGroup>
+          <Button variant="ghost">
+            <Trash2 /> Remove
+          </Button>
+        </ButtonGroup>
+      </CardAction>
+    </Card>
   );
 }
 

@@ -63,7 +63,8 @@ export function useApi() {
           throw new Error('Unauthorized');
         }
 
-        const refreshedUserData = await refreshRes.json();
+        const refreshedResp = await refreshRes.json();
+        const refreshedUserData = await refreshedResp.data;
         const newAccessToken = refreshedUserData?.access_token;
 
         if (newAccessToken) {

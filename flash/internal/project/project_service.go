@@ -76,13 +76,13 @@ func (service Service) Show(projectID int) (*models.Project, error) {
 	var proj models.Project
 
 	if err := service.DB.
-	Preload("Portfolio").
-	Preload("Portfolio.WorkExperiences").
-	Preload("Portfolio.Education").
-	Preload("Portfolio.Showcases").
-    Preload("Portfolio.Showcases.ShowcaseTechnologies").
-    Preload("Portfolio.Skills").
-	First(&proj, projectID).Error; err != nil {
+		Preload("Portfolio").
+		Preload("Portfolio.WorkExperiences").
+		Preload("Portfolio.Education").
+		Preload("Portfolio.Showcases").
+		Preload("Portfolio.Showcases.ShowcaseTechnologies").
+		Preload("Portfolio.Skills").
+		First(&proj, projectID).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return nil, err
 		}
@@ -97,22 +97,22 @@ func (service Service) ShowBySlug(slug string, level string) (*models.Project, e
 
 	query := service.DB
 
-    if err := query.First(&project, "slug = ?", slug).Error; err != nil {
-        return nil, err
-    }
+	if err := query.First(&project, "slug = ?", slug).Error; err != nil {
+		return nil, err
+	}
 
-    if level == "full" && project.Type == "portfolio" {
-        if err := service.DB.
-            Preload("Portfolio").
-            Preload("Portfolio.WorkExperiences").
-            Preload("Portfolio.Education").
-            Preload("Portfolio.Showcases").
-            Preload("Portfolio.Showcases.ShowcaseTechnologies").
-            Preload("Portfolio.Skills").
-            First(&project, project.ID).Error; err != nil {
-            return nil, err
-        }
-    }
+	if level == "full" && project.Type == "portfolio" {
+		if err := service.DB.
+			Preload("Portfolio").
+			Preload("Portfolio.WorkExperiences").
+			Preload("Portfolio.Education").
+			Preload("Portfolio.Showcases").
+			Preload("Portfolio.Showcases.ShowcaseTechnologies").
+			Preload("Portfolio.Skills").
+			First(&project, project.ID).Error; err != nil {
+			return nil, err
+		}
+	}
 
 	return &project, nil
 }
@@ -139,4 +139,18 @@ func (service Service) CheckDomain(subDomain string) (bool, error) {
 	}
 
 	return true, nil
+}
+
+func (service Service) Publish(projectID int, payload PublishProjectPayload) (*models.Project, error) {
+	var proj models.Project
+	if err := service.DB.First(&proj, projectID).Error; err != nil {
+		return nil, err
+	}
+
+	isPublished := payload.Published
+	service.DB.Model(&proj).Updates(models.Project{
+		Published: &isPublished,
+	})
+
+	return &proj, nil
 }

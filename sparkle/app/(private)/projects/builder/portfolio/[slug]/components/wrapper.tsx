@@ -90,14 +90,16 @@ export function Wrapper() {
   const [fileProcessingError, setFileProcessingError] = useState('');
   const [localThemeSettings, setLocalThemeSettings] = useState<Settings | null>(null);
   const { create } = usePortfolio();
-  const [loading, setLoading] = useState(false);
+  const [isGetLoading, setGetLoading] = useState(true);
+  const [isSaveLoading, setSaveLoading] = useState(false);
+  const [isPublishLoading, setPublishLoading] = useState(false);
   const [error, setError] = useState('');
   const [user, setUser] = useState<AuthUser | null>(null);
   const [porttfolioID, setPortfolioID] = useState<number | null>(null);
 
   const { authUser } = useAuth();
   const { parse } = useDocument();
-  const { getBySlug } = useProject();
+  const { getBySlug, publish } = useProject();
   const params = useParams();
 
   const formMethods = useForm<PortfolioFormValues>({
@@ -215,7 +217,6 @@ export function Wrapper() {
 
     setError('');
 
-    setLoading(true);
     const { success, data, message } = await getBySlug(slug, view);
 
     if (success && data) {
@@ -233,7 +234,7 @@ export function Wrapper() {
         setPortfolioID(data.portfolio.id);
       }
 
-      setLoading(false);
+      setGetLoading(false);
       return;
     }
 
@@ -242,7 +243,8 @@ export function Wrapper() {
 
   const onSubmit = async (form: PortfolioFormValues) => {
     setError('');
-    setLoading(true);
+    setSaveLoading(true);
+
     const { success, data, message } = await create({
       portfolio_id: porttfolioID ?? null,
       user_id: user?.id ?? 1,
@@ -252,15 +254,38 @@ export function Wrapper() {
         ...localThemeSettings?.theme,
       },
     });
+
     if (success && data) {
       toast('Portfolio succesfully details saved.');
-      setLoading(false);
+      setSaveLoading(false);
       return;
     }
 
     setError(message);
     toast('Something went wrong!');
-    setLoading(false);
+    setSaveLoading(false);
+  };
+
+  const onPublish = async (isPublished: boolean) => {
+    if (!project?.id) {
+      return;
+    }
+
+    setError('');
+    setPublishLoading(true);
+
+    const { success, data, message } = await publish(project?.id, isPublished);
+
+    if (success && data) {
+      setProject(data);
+      toast(`Project ${data.published ? 'Published' : 'Unplished'} Successfully!`);
+      setPublishLoading(false);
+      return;
+    }
+
+    setError(message);
+    toast('Something went wrong!');
+    setPublishLoading(false);
   };
 
   const onError = (errors: any) => {
@@ -284,10 +309,12 @@ export function Wrapper() {
       </BackButton>
       <div className="flex flex-col gap-10">
         <FormHeader
+          project={project}
           tab={tab}
           error={error}
           onTabChange={setTab}
           onSave={() => formMethods.handleSubmit(onSubmit, onError)()}
+          onPublish={onPublish}
         />
         <div className="w-full">
           {tab === 'edit' ? (
@@ -317,7 +344,7 @@ export function Wrapper() {
           )}
         </div>
       </div>
-      <LoadingDialog open={loading} />
+      <LoadingDialog open={isSaveLoading || isPublishLoading || isGetLoading} />
     </div>
   );
 }

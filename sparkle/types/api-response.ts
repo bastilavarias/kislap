@@ -187,6 +187,7 @@ export interface APIResponseProject {
   slug: string;
   sub_domain?: string | null;
   type: 'portfolio' | 'biz' | 'links' | 'waitlist';
+  published: number;
   created_at: string;
   updated_at: string;
   deleted_at?: string;
