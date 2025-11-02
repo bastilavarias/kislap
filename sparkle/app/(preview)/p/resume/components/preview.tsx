@@ -8,7 +8,8 @@ type Portfolio = {
   id: number;
   name: string;
   job_title: string | null;
-  introduction: string;
+  location: string | null;
+  introduction: string | null;
   about: string;
   email: string;
   phone: string;
@@ -46,7 +47,6 @@ export function Preview({ portfolio }: { portfolio: Portfolio }) {
   return (
     <Card className="shadow-none border-0">
       <CardContent className="p-6 md:p-8 space-y-8">
-        {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-start md:justify-between">
           <div className="flex-1 mb-6 md:mb-0 md:pr-8">
             <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">{portfolio.name}</h1>
@@ -73,7 +73,6 @@ export function Preview({ portfolio }: { portfolio: Portfolio }) {
           </div>
         </div>
 
-        {/* About Section */}
         <div>
           <h2 className="text-xl font-semibold text-gray-900 mb-4">About</h2>
           <p className="text-gray-600 leading-relaxed">{portfolio.about}</p>

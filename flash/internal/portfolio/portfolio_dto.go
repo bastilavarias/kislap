@@ -91,6 +91,7 @@ type CreateUpdatePortfolioRequest struct {
 	UserID          int64                   `json:"user_id" binding:"required"`
 	ProjectID       int64                   `json:"project_id" binding:"required"`
 	Name            string                  `json:"name" binding:"required"`
+	Location        string                  `json:"location"`
 	JobTitle        string                  `json:"job_title"`
 	Introduction    string                  `json:"introduction"`
 	About           string                  `json:"about"`
@@ -112,6 +113,7 @@ type Payload struct {
 	UserID          int64
 	ProjectID       int64
 	Name            string
+	Location        string
 	JobTitle        string
 	Introduction    string
 	About           string

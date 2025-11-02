@@ -13,8 +13,7 @@ import { Plus, X } from 'lucide-react';
 import ThemeControlPanel from '@/components/customizer/theme-control-panel';
 import { FileParserDialog } from '@/app/(private)/projects/builder/portfolio/[slug]/components/file-parser-dialog';
 import { PortfolioFormValues } from '@/lib/schemas/portfolio';
-import { Controller, UseFormReturn, UseFieldArrayReturn } from 'react-hook-form'; // Import necessary types
-import { DateInput } from '@/components/date-input';
+import { UseFormReturn, UseFieldArrayReturn } from 'react-hook-form'; // Import necessary types
 import {
   Accordion,
   AccordionContent,
@@ -147,10 +146,8 @@ export function Form({
     register,
     watch,
     formState: { errors },
-    control,
   } = formMethods;
 
-  // Destructure field arrays
   const { fields: workFields, remove: removeWork } = workFieldArray;
   const { fields: educationFields, remove: removeEducation } = educationFieldArray;
   const { fields: showcaseFields, remove: removeShowcase } = showcaseFieldArray;
@@ -201,6 +198,13 @@ export function Form({
                         <p className="text-destructive text-sm mt-1">{errors.job_title?.message}</p>
                       )}
                     </div>
+                  </div>
+                  <div>
+                    <Label className="font-medium mb-2">Location</Label>
+                    <Input {...register('location')} className="w-full shadow-none" />
+                    {errors.name && (
+                      <p className="text-destructive text-sm mt-1">{errors.location?.message}</p>
+                    )}
                   </div>
                   <div>
                     <Label className="font-medium mb-2">Introduction</Label>

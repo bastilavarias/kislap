@@ -71,7 +71,6 @@ export function Default({ portfolio }: { portfolio: Portfolio }) {
           </div>
         </div>
 
-        {/* About Section */}
         <div>
           <h2 className="text-xl font-semibold text-gray-900 mb-4">About</h2>
           <p className="text-gray-600 leading-relaxed">{portfolio.about}</p>

@@ -33,6 +33,7 @@ func (service Service) Save(payload Payload) (*models.Portfolio, error) {
 			UserID:          uint64(payload.UserID),
 			ProjectID:       uint64(payload.ProjectID),
 			Name:            payload.Name,
+			Location:        &payload.Location,
 			JobTitle:        &payload.JobTitle,
 			Introduction:    &payload.Introduction,
 			About:           &payload.About,
@@ -64,6 +65,7 @@ func (service Service) Save(payload Payload) (*models.Portfolio, error) {
 
 		// Update the main fields
 		portfolio.Name = payload.Name
+		portfolio.Location = &payload.Location
 		portfolio.JobTitle = &payload.JobTitle
 		portfolio.Introduction = &payload.Introduction
 		portfolio.About = &payload.About

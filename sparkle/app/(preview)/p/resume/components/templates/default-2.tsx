@@ -9,15 +9,17 @@ import { cn } from '@/lib/utils';
 interface Portfolio {
   id: number;
   name: string;
+  location: string | null;
   job_title: string | null;
-  introduction: string;
-  about: string;
-  email: string;
-  phone: string;
-  website: string;
-  github: string;
-  linkedin?: string;
-  twitter?: string;
+  introduction: string | null;
+  about: string | null;
+  email: string | null;
+  phone: string | null;
+  website: string | null;
+  github: string | null;
+  linkedin: string | null;
+  twitter: string | null;
+
   work_experiences: {
     id: number;
     company: string;
@@ -66,17 +68,21 @@ export function Default2({ portfolio }: { portfolio: Portfolio }) {
               <div className="flex items-start justify-between mb-2">
                 <div>
                   <h1 className="text-3xl font-bold text-foreground">{portfolio.name}</h1>
-                  <p className="text-md text-foreground">
-                    <span className="font-semibold">{portfolio.job_title}</span>
-                  </p>
+                  {portfolio.job_title && (
+                    <p className="text-md text-foreground">
+                      <span className="font-semibold">{portfolio.job_title}</span>
+                    </p>
+                  )}
                 </div>
                 <div className="w-12 h-6 bg-muted rounded-full"></div>
               </div>
 
-              <div className="flex items-center gap-1 text-sm text-muted-foreground mb-4">
-                <MapPin className="w-4 h-4" />
-                <span>Metro Manila, Philippines</span>
-              </div>
+              {portfolio.location && (
+                <div className="flex items-center gap-1 text-sm text-muted-foreground mb-4">
+                  <MapPin className="w-4 h-4" />
+                  <span>{portfolio.location}</span>
+                </div>
+              )}
 
               <Card>
                 <CardContent className="flex justify-between gap-3">
