@@ -1,5 +1,6 @@
 export interface APIResponseDocumentResume {
   name: string;
+  location: string;
   job_title: string;
   introduction: string;
   about: string;
@@ -158,6 +159,7 @@ export interface APIResponsePortfolio {
   project_id: number;
   user_id: number;
   name: string;
+  location: string | null;
   job_title: string | null;
   introduction: string;
   about: string;

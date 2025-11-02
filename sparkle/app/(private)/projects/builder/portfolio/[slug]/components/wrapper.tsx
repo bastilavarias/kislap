@@ -28,6 +28,7 @@ function mapToFormValues<T extends APIResponseDocumentResume | APIResponsePortfo
   return {
     name: source.name || '',
     job_title: source.job_title || '',
+    location: source.location || '',
     introduction: source.introduction || '',
     about: source.about || '',
     email: source.email || '',

@@ -2,9 +2,13 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Mail, Phone, Globe, MapPin } from 'lucide-react';
+import { Mail, Phone, Globe, MapPin, Calendar, ChevronRight } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { Mode } from '@/contexts/settings-context';
+import { useMemo } from 'react';
+import { ThemeSwitchToggle } from '@/app/(preview)/p/resume/components/templates/components/theme-switch-toggle';
 
 interface Portfolio {
   id: number;
@@ -49,9 +53,17 @@ interface Portfolio {
   skills: { id: number; name: string }[];
 }
 
-export function Default2({ portfolio }: { portfolio: Portfolio }) {
+interface Props {
+  portfolio: Portfolio;
+  themeMode: Mode;
+  onSetThemeMode: React.Dispatch<React.SetStateAction<Mode>>;
+}
+
+export function Default2({ portfolio, themeMode, onSetThemeMode }: Props) {
+  const isDarkMode = useMemo(() => themeMode === 'dark', [themeMode]);
+
   return (
-    <div className="flex flex-col gap-6 py-6">
+    <div className="flex flex-col gap-6 py-6 text-foreground">
       <header className="border-b border-border">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex flex-col sm:flex-row gap-6 items-start">
@@ -67,14 +79,14 @@ export function Default2({ portfolio }: { portfolio: Portfolio }) {
             <div className="flex-1">
               <div className="flex items-start justify-between mb-2">
                 <div>
-                  <h1 className="text-3xl font-bold text-foreground">{portfolio.name}</h1>
+                  <h1 className="text-3xl font-bold mb-2">{portfolio.name}</h1>
                   {portfolio.job_title && (
-                    <p className="text-md text-foreground">
+                    <p className="text-lg">
                       <span className="font-semibold">{portfolio.job_title}</span>
                     </p>
                   )}
                 </div>
-                <div className="w-12 h-6 bg-muted rounded-full"></div>
+                <ThemeSwitchToggle isDarkMode={isDarkMode} onSetThemeMode={onSetThemeMode} />
               </div>
 
               {portfolio.location && (
@@ -84,33 +96,44 @@ export function Default2({ portfolio }: { portfolio: Portfolio }) {
                 </div>
               )}
 
-              <Card>
-                <CardContent className="flex justify-between gap-3">
-                  <div className="flex items-center gap-3">
-                    <Phone className="h-4 w-4 text-muted-foreground" />
-                    <div>
-                      <p className="text-xs text-muted-foreground">Phone</p>
-                      <p className="font-medium">{portfolio.phone}</p>
-                    </div>
-                  </div>
+              <div className="flex flex-col gap-2">
+                <div className="flex justify-between">
+                  <div className="flex-1" />
+                  <Button>
+                    <Calendar />
+                    Schedule a Meeting
+                    <ChevronRight />
+                  </Button>
+                </div>
 
-                  <div className="flex items-center gap-3">
-                    <Mail className="h-4 w-4 text-muted-foreground" />
-                    <div>
-                      <p className="text-xs text-muted-foreground">Email</p>
-                      <p className="font-medium">{portfolio.email}</p>
+                <Card>
+                  <CardContent className="flex justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <Phone className="h-4 w-4 text-muted-foreground" />
+                      <div>
+                        <p className="text-xs text-muted-foreground">Phone</p>
+                        <p className="font-medium">{portfolio.phone}</p>
+                      </div>
                     </div>
-                  </div>
 
-                  <div className="flex items-center gap-3">
-                    <Globe className="h-4 w-4 text-muted-foreground" />
-                    <div>
-                      <p className="text-xs text-muted-foreground">Website</p>
-                      <p className="font-medium">{portfolio.website}</p>
+                    <div className="flex items-center gap-3">
+                      <Mail className="h-4 w-4 text-muted-foreground" />
+                      <div>
+                        <p className="text-xs text-muted-foreground">Email</p>
+                        <p className="font-medium">{portfolio.email}</p>
+                      </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
+
+                    <div className="flex items-center gap-3">
+                      <Globe className="h-4 w-4 text-muted-foreground" />
+                      <div>
+                        <p className="text-xs text-muted-foreground">Website</p>
+                        <p className="font-medium">{portfolio.website}</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
             </div>
           </div>
         </div>
@@ -119,15 +142,15 @@ export function Default2({ portfolio }: { portfolio: Portfolio }) {
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="space-y-10 lg:col-span-2">
           <section>
-            <div className="font-bold text-foreground mb-4 flex items-center text-xl">About Me</div>
-            <div className="space-y-4 text-foreground leading-relaxed">
+            <div className="font-bold mb-4 flex items-center text-xl">About Me</div>
+            <div className="space-y-4 leading-relaxed">
               <p>{portfolio.introduction}</p>
               <p>{portfolio.about}</p>
             </div>
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
+            <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
               <span className="text-2xl">⚙️</span> Tech Stack
             </h2>
             <div className="flex flex-wrap gap-2">
@@ -140,16 +163,14 @@ export function Default2({ portfolio }: { portfolio: Portfolio }) {
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-foreground flex items-center gap-2 mb-4">
+            <h2 className="text-xl font-bold flex items-center gap-2 mb-4">
               <span className="text-2xl">📁</span> Recent Projects
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {portfolio.showcases.map((showcase) => (
                 <Card key={showcase.id} className="border border-border">
                   <CardHeader>
-                    <CardTitle className={cn('font-bold text-foreground', '')}>
-                      {showcase.name}
-                    </CardTitle>
+                    <CardTitle className={cn('font-bold', '')}>{showcase.name}</CardTitle>
                     <CardDescription className="cursor-pointer hover:underline">
                       project-url.app
                     </CardDescription>
@@ -172,7 +193,7 @@ export function Default2({ portfolio }: { portfolio: Portfolio }) {
 
         <div className="space-y-6">
           <section>
-            <h2 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
+            <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
               <span className="text-2xl">💼</span> Experience
             </h2>
             <div className="space-y-4">
@@ -180,7 +201,7 @@ export function Default2({ portfolio }: { portfolio: Portfolio }) {
                 <div key={exp.id} className="pb-4 border-b border-border last:border-0 space-y-4">
                   <div className="flex flex-col space-y-2">
                     <div className="flex justify-between items-start">
-                      <p className="font-semibold text-foreground">{exp.company}</p>
+                      <p className="font-semibold">{exp.company}</p>
                       <span className="text-xs whitespace-nowrap">
                         {exp.start_date} - {exp.end_date}
                       </span>
@@ -199,7 +220,7 @@ export function Default2({ portfolio }: { portfolio: Portfolio }) {
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
+            <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
               <span className="text-2xl">🎒</span> Education
             </h2>
             <div className="space-y-4">
@@ -210,7 +231,7 @@ export function Default2({ portfolio }: { portfolio: Portfolio }) {
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <p className="font-semibold text-foreground">{education.school}</p>
+                      <p className="font-semibold">{education.school}</p>
                       <p className="text-sm">{education.degree} </p>
                       {education.location ?? <p>{education.location}</p>}
                       <div className="flex space-x-1"></div>

@@ -8,7 +8,8 @@ import { Default } from './templates/default';
 import { Default2 } from './templates/default-2';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Spinner } from '@/components/ui/shadcn-io/spinner';
-import { Heart } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { cn } from '@/lib/utils';
 
 interface Portfolio {
   id: number;
@@ -65,55 +66,72 @@ const LoadingDialog = ({ open }: { open: boolean }) => {
 export function Wrapper() {
   const fetcher = (url: string) => fetch(url).then((res) => res.json());
   const { data, error, isLoading } = useSWR('http://api.kislap.test/api/projects/show/1', fetcher);
+  const [themeMode, setThemeMode] = useState<Mode>('light');
 
   if (error) return <div>failed to load</div>;
   if (isLoading) return <LoadingDialog open={isLoading} />;
-
-  const mode: Mode = 'light';
 
   const project = data.data;
 
   const settings = {
     theme: JSON.parse(JSON.stringify(project.portfolio.theme_object)),
-    mode,
+    mode: themeMode,
   };
 
-  const templates: Record<TemplateName, React.FC<{ portfolio: Portfolio }>> = {
+  const templates: Record<
+    TemplateName,
+    React.FC<{
+      portfolio: Portfolio;
+      onSetThemeMode: React.Dispatch<React.SetStateAction<Mode>>;
+      themeMode: Mode;
+    }>
+  > = {
     default: Default,
     'default-2': Default2,
   };
 
-  const renderTemplate = () => {
+  const renderTemplate = (
+    themeMode: Mode,
+    onSetThemeMode: React.Dispatch<React.SetStateAction<Mode>>
+  ) => {
     const layoutName = project.portfolio.layout_name ?? 'default';
     const Component = templates[layoutName as TemplateName];
 
-    return Component ? <Component portfolio={project.portfolio} /> : null;
+    return Component ? (
+      <Component
+        portfolio={project.portfolio}
+        themeMode={themeMode}
+        onSetThemeMode={onSetThemeMode}
+      />
+    ) : null;
   };
 
   return (
     <div className="relative flex min-h-full w-full flex-auto flex-col gap-10">
-      <ComponentThemeProvider themeStyles={settings.theme.styles} mode={mode}>
+      <ComponentThemeProvider themeStyles={settings.theme.styles} mode={themeMode}>
         <div
           style={{
             fontFamily: 'var(--font-sans)',
           }}
-          className="relative"
+          className="relative bg-background"
         >
-          <div className="container mx-auto max-w-5xl py-10">{renderTemplate()}</div>
+          <div className="container mx-auto max-w-5xl py-10 ">
+            {renderTemplate(themeMode, setThemeMode)}
+          </div>
         </div>
+
+        <footer className="border-t border-border py-8 bg-background">
+          <div className="max-w-6xl mx-auto px-4 text-center text-sm text-muted-foreground">
+            <p>
+              © {new Date().getFullYear()}{' '}
+              <span className="font-medium text-foreground">Kislap</span> — sparking ideas into
+              reality ✨
+            </p>
+          </div>
+        </footer>
+
+        <FloatingToolbar />
       </ComponentThemeProvider>
-
-      <footer className="border-t border-border py-8">
-        <div className="max-w-6xl mx-auto px-4 text-center text-sm text-muted-foreground">
-          <p>
-            © {new Date().getFullYear()}{' '}
-            <span className="font-medium text-foreground">Kislap</span> — sparking ideas into
-            reality ✨
-          </p>
-        </div>
-      </footer>
-
-      <FloatingToolbar />
     </div>
   );
 }
