@@ -73,6 +73,7 @@ export function ProjectFormDialog() {
       description: '',
       sub_domain: '',
       type: '',
+      published: false,
     },
   });
 
@@ -81,12 +82,7 @@ export function ProjectFormDialog() {
   const onSubmit = async (form: ProjectFormValues) => {
     setError('');
     setLoading(true);
-    const { success, data, message } = await create(
-      form.name,
-      form.description ?? '',
-      form.sub_domain,
-      form.type
-    );
+    const { success, data, message } = await create(form);
     if (success && data) {
       router.push(`/projects/builder/${currentType}/${data.slug}`);
       return;

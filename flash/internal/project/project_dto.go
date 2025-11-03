@@ -7,6 +7,7 @@ type CreateUpdateProjectRequest struct {
 	Description string `json:"description"`
 	SubDomain   string `json:"sub_domain" binding:"required"`
 	Type        string `json:"type" binding:"required,oneof=portfolio biz links waitlist"`
+	Published   bool   `json:"published"`
 }
 
 type PublishProjectRequest struct {
@@ -18,6 +19,7 @@ type Payload struct {
 	Description string
 	SubDomain   string
 	Type        string
+	Published   bool
 }
 
 type PublishProjectPayload struct {

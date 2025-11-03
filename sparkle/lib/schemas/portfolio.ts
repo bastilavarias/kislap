@@ -18,6 +18,7 @@ export const PortfolioSchema = z.object({
       z.object({
         company: z.string().optional().nullable(),
         role: z.string().optional().nullable(),
+        url: z.string().optional().nullable(),
         location: z.string().optional().nullable(),
         startDate: z.string().optional(), // or z.coerce.date().optional() if string from API
         endDate: z.string().optional().nullable(),
@@ -47,6 +48,7 @@ export const PortfolioSchema = z.object({
       z.object({
         name: z.string().optional().nullable(),
         description: z.string().optional().nullable(),
+        url: z.string().optional().nullable(),
         role: z.string().optional().nullable(),
         technologies: z
           .array(

@@ -1,12 +1,13 @@
 package portfolio
 
 type WorkExperienceRequest struct {
-	Company   string `json:"company" binding:"required"`
-	Role      string `json:"role" binding:"required"`
-	Location  string `json:"location"`
-	StartDate string `json:"startDate" binding:"required"` // frontend sends string "2024"
-	EndDate   string `json:"endDate"`                      // can be "Present" or "2022"
-	About     string `json:"about"`
+	Company   string  `json:"company" binding:"required"`
+	Role      string  `json:"role" binding:"required"`
+	URL       *string `json:"url"`
+	Location  *string `json:"location"`
+	StartDate string  `json:"startDate" binding:"required"` // frontend sends string "2024"
+	EndDate   *string `json:"endDate"`                      // can be "Present" or "2022"
+	About     *string `json:"about"`
 }
 
 type EducationRequest struct {
@@ -30,8 +31,9 @@ type ShowcaseTechnologyRequest struct {
 
 type ShowcaseRequest struct {
 	Name         string                      `json:"name" binding:"required"`
-	Description  string                      `json:"description"`
-	Role         string                      `json:"role"`
+	Description  *string                     `json:"description"`
+	URL          *string                     `json:"url"`
+	Role         *string                     `json:"role"`
 	Technologies []ShowcaseTechnologyRequest `json:"technologies"`
 }
 

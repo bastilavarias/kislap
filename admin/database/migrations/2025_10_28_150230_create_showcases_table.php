@@ -18,6 +18,7 @@ return new class extends Migration {
                 ->constrained('portfolios')
                 ->nullOnDelete();
             $table->string('name');
+            $table->string('url')->nullable();
             $table->text('description')->nullable();
             $table->string('role')->nullable();
             $table->timestamps();

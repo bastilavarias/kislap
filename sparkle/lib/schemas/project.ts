@@ -9,6 +9,7 @@ export const ProjectSchema = z.object({
     .min(3, 'Domain must be at least 3 chars')
     .max(63, 'Domain too long'),
   type: z.string().min(1, 'Type is required'),
+  published: z.boolean(),
 });
 
 export type ProjectFormValues = z.infer<typeof ProjectSchema>;

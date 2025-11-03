@@ -141,10 +141,11 @@ func buildWorkExperiences(workPayloads []WorkExperienceRequest) []models.WorkExp
 		workExperiences = append(workExperiences, models.WorkExperience{
 			Company:   workExperience.Company,
 			Role:      workExperience.Role,
-			Location:  &workExperience.Location,
-			StartDate: &workExperience.StartDate,
-			EndDate:   &workExperience.EndDate,
-			About:     &workExperience.About,
+			URL:       *workExperience.URL,
+			Location:  workExperience.Location,
+			StartDate: workExperience.StartDate,
+			EndDate:   workExperience.EndDate,
+			About:     workExperience.About,
 		})
 	}
 	return workExperiences
@@ -189,8 +190,9 @@ func buildShowcases(showcasePayloads []ShowcaseRequest) []models.Showcase {
 
 		showcases = append(showcases, models.Showcase{
 			Name:                 showcase.Name,
-			Description:          &showcase.Description,
-			Role:                 &showcase.Role,
+			Description:          showcase.Description,
+			URL:                  showcase.URL,
+			Role:                 showcase.Role,
 			ShowcaseTechnologies: technologies,
 		})
 	}

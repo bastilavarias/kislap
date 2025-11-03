@@ -32,6 +32,7 @@ type PortfolioResponse struct {
 	WorkExperiences []struct {
 		Company   string  `json:"company"`
 		Role      string  `json:"role"`
+		URL       string  `json:"url"`
 		Location  string  `json:"location"`
 		StartDate string  `json:"start_date"`
 		EndDate   *string `json:"end_date"`
@@ -42,8 +43,8 @@ type PortfolioResponse struct {
 		Level     *string `json:"level"`
 		Degree    *string `json:"degree"`
 		Location  *string `json:"location"`
-		YearStart *string    `json:"year_start"`
-		YearEnd   *string    `json:"year_end"`
+		YearStart *string `json:"year_start"`
+		YearEnd   *string `json:"year_end"`
 		About     *string `json:"about"`
 	} `json:"education"`
 	Skills []struct {
@@ -54,6 +55,7 @@ type PortfolioResponse struct {
 		Name         string `json:"name"`
 		Description  string `json:"description"`
 		Role         string `json:"role"`
+		URL          string `json:"url"`
 		Technologies []struct {
 			Name string `json:"name"`
 		} `json:"technologies"`

@@ -25,6 +25,7 @@ Follow this schema:
       {
         "company": "string",
         "role": "string",
+        "url": "string" (website url if any),
         "location": "string",
         "start_date": "string",
         "end_date": "string",
@@ -55,6 +56,7 @@ Follow this schema:
         "name": "string",
         "description": "string",
         "role": "string",
+        "url": "string" (website url if any),
         "technologies": [
           {
             "name": "string"

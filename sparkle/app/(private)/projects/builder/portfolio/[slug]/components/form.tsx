@@ -595,6 +595,14 @@ export function Form({
                           </div>
 
                           <div>
+                            <Label className="font-medium mb-2">URL (Optional)</Label>
+                            <Input
+                              {...register(`showcases.${index}.url` as const)}
+                              className="w-full shadow-none"
+                            />
+                          </div>
+
+                          <div>
                             <Label className="font-medium mb-2">Description (Optional)</Label>
                             <Textarea
                               {...register(`showcases.${index}.description` as const)}

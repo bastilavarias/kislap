@@ -19,6 +19,7 @@ return new class extends Migration {
                 ->nullOnDelete();
             $table->string('company');
             $table->string('role');
+            $table->string('url')->nullable();
             $table->string('location')->nullable();
             $table->string('start_date')->nullable();
             $table->string('end_date')->nullable();
