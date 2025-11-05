@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"flash/internal/appointment"
 	"flash/internal/auth"
 	"flash/internal/document"
 	"flash/internal/portfolio"
@@ -23,6 +24,7 @@ func RegisterRoutes(router *gin.Engine, db *gorm.DB, llm llm.Provider, dns dns.P
 		projectController := project.NewController(db, dns)
 		documentController := document.NewController(db, llm)
 		portfolioController := portfolio.NewController(db)
+		appointmentController := appointment.NewController(db)
 
 		api.POST("/auth/login", authController.Login)
 		api.POST("/auth/github", authController.GithubLogin)
@@ -46,5 +48,11 @@ func RegisterRoutes(router *gin.Engine, db *gorm.DB, llm llm.Provider, dns dns.P
 		api.GET("/portfolios/:id", middleware.AccessTokenValidatorMiddleware(db), portfolioController.Get)
 		api.POST("/portfolios", middleware.AccessTokenValidatorMiddleware(db), portfolioController.Save)
 		api.DELETE("/portfolios/:id", middleware.AccessTokenValidatorMiddleware(db), portfolioController.Delete)
+
+		api.POST("/appointments", appointmentController.Create)
+		api.GET("/appointments/list", middleware.AccessTokenValidatorMiddleware(db), appointmentController.List)
+		api.GET("/appointments/show/:id", middleware.AccessTokenValidatorMiddleware(db), appointmentController.Show)
+		api.PUT("/appointments/:id", middleware.AccessTokenValidatorMiddleware(db), appointmentController.Update)
+		api.DELETE("/appointments/:id", middleware.AccessTokenValidatorMiddleware(db), appointmentController.Delete)
 	}
 }
