@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Mode } from '@/contexts/settings-context';
 import { useMemo } from 'react';
 import { ThemeSwitchToggle } from '@/app/(preview)/p/resume/components/templates/components/theme-switch-toggle';
+import Link from 'next/link';
 
 interface Portfolio {
   id: number;
@@ -48,6 +49,7 @@ interface Portfolio {
     name: string;
     description: string;
     role: string;
+    url: string;
     technologies: { id: number; name: string }[];
   }[];
   skills: { id: number; name: string }[];
@@ -171,8 +173,15 @@ export function Default2({ portfolio, themeMode, onSetThemeMode }: Props) {
                 <Card key={showcase.id} className="border border-border">
                   <CardHeader>
                     <CardTitle className={cn('font-bold', '')}>{showcase.name}</CardTitle>
-                    <CardDescription className="cursor-pointer hover:underline">
-                      project-url.app
+                    <CardDescription>
+                      <Link
+                        href={showcase.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary hover:underline break-all"
+                      >
+                        {showcase.url.replace(/^https?:\/\/(www\.)?/, '')}
+                      </Link>
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="flex flex-col space-y-4">

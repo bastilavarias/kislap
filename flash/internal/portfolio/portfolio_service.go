@@ -141,7 +141,7 @@ func buildWorkExperiences(workPayloads []WorkExperienceRequest) []models.WorkExp
 		workExperiences = append(workExperiences, models.WorkExperience{
 			Company:   workExperience.Company,
 			Role:      workExperience.Role,
-			URL:       *workExperience.URL,
+			URL:       workExperience.URL,
 			Location:  workExperience.Location,
 			StartDate: workExperience.StartDate,
 			EndDate:   workExperience.EndDate,

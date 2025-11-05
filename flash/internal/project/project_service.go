@@ -150,7 +150,7 @@ func (service Service) Publish(projectID int, payload PublishProjectPayload) (*m
 
 	isPublished := payload.Published
 	service.DB.Model(&proj).Updates(models.Project{
-		Published: &isPublished,
+		Published: isPublished,
 	})
 
 	return &proj, nil

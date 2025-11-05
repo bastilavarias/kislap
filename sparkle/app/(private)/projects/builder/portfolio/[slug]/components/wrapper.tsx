@@ -45,6 +45,7 @@ function mapToFormValues<T extends APIResponseDocumentResume | APIResponsePortfo
       startDate: work.start_date || null,
       endDate: work.end_date || null,
       about: work.about || '',
+      url: work.url || '',
     })),
 
     education: (source.education || []).map((education: any) => ({
@@ -138,6 +139,7 @@ export function Wrapper() {
       startDate: '',
       endDate: '',
       about: '',
+      url: '',
     });
   };
 

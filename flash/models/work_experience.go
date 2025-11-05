@@ -10,7 +10,7 @@ type WorkExperience struct {
 	ID          uint64         `gorm:"primaryKey;autoIncrement" json:"id"`
 	PortfolioID uint64         `gorm:"index" json:"portfolio_id"`
 	Company     string         `gorm:"size:255" json:"company"`
-	URL         string         `gorm:"size:255" json:"url"`
+	URL         *string        `gorm:"size:255" json:"url"`
 	Role        string         `gorm:"size:255" json:"role"`
 	Location    *string        `gorm:"size:255" json:"location"`
 	StartDate   string         `gorm:"string,omitempty" json:"start_date"`

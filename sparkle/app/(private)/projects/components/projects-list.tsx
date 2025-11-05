@@ -15,7 +15,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ButtonGroup, ButtonGroupSeparator, ButtonGroupText } from '@/components/ui/button-group';
+import { ButtonGroup } from '@/components/ui/button-group';
 import { Eye, Pencil, Trash2 } from 'lucide-react';
 
 export interface APIResponsePortfolio {
@@ -50,7 +50,6 @@ interface ProjectCardProps {
 function ProjectCard({ project }: ProjectCardProps) {
   const typeInfo = typeConfig[project.type];
   const createdDate = new Date(project.created_at);
-  const isRecent = new Date().getTime() - createdDate.getTime() < 7 * 24 * 60 * 60 * 1000;
 
   const formattedDate = createdDate.toLocaleDateString('en-US', {
     year: 'numeric',
