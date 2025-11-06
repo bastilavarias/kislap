@@ -77,7 +77,7 @@ func (controller Controller) Update(context *gin.Context) {
 		return
 	}
 
-	var request CreateUpdateappointmentRequest
+	var request CreateUpdateAppointmentRequest
 	if err := context.ShouldBindJSON(&request); err != nil {
 		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
 		context.Abort()

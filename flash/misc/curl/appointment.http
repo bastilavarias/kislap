@@ -1,39 +1,39 @@
 @no-cookie-jar=false
 
 ### Base URL
-@base_url = http://api.kislap.test
-@access_token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNlYmFzdGlhbmN1cnRpc2xhdmFyaWFzQGdtYWlsLmNvbSIsImV4cCI6MTc2MjM1MDg3MSwicm9sZSI6ImRlZmF1bHQiLCJ1c2VyX2lkIjoyfQ.yvkJaNMp3DDPSO7ShxJHwaTy9W1GMg_2PMDygwyS7Fk
+@host = http://api.kislap.test
+@access_token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImpvaG4uZG9lQGtpc2xhcC5jb20iLCJleHAiOjE3NjIzOTgwNDIsInJvbGUiOiJkZWZhdWx0IiwidXNlcl9pZCI6Mn0.vXoHaQLE2A9PnbNo42i-BxiBxSAg8y9R9DmzaDqhUDs
 
 ###
 
 ### Create a new appointment
-POST {{base_url}}/api/appointments
+POST {{host}}/api/appointments
 Content-Type: application/json
 
 {
   "user_id": 1,
-  "project_id": 2,
-  "date": "2025-11-10",
-  "time_from": "10:00:00",
-  "time_to": "11:00:00"
+  "project_id": 1,
+  "date": "2025-11-10T00:00:00Z",
+  "time_from": "2025-11-10T10:00:00Z",
+  "time_to": "2025-11-10T11:00:00Z"
 }
 
 ###
 
 ### Get all appointments (requires authentication)
-GET {{base_url}}/api/appointments/list
+GET {{host}}/api/appointments/list
 Authorization: {{access_token}}
 
 ###
 
 ### Get an appointment by ID
-GET {{base_url}}/api/appointments/show/1
+GET {{host}}/api/appointments/show/1
 Authorization: {{access_token}}
 
 ###
 
 ### Update an appointment
-PUT {{base_url}}/api/appointments/1
+PUT {{host}}/api/appointments/1
 Content-Type: application/json
 Authorization: {{access_token}}
 
@@ -46,5 +46,5 @@ Authorization: {{access_token}}
 ###
 
 ### Delete an appointment
-DELETE {{base_url}}/api/appointments/1
+DELETE {{host}}/api/appointments/1
 Authorization: {{access_token}}

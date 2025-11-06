@@ -1,13 +1,13 @@
 @no-cookie-jar=false
 
-@host = "http://api.kislap.test"
+@host = http://api.kislap.test
 
 ### Login User
 POST {{host}}/api/auth/login
 Content-Type: application/json
 
 {
-  "email": "sebastian.lavarias@kislap.com",
+  "email": "john.doe@kislap.com",
   "password": "secret123"
 }
 

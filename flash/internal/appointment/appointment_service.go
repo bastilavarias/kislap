@@ -1,7 +1,9 @@
 package appointment
 
 import (
+	"errors"
 	"flash/models"
+	"fmt"
 
 	"gorm.io/gorm"
 )
@@ -19,12 +21,31 @@ func (service *Service) List() ([]models.Appointment, error) {
 }
 
 func (service *Service) Create(payload Payload) (*models.Appointment, error) {
+	var existing models.Appointment
+	err := service.DB.
+		Where("user_id = ? AND project_id = ? AND date = ?", payload.UserID, payload.ProjectID, payload.Date).
+		Where(`
+			(time_from < ? AND time_to > ?)
+		`, payload.TimeTo, payload.TimeFrom).
+		First(&existing).Error
+
+	if err == nil {
+		return nil, fmt.Errorf("time conflict: the user already has an appointment from %s to %s",
+			existing.TimeFrom.Format("15:04"), existing.TimeTo.Format("15:04"))
+	} else if !errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, err
+	}
+
 	appointment := models.Appointment{
-		UserID:    payload.UserID,
-		ProjectID: payload.ProjectID,
-		Date:      payload.Date,
-		TimeFrom:  payload.TimeFrom,
-		TimeTo:    payload.TimeTo,
+		UserID:        payload.UserID,
+		ProjectID:     payload.ProjectID,
+		Date:          payload.Date,
+		TimeFrom:      payload.TimeFrom,
+		TimeTo:        payload.TimeTo,
+		Name:          payload.Name,
+		Email:         payload.Email,
+		ContactNumber: payload.ContactNumber,
+		Message:       payload.Message,
 	}
 
 	if err := service.DB.Create(&appointment).Error; err != nil {

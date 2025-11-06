@@ -14,10 +14,16 @@ return new class extends Migration {
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('project_id');
-            $table->date('date')->nullable();
-            $table->time('time_from')->nullable();
-            $table->time('time_to')->nullable();
+            $table->dateTime('date')->nullable();
+            $table->dateTime('time_from')->nullable();
+            $table->dateTime('time_to')->nullable();
+            $table->string('name');
+            $table->string('email');
+            $table->string('contact_number')->nullable();
+            $table->text('message')->nullable();
             $table->timestamps();
+            $table->softDeletes();
+
 
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('project_id')->references('id')->on('projects');

@@ -1,16 +1,16 @@
 @no-cookie-jar=false
 
-
+@host = http://api.kislap.test
 
 ### Register a new user
-POST http://api.kislap.test/api/user
+POST {{host}}/api/user
 Content-Type: application/json
 
 {
-  "first_name": "Sebastian Curtis",
-  "last_name": "Lavarias",
+  "first_name": "John",
+  "last_name": "Doe",
   "mobile_number": "09972217704",
-  "email": "sebastian.lavarias@kislap.com",
+  "email": "john.doe@kislap.com",
   "password": "secret123"
 }
 

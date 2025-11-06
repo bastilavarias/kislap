@@ -7,9 +7,18 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Mode } from '@/contexts/settings-context';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { ThemeSwitchToggle } from '@/app/(preview)/p/resume/components/templates/components/theme-switch-toggle';
 import Link from 'next/link';
+import { AppointmentDialog } from '@/app/(preview)/p/resume/components/templates/components/appointment-dialog';
+import { ThemeStyles } from '@/types/theme';
+
+interface Props {
+  portfolio: Portfolio;
+  themeMode: Mode;
+  onSetThemeMode: React.Dispatch<React.SetStateAction<Mode>>;
+  themeStyles: ThemeStyles;
+}
 
 interface Portfolio {
   id: number;
@@ -55,13 +64,9 @@ interface Portfolio {
   skills: { id: number; name: string }[];
 }
 
-interface Props {
-  portfolio: Portfolio;
-  themeMode: Mode;
-  onSetThemeMode: React.Dispatch<React.SetStateAction<Mode>>;
-}
+export function Default2({ portfolio, themeMode, onSetThemeMode, themeStyles }: Props) {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-export function Default2({ portfolio, themeMode, onSetThemeMode }: Props) {
   const isDarkMode = useMemo(() => themeMode === 'dark', [themeMode]);
 
   return (
@@ -101,7 +106,7 @@ export function Default2({ portfolio, themeMode, onSetThemeMode }: Props) {
               <div className="flex flex-col gap-2">
                 <div className="flex justify-between">
                   <div className="flex-1" />
-                  <Button>
+                  <Button onClick={() => setIsDialogOpen(!isDialogOpen)}>
                     <Calendar />
                     Schedule a Meeting
                     <ChevronRight />
@@ -255,6 +260,13 @@ export function Default2({ portfolio, themeMode, onSetThemeMode }: Props) {
           </section>
         </div>
       </div>
+
+      <AppointmentDialog
+        isOpen={isDialogOpen}
+        onOpenChange={setIsDialogOpen}
+        themeMode={themeMode}
+        themeStyles={themeStyles}
+      />
     </div>
   );
 }

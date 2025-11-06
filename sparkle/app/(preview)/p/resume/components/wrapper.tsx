@@ -3,13 +3,12 @@
 import useSWR from 'swr';
 import { Mode } from '@/contexts/settings-context';
 import { ComponentThemeProvider } from '@/providers/ComponentThemesProvider';
-import { FloatingToolbar } from '@/app/(preview)/p/resume/components/floating-toolbar';
 import { Default } from './templates/default';
 import { Default2 } from './templates/default-2';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Spinner } from '@/components/ui/shadcn-io/spinner';
-import { useState, useEffect } from 'react';
-import { cn } from '@/lib/utils';
+import { useState } from 'react';
+import { ThemeStyles } from '@/types/theme';
 
 interface Portfolio {
   id: number;
@@ -84,6 +83,7 @@ export function Wrapper() {
       portfolio: Portfolio;
       onSetThemeMode: React.Dispatch<React.SetStateAction<Mode>>;
       themeMode: Mode;
+      themeStyles: ThemeStyles;
     }>
   > = {
     default: Default,
@@ -92,6 +92,7 @@ export function Wrapper() {
 
   const renderTemplate = (
     themeMode: Mode,
+    themeStyles: ThemeStyles,
     onSetThemeMode: React.Dispatch<React.SetStateAction<Mode>>
   ) => {
     const layoutName = project.portfolio.layout_name ?? 'default';
@@ -101,6 +102,7 @@ export function Wrapper() {
       <Component
         portfolio={project.portfolio}
         themeMode={themeMode}
+        themeStyles={themeStyles}
         onSetThemeMode={onSetThemeMode}
       />
     ) : null;
@@ -115,8 +117,8 @@ export function Wrapper() {
           }}
           className="relative bg-background"
         >
-          <div className="container mx-auto max-w-5xl py-10 ">
-            {renderTemplate(themeMode, setThemeMode)}
+          <div className="container mx-auto max-w-5xl py-10">
+            {renderTemplate(themeMode, settings.theme.styles, setThemeMode)}
           </div>
         </div>
 
@@ -129,8 +131,6 @@ export function Wrapper() {
             </p>
           </div>
         </footer>
-
-        <FloatingToolbar />
       </ComponentThemeProvider>
     </div>
   );
