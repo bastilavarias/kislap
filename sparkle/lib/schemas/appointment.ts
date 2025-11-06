@@ -7,17 +7,21 @@ const isISODate = (val: string) => {
 };
 
 export const AppointmentSchema = z.object({
-  user_id: z.number().int().positive(),
-  project_id: z.number().int().positive(),
+  user_id: z.number().int().positive().optional(),
+  project_id: z.number().int().positive().optional,
   name: z.string(),
   email: z.email({ pattern: z.regexes.unicodeEmail }),
   contact_number: z.string(),
   message: z.string().optional(),
-  date: z.string().min(1, 'Date is required').refine(isISODate, {
-    message: 'Invalid date format. Expected YYYY-MM-DD.',
-  }),
-  time_from: z.string().time('Invalid start time format. Expected HH:MM or HH:MM:SS'),
-  time_to: z.string().time('Invalid end time format. Expected HH:MM or HH:MM:SS'),
+  date: z
+    .string()
+    .min(1, 'Date is required')
+    .refine(isISODate, {
+      message: 'Invalid date format. Expected YYYY-MM-DD.',
+    })
+    .optional(),
+  time_from: z.string().time('Invalid start time format. Expected HH:MM or HH:MM:SS').optional(),
+  time_to: z.string().time('Invalid end time format. Expected HH:MM or HH:MM:SS').optional(),
 });
 
 export type AppointmentFormValues = z.infer<typeof AppointmentSchema>;

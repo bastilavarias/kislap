@@ -5,7 +5,7 @@ import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { AlertCircleIcon, ChevronLeft, ChevronRight, Clock } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Card, CardAction, CardContent, CardFooter } from '@/components/ui/card';
+import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { ThemeStyles } from '@/types/theme';
 import { ComponentThemeProvider } from '@/providers/ComponentThemesProvider';
 import { Mode } from '@/contexts/settings-context';
@@ -16,6 +16,8 @@ import { Alert, AlertTitle } from '@/components/ui/alert';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { useAppointment } from '@/hooks/api/use-appointment';
+import { toast } from 'sonner';
 
 interface Props {
   isOpen: boolean;
@@ -57,6 +59,9 @@ export function AppointmentDialog({ isOpen, onOpenChange, themeMode, themeStyles
   const [currentDate, setCurrentDate] = useState(new Date(2025, 11, 6));
   const [selectedDate, setSelectedDate] = useState(21);
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  const { create } = useAppointment();
 
   const {
     register,
@@ -99,6 +104,23 @@ export function AppointmentDialog({ isOpen, onOpenChange, themeMode, themeStyles
     setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1));
   };
 
+  const onSubmit = async (form: AppointmentFormValues) => {
+    setError('');
+    setIsLoading(true);
+
+    const { success, data, message } = await create(form);
+
+    if (success && data) {
+      toast('Portfolio succesfully details saved.');
+      setIsLoading(false);
+      return;
+    }
+
+    setError(message);
+    toast('Something went wrong!');
+    setIsLoading(false);
+  };
+
   const calendarDays = [];
   for (let i = 0; i < firstDayOfWeek; i++) {
     calendarDays.push(null);
@@ -109,7 +131,7 @@ export function AppointmentDialog({ isOpen, onOpenChange, themeMode, themeStyles
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[1200px] h-[80vh] overflow-auto p-0">
+      <DialogContent className="sm:max-w-[1200px] h-[70vh] overflow-auto p-0">
         <ComponentThemeProvider themeStyles={themeStyles} mode={themeMode}>
           <div
             style={{
@@ -247,7 +269,7 @@ export function AppointmentDialog({ isOpen, onOpenChange, themeMode, themeStyles
                           <Label className="font-medium mb-2">Contact Number</Label>
                           <Input
                             {...register('contact_number')}
-                            placeholder="+63 912 345 6789"
+                            placeholder="09965594483"
                             className="w-full shadow-none"
                             type="tel"
                           />
@@ -276,7 +298,7 @@ export function AppointmentDialog({ isOpen, onOpenChange, themeMode, themeStyles
 
                     <CardFooter className="p-0">
                       <div className="flex-1" />
-                      <Button>
+                      <Button onClick={handleSubmit(onSubmit)} disabled={isLoading}>
                         Book an Appointment <ChevronRight />
                       </Button>
                     </CardFooter>

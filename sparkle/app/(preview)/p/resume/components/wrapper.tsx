@@ -9,44 +9,7 @@ import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Spinner } from '@/components/ui/shadcn-io/spinner';
 import { useState } from 'react';
 import { ThemeStyles } from '@/types/theme';
-
-interface Portfolio {
-  id: number;
-  name: string;
-  job_title: string | null;
-  introduction: string;
-  about: string;
-  email: string;
-  phone: string;
-  website: string;
-  github: string;
-  linkedin?: string;
-  twitter?: string;
-  work_experiences: {
-    id: number;
-    company: string;
-    role: string;
-    location: string;
-    start_date: string;
-    end_date: string;
-    about: string;
-  }[];
-  education: {
-    id: number;
-    school: string;
-    level: string;
-    degree: string;
-    location: string;
-    about: string;
-  }[];
-  showcases: {
-    id: number;
-    name: string;
-    description: string;
-    role: string;
-  }[];
-  skills: { id: number; name: string }[];
-}
+import { APIResponsePortfolio } from '@/types/api-response';
 
 type TemplateName = 'default' | 'default-2';
 
@@ -80,7 +43,7 @@ export function Wrapper() {
   const templates: Record<
     TemplateName,
     React.FC<{
-      portfolio: Portfolio;
+      portfolio: APIResponsePortfolio;
       onSetThemeMode: React.Dispatch<React.SetStateAction<Mode>>;
       themeMode: Mode;
       themeStyles: ThemeStyles;
