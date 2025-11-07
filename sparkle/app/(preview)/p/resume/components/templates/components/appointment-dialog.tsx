@@ -16,7 +16,7 @@ import { Alert, AlertTitle } from '@/components/ui/alert';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { useAppointment } from '@/hooks/api/use-appointment';
+import { CreateAppointmentPayload, useAppointment } from '@/hooks/api/use-appointment';
 import { toast } from 'sonner';
 
 interface Props {
@@ -108,7 +108,19 @@ export function AppointmentDialog({ isOpen, onOpenChange, themeMode, themeStyles
     setError('');
     setIsLoading(true);
 
-    const { success, data, message } = await create(form);
+    const payload: CreateAppointmentPayload = {
+      user_id: 1,
+      project_id: 1,
+      date: '',
+      time_from: '',
+      time_to: '',
+      name: form.name,
+      email: form.email,
+      contact_number: form.contact_number,
+      message: form.message,
+    };
+
+    const { success, data, message } = await create(payload);
 
     if (success && data) {
       toast('Portfolio succesfully details saved.');
@@ -131,7 +143,7 @@ export function AppointmentDialog({ isOpen, onOpenChange, themeMode, themeStyles
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[1200px] h-[70vh] overflow-auto p-0">
+      <DialogContent className="sm:max-w-[1200px] h-[75vh] overflow-auto p-0">
         <ComponentThemeProvider themeStyles={themeStyles} mode={themeMode}>
           <div
             style={{
@@ -184,7 +196,6 @@ export function AppointmentDialog({ isOpen, onOpenChange, themeMode, themeStyles
                       </div>
                     </div>
 
-                    {/* Calendar Grid */}
                     <div className="space-y-2">
                       <div className="grid grid-cols-7 gap-1">
                         {DAYS_OF_WEEK.map((day) => (
