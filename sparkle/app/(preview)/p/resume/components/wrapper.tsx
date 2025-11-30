@@ -4,14 +4,16 @@ import useSWR from 'swr';
 import { Mode } from '@/contexts/settings-context';
 import { ComponentThemeProvider } from '@/providers/ComponentThemesProvider';
 import { Default } from './templates/default';
-import { Default2 } from './templates/default-2';
+import { Simple } from './templates/simple';
+import { Bento } from './templates/bento';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Spinner } from '@/components/ui/shadcn-io/spinner';
 import { useState } from 'react';
 import { ThemeStyles } from '@/types/theme';
 import { APIResponsePortfolio } from '@/types/api-response';
+import { NeoBrutalist } from './templates/neo-brutalist';
 
-type TemplateName = 'default' | 'default-2';
+type TemplateName = 'default' | 'simple' | 'bento' | 'neo-brutalist';
 
 const LoadingDialog = ({ open }: { open: boolean }) => {
   return (
@@ -50,7 +52,9 @@ export function Wrapper() {
     }>
   > = {
     default: Default,
-    'default-2': Default2,
+    simple: Simple,
+    bento: Bento,
+    'neo-brutalist': NeoBrutalist,
   };
 
   const renderTemplate = (
@@ -80,20 +84,10 @@ export function Wrapper() {
           }}
           className="relative bg-background"
         >
-          <div className="container mx-auto max-w-5xl py-10">
+          <div className="container mx-auto max-w-5xl pt-10">
             {renderTemplate(themeMode, settings.theme.styles, setThemeMode)}
           </div>
         </div>
-
-        <footer className="border-t border-border py-8 bg-background">
-          <div className="max-w-6xl mx-auto px-4 text-center text-sm text-muted-foreground">
-            <p>
-              © {new Date().getFullYear()}{' '}
-              <span className="font-medium text-foreground">Kislap</span> — sparking ideas into
-              reality ✨
-            </p>
-          </div>
-        </footer>
       </ComponentThemeProvider>
     </div>
   );

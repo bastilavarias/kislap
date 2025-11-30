@@ -10,9 +10,6 @@ type Appointment struct {
 	ID            uint64         `gorm:"primaryKey;autoIncrement" json:"id"`
 	UserID        uint64         `gorm:"not null;index" json:"user_id"`
 	ProjectID     uint64         `gorm:"not null;index" json:"project_id"`
-	Date          *time.Time     `gorm:"type:datetime" json:"date,omitempty"`
-	TimeFrom      *time.Time     `gorm:"column:time_from;type:datetime" json:"time_from,omitempty"`
-	TimeTo        *time.Time     `gorm:"column:time_to;type:datetime" json:"time_to,omitempty"`
 	Name          string         `gorm:"type:varchar(255);not null" json:"name"`
 	Email         string         `gorm:"type:varchar(255);not null" json:"email"`
 	ContactNumber *string        `gorm:"type:varchar(255)" json:"contact_number,omitempty"`

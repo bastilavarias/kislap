@@ -2,8 +2,15 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Mail, Phone, Globe, MapPin, Calendar, ChevronRight } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Mail, Phone, Globe, MapPin, Calendar, ChevronRight, AlertCircleIcon } from 'lucide-react';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Mode } from '@/contexts/settings-context';
@@ -12,6 +19,15 @@ import { ThemeSwitchToggle } from '@/app/(preview)/p/resume/components/templates
 import Link from 'next/link';
 import { AppointmentDialog } from '@/app/(preview)/p/resume/components/templates/components/appointment-dialog';
 import { ThemeStyles } from '@/types/theme';
+import { AppointmentFormValues, AppointmentSchema } from '@/lib/schemas/appointment';
+import { CreateAppointmentPayload, useAppointment } from '@/hooks/api/use-appointment';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Alert, AlertTitle } from '@/components/ui/alert';
+import { toast } from 'sonner';
 
 interface Props {
   portfolio: Portfolio;
@@ -64,10 +80,59 @@ interface Portfolio {
   skills: { id: number; name: string }[];
 }
 
-export function Default2({ portfolio, themeMode, onSetThemeMode, themeStyles }: Props) {
+export function Simple({ portfolio, themeMode, onSetThemeMode, themeStyles }: Props) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const isDarkMode = useMemo(() => themeMode === 'dark', [themeMode]);
+
+  const { create } = useAppointment();
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm<AppointmentFormValues>({
+    resolver: zodResolver(AppointmentSchema),
+    defaultValues: {
+      name: '',
+      contact_number: '',
+      email: '',
+      message: '',
+    },
+  });
+
+  const onSubmit = async (form: AppointmentFormValues) => {
+    setError('');
+    setIsLoading(true);
+
+    const payload: CreateAppointmentPayload = {
+      user_id: 1,
+      project_id: 1,
+      date: '',
+      time_from: '',
+      time_to: '',
+      name: form.name,
+      email: form.email,
+      contact_number: form.contact_number,
+      message: form.message,
+    };
+
+    const { success, data, message } = await create(payload);
+
+    if (success && data) {
+      toast('Portfolio succesfully details saved.');
+      setIsLoading(false);
+      return;
+    }
+
+    setError(message);
+    toast('Something went wrong!');
+    setIsLoading(false);
+  };
 
   return (
     <div className="flex flex-col gap-6 py-6 text-foreground">
@@ -104,6 +169,7 @@ export function Default2({ portfolio, themeMode, onSetThemeMode, themeStyles }: 
               )}
 
               <div className="flex flex-col gap-2">
+                {/*
                 <div className="flex justify-between">
                   <div className="flex-1" />
                   <Button onClick={() => setIsDialogOpen(!isDialogOpen)}>
@@ -112,6 +178,7 @@ export function Default2({ portfolio, themeMode, onSetThemeMode, themeStyles }: 
                     <ChevronRight />
                   </Button>
                 </div>
+                */}
 
                 <Card>
                   <CardContent className="flex justify-between gap-3">
@@ -173,6 +240,7 @@ export function Default2({ portfolio, themeMode, onSetThemeMode, themeStyles }: 
             <h2 className="text-xl font-bold flex items-center gap-2 mb-4">
               <span className="text-2xl">📁</span> Recent Projects
             </h2>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {portfolio.showcases.map((showcase) => (
                 <Card key={showcase.id} className="border border-border">
@@ -201,6 +269,86 @@ export function Default2({ portfolio, themeMode, onSetThemeMode, themeStyles }: 
                   </CardContent>
                 </Card>
               ))}
+            </div>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+              <span className="text-2xl">🤝</span> Get in Touch
+            </h2>
+
+            <div className="flex flex-col justify-between space-y-5">
+              {error && (
+                <Alert variant="destructive">
+                  <AlertCircleIcon />
+                  <AlertTitle className="capitalize">{error}</AlertTitle>
+                </Alert>
+              )}
+
+              <Card>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label className="font-medium mb-2">Name</Label>
+                    <Input
+                      {...register('name')}
+                      placeholder="Juan Dela Cruz"
+                      className="w-full shadow-none"
+                      required
+                    />
+                    {errors.name && (
+                      <p className="text-destructive text-sm mt-1">{errors.name.message}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <Label className="font-medium mb-2">Email</Label>
+                    <Input
+                      {...register('email')}
+                      placeholder="you@example.com"
+                      className="w-full shadow-none"
+                      type="email"
+                      required
+                    />
+                    {errors.email && (
+                      <p className="text-destructive text-sm mt-1">{errors.email.message}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <Label className="font-medium mb-2">Contact Number</Label>
+                    <Input
+                      {...register('contact_number')}
+                      placeholder="09965594483"
+                      className="w-full shadow-none"
+                      type="tel"
+                    />
+                    {errors.contact_number && (
+                      <p className="text-destructive text-sm mt-1">
+                        {errors.contact_number.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <Label className="font-medium mb-2">Message</Label>
+                    <Textarea
+                      {...register('message')}
+                      placeholder="Tell us more about your message..."
+                      className="w-full shadow-none"
+                    />
+                    {errors.message && (
+                      <p className="text-destructive text-sm mt-1">{errors.message.message}</p>
+                    )}
+                  </div>
+                </CardContent>
+
+                <CardFooter>
+                  <div className="flex-1" />
+                  <Button onClick={handleSubmit(onSubmit)} disabled={isLoading}>
+                    Send
+                  </Button>
+                </CardFooter>
+              </Card>
             </div>
           </section>
         </div>

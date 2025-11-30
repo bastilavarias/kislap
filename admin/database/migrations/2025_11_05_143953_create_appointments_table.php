@@ -14,9 +14,6 @@ return new class extends Migration {
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('project_id');
-            $table->dateTime('date')->nullable();
-            $table->dateTime('time_from')->nullable();
-            $table->dateTime('time_to')->nullable();
             $table->string('name');
             $table->string('email');
             $table->string('contact_number')->nullable();
