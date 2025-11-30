@@ -21,6 +21,7 @@ import {
 } from '@/types/api-response';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Spinner } from '@/components/ui/shadcn-io/spinner';
+import { useAuthContext } from '@/contexts/auth-context';
 
 function mapToFormValues<T extends APIResponseDocumentResume | APIResponsePortfolio>(
   source: T
@@ -99,7 +100,7 @@ export function Wrapper() {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [porttfolioID, setPortfolioID] = useState<number | null>(null);
 
-  const { authUser } = useAuth();
+  const { authUser } = useAuthContext();
   const { parse } = useDocument();
   const { getBySlug, publish } = useProject();
   const params = useParams();
@@ -249,8 +250,8 @@ export function Wrapper() {
     setSaveLoading(true);
 
     const { success, data, message } = await create({
-      portfolio_id: porttfolioID ?? null,
-      user_id: user?.id ?? 1,
+      portfolio_id: porttfolioID,
+      user_id: user?.id,
       project_id: project?.id,
       ...form,
       theme: {

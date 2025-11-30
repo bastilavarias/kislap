@@ -95,11 +95,13 @@ func (service Service) GithubLogin(code string) (*LoginResponse, error) {
 	defer resp.Body.Close()
 
 	var githubUser struct {
-		ID    int64  `json:"id"`
-		Name  string `json:"name"`
-		Email string `json:"email"`
-		Login string `json:"login"`
+		ID        int64  `json:"id"`
+		Name      string `json:"name"`
+		Email     string `json:"email"`
+		Login     string `json:"login"`
+		AvatarURL string `json:"avatar_url"`
 	}
+
 	if err := json.NewDecoder(resp.Body).Decode(&githubUser); err != nil {
 		return nil, err
 	}
@@ -130,6 +132,7 @@ func (service Service) GithubLogin(code string) (*LoginResponse, error) {
 			LastName:  lastName,
 			Email:     githubUser.Email,
 			Role:      "default",
+			ImageURL:  &githubUser.AvatarURL,
 		}
 		emptyPassword := ""
 		registeredUser.Password = &emptyPassword

@@ -4,17 +4,19 @@ import useSWR from 'swr';
 import { Mode } from '@/contexts/settings-context';
 import { ComponentThemeProvider } from '@/providers/ComponentThemesProvider';
 import { Default } from './templates/default';
-import { Simple } from './templates/simple';
 import { Bento } from './templates/bento';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Spinner } from '@/components/ui/shadcn-io/spinner';
 import { useState } from 'react';
 import { ThemeStyles } from '@/types/theme';
-import { APIResponsePortfolio } from '@/types/api-response';
 import { NeoBrutalist } from './templates/neo-brutalist';
+import { Project } from '@/types/project';
+import { Portfolio } from '@/types/portfolio';
+import { Minimal } from './templates/minimal';
+import { Glass } from './templates/glass';
+import { Cyber } from './templates/cyber';
 
-type TemplateName = 'default' | 'simple' | 'bento' | 'neo-brutalist';
-
+type TemplateName = string;
 const LoadingDialog = ({ open }: { open: boolean }) => {
   return (
     <Dialog open={open}>
@@ -35,7 +37,7 @@ export function Wrapper() {
   if (error) return <div>failed to load</div>;
   if (isLoading) return <LoadingDialog open={isLoading} />;
 
-  const project = data.data;
+  const project: Project = data.data;
 
   const settings = {
     theme: JSON.parse(JSON.stringify(project.portfolio.theme_object)),
@@ -45,16 +47,18 @@ export function Wrapper() {
   const templates: Record<
     TemplateName,
     React.FC<{
-      portfolio: APIResponsePortfolio;
+      portfolio: Portfolio;
       onSetThemeMode: React.Dispatch<React.SetStateAction<Mode>>;
       themeMode: Mode;
       themeStyles: ThemeStyles;
     }>
   > = {
     default: Default,
-    simple: Simple,
+    minimal: Minimal,
     bento: Bento,
     'neo-brutalist': NeoBrutalist,
+    glass: Glass,
+    cyber: Cyber,
   };
 
   const renderTemplate = (
@@ -67,6 +71,7 @@ export function Wrapper() {
 
     return Component ? (
       <Component
+        project={project}
         portfolio={project.portfolio}
         themeMode={themeMode}
         themeStyles={themeStyles}

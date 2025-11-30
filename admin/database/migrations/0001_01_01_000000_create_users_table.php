@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('mobile_number', 20)->nullable();
             $table->string('role', 50)->default('default');
             $table->string('refresh_token')->nullable();
+            $table->string('image_url')->nullable();
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

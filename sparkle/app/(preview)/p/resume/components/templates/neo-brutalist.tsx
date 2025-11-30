@@ -34,59 +34,24 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Alert, AlertTitle } from '@/components/ui/alert';
 import { toast } from 'sonner';
+import { Project } from '@/types/project';
+import { Portfolio } from '@/types/portfolio';
 
 interface Props {
+  project: Project;
   portfolio: Portfolio;
   themeMode: Mode;
   onSetThemeMode: React.Dispatch<React.SetStateAction<Mode>>;
   themeStyles: ThemeStyles;
 }
 
-interface Portfolio {
-  id: number;
-  name: string;
-  location: string | null;
-  job_title: string | null;
-  introduction: string | null;
-  about: string | null;
-  email: string | null;
-  phone: string | null;
-  website: string | null;
-  github: string | null;
-  linkedin: string | null;
-  twitter: string | null;
-
-  work_experiences: {
-    id: number;
-    company: string;
-    role: string;
-    location: string;
-    start_date: string;
-    end_date: string;
-    about: string;
-  }[];
-  education: {
-    id: number;
-    school: string;
-    level: string;
-    degree: string;
-    location: string;
-    about: string;
-    year_start: string;
-    year_end: string;
-  }[];
-  showcases: {
-    id: number;
-    name: string;
-    description: string;
-    role: string;
-    url: string;
-    technologies: { id: number; name: string }[];
-  }[];
-  skills: { id: number; name: string }[];
-}
-
-export function NeoBrutalist({ portfolio, themeMode, onSetThemeMode, themeStyles }: Props) {
+export function NeoBrutalist({
+  project,
+  portfolio,
+  themeMode,
+  onSetThemeMode,
+  themeStyles,
+}: Props) {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -114,8 +79,8 @@ export function NeoBrutalist({ portfolio, themeMode, onSetThemeMode, themeStyles
     setIsLoading(true);
 
     const payload: CreateAppointmentPayload = {
-      user_id: 1,
-      project_id: 1,
+      user_id: portfolio.user.id,
+      project_id: project.id,
       name: form.name,
       email: form.email,
       contact_number: form.contact_number,
@@ -157,15 +122,17 @@ export function NeoBrutalist({ portfolio, themeMode, onSetThemeMode, themeStyles
       <div className="max-w-5xl mx-auto space-y-12">
         <header className="flex flex-col md:flex-row gap-8 items-start justify-between border-b-4 border-foreground pb-8">
           <div className="flex gap-6 items-center">
-            <div className="relative">
-              <div className="absolute inset-0 bg-foreground translate-x-2 translate-y-2" />
-              <Avatar className="w-24 h-24 md:w-32 md:h-32 border-4 border-foreground relative z-10 rounded-none">
-                <AvatarImage src="https://yt3.googleusercontent.com/DUK0KCuswoaUwvZZhqAgW4e-tdOKkfguzPAHTjdRzD1KBuqV2SJm8vtpzRJ-_vXljUXnalMvs7M=s160-c-k-c0x00ffffff-no-rj" />
-                <AvatarFallback className="text-4xl font-bold rounded-none bg-primary text-primary-foreground">
-                  {portfolio.name?.charAt(0) ?? 'U'}
-                </AvatarFallback>
-              </Avatar>
-            </div>
+            {portfolio.user?.image_url && (
+              <div className="relative">
+                <div className="absolute inset-0 bg-foreground translate-x-2 translate-y-2" />
+                <Avatar className="w-24 h-24 md:w-32 md:h-32 border-4 border-foreground relative z-10 rounded-none">
+                  <AvatarImage src={portfolio.user?.image_url} alt={portfolio.user?.first_name} />
+                  <AvatarFallback className="text-4xl font-bold rounded-none bg-primary text-primary-foreground">
+                    {portfolio.name?.charAt(0) ?? 'U'}
+                  </AvatarFallback>
+                </Avatar>
+              </div>
+            )}
 
             <div className="space-y-2">
               <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tighter bg-primary/20 inline-block px-2">
@@ -439,7 +406,7 @@ export function NeoBrutalist({ portfolio, themeMode, onSetThemeMode, themeStyles
             <a href="http://kislap.test" className="font-medium text-foreground">
               Kislap
             </a>{' '}
-            — sparking ideas into reality ✨
+            — Transform your forms into beautiful websites.
           </p>
         </footer>
       </div>

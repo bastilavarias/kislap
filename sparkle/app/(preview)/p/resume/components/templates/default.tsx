@@ -136,7 +136,6 @@ export function Default({ portfolio }: { portfolio: Portfolio }) {
               </div>
             </div>
 
-            {/* Projects Section */}
             <div>
               <h2 className="text-xl font-semibold text-gray-900 mb-6">Projects</h2>
               <div className="space-y-8">

@@ -15,6 +15,7 @@ type User struct {
 	MobileNumber *string        `gorm:"size:20" json:"mobile_number,omitempty"`
 	Role         string         `gorm:"size:50;not null;default:default" json:"role"`
 	RefreshToken *string        `gorm:"size:255" json:"refresh_token,omitempty"`
+	ImageURL     *string        `gorm:"size:255" json:"image_url,omitempty"`
 	CreatedAt    time.Time      `gorm:"autoCreateTime" json:"created_at"`
 	UpdatedAt    time.Time      `gorm:"autoUpdateTime" json:"updated_at"`
 	DeletedAt    gorm.DeletedAt `gorm:"index" json:"deleted_at,omitempty"`

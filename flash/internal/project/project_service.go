@@ -78,6 +78,7 @@ func (service Service) Show(projectID int) (*models.Project, error) {
 
 	if err := service.DB.
 		Preload("Portfolio").
+		Preload("Portfolio.User").
 		Preload("Portfolio.WorkExperiences").
 		Preload("Portfolio.Education").
 		Preload("Portfolio.Showcases").
