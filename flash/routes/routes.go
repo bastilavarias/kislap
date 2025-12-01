@@ -8,14 +8,14 @@ import (
 	"flash/internal/project"
 	"flash/internal/user"
 	"flash/middleware"
-	"flash/sdk/dns"
+	dns "flash/sdk/cloudflare"
 	"flash/sdk/llm"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
-func RegisterRoutes(router *gin.Engine, db *gorm.DB, llm llm.Provider, dns dns.Provider) {
+func RegisterRoutes(router *gin.Engine, db *gorm.DB, llm llm.Provider, dns dns.CloudflareService) {
 
 	api := router.Group("/api")
 	{

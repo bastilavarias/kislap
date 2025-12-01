@@ -35,6 +35,14 @@ func (service Service) Create(payload Payload) (*models.Project, error) {
 		return nil, errors.New("domain already taken")
 	}
 
+	available, err := service.DNS.CheckAvailable(payload.SubDomain)
+	if err != nil {
+		return nil, err
+	}
+	if !available {
+		return nil, errors.New("subdomain already exists in Cloudflare")
+	}
+
 	slug := utils.Slugify(payload.Name, 0)
 	newProj := models.Project{
 		Name:        payload.Name,
@@ -49,28 +57,36 @@ func (service Service) Create(payload Payload) (*models.Project, error) {
 		return nil, err
 	}
 
-	// Implement this if the overall logic is done.
-	// err := service.DNS.Insert(*newProj.SubDomain)
-	// if err != nil {
-	// 	return nil, err
-	// }
+	if err := service.DNS.Insert(payload.SubDomain); err != nil {
+		service.DB.Delete(&newProj)
+		return nil, err
+	}
 
 	return &newProj, nil
 }
 
-func (service Service) Update(projectID int, payload Payload) (*models.Project, error) {
-	var proj models.Project
-	if err := service.DB.First(&proj, projectID).Error; err != nil {
-		return nil, err
+func (service Service) CheckDomain(subDomain string) (bool, error) {
+	var count int64
+	if err := service.DB.Model(&models.Project{}).
+		Where("sub_domain = ?", subDomain).
+		Count(&count).Error; err != nil {
+		return false, err
 	}
 
-	service.DB.Model(&proj).Updates(models.Project{
-		Name:        payload.Name,
-		Description: payload.Description,
-		Type:        payload.Type,
-	})
+	if count > 0 {
+		return false, errors.New("subdomain already taken in database")
+	}
 
-	return &proj, nil
+	available, err := service.DNS.CheckAvailable(subDomain)
+	if err != nil {
+		return false, err
+	}
+
+	if !available {
+		return false, errors.New("subdomain already used in Cloudflare")
+	}
+
+	return true, nil
 }
 
 func (service Service) Show(projectID int) (*models.Project, error) {

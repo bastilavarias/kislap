@@ -4,7 +4,7 @@ import (
 	"flash/database"
 	"flash/middleware"
 	"flash/routes"
-	"flash/sdk/dns"
+	dns "flash/sdk"
 	"flash/sdk/llm"
 	"fmt"
 	"os"
@@ -40,7 +40,6 @@ func main() {
 	)
 	databaseClient := database.Default(dsn)
 
-
 	var llmProvider llm.Provider
 	if os.Getenv("LLM_PROVIDER") == "gemini" {
 		llmProvider = llm.Default(&llm.GeminiSDK{
@@ -54,12 +53,15 @@ func main() {
 		})
 	}
 
-
-	rootDomain := os.Getenv("APP_ROOT_DOMAIN")
-	dnsProvider := dns.Default(envDev, rootDomain)
+	cloudflareService, _ := dns.NewCloudflareService(
+		os.Getenv("CF_API_KEY"),
+		os.Getenv("CF_EMAIL"),
+		os.Getenv("CF_ZONE_ID"),
+		"mydomain.com",
+	)
 
 	router := gin.Default()
 	router.Use(middleware.CORSMiddleware())
-	routes.RegisterRoutes(router, databaseClient, llmProvider, dnsProvider)
+	routes.RegisterRoutes(router, databaseClient, llmProvider, cloudflareService)
 	router.Run("0.0.0.0:5000")
 }
