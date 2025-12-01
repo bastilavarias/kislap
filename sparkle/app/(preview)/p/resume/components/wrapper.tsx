@@ -15,6 +15,7 @@ import { Portfolio } from '@/types/portfolio';
 import { Minimal } from './templates/minimal';
 import { Glass } from './templates/glass';
 import { Cyber } from './templates/cyber';
+import { Newspaper } from './newspaper';
 
 type TemplateName = string;
 const LoadingDialog = ({ open }: { open: boolean }) => {
@@ -59,6 +60,7 @@ export function Wrapper() {
     'neo-brutalist': NeoBrutalist,
     glass: Glass,
     cyber: Cyber,
+    newspaper: Newspaper,
   };
 
   const renderTemplate = (
