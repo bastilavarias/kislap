@@ -16,6 +16,8 @@ import { Minimal } from './templates/minimal';
 import { Glass } from './templates/glass';
 import { Cyber } from './templates/cyber';
 import { Newspaper } from './newspaper';
+import { Kinetic } from './templates/kinetic';
+import { Vaporware } from './templates/vaporware';
 
 type TemplateName = string;
 const LoadingDialog = ({ open }: { open: boolean }) => {
@@ -61,6 +63,8 @@ export function Wrapper() {
     glass: Glass,
     cyber: Cyber,
     newspaper: Newspaper,
+    kinetic: Kinetic,
+    vaporware: Vaporware,
   };
 
   const renderTemplate = (
