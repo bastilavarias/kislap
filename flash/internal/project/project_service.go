@@ -3,13 +3,15 @@ package project
 import (
 	"errors"
 	"flash/models"
+	"flash/sdk/cloudflare"
 	"flash/utils"
 
 	"gorm.io/gorm"
 )
 
 type Service struct {
-	DB *gorm.DB
+	DB  *gorm.DB
+	DNS *cloudflare.Client
 }
 
 func (service Service) List() (*[]models.Project, error) {
@@ -17,29 +19,14 @@ func (service Service) List() (*[]models.Project, error) {
 	if err := service.DB.Find(&projects).Error; err != nil {
 		return nil, err
 	}
-
 	return &projects, nil
 }
 
 func (service Service) Create(payload Payload) (*models.Project, error) {
-	var count int64
-	if err := service.DB.Model(&models.Project{}).
-		Where("sub_domain = ?", payload.SubDomain).
-		Count(&count).Error; err != nil {
+	// Re-use CheckDomain logic to be safe
+	if _, err := service.CheckDomain(payload.SubDomain); err != nil {
 		return nil, err
 	}
-
-	if count > 0 {
-		return nil, errors.New("domain already taken")
-	}
-
-	// available, err := service.DNS.CheckAvailable(payload.SubDomain)
-	// if err != nil {
-	// 	return nil, err
-	// }
-	// if !available {
-	// 	return nil, errors.New("subdomain already exists in Cloudflare")
-	// }
 
 	slug := utils.Slugify(payload.Name, 0)
 	newProj := models.Project{
@@ -51,58 +38,62 @@ func (service Service) Create(payload Payload) (*models.Project, error) {
 		Published:   payload.Published,
 	}
 
+	// 1. Create DB Record
 	if err := service.DB.Create(&newProj).Error; err != nil {
 		return nil, err
 	}
 
-	// if err := service.DNS.Insert(payload.SubDomain); err != nil {
-	// 	service.DB.Delete(&newProj)
-	// 	return nil, err
-	// }
+	// 2. Create Cloudflare Record
+	if err := service.DNS.CreateRecord(payload.SubDomain); err != nil {
+		// Rollback: Delete the DB record if DNS fails
+		service.DB.Unscoped().Delete(&newProj)
+		return nil, errors.New("failed to register subdomain, project creation rolled back")
+	}
 
 	return &newProj, nil
 }
 
 func (service Service) Update(projectID int, payload Payload) (*models.Project, error) {
-	var count int64
-	if err := service.DB.Model(&models.Project{}).
-		Where("sub_domain = ?", payload.SubDomain).
-		Count(&count).Error; err != nil {
+	var existingProj models.Project
+	if err := service.DB.First(&existingProj, projectID).Error; err != nil {
 		return nil, err
 	}
 
-	if count > 0 {
-		return nil, errors.New("domain already taken")
+	// Check if subdomain is changing
+	oldSubDomain := *existingProj.SubDomain
+	isSubdomainChanging := oldSubDomain != payload.SubDomain
+
+	if isSubdomainChanging {
+		// Verify new domain availability
+		if _, err := service.CheckDomain(payload.SubDomain); err != nil {
+			return nil, err
+		}
 	}
 
-	// available, err := service.DNS.CheckAvailable(payload.SubDomain)
-	// if err != nil {
-	// 	return nil, err
-	// }
-	// if !available {
-	// 	return nil, errors.New("subdomain already exists in Cloudflare")
-	// }
+	// Update Fields
+	existingProj.Name = payload.Name
+	existingProj.Description = payload.Description
+	existingProj.SubDomain = &payload.SubDomain
+	existingProj.Slug = utils.Slugify(payload.Name, 0)
+	existingProj.Type = payload.Type
+	existingProj.Published = payload.Published
 
-	slug := utils.Slugify(payload.Name, 0)
-	newProj := models.Project{
-		Name:        payload.Name,
-		Description: payload.Description,
-		SubDomain:   &payload.SubDomain,
-		Slug:        slug,
-		Type:        payload.Type,
-		Published:   payload.Published,
-	}
-
-	if err := service.DB.Create(&newProj).Error; err != nil {
+	// Save DB
+	if err := service.DB.Save(&existingProj).Error; err != nil {
 		return nil, err
 	}
 
-	// if err := service.DNS.Insert(payload.SubDomain); err != nil {
-	// 	service.DB.Delete(&newProj)
-	// 	return nil, err
-	// }
+	// Handle DNS Switch
+	if isSubdomainChanging {
+		// Add new record
+		if err := service.DNS.CreateRecord(payload.SubDomain); err != nil {
+			return nil, errors.New("project updated, but failed to create new DNS record")
+		}
+		// Delete old record (Fire and forget, or log error)
+		_ = service.DNS.DeleteRecord(oldSubDomain)
+	}
 
-	return &newProj, nil
+	return &existingProj, nil
 }
 
 func (service Service) CheckDomain(subDomain string) (bool, error) {
@@ -112,19 +103,17 @@ func (service Service) CheckDomain(subDomain string) (bool, error) {
 		Count(&count).Error; err != nil {
 		return false, err
 	}
-
 	if count > 0 {
 		return false, errors.New("subdomain already taken in database")
 	}
 
-	// available, err := service.DNS.CheckAvailable(subDomain)
-	// if err != nil {
-	// 	return false, err
-	// }
-
-	// if !available {
-	// 	return false, errors.New("subdomain already used in Cloudflare")
-	// }
+	available, err := service.DNS.CheckAvailable(subDomain)
+	if err != nil {
+		return false, err
+	}
+	if !available {
+		return false, errors.New("subdomain already used in Cloudflare")
+	}
 
 	return true, nil
 }
@@ -177,8 +166,18 @@ func (service Service) ShowBySlug(slug string, level string) (*models.Project, e
 
 func (service Service) Delete(projectID int) (*models.Project, error) {
 	var proj models.Project
-	if err := service.DB.Delete(&models.Project{}, projectID).Error; err != nil {
+	if err := service.DB.First(&proj, projectID).Error; err != nil {
 		return nil, err
+	}
+
+	// 1. Delete from DB
+	if err := service.DB.Delete(&proj).Error; err != nil {
+		return nil, err
+	}
+
+	// 2. Delete from Cloudflare
+	if proj.SubDomain != nil {
+		_ = service.DNS.DeleteRecord(*proj.SubDomain)
 	}
 
 	return &proj, nil

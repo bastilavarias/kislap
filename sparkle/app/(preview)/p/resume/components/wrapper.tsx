@@ -12,10 +12,9 @@ import { ThemeStyles } from '@/types/theme';
 import { NeoBrutalist } from './templates/neo-brutalist';
 import { Project } from '@/types/project';
 import { Portfolio } from '@/types/portfolio';
-import { Minimal } from './templates/minimal';
 import { Glass } from './templates/glass';
 import { Cyber } from './templates/cyber';
-import { Newspaper } from './newspaper';
+import { Newspaper } from './templates/newspaper';
 import { Kinetic } from './templates/kinetic';
 import { Vaporware } from './templates/vaporware';
 
@@ -57,7 +56,6 @@ export function Wrapper() {
     }>
   > = {
     default: Default,
-    minimal: Minimal,
     bento: Bento,
     'neo-brutalist': NeoBrutalist,
     glass: Glass,

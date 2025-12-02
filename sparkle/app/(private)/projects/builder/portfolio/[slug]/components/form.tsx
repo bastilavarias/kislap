@@ -47,7 +47,6 @@ import { cn } from '@/lib/utils';
 // --- Constants ---
 const LAYOUT_OPTIONS = [
   { id: 'default', name: 'Default', icon: LayoutTemplate, description: 'Clean & Standard' },
-  { id: 'minimal', name: 'Minimal', icon: Monitor, description: 'Content First' },
   { id: 'bento', name: 'Bento', icon: Grid, description: 'Modern Grid' },
   { id: 'neo-brutalist', name: 'Neo-Brutal', icon: Box, description: 'Bold Borders' },
   { id: 'glass', name: 'Glass', icon: Ghost, description: 'Frosted UI' },

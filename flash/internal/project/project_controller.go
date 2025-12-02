@@ -1,8 +1,8 @@
 package project
 
 import (
+	"flash/sdk/cloudflare"
 	"flash/utils"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -14,9 +14,10 @@ type Controller struct {
 	Service *Service
 }
 
-func NewController(db *gorm.DB) *Controller {
+func NewController(db *gorm.DB, dns *cloudflare.Client) *Controller {
 	service := &Service{
-		DB: db,
+		DB:  db,
+		DNS: dns,
 	}
 
 	return &Controller{Service: service}
@@ -50,8 +51,6 @@ func (controller Controller) Create(context *gin.Context) {
 		context.Abort()
 		return
 	}
-
-	fmt.Println("wew")
 
 	utils.APIRespondSuccess(context, http.StatusOK, project)
 }
