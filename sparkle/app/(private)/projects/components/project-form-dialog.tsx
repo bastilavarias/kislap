@@ -19,28 +19,29 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { AlertCircleIcon, Wrench } from 'lucide-react';
+import { AlertCircleIcon } from 'lucide-react';
 import { Alert, AlertTitle } from '@/components/ui/alert';
 import { useRouter } from 'next/navigation';
+import { cn } from '@/lib/utils';
 
 const projectTypes = [
   {
     label: 'portfolio',
-    emoji: '📄',
+    emoji: '🎨',
     active: true,
     description: 'Showcase your personal or professional work in a clean, modern portfolio.',
     features: ['Customizable templates', 'Responsive design', 'Easy media upload'],
   },
   {
     label: 'biz',
-    emoji: '🏢',
+    emoji: '💼',
     active: false,
     description: 'Create a professional business website to attract clients and customers.',
     features: ['Company info pages', 'Service showcase', 'Contact forms'],
   },
   {
     label: 'waitlist',
-    emoji: '🚀',
+    emoji: '⏳',
     active: false,
     description: 'Build hype and gather early users for your upcoming project or app.',
     features: ['Sign-up forms', 'Email notifications', 'Analytics dashboard'],
@@ -100,144 +101,168 @@ export function ProjectFormDialog() {
       <DialogTrigger asChild>
         <Button className="font-bold">NEW PROJECT</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[420px] md:max-w-[620px] lg:max-w-[820px]">
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <DialogHeader>
-            <DialogTitle>Create new Project</DialogTitle>
+      {/* 1. Added 'max-h-[90vh]' to ensure it fits on screen
+         2. Added 'flex flex-col' to manage header/content/footer layout 
+         3. 'overflow-hidden' prevents double scrollbars
+      */}
+      <DialogContent className="sm:max-w-[420px] md:max-w-[620px] lg:max-w-[900px] max-h-[95vh] flex flex-col p-0 gap-0 overflow-hidden">
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col h-full max-h-full">
+          <DialogHeader className="p-6 pb-2 shrink-0">
+            <DialogTitle className="text-2xl font-bold">Create New Project</DialogTitle>
           </DialogHeader>
 
-          <div className="py-5">
-            <div className="grid grid-cols-1 gap-6 mb-6">
-              {error && (
-                <Alert variant="destructive">
-                  <AlertCircleIcon />
-                  <AlertTitle className="capitalize">{error}</AlertTitle>
-                </Alert>
-              )}
+          {/* Scrollable Content Area */}
+          <div className="flex-1 overflow-y-auto p-6 pt-2">
+            {error && (
+              <Alert variant="destructive" className="mb-6">
+                <AlertCircleIcon className="h-4 w-4" />
+                <AlertTitle className="capitalize ml-2">{error}</AlertTitle>
+              </Alert>
+            )}
 
-              <div>
-                <Label className="font-medium mb-2">Name</Label>
-                <Input
-                  {...register('name')}
-                  placeholder="My Online Portfolio"
-                  className="w-full shadow-none"
-                />
-                {errors.name && (
-                  <p className="text-destructive text-sm mt-1">{errors.name.message}</p>
-                )}
-              </div>
+            <div className="space-y-6">
+              {/* Project Details Section */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <div>
+                    <Label className="font-medium mb-1.5 block">Name</Label>
+                    <Input
+                      {...register('name')}
+                      placeholder="My Online Portfolio"
+                      className="shadow-sm"
+                    />
+                    {errors.name && (
+                      <p className="text-destructive text-sm mt-1">{errors.name.message}</p>
+                    )}
+                  </div>
 
-              <div>
-                <Label className="font-medium mb-2">Domain</Label>
-                <div className="relative flex items-center">
-                  <Input
-                    {...register('sub_domain')}
-                    placeholder="myportfolio"
-                    className="w-full shadow-none"
-                  />
-                  <span className="text-gray-500 font-mono ml-1">.kislap.test</span>
+                  <div>
+                    <Label className="font-medium mb-1.5 block">Domain</Label>
+                    <div className="relative flex items-center">
+                      <Input
+                        {...register('sub_domain')}
+                        placeholder="myportfolio"
+                        className="shadow-sm pr-24" // padding for the suffix
+                      />
+                      <span className="absolute right-3 text-muted-foreground font-mono text-sm bg-background/50 pointer-events-none">
+                        .kislap.app
+                      </span>
+                    </div>
+                    {errors.sub_domain && (
+                      <p className="text-destructive text-sm mt-1">{errors.sub_domain.message}</p>
+                    )}
+                  </div>
                 </div>
-                {errors.sub_domain && (
-                  <p className="text-destructive text-sm mt-1">{errors.sub_domain.message}</p>
-                )}
+
+                <div className="h-full">
+                  <Label className="font-medium mb-1.5 block">Description</Label>
+                  <Textarea
+                    {...register('description')}
+                    className="shadow-sm h-[calc(100%-28px)] min-h-[100px] resize-none"
+                    placeholder="A brief description of what this project is about..."
+                  />
+                  {errors.description && (
+                    <p className="text-destructive text-sm mt-1">{errors.description.message}</p>
+                  )}
+                </div>
               </div>
 
+              {/* Project Type Selection */}
               <div>
-                <Label className="font-medium mb-2">Description</Label>
-                <Textarea {...register('description')} className="w-full shadow-none" />
-                {errors.description && (
-                  <p className="text-destructive text-sm mt-1">{errors.description.message}</p>
-                )}
-              </div>
-            </div>
+                <Label className="font-medium mb-3 block text-lg">Select Project Type</Label>
+                {/* Responsive Grid: 1 col on mobile, 2 cols on tablet+ */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {projectTypes.map((project) => {
+                    const isActive = project.active;
+                    const isSelected = currentType === project.label;
 
-            <div>
-              <Label className="font-medium mb-2">Project type</Label>
-              <div className="grid grid-cols-2 gap-6">
-                {projectTypes.map((project) => {
-                  const isActive = project.active;
-                  const isSelected = currentType === project.label;
-
-                  return (
-                    <Card
-                      key={project.label}
-                      className={`relative overflow-hidden rounded-xl border transition-all duration-300
-    ${isSelected ? 'border-primary shadow-lg' : 'border-border hover:shadow-md'}
-    ${!isActive ? 'opacity-60 cursor-not-allowed' : ''}`}
-                    >
-                      {/* Coming Soon overlay */}
-                      {!isActive && (
-                        <div className="absolute inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-10 rounded-xl">
-                          <span className="text-white font-bold text-2xl tracking-wide uppercase text-center">
-                            Coming Soon!
-                          </span>
+                    return (
+                      <Card
+                        key={project.label}
+                        className={cn(
+                          'relative overflow-hidden rounded-xl border transition-all duration-200 cursor-pointer text-left group',
+                          isSelected
+                            ? 'border-primary ring-1 ring-primary shadow-md bg-primary/5'
+                            : 'border-border hover:border-primary/50 hover:shadow-sm',
+                          !isActive && 'opacity-60 cursor-not-allowed bg-muted/50'
+                        )}
+                        onClick={() => {
+                          if (isActive) {
+                            setValue('type', project.label, { shouldValidate: true });
+                          }
+                        }}
+                      >
+                        {/* Selection Indicator */}
+                        <div
+                          className={cn(
+                            'absolute top-3 right-3 w-4 h-4 rounded-full border border-primary transition-colors flex items-center justify-center',
+                            isSelected ? 'bg-primary' : 'bg-transparent',
+                            !isActive && 'hidden'
+                          )}
+                        >
+                          {isSelected && <div className="w-1.5 h-1.5 bg-white rounded-full" />}
                         </div>
-                      )}
 
-                      {/* Card Header */}
-                      <CardHeader className="pb-1 relative z-20">
-                        <CardTitle className="text-3xl flex items-center gap-2">
-                          <span>{project.emoji}</span>
-                          <p className="text-xl font-semibold capitalize">{project.label}</p>
-                        </CardTitle>
-                        {/* Purpose description */}
-                        {project.description && (
-                          <p className="text-sm text-muted-foreground mt-1">
+                        {/* Coming Soon overlay */}
+                        {!isActive && (
+                          <div className="absolute inset-0 bg-background/10 backdrop-blur-[1px] flex items-center justify-center z-10 select-none">
+                            <span className="bg-muted px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border shadow-sm">
+                              Coming Soon
+                            </span>
+                          </div>
+                        )}
+
+                        <CardHeader className="p-4 pb-2">
+                          <CardTitle className="text-lg flex items-center gap-2">
+                            <span className="text-2xl">{project.emoji}</span>
+                            <span className="capitalize">{project.label}</span>
+                          </CardTitle>
+                        </CardHeader>
+
+                        <CardContent className="p-4 pt-0">
+                          <p className="text-sm text-muted-foreground mb-3 leading-snug min-h-[40px]">
                             {project.description}
                           </p>
-                        )}
-                      </CardHeader>
 
-                      {/* Card Content */}
-                      <CardContent className="pt-2 relative z-20">
-                        <div className="flex flex-col gap-2">
-                          {/* Features / Benefits */}
-                          {project.features && project.features.length > 0 && (
-                            <ul className="flex flex-col gap-1 text-sm text-muted-foreground">
+                          {/* Features List */}
+                          {project.features && (
+                            <ul className="space-y-1">
                               {project.features.map((feat, idx) => (
-                                <li key={idx} className="flex items-center gap-2">
-                                  <span className="w-2 h-2 bg-primary rounded-full animate-pulse" />
+                                <li
+                                  key={idx}
+                                  className="text-xs text-muted-foreground flex items-center gap-1.5"
+                                >
+                                  <div
+                                    className={cn(
+                                      'w-1 h-1 rounded-full',
+                                      isSelected ? 'bg-primary' : 'bg-muted-foreground'
+                                    )}
+                                  />
                                   {feat}
                                 </li>
                               ))}
                             </ul>
                           )}
-
-                          {/* Action button */}
-                          <div className="flex justify-end mt-3">
-                            <Button
-                              type="button"
-                              variant={isSelected ? 'default' : 'outline'}
-                              onClick={() =>
-                                setValue('type', project.label, { shouldValidate: true })
-                              }
-                              className={`shadow-none w-28 transition-transform duration-200
-            ${!isActive ? 'cursor-not-allowed' : 'hover:scale-105'}`}
-                              disabled={!isActive}
-                            >
-                              {isSelected ? 'Selected' : 'Select'}
-                            </Button>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  );
-                })}
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                </div>
+                {errors.type && (
+                  <p className="text-destructive text-sm mt-2 font-medium">{errors.type.message}</p>
+                )}
               </div>
-              {errors.type && (
-                <p className="text-destructive text-sm mt-1">{errors.type.message}</p>
-              )}
             </div>
           </div>
 
-          <DialogFooter>
+          <DialogFooter className="p-6 border-t bg-muted/20 shrink-0">
             <DialogClose asChild>
-              <Button type="button" variant="outline" className="shadow-none">
+              <Button type="button" variant="outline" className="h-10 px-8">
                 Cancel
               </Button>
             </DialogClose>
-            <Button type="submit" disabled={loading} className="w-24">
-              {loading ? 'Processing' : 'Process'}
+            <Button type="submit" disabled={loading} className="h-10 px-8">
+              {loading ? 'Creating...' : 'Create Project'}
             </Button>
           </DialogFooter>
         </form>
