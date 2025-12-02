@@ -25,6 +25,7 @@ type ThemePresetSelectProps = {
   currentPreset: string | null;
   onPresetChange: (preset: string) => void;
   hideImportButton?: boolean;
+  hideRandomButton?: boolean;
   stateless?: boolean;
 
   themeSettings?: Settings | null;
@@ -36,6 +37,7 @@ const ThemePresetSelect = ({
   currentPreset,
   onPresetChange,
   hideImportButton,
+  hideRandomButton,
   stateless,
 
   themeSettings: localSettings,
@@ -145,9 +147,9 @@ const ThemePresetSelect = ({
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-medium">Themes</h3>
+        <h3 className="text-sm font-medium">Pre Built Themes</h3>
         <div className="flex items-center gap-2">
-          {hideImportButton && (
+          {!hideImportButton && (
             <div>
               <Button
                 variant="outline"
@@ -164,10 +166,12 @@ const ThemePresetSelect = ({
               />
             </div>
           )}
-          <Button variant="outline" onClick={randomize} className="cursor-pointer shadow-none">
-            <Dices className="size-4" />
-            Random
-          </Button>
+          {!hideRandomButton && (
+            <Button variant="outline" onClick={randomize} className="cursor-pointer shadow-none">
+              <Dices className="size-4" />
+              Random
+            </Button>
+          )}
         </div>
       </div>
       <Select value={value || ''} onValueChange={onPresetChange}>

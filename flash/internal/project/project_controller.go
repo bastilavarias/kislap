@@ -1,7 +1,6 @@
 package project
 
 import (
-	"flash/sdk/dns"
 	"flash/utils"
 	"fmt"
 	"net/http"
@@ -15,10 +14,9 @@ type Controller struct {
 	Service *Service
 }
 
-func NewController(db *gorm.DB, dns dns.Provider) *Controller {
+func NewController(db *gorm.DB) *Controller {
 	service := &Service{
-		DB:  db,
-		DNS: dns,
+		DB: db,
 	}
 
 	return &Controller{Service: service}

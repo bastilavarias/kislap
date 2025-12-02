@@ -99,6 +99,7 @@ export function Wrapper() {
   const [error, setError] = useState('');
   const [user, setUser] = useState<AuthUser | null>(null);
   const [porttfolioID, setPortfolioID] = useState<number | null>(null);
+  const [layout, setLayout] = useState<string>('default');
 
   const { authUser } = useAuthContext();
   const { parse } = useDocument();
@@ -235,6 +236,7 @@ export function Wrapper() {
           mode: 'light',
           theme: data.portfolio.theme_object,
         });
+        setLayout(data.portfolio.layout_name ?? 'default');
         setPortfolioID(data.portfolio.id);
       }
 
@@ -249,6 +251,7 @@ export function Wrapper() {
     setError('');
     setSaveLoading(true);
 
+    console.log(layout);
     const { success, data, message } = await create({
       portfolio_id: porttfolioID,
       user_id: user?.id,
@@ -257,6 +260,7 @@ export function Wrapper() {
       theme: {
         ...localThemeSettings?.theme,
       },
+      layout_name: layout,
     });
 
     if (success && data) {
@@ -342,6 +346,8 @@ export function Wrapper() {
               onProcessResumeFile={onProcessResumeFile}
               localThemeSettings={localThemeSettings}
               setLocalThemeSettings={setLocalThemeSettings}
+              layout={layout}
+              setLayout={setLayout}
             />
           ) : (
             <h1>DashboardOverview</h1>

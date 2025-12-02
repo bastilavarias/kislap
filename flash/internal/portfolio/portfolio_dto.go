@@ -104,6 +104,7 @@ type CreateUpdatePortfolioRequest struct {
 	Linkedin        string                  `json:"linkedin"`
 	Twitter         string                  `json:"twitter"`
 	Theme           *ThemeRequest           `json:"theme"`
+	LayoutName      string                  `json:"layout_name"`
 	WorkExperiences []WorkExperienceRequest `json:"work_experiences"`
 	Education       []EducationRequest      `json:"education"`
 	Skills          []SkillRequest          `json:"skills"`
@@ -126,6 +127,7 @@ type Payload struct {
 	Linkedin        string
 	Twitter         string
 	Theme           *ThemeRequest
+	LayoutName      string
 	WorkExperiences []WorkExperienceRequest
 	Education       []EducationRequest
 	Skills          []SkillRequest

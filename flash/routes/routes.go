@@ -8,20 +8,19 @@ import (
 	"flash/internal/project"
 	"flash/internal/user"
 	"flash/middleware"
-	dns "flash/sdk/cloudflare"
 	"flash/sdk/llm"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
-func RegisterRoutes(router *gin.Engine, db *gorm.DB, llm llm.Provider, dns dns.CloudflareService) {
+func RegisterRoutes(router *gin.Engine, db *gorm.DB, llm llm.Provider) {
 
 	api := router.Group("/api")
 	{
 		authController := auth.NewController(db)
 		userController := user.NewController(db)
-		projectController := project.NewController(db, dns)
+		projectController := project.NewController(db)
 		documentController := document.NewController(db, llm)
 		portfolioController := portfolio.NewController(db)
 		appointmentController := appointment.NewController(db)

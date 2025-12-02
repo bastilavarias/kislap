@@ -172,6 +172,7 @@ export interface APIResponsePortfolio {
   twitter: string;
   theme_name: string;
   theme_object: APIResponseThemeObject;
+  layout_name: string;
   created_at: string;
   updated_at: string;
   deleted_at: string | null;

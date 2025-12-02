@@ -1,12 +1,12 @@
 // React Imports
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 
 // Next Imports
 import Link from 'next/link';
 
 // Third-party Imports
 import { useTheme } from 'next-themes';
-import { Copy, RotateCcw, Sun, Moon, AlertCircle } from 'lucide-react';
+import { Copy, RotateCcw, Sun, Moon, AlertCircle, Monitor } from 'lucide-react';
 
 // Type Imports
 import type { ThemeStyleProps } from '@/types/theme';
@@ -46,6 +46,7 @@ type Props = {
   hideScrollArea?: boolean;
   hideThemeSaverButton?: boolean;
   hideImportButton?: boolean;
+  hideRandomButton?: boolean;
 
   themeSettings?: Settings | null;
   setThemeSettings?: any;
@@ -58,6 +59,7 @@ const ThemeControlPanel = ({
   hideScrollArea = false,
   hideThemeSaverButton = false,
   hideImportButton = false,
+  hideRandomButton = false,
 
   themeSettings: localSettings,
   setThemeSettings: setLocalSettings,
@@ -70,10 +72,8 @@ const ThemeControlPanel = ({
   const onLocalUpdateSettings = (newSettings: Partial<Settings>) => {
     if (stateless) {
       setLocalSettings(newSettings);
-
       return;
     }
-
     updateSettings(settings);
   };
 
@@ -91,10 +91,8 @@ const ThemeControlPanel = ({
           },
         },
       });
-
       return;
     }
-
     applyThemePreset(preset); // This will apply globally.
   };
 
@@ -119,7 +117,8 @@ const ThemeControlPanel = ({
 
       onLocalUpdateSettings(updatedSettings);
 
-      // setTheme(newMode);
+      // If you want the actual app theme to switch as well (for preview):
+      // if (!stateless) setTheme(newMode);
     }
   };
 
@@ -142,12 +141,10 @@ const ThemeControlPanel = ({
     });
   };
 
-  // Update font change handlers to use the new helper
   const handleFontChange = (fontType: 'font-sans' | 'font-serif' | 'font-mono', value: string) => {
     updateBothThemes({ [fontType]: value });
   };
 
-  // Update radius change handler to use the new helper
   const handleRadiusChange = (value: number) => {
     updateBothThemes({ radius: `${value}rem` });
   };
@@ -193,19 +190,13 @@ const ThemeControlPanel = ({
           },
         },
       };
-
       onLocalUpdateSettings(updatedSettings);
     }
   }, []);
 
-  // useEffect(() => {
-  //   if (settings.mode) {
-  //     setTheme(settings.mode);
-  //   }
-  // }, [settings.mode, setTheme]);
-
   const form = (
     <div className="flex flex-col gap-6">
+      {/* Top Action Buttons (Copy/Reset) */}
       {!hideTopActionButtons && (
         <div className="flex gap-3">
           <ThemeVariablesDialog
@@ -231,6 +222,19 @@ const ThemeControlPanel = ({
         </div>
       )}
 
+      {/* Themes Selection */}
+      <ThemePresetSelect
+        presets={presets}
+        currentPreset={localSettings?.theme.preset || null}
+        onPresetChange={onLocalApplyThemePreset}
+        stateless={stateless}
+        themeSettings={localSettings}
+        setThemeSettings={setLocalSettings}
+        hideImportButton={hideImportButton}
+        hideRandomButton={hideImportButton}
+      />
+
+      {/* Original Mode Toggle (Hidden based on props) */}
       {!hideModeToggle && (
         <div className="flex flex-col gap-4">
           <h3 className="text-lg font-medium">Mode</h3>
@@ -260,16 +264,33 @@ const ThemeControlPanel = ({
         </div>
       )}
 
-      {/* Themes Selection */}
-      <ThemePresetSelect
-        presets={presets}
-        currentPreset={localSettings?.theme.preset || null}
-        onPresetChange={onLocalApplyThemePreset}
-        hideImportButton={hideImportButton}
-        stateless={stateless}
-        themeSettings={localSettings}
-        setThemeSettings={setLocalSettings}
-      />
+      <div className="flex items-center justify-between border-none">
+        <div className="flex flex-col">
+          <span className="text-sm font-semibold text-foreground">Active Mode</span>
+          <span className="text-[10px] text-muted-foreground uppercase tracking-wider">
+            Editing {localSettings?.mode || 'light'}
+          </span>
+        </div>
+
+        <div className="flex items-center rounded-lg border bg-background p-1 shadow-sm">
+          <Button
+            variant={localSettings?.mode === 'light' ? 'secondary' : 'ghost'}
+            size="sm"
+            onClick={() => handleModeChange('light')}
+            className="h-7 px-3 text-xs font-medium"
+          >
+            Light
+          </Button>
+          <Button
+            variant={localSettings?.mode === 'dark' ? 'secondary' : 'ghost'}
+            size="sm"
+            onClick={() => handleModeChange('dark')}
+            className="h-7 px-3 text-xs font-medium"
+          >
+            Dark
+          </Button>
+        </div>
+      </div>
 
       <Tabs defaultValue="colors" className="h-full w-full">
         <TabsList className="mb-3 grid w-full grid-cols-3">
@@ -285,7 +306,6 @@ const ThemeControlPanel = ({
         </TabsList>
 
         <TabsContent value="colors">
-          {/* CSS Variables Section */}
           <ThemeColorPanel
             stateless={stateless}
             settings={localSettings}
@@ -293,7 +313,6 @@ const ThemeControlPanel = ({
           />
         </TabsContent>
 
-        {/* Text Selection */}
         <TabsContent value="typography">
           <div className="mb-4">
             <Label htmlFor="font-sans" className="mb-1.5 block text-xs">
@@ -374,7 +393,6 @@ const ThemeControlPanel = ({
         </TabsContent>
 
         <TabsContent value="other">
-          {/* Radius Selection */}
           <div className="flex flex-col gap-4">
             <SliderWithInput
               value={parseFloat(currentStyles.radius?.replace('rem', '') || '0')}

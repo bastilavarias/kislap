@@ -4,7 +4,6 @@ import (
 	"flash/database"
 	"flash/middleware"
 	"flash/routes"
-	dns "flash/sdk"
 	"flash/sdk/llm"
 	"fmt"
 	"os"
@@ -53,15 +52,8 @@ func main() {
 		})
 	}
 
-	cloudflareService, _ := dns.NewCloudflareService(
-		os.Getenv("CF_API_KEY"),
-		os.Getenv("CF_EMAIL"),
-		os.Getenv("CF_ZONE_ID"),
-		"mydomain.com",
-	)
-
 	router := gin.Default()
 	router.Use(middleware.CORSMiddleware())
-	routes.RegisterRoutes(router, databaseClient, llmProvider, cloudflareService)
+	routes.RegisterRoutes(router, databaseClient, llmProvider)
 	router.Run("0.0.0.0:5000")
 }

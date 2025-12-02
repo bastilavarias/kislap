@@ -26,8 +26,6 @@ func (service Service) Save(payload Payload) (*models.Portfolio, error) {
 
 	var portfolio models.Portfolio
 
-	defaultLayout := "default-2"
-
 	if payload.PortfolioID == nil {
 		portfolio = models.Portfolio{
 			UserID:          uint64(payload.UserID),
@@ -45,7 +43,7 @@ func (service Service) Save(payload Payload) (*models.Portfolio, error) {
 			Twitter:         &payload.Twitter,
 			ThemeName:       &payload.Theme.Preset,
 			ThemeObject:     themeRaw,
-			LayoutName:      &defaultLayout,
+			LayoutName:      &payload.LayoutName,
 			WorkExperiences: newWorkExperiences,
 			Education:       newEducation,
 			Skills:          newSkills,
@@ -63,7 +61,6 @@ func (service Service) Save(payload Payload) (*models.Portfolio, error) {
 			return nil, fmt.Errorf("failed to find portfolio: %w", err)
 		}
 
-		// Update the main fields
 		portfolio.Name = payload.Name
 		portfolio.Location = &payload.Location
 		portfolio.JobTitle = &payload.JobTitle
@@ -77,6 +74,7 @@ func (service Service) Save(payload Payload) (*models.Portfolio, error) {
 		portfolio.Twitter = &payload.Twitter
 		portfolio.ThemeName = &payload.Theme.Preset
 		portfolio.ThemeObject = themeRaw
+		portfolio.LayoutName = &payload.LayoutName
 
 		if err := service.DB.Transaction(func(tx *gorm.DB) error {
 			if err := tx.Model(&portfolio).Association("WorkExperiences").Clear(); err != nil {
