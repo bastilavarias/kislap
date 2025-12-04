@@ -4,11 +4,11 @@ import (
 	"context"
 	"fmt"
 
-	cf "github.com/cloudflare/cloudflare-go"
+	"github.com/cloudflare/cloudflare-go"
 )
 
 type Client struct {
-	API    *cf.API
+	API    *cloudflare.API
 	ZoneID string
 	Domain string // The root domain (e.g., "myapp.com")
 }
@@ -19,7 +19,7 @@ func NewClient(apiToken, zoneID, domain string) (*Client, error) {
 		return nil, fmt.Errorf("missing required Cloudflare credentials")
 	}
 
-	api, err := cf.NewWithAPIToken(apiToken)
+	api, err := cloudflare.NewWithAPIToken(apiToken)
 	if err != nil {
 		return nil, err
 	}
@@ -32,12 +32,12 @@ func NewClient(apiToken, zoneID, domain string) (*Client, error) {
 }
 
 // CheckAvailable returns true if the subdomain is NOT taken in Cloudflare
-func (c *Client) CheckAvailable(subdomain string) (bool, error) {
-	ctx := context.Background()
+func (client *Client) CheckAvailable(subdomain string) (bool, error) {
+	context := context.Background()
 	// Construct full hostname: sub.myapp.com
-	name := fmt.Sprintf("%s.%s", subdomain, c.Domain)
+	name := fmt.Sprintf("%s.%s", subdomain, client.Domain)
 
-	records, _, err := c.API.ListDNSRecords(ctx, cf.ZoneIdentifier(c.ZoneID), cf.ListDNSRecordsParams{
+	records, _, err := client.API.ListDNSRecords(context, cloudflare.ZoneIdentifier(client.ZoneID), cloudflare.ListDNSRecordsParams{
 		Name: name,
 	})
 	if err != nil {
@@ -48,29 +48,26 @@ func (c *Client) CheckAvailable(subdomain string) (bool, error) {
 	return len(records) == 0, nil
 }
 
-// CreateRecord creates a CNAME record pointing to the root domain
-func (c *Client) CreateRecord(subdomain string) error {
+func (client *Client) CreateRecord(subdomain string) error {
 	ctx := context.Background()
-	name := fmt.Sprintf("%s.%s", subdomain, c.Domain)
+	name := fmt.Sprintf("%s.%s", subdomain, client.Domain)
 
-	_, err := c.API.CreateDNSRecord(ctx, cf.ZoneIdentifier(c.ZoneID), cf.CreateDNSRecordParams{
+	_, err := client.API.CreateDNSRecord(ctx, cloudflare.ZoneIdentifier(client.ZoneID), cloudflare.CreateDNSRecordParams{
 		Type:    "CNAME",
 		Name:    name,
-		Content: c.Domain,
-		TTL:     1, // Auto
-		Proxied: cf.BoolPtr(true),
+		Content: client.Domain,
+		TTL:     1,
+		Proxied: cloudflare.BoolPtr(true),
 	})
 
 	return err
 }
 
-// DeleteRecord removes the DNS record for a subdomain
-func (c *Client) DeleteRecord(subdomain string) error {
+func (client *Client) DeleteRecord(subdomain string) error {
 	ctx := context.Background()
-	name := fmt.Sprintf("%s.%s", subdomain, c.Domain)
+	name := fmt.Sprintf("%s.%s", subdomain, client.Domain)
 
-	// 1. Find the record ID first
-	records, _, err := c.API.ListDNSRecords(ctx, cf.ZoneIdentifier(c.ZoneID), cf.ListDNSRecordsParams{
+	records, _, err := client.API.ListDNSRecords(ctx, cloudflare.ZoneIdentifier(client.ZoneID), cloudflare.ListDNSRecordsParams{
 		Name: name,
 	})
 	if err != nil {
@@ -78,9 +75,8 @@ func (c *Client) DeleteRecord(subdomain string) error {
 	}
 
 	if len(records) == 0 {
-		return nil // Already deleted or never existed
+		return nil
 	}
 
-	// 2. Delete the record
-	return c.API.DeleteDNSRecord(ctx, cf.ZoneIdentifier(c.ZoneID), records[0].ID)
+	return client.API.DeleteDNSRecord(ctx, cloudflare.ZoneIdentifier(client.ZoneID), records[0].ID)
 }
