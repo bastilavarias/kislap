@@ -197,17 +197,3 @@ export interface APIResponseProject {
   deleted_at?: string;
   portfolio: APIResponsePortfolio;
 }
-
-export interface APIResponseAppoinment {
-  id: number;
-  name: string;
-  email: string;
-  message: string | null;
-  contact_number: string | null;
-  date: string;
-  time_from: string;
-  time_to: string;
-  created_at: string;
-  updated_at: string;
-  deleted_at?: string;
-}
