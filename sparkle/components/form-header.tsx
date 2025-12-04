@@ -54,7 +54,7 @@ export function FormHeader<T>({
                 onChange={(e) => setSlug(e.target.value)}
                 className="w-32 shadow"
               />
-              <span className="text-gray-500 dark:text-gray-400 font-mono ml-1">.kislap.com</span>
+              <span className="text-gray-500 dark:text-gray-400 font-mono ml-1">.kislap.app</span>
             </div>
 
             <div className="ml-auto flex gap-2">
@@ -85,7 +85,10 @@ export function FormHeader<T>({
               Save
             </Button>
             <Button asChild={true} variant="secondary" className="shadow-none">
-              <Link href="/p/resume">
+              <Link
+                href={`//${project?.sub_domain}.kislap.test/preview?token=sample_token`}
+                target="_blank"
+              >
                 <ExternalLink className="size-4" />
                 Preview
               </Link>

@@ -115,7 +115,6 @@ export const metadata: Metadata = {
 };
 
 const RootLayout = async ({ children }: { children: ReactNode }) => {
-  // Vars
   const mode = await getMode();
   const settingsCookie = await getSettingsFromCookie();
 

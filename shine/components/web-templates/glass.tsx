@@ -23,7 +23,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Mode } from '@/contexts/settings-context';
 import { useMemo, useState } from 'react';
-import { ThemeSwitchToggle } from '@/app/(preview)/p/resume/components/templates/components/theme-switch-toggle';
+import { ThemeSwitchToggle } from './components/theme-switch-toggle';
 import Link from 'next/link';
 import { ThemeStyles } from '@/types/theme';
 import { AppointmentFormValues, AppointmentSchema } from '@/lib/schemas/appointment';
