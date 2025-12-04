@@ -23,7 +23,6 @@ func (service Service) List() (*[]models.Project, error) {
 }
 
 func (service Service) Create(payload Payload) (*models.Project, error) {
-	// Re-use CheckDomain logic to be safe
 	if _, err := service.CheckDomain(payload.SubDomain); err != nil {
 		return nil, err
 	}
@@ -38,14 +37,11 @@ func (service Service) Create(payload Payload) (*models.Project, error) {
 		Published:   payload.Published,
 	}
 
-	// 1. Create DB Record
 	if err := service.DB.Create(&newProj).Error; err != nil {
 		return nil, err
 	}
 
-	// 2. Create Cloudflare Record
 	if err := service.DNS.CreateRecord(payload.SubDomain); err != nil {
-		// Rollback: Delete the DB record if DNS fails
 		service.DB.Unscoped().Delete(&newProj)
 		return nil, errors.New("failed to register subdomain, project creation rolled back")
 	}
@@ -59,18 +55,15 @@ func (service Service) Update(projectID int, payload Payload) (*models.Project, 
 		return nil, err
 	}
 
-	// Check if subdomain is changing
 	oldSubDomain := *existingProj.SubDomain
 	isSubdomainChanging := oldSubDomain != payload.SubDomain
 
 	if isSubdomainChanging {
-		// Verify new domain availability
 		if _, err := service.CheckDomain(payload.SubDomain); err != nil {
 			return nil, err
 		}
 	}
 
-	// Update Fields
 	existingProj.Name = payload.Name
 	existingProj.Description = payload.Description
 	existingProj.SubDomain = &payload.SubDomain
@@ -78,18 +71,14 @@ func (service Service) Update(projectID int, payload Payload) (*models.Project, 
 	existingProj.Type = payload.Type
 	existingProj.Published = payload.Published
 
-	// Save DB
 	if err := service.DB.Save(&existingProj).Error; err != nil {
 		return nil, err
 	}
 
-	// Handle DNS Switch
 	if isSubdomainChanging {
-		// Add new record
 		if err := service.DNS.CreateRecord(payload.SubDomain); err != nil {
 			return nil, errors.New("project updated, but failed to create new DNS record")
 		}
-		// Delete old record (Fire and forget, or log error)
 		_ = service.DNS.DeleteRecord(oldSubDomain)
 	}
 
@@ -159,6 +148,30 @@ func (service Service) ShowBySlug(slug string, level string) (*models.Project, e
 			First(&project, project.ID).Error; err != nil {
 			return nil, err
 		}
+	}
+
+	return &project, nil
+}
+
+func (service Service) ShowBySubDomain(subDomain string) (*models.Project, error) {
+	var project models.Project
+
+	query := service.DB
+
+	if err := query.First(&project, "sub_domain = ?", subDomain).Error; err != nil {
+		return nil, err
+	}
+
+	if err := service.DB.
+		Preload("Portfolio").
+		Preload("Portfolio.User").
+		Preload("Portfolio.WorkExperiences").
+		Preload("Portfolio.Education").
+		Preload("Portfolio.Showcases").
+		Preload("Portfolio.Showcases.ShowcaseTechnologies").
+		Preload("Portfolio.Skills").
+		First(&project, project.ID).Error; err != nil {
+		return nil, err
 	}
 
 	return &project, nil

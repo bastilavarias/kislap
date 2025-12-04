@@ -25,6 +25,8 @@ const LoadingDialog = ({ open }: { open: boolean }) => {
 
 export function Wrapper() {
   const fetcher = (url: string) => fetch(url).then((res) => res.json());
+
+  //@TODO: Get the id of the project in token passed and check it if expired or something.
   const { data, error, isLoading } = useSWR('http://api.kislap.test/api/projects/show/1', fetcher);
   const [themeMode, setThemeMode] = useState<Mode>('light');
 

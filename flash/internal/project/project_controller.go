@@ -89,6 +89,19 @@ func (controller Controller) ShowBySlug(context *gin.Context) {
 	utils.APIRespondSuccess(context, http.StatusOK, project)
 }
 
+func (controller Controller) ShowBySubDomain(context *gin.Context) {
+	subDomain := context.Param("sub-domain")
+
+	project, err := controller.Service.ShowBySubDomain(subDomain)
+	if err != nil {
+		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
+		context.Abort()
+		return
+	}
+
+	utils.APIRespondSuccess(context, http.StatusOK, project)
+}
+
 func (controller Controller) Update(context *gin.Context) {
 	idStr := context.Param("id")
 	projectID, err := strconv.Atoi(idStr)
