@@ -2,6 +2,7 @@ package page_activity
 
 import (
 	"flash/utils"
+	"fmt"
 	"math"
 	"net/http"
 	"strconv"
@@ -61,7 +62,7 @@ func (controller Controller) GetStats(context *gin.Context) {
 	utils.APIRespondSuccess(context, http.StatusOK, stats)
 }
 
-func (controller Controller) GetTopPages(context *gin.Context) {
+func (controller Controller) GetVisits(context *gin.Context) {
 	idStr := context.Param("id")
 	projectID, err := strconv.ParseUint(idStr, 10, 64)
 	if err != nil {
@@ -73,7 +74,7 @@ func (controller Controller) GetTopPages(context *gin.Context) {
 	page, _ := strconv.Atoi(context.DefaultQuery("page", "1"))
 	limit, _ := strconv.Atoi(context.DefaultQuery("limit", "5"))
 
-	topPages, total, err := controller.Service.GetTopPages(projectID, limit)
+	topPages, total, err := controller.Service.GetVisits(projectID, page, limit)
 
 	if err != nil {
 		utils.APIRespondError(context, http.StatusInternalServerError, err.Error())
@@ -97,6 +98,8 @@ func (controller Controller) GetTopPages(context *gin.Context) {
 }
 
 func (controller Controller) GetRecentActivities(context *gin.Context) {
+	fmt.Println("im called!")
+
 	idStr := context.Param("id")
 	projectID, err := strconv.ParseUint(idStr, 10, 64)
 	if err != nil {
@@ -107,11 +110,23 @@ func (controller Controller) GetRecentActivities(context *gin.Context) {
 	page, _ := strconv.Atoi(context.DefaultQuery("page", "1"))
 	limit, _ := strconv.Atoi(context.DefaultQuery("limit", "10"))
 
-	activities, err := controller.Service.GetRecentActivities(projectID, page, limit)
+	activities, total, err := controller.Service.GetRecentActivities(projectID, page, limit)
 	if err != nil {
 		utils.APIRespondError(context, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	utils.APIRespondSuccess(context, http.StatusOK, activities)
+	lastPage := int(math.Ceil(float64(total) / float64(limit)))
+
+	response := gin.H{
+		"data": activities,
+		"meta": gin.H{
+			"page":      page,
+			"limit":     limit,
+			"total":     total,
+			"last_page": lastPage,
+		},
+	}
+
+	utils.APIRespondSuccess(context, http.StatusOK, response)
 }

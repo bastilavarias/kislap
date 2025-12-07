@@ -51,14 +51,13 @@ Authorization: {{access_token}}
 ###
 
 ### Get Top Pages (limit = 10)
-GET {{host}}/api/page-activities/1/top-pages?limit=10
+GET {{host}}/api/page-activities/1/visits?limit=10
 Authorization: {{access_token}}
 
 ###
 
 ### Get Recent Activities (Page 1, limit = 10)
 GET {{host}}/api/page-activities/1/recent-activities?page=1&limit=10
-Authorization: {{access_token}}
 
 ###
 

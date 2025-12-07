@@ -58,7 +58,7 @@ func RegisterRoutes(router *gin.Engine, db *gorm.DB, llm llm.Provider, cf *cloud
 
 		api.POST("/page-activities", pageActivityController.Create)
 		api.GET("/page-activities/:id", middleware.AccessTokenValidatorMiddleware(db), pageActivityController.GetStats)
-		api.GET("/page-activities/:id/top-pages", middleware.AccessTokenValidatorMiddleware(db), pageActivityController.GetTopPages)
+		api.GET("/page-activities/:id/visits", middleware.AccessTokenValidatorMiddleware(db), pageActivityController.GetVisits)
 		api.GET("/page-activities/:id/recent-activities", middleware.AccessTokenValidatorMiddleware(db), pageActivityController.GetRecentActivities)
 	}
 }

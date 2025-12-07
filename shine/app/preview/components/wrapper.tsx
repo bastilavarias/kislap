@@ -54,7 +54,9 @@ export function Wrapper() {
           <div className="container mx-auto max-w-5xl pt-10">{TemplateComponent}</div>
         </div>
       </ComponentThemeProvider>
-      //@TODO: Implement quick action buttons here if preview mode.
+      {/* 
+        @TODO: Implement quick action buttons here if preview mode.
+      */}
     </div>
   );
 }

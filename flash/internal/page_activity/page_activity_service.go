@@ -2,6 +2,7 @@ package page_activity
 
 import (
 	"flash/models"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -15,9 +16,17 @@ type Stats struct {
 	TotalClicks    int64 `json:"total_clicks"`
 	UniqueVisitors int64 `json:"unique_visitors"`
 }
-type PageCount struct {
-	PageURL string `json:"page_url"`
-	Count   int64  `json:"count"`
+type Visit struct {
+	IPAddress string    `json:"ip_address"`
+	CreatedAt time.Time `json:"created_at"`
+}
+
+type RecentActivity struct {
+	Type      string      `json:"type"`
+	PageURL   string      `json:"page_url"`
+	IPAddress string      `json:"ip_address"`
+	ModelData interface{} `json:"model"`
+	CreatedAt time.Time   `json:"created_at"`
 }
 
 func (service *Service) Track(payload Payload) error {
@@ -36,53 +45,71 @@ func (service *Service) Track(payload Payload) error {
 func (service *Service) GetStats(projectID uint64, page int, limit int) (*Stats, error) {
 	var stats Stats
 
-	base := service.DB.Model(&models.PageActivity{}).Where("project_id = ?", projectID)
+	db := service.DB.Model(&models.PageActivity{}).Where("project_id = ?", projectID)
 
-	if err := base.Where("type = ?", "view").Count(&stats.TotalViews).Error; err != nil {
+	if err := db.Where("type = ?", "view").Count(&stats.TotalViews).Error; err != nil {
 		return nil, err
 	}
 
-	if err := base.Where("type = ?", "click").Count(&stats.TotalClicks).Error; err != nil {
+	if err := db.Where("type = ?", "click").Count(&stats.TotalClicks).Error; err != nil {
 		return nil, err
 	}
 
-	if err := base.Distinct("ip_address").Count(&stats.UniqueVisitors).Error; err != nil {
+	if err := db.Distinct("ip_address").Count(&stats.UniqueVisitors).Error; err != nil {
 		return nil, err
 	}
 
 	return &stats, nil
 }
 
-func (service *Service) GetTopPages(projectID uint64, limit int) ([]PageCount, int64, error) {
-	var topPages []PageCount
+func (service *Service) GetVisits(projectID uint64, page int, limit int) ([]Visit, int64, error) {
+	var visits []Visit
 	var total int64
 
 	if limit <= 0 {
 		limit = 5
 	}
+	if page <= 0 {
+		page = 1
+	}
 
-	pageActivity := service.DB.Model(&models.PageActivity{}).
+	offset := (page - 1) * limit
+
+	baseQuery := service.DB.
+		Model(&models.PageActivity{}).
+		Select(`
+			ip_address,
+			MAX(created_at) AS created_at
+		`).
 		Where("project_id = ?", projectID).
-		Where("type = ?", "view")
+		Where("type = ?", "view").
+		Group("ip_address")
 
-	if err := pageActivity.Count(&total).Error; err != nil {
+	if err := service.DB.
+		Model(&models.PageActivity{}).
+		Select("ip_address").
+		Where("project_id = ?", projectID).
+		Where("type = ?", "view").
+		Group("ip_address").
+		Count(&total).Error; err != nil {
 		return nil, 0, err
 	}
 
-	err := pageActivity.
-		Select("page_url, count(*) as count").
-		Group("page_url").
-		Order("count(*) DESC").
-		Order("page_url").
+	if err := baseQuery.
+		Order("created_at DESC").
 		Limit(limit).
-		Scan(&topPages).
-		Error
+		Offset(offset).
+		Scan(&visits).Error; err != nil {
+		return nil, 0, err
+	}
 
-	return topPages, total, err
+	return visits, total, nil
 }
 
-func (service *Service) GetRecentActivities(projectID uint64, page int, limit int) ([]models.PageActivity, error) {
-	var activities []models.PageActivity
+func (service *Service) GetRecentActivities(projectID uint64, page int, limit int) ([]RecentActivity, int64, error) {
+	var raw []models.PageActivity
+	var total int64
+	activities := []RecentActivity{}
 
 	if page <= 0 {
 		page = 1
@@ -93,14 +120,47 @@ func (service *Service) GetRecentActivities(projectID uint64, page int, limit in
 
 	offset := (page - 1) * limit
 
-	err := service.DB.
-		Model(&models.PageActivity{}).
-		Where("project_id = ?", projectID).
+	tx := service.DB.Model(&models.PageActivity{}).
+		Where("project_id = ?", projectID)
+
+	if err := tx.Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+
+	err := tx.
 		Order("id DESC").
 		Offset(offset).
 		Limit(limit).
-		Find(&activities).
+		Find(&raw).
 		Error
 
-	return activities, err
+	if err != nil {
+		return nil, 0, err
+	}
+
+	for _, r := range raw {
+		var model interface{}
+
+		if r.ModelName != nil && r.ModelID != nil {
+			switch *r.ModelName {
+			case "Showcase":
+				var m models.Showcase
+				service.DB.First(&m, *r.ModelID)
+				model = m
+
+			default:
+				model = nil
+			}
+		}
+
+		activities = append(activities, RecentActivity{
+			Type:      r.Type,
+			PageURL:   r.PageURL,
+			IPAddress: r.IPAddress,
+			ModelData: model,
+			CreatedAt: r.CreatedAt,
+		})
+	}
+
+	return activities, total, nil
 }

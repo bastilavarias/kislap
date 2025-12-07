@@ -219,25 +219,20 @@ export interface APIResponseAppoinment {
 }
 
 export interface APIResponsePageActivity {
-  id: number;
   type: string;
   page_url: string;
   ip_address: string;
-  model_id?: number;
-  model_name?: string;
+  model: Record<string, any> | null;
   created_at: string;
 }
 
-export interface APIResponsePageCount {
-  page_url: string;
-  count: number;
+export interface APIResponsePageVisit {
+  ip_address: string;
+  created_at: string;
 }
 
 export interface APIResponseDashboardStats {
   total_views: number;
   total_clicks: number;
   unique_visitors: number;
-  top_pages: APIResponsePageCount[];
-  recent_activity: APIResponsePageActivity[];
-  total_activities: number;
 }

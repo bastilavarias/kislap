@@ -32,42 +32,219 @@ import {
   Lock,
   Mail,
   Phone,
+  MousePointerClick,
+  Server,
 } from 'lucide-react';
 import { useAppointment } from '@/hooks/api/use-appointment';
 import { usePageActivity } from '@/hooks/api/use-page-activity';
 import { APIResponseAppoinment } from '@/types/api-response';
 
-// --- Types ---
-interface PageView {
-  id: number;
+// --- Interfaces ---
+
+interface PageVisit {
   ip_address: string;
   location: string;
-  device: string;
-  viewed_at: string;
+  created_at: string;
 }
 
 interface PageActivity {
-  id: number;
-  action: string;
-  target_details: string;
+  type: string;
+  page_url: string;
   ip_address: string;
-  occurred_at: string;
+  model: Record<string, any> | null;
+  model_name?: string;
+  created_at: string;
 }
 
-interface DashboardStats {
-  totalAppointments: number;
-  totalPageViews: number;
+interface PageStats {
+  totalViews: number;
+  totalClicks: number;
   uniqueVisitors: number;
 }
 
+// --- Constants ---
+
+const APPOINTMENTS_PER_PAGE = 10;
+const VISITS_PER_PAGE = 10;
+const RECENT_ACTS_PER_PAGE = 5;
+
+// --- Helper Components ---
+
+const PaginationControls = ({
+  page,
+  total,
+  onPageChange,
+}: {
+  page: number;
+  total: number;
+  onPageChange: (p: number) => void;
+}) => (
+  <div className="flex items-center justify-end space-x-2 py-4">
+    <div className="flex-1 text-xs text-muted-foreground">
+      Page {page} of {total}
+    </div>
+    <div className="space-x-2 flex items-center">
+      <Button
+        variant="outline"
+        size="sm"
+        disabled={page === 1}
+        onClick={() => onPageChange(page - 1)}
+        className="h-8 px-2"
+      >
+        <ChevronLeft className="h-4 w-4" />
+      </Button>
+      <Button
+        variant="outline"
+        size="sm"
+        disabled={page >= total}
+        onClick={() => onPageChange(page + 1)}
+        className="h-8 px-2"
+      >
+        <ChevronRight className="h-4 w-4" />
+      </Button>
+    </div>
+  </div>
+);
+
+const getActivityConfig = (type: string) => {
+  switch (type.toLowerCase()) {
+    case 'click':
+      return {
+        icon: MousePointerClick,
+        color: 'text-blue-500',
+        bg: 'bg-blue-500/10',
+        label: 'Interaction',
+      };
+    case 'view':
+      return {
+        icon: Eye,
+        color: 'text-emerald-500',
+        bg: 'bg-emerald-500/10',
+        label: 'Page View',
+      };
+    default:
+      return {
+        icon: Activity,
+        color: 'text-gray-500',
+        bg: 'bg-gray-500/10',
+        label: 'System Event',
+      };
+  }
+};
+
+const RecentActivityFeed = ({
+  activities,
+  page,
+  totalPages,
+  onPageChange,
+}: {
+  activities: PageActivity[];
+  page: number;
+  totalPages: number;
+  onPageChange: (p: number) => void;
+}) => {
+  return (
+    <Card className="flex flex-col h-full">
+      <CardHeader className="pb-3">
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-sm font-semibold flex items-center gap-2">
+            <Activity className="w-4 h-4" />
+            Audit Log
+          </CardTitle>
+          <Badge
+            variant="outline"
+            className="text-[10px] font-normal text-muted-foreground bg-background"
+          >
+            Live Feed
+          </Badge>
+        </div>
+      </CardHeader>
+
+      <CardContent className="p-0 flex-1 flex flex-col min-h-[400px]">
+        <div className="flex-1 overflow-y-auto">
+          {activities.length > 0 ? (
+            <div className="divide-y divide-border/50">
+              {activities.map((activity, index) => {
+                const config = getActivityConfig(activity.type);
+                const Icon = config.icon;
+
+                return (
+                  <div
+                    key={index}
+                    className="p-4 hover:bg-muted/30 transition-colors group flex gap-3 items-start"
+                  >
+                    <div className={`p-2 rounded-md shrink-0 mt-0.5 ${config.bg}`}>
+                      <Icon className={`w-4 h-4 ${config.color}`} />
+                    </div>
+
+                    <div className="flex-1 space-y-1">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium text-foreground">{config.label}</span>
+                        <span className="text-[10px] text-muted-foreground flex items-center gap-1">
+                          <Clock className="w-3 h-3" />
+                          {new Date(activity.created_at).toLocaleTimeString([], { hour12: true })}
+                        </span>
+                      </div>
+
+                      <p className="text-xs text-muted-foreground leading-relaxed">
+                        User detected on{' '}
+                        <span className="font-medium text-foreground">
+                          {activity.model?.name || 'Unknown Entity'}
+                        </span>{' '}
+                        via{' '}
+                        <span className="font-mono text-xs bg-muted px-1 py-0.5 rounded text-violet-600/80">
+                          {activity.page_url}
+                        </span>
+                      </p>
+
+                      <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1.5 px-1.5 py-0.5 rounded-sm bg-muted/50 border border-border/50">
+                          <Server className="w-3 h-3 text-muted-foreground" />
+                          <span className="text-[10px] font-mono text-muted-foreground">
+                            {activity.ip_address}
+                          </span>
+                        </div>
+
+                        {activity.model_name && (
+                          <Badge variant="secondary" className="text-[10px] h-5 font-normal px-1.5">
+                            {activity.model_name}
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="h-full flex flex-col items-center justify-center text-muted-foreground space-y-2 p-8">
+              <div className="p-3 bg-muted rounded-full">
+                <Activity className="w-6 h-6 opacity-20" />
+              </div>
+              <p className="text-xs">No activity logs recorded yet.</p>
+            </div>
+          )}
+        </div>
+
+        {/* Footer Pagination */}
+        <div className="px-4 py-3 border-t bg-muted/20 mt-auto">
+          <PaginationControls page={page} total={totalPages} onPageChange={onPageChange} />
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
+// --- Main Dashboard Component ---
+
 export function Dashboard({ projectID }: { projectID?: number }) {
   const [appointments, setAppointments] = useState<APIResponseAppoinment[]>([]);
-  const [pageViews, setPageViews] = useState<PageView[]>([]);
+  const [pageVisits, setPageVisits] = useState<PageVisit[]>([]);
   const [activities, setActivities] = useState<PageActivity[]>([]);
 
-  const [stats, setStats] = useState<DashboardStats>({
-    totalAppointments: 0,
-    totalPageViews: 0,
+  const [pageStats, setPageStats] = useState<PageStats>({
+    totalViews: 0,
+    totalClicks: 0,
     uniqueVisitors: 0,
   });
 
@@ -81,58 +258,86 @@ export function Dashboard({ projectID }: { projectID?: number }) {
   const [viewsPage, setViewsPage] = useState(1);
   const [actPage, setActPage] = useState(1);
 
-  const [totalAppPages, setTotalAppPages] = useState(1);
-  const [totalViewPages, setTotalViewPages] = useState(1);
-  const [totalActPages, setTotalActPages] = useState(1);
+  const [appointmentTotals, setAppointmentTotals] = useState(0);
+  const [totalPageVisits, setTotalPageVisits] = useState(0);
+  const [totalRecentActivities, setTotalRecentActivities] = useState(0);
 
-  const ITEMS_PER_PAGE = 10;
+  const [isVisitsTableBusy, setVisitsTableBusy] = useState(false);
 
   const { list: getAppointmentList } = useAppointment();
-  const { getOverview, getTopPages, getRecentActivities } = usePageActivity();
+  const { getOverview, getVisits, getRecentActivities } = usePageActivity();
 
-  const fetchAppointments = async (page: number, search: string = '') => {
+  const onGetAppointments = async (page: number, search: string = '') => {
     if (!projectID) return;
 
-    const { success, data, message } = await getAppointmentList(page, ITEMS_PER_PAGE, projectID);
+    const { success, data, message } = await getAppointmentList(
+      page,
+      APPOINTMENTS_PER_PAGE,
+      projectID
+    );
 
     if (success && data) {
       setAppointments(data.data);
-      setTotalAppPages(data.meta?.last_page || 1);
+      setAppointmentTotals(data.meta?.last_page || 1);
     } else {
       toast.error(message || 'Failed to load appointments');
     }
   };
 
-  const fetchStats = async () => {
+  const onGetPageStats = async () => {
     if (!projectID) return;
     const { success, data, message } = await getOverview(projectID);
 
     if (success && data) {
-      setStats({
-        totalAppointments: data.total_appointments || 0,
-        totalPageViews: data.total_views || 0,
+      setPageStats({
+        totalViews: data.total_views || 0,
+        totalClicks: data.total_clicks || 0,
         uniqueVisitors: data.unique_visitors || 0,
       });
     }
   };
 
-  const fetchVisitorLog = async (page: number) => {
+  const onGetPageVisits = async (page: number) => {
     if (!projectID) return;
-    const { success, data } = await getTopPages(page, ITEMS_PER_PAGE, projectID);
 
-    if (success && data) {
-      setPageViews(data.data);
-      setTotalViewPages(data.meta?.last_page || 1);
-    }
+    const { success, data } = await getVisits(page, VISITS_PER_PAGE, projectID);
+
+    if (!success || !data) return;
+
+    setVisitsTableBusy(true);
+    const lookups = await Promise.all(
+      data.data.map(async (visit) => {
+        try {
+          const res = await fetch(`https://ipwho.is/${visit.ip_address}`);
+          const geo = await res.json();
+
+          return {
+            ip_address: visit.ip_address,
+            location: geo.success ? geo.country : 'Unknown',
+            created_at: visit.created_at,
+          };
+        } catch (err) {
+          return {
+            ip_address: visit.ip_address,
+            location: 'Unknown',
+            created_at: visit.created_at,
+          };
+        }
+      })
+    );
+
+    setVisitsTableBusy(false);
+    setPageVisits(lookups);
+    setTotalPageVisits(data.meta.last_page || 0);
   };
 
-  const fetchActivityFeed = async (page: number) => {
+  const onGetPageActivities = async (page: number) => {
     if (!projectID) return;
-    const { success, data } = await getRecentActivities(page, ITEMS_PER_PAGE, projectID);
+    const { success, data } = await getRecentActivities(page, RECENT_ACTS_PER_PAGE, projectID);
 
     if (success && data) {
       setActivities(data.data);
-      setTotalActPages(data.meta?.last_page || 1);
+      setTotalRecentActivities(data.meta.last_page || 0);
     }
   };
 
@@ -141,80 +346,40 @@ export function Dashboard({ projectID }: { projectID?: number }) {
       const init = async () => {
         setIsLoading(true);
         await Promise.all([
-          fetchStats(),
-          fetchAppointments(1, searchTerm),
-          fetchVisitorLog(1),
-          fetchActivityFeed(1),
+          onGetPageStats(),
+          onGetAppointments(1, searchTerm),
+          onGetPageActivities(1),
         ]);
         setIsLoading(false);
+        onGetPageVisits(1);
       };
+
       init();
     }
   }, [projectID]);
 
-  // Search Debounce for Appointments
   useEffect(() => {
     const timer = setTimeout(() => {
-      setAppPage(1); // Reset to page 1
-      fetchAppointments(1, searchTerm);
-    }, 500); // 500ms delay
+      setAppPage(1);
+      onGetAppointments(1, searchTerm);
+    }, 500);
     return () => clearTimeout(timer);
   }, [searchTerm]);
 
-  // --- Handlers ---
-
   const handleAppPageChange = (newPage: number) => {
     setAppPage(newPage);
-    fetchAppointments(newPage, searchTerm);
+    onGetAppointments(newPage, searchTerm);
   };
 
   const handleViewPageChange = (newPage: number) => {
     setViewsPage(newPage);
-    fetchVisitorLog(newPage);
+    onGetPageVisits(newPage);
   };
 
   const handleActPageChange = (newPage: number) => {
     setActPage(newPage);
-    fetchActivityFeed(newPage);
+    onGetPageActivities(newPage);
   };
-
-  // --- Render Components ---
-
-  const PaginationControls = ({
-    page,
-    total,
-    onPageChange,
-  }: {
-    page: number;
-    total: number;
-    onPageChange: (p: number) => void;
-  }) => (
-    <div className="flex items-center justify-end space-x-2 py-4">
-      <div className="flex-1 text-xs text-muted-foreground">
-        Page {page} of {total}
-      </div>
-      <div className="space-x-2 flex items-center">
-        <Button
-          variant="outline"
-          size="sm"
-          disabled={page === 1}
-          onClick={() => onPageChange(page - 1)}
-          className="h-8 px-2"
-        >
-          <ChevronLeft className="h-4 w-4" />
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          disabled={page >= total}
-          onClick={() => onPageChange(page + 1)}
-          className="h-8 px-2"
-        >
-          <ChevronRight className="h-4 w-4" />
-        </Button>
-      </div>
-    </div>
-  );
 
   if (isLoading) {
     return (
@@ -234,7 +399,7 @@ export function Dashboard({ projectID }: { projectID?: number }) {
             <Calendar className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.totalAppointments}</div>
+            <div className="text-2xl font-bold">{appointmentTotals}</div>
           </CardContent>
         </Card>
 
@@ -244,7 +409,7 @@ export function Dashboard({ projectID }: { projectID?: number }) {
             <Eye className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.totalPageViews.toLocaleString()}</div>
+            <div className="text-2xl font-bold">{pageStats.totalViews.toLocaleString()}</div>
           </CardContent>
         </Card>
 
@@ -254,13 +419,13 @@ export function Dashboard({ projectID }: { projectID?: number }) {
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.uniqueVisitors.toLocaleString()}</div>
+            <div className="text-2xl font-bold">{pageStats.uniqueVisitors.toLocaleString()}</div>
           </CardContent>
         </Card>
       </div>
 
-      {/* 2. AI Teaser (Unchanged) */}
-      <Card className="relative overflow-hidden border-dashed border-2 border-violet-200 dark:border-violet-900 bg-violet-50/50 dark:bg-violet-950/20">
+      {/* 2. AI Teaser */}
+      <Card className="pb-2 relative overflow-hidden border-dashed border-2 border-violet-200 dark:border-violet-900 bg-violet-50/50 dark:bg-violet-950/20">
         <CardHeader className="pb-2">
           <div className="flex items-center gap-2">
             <div className="p-1.5 bg-violet-100 dark:bg-violet-900/40 rounded-lg">
@@ -307,18 +472,6 @@ export function Dashboard({ projectID }: { projectID?: number }) {
             <div>
               <CardTitle>Appointments</CardTitle>
               <CardDescription>Recent booking requests and messages.</CardDescription>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="relative">
-                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input
-                  type="search"
-                  placeholder="Filter client..."
-                  className="w-[200px] pl-8 h-9"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-              </div>
             </div>
           </div>
         </CardHeader>
@@ -388,22 +541,19 @@ export function Dashboard({ projectID }: { projectID?: number }) {
           </div>
           <PaginationControls
             page={appPage}
-            total={totalAppPages}
+            total={appointmentTotals}
             onPageChange={handleAppPageChange}
           />
         </CardContent>
       </Card>
 
-      {/* 4. Page Views & Activity Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Page Views Table (Mapped from getTopPages/Visitor Log) */}
         <Card className="shadow-sm flex flex-col">
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <CardTitle className="text-base flex items-center gap-2">
                 <Globe className="w-4 h-4 text-muted-foreground" /> Visitor Log
               </CardTitle>
-              <Badge variant="outline">Real-time</Badge>
             </div>
           </CardHeader>
           <CardContent className="p-0 flex-1 flex flex-col">
@@ -417,9 +567,26 @@ export function Dashboard({ projectID }: { projectID?: number }) {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border/50">
-                  {pageViews.length > 0 ? (
-                    pageViews.map((view) => (
-                      <tr key={view.id} className="hover:bg-muted/20">
+                  {isVisitsTableBusy ? (
+                    [...Array(5)].map((_, i) => (
+                      <tr key={i} className="animate-pulse">
+                        <td className="px-4 py-3">
+                          <div className="h-3 w-24 bg-muted rounded" />
+                        </td>
+                        <td className="px-4 py-3">
+                          <div className="h-3 w-32 bg-muted rounded" />
+                        </td>
+                        <td className="px-4 py-3">
+                          <div className="h-3 w-20 bg-muted rounded" />
+                        </td>
+                      </tr>
+                    ))
+                  ) : pageVisits.length > 0 ? (
+                    pageVisits.map((view, index) => (
+                      <tr
+                        key={index}
+                        className="hover:bg-muted/20 border-t border-dashed border-border/50"
+                      >
                         <td className="px-4 py-2.5">
                           <div className="flex items-center gap-2">
                             <MapPin className="w-3 h-3 text-muted-foreground" />
@@ -429,12 +596,17 @@ export function Dashboard({ projectID }: { projectID?: number }) {
                           </div>
                         </td>
                         <td className="px-4 py-2.5 text-xs text-muted-foreground font-mono">
-                          {view.ip_address}
+                          <div className="inline-flex items-center gap-1.5 px-1.5 py-0.5 rounded-sm bg-muted/50 border border-border/50">
+                            <Server className="w-3 h-3 text-muted-foreground" />
+                            <span className="text-[10px] font-mono text-muted-foreground">
+                              {view.ip_address}
+                            </span>
+                          </div>
                         </td>
                         <td className="px-4 py-2.5 text-xs text-muted-foreground">
                           <div className="flex items-center gap-1">
                             <Clock className="w-3 h-3" />
-                            {new Date(view.viewed_at).toLocaleTimeString([], {
+                            {new Date(view.created_at).toLocaleTimeString([], {
                               hour: '2-digit',
                               minute: '2-digit',
                             })}
@@ -455,75 +627,26 @@ export function Dashboard({ projectID }: { projectID?: number }) {
             <div className="px-4 border-t">
               <PaginationControls
                 page={viewsPage}
-                total={totalViewPages}
+                total={totalPageVisits}
                 onPageChange={handleViewPageChange}
               />
             </div>
           </CardContent>
         </Card>
 
-        {/* Activity Feed (Mapped from getRecentActivities) */}
-        <Card className="shadow-sm flex flex-col">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base flex items-center gap-2">
-              <Activity className="w-4 h-4 text-muted-foreground" /> User Activity
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-0 flex-1 flex flex-col">
-            <div className="flex-1 px-4 py-2">
-              <div className="space-y-4">
-                {activities.length > 0 ? (
-                  activities.map((act) => (
-                    <div
-                      key={act.id}
-                      className="relative pl-4 border-l border-border pb-4 last:pb-0 last:border-0"
-                    >
-                      <div className="absolute left-[-4.5px] top-1.5 w-2 h-2 rounded-full bg-primary" />
-                      <div className="flex flex-col gap-0.5">
-                        <span className="text-sm font-medium">{act.action}</span>
-                        <span className="text-xs text-muted-foreground">
-                          Target: <span className="text-foreground">{act.target_details}</span>
-                        </span>
-                        <div className="flex items-center gap-2 mt-1">
-                          <Badge
-                            variant="secondary"
-                            className="text-[10px] h-4 px-1 rounded-sm font-mono text-muted-foreground"
-                          >
-                            {act.ip_address}
-                          </Badge>
-                          <span className="text-[10px] text-muted-foreground">
-                            {new Date(act.occurred_at).toLocaleTimeString()}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  <div className="h-24 flex items-center justify-center text-xs text-muted-foreground">
-                    No recent activity.
-                  </div>
-                )}
-              </div>
-            </div>
-            <div className="px-4 border-t mt-auto">
-              <PaginationControls
-                page={actPage}
-                total={totalActPages}
-                onPageChange={handleActPageChange}
-              />
-            </div>
-          </CardContent>
-        </Card>
+        <RecentActivityFeed
+          activities={activities}
+          page={actPage}
+          totalPages={totalRecentActivities}
+          onPageChange={handleActPageChange}
+        />
       </div>
 
-      {/* Dialog for Appointments (Unchanged) */}
       <Dialog
         open={!!selectedAppointment}
         onOpenChange={(open) => !open && setSelectedAppointment(null)}
       >
         <DialogContent className="sm:max-w-[500px]">
-          {/* ... Dialog Content ... */}
-          {/* (Kept mostly same as your original code for brevity) */}
           <DialogHeader>
             <DialogTitle>Appointment Details</DialogTitle>
             <DialogDescription>
@@ -531,18 +654,49 @@ export function Dashboard({ projectID }: { projectID?: number }) {
               {selectedAppointment && new Date(selectedAppointment.created_at).toLocaleString()}
             </DialogDescription>
           </DialogHeader>
+
           {selectedAppointment && (
             <div className="grid gap-4 py-4">
-              <p className="text-sm font-medium">{selectedAppointment.name}</p>
-              <div className="p-4 bg-muted/20 rounded-lg text-sm border-l-2 border-primary">
-                {selectedAppointment.message}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <span className="text-xs font-medium text-muted-foreground uppercase">
+                    Client Name
+                  </span>
+                  <p className="text-sm font-medium">{selectedAppointment.name}</p>
+                </div>
+              </div>
+
+              <div className="space-y-3 p-3 bg-muted/30 rounded-lg border">
+                <div className="flex items-center gap-2 text-sm">
+                  <Mail className="w-4 h-4 text-muted-foreground" />
+                  <span>{selectedAppointment.email}</span>
+                </div>
+                {selectedAppointment.contact_number && (
+                  <div className="flex items-center gap-2 text-sm">
+                    <Phone className="w-4 h-4 text-muted-foreground" />
+                    <span>{selectedAppointment.contact_number}</span>
+                  </div>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <span className="text-xs font-medium text-muted-foreground uppercase">
+                  Message Content
+                </span>
+                <div className="p-4 bg-muted/20 rounded-lg text-sm leading-relaxed border-l-2 border-primary">
+                  {selectedAppointment.message || (
+                    <span className="text-muted-foreground italic">No message content.</span>
+                  )}
+                </div>
               </div>
             </div>
           )}
+
           <DialogFooter>
             <Button variant="outline" onClick={() => setSelectedAppointment(null)}>
               Close
             </Button>
+            <Button>Reply via Email</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
