@@ -65,15 +65,12 @@ const DebouncedInput = ({
 };
 
 export const ColorSwatch = ({ label, value, onChange }: ColorSwatchProps) => {
-  // States
   const [localValue, setLocalValue] = useState(value);
 
-  // Update local value when theme value changes
   useEffect(() => {
     setLocalValue(value);
   }, [value]);
 
-  // Convert color to hex for display
   const hexColor = colorFormatter(localValue, 'hex');
 
   return (
@@ -138,22 +135,21 @@ const ThemeColorPanel = ({
     (key: keyof ThemeStyleProps, value: string) => {
       if (!currentTheme) return;
 
-      // apply common styles to both light and dark modes
       if (key === 'font-sans' || key === 'font-serif' || key === 'font-mono' || key === 'radius') {
-        onLocalUpdateSettings({
-          mode: 'light',
-          theme: {
-            ...localSettings?.theme,
-            styles: {
-              ...localSettings?.theme.styles,
-              light: { ...localSettings?.theme.styles?.light, [key]: value },
-              dark: { ...localSettings?.theme.styles?.dark, [key]: value },
-            },
-          },
-        });
-
         return;
       }
+
+      onLocalUpdateSettings({
+        mode: localSettings?.mode,
+        theme: {
+          ...localSettings?.theme,
+          styles: {
+            ...localSettings?.theme.styles,
+            light: { ...localSettings?.theme.styles?.light, [key]: value },
+            dark: { ...localSettings?.theme.styles?.dark, [key]: value },
+          },
+        },
+      });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [currentTheme, settings.theme.styles, localSettings?.theme.styles]
@@ -168,7 +164,6 @@ const ThemeColorPanel = ({
   return (
     <div className="space-y-6">
       <Accordion type="multiple" defaultValue={['brand']} className="w-full space-y-4">
-        {/* Brand Colors */}
         <AccordionItem value="brand" className="rounded-lg border px-4">
           <AccordionTrigger className="cursor-pointer py-3 text-base font-medium">
             Brand Colors

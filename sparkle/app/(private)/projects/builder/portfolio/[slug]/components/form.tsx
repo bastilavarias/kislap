@@ -43,7 +43,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Settings } from '@/contexts/settings-context';
 import { cn } from '@/lib/utils';
 
-// --- Constants ---
 const LAYOUT_OPTIONS = [
   { id: 'default', name: 'Default', icon: LayoutTemplate, description: 'Clean & Standard' },
   { id: 'bento', name: 'Bento', icon: Grid, description: 'Modern Grid' },
@@ -185,7 +184,6 @@ export function Form({
   return (
     <div className="w-full">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        {/* --- LEFT COLUMN: CONTENT (Span 8) --- */}
         <div className="lg:col-span-8 space-y-6">
           <Card>
             <CardContent className="p-6">
@@ -627,7 +625,6 @@ export function Form({
                   </AccordionItem>
                 </Accordion>
 
-                {/* Skills Accordion */}
                 <Accordion type="single" defaultValue="skills" collapsible>
                   <AccordionItem value="skills" className="rounded-lg border px-4">
                     <AccordionTrigger className="cursor-pointer py-3 text-base font-medium hover:no-underline">
@@ -666,7 +663,6 @@ export function Form({
           </Card>
         </div>
 
-        {/* --- RIGHT COLUMN: CUSTOMIZATION (Span 4) --- */}
         <div className="lg:col-span-4 relative">
           <div className="sticky top-6 space-y-4">
             <Card className="border-none shadow-none bg-transparent">

@@ -21,7 +21,6 @@ import { cn } from '@/lib/utils';
 type HeaderProps<T> = {
   error?: string;
   project: APIResponseProject | null;
-  // onTabChange is kept for interface compatibility but not used for routing
   onTabChange?: (value: string) => void;
   onSave: (e?: React.BaseSyntheticEvent) => void | Promise<void>;
   onPublish: (isPublished: boolean) => Promise<void>;
@@ -46,7 +45,6 @@ export function FormHeader<T>({ project, onSave, error, onPublish }: HeaderProps
           </Alert>
         )}
 
-        {/* --- Top Row: Domain & Publish Actions --- */}
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between">
             <Label className="text-muted-foreground text-xs font-bold uppercase tracking-wider flex items-center gap-1">
@@ -55,7 +53,6 @@ export function FormHeader<T>({ project, onSave, error, onPublish }: HeaderProps
           </div>
 
           <div className="flex items-center justify-between gap-4 p-1">
-            {/* Styled Domain Input */}
             <div className="relative flex items-center group">
               <span className="text-muted-foreground/60 text-sm font-medium mr-1 transition-colors group-hover:text-muted-foreground">
                 https://
@@ -73,7 +70,6 @@ export function FormHeader<T>({ project, onSave, error, onPublish }: HeaderProps
               </span>
             </div>
 
-            {/* Publish Toggle */}
             <Button
               variant={isPublished ? 'outline' : 'default'}
               size="sm"
@@ -100,13 +96,11 @@ export function FormHeader<T>({ project, onSave, error, onPublish }: HeaderProps
           </div>
         </div>
 
-        {/* --- Bottom Row: Navigation & Actions --- */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 pt-6 border-t border-border/40">
-          {/* Navigation Buttons (Replaces Tabs) */}
           <div className="flex items-center gap-2 w-full md:w-auto">
             <Button
               asChild
-              variant={!isEditPage ? 'secondary' : 'ghost'}
+              variant={!isEditPage ? 'default' : 'ghost'}
               className={cn(
                 'h-9 px-4 rounded-full transition-all duration-200',
                 !isEditPage ? 'font-semibold ring-0' : 'text-muted-foreground'
@@ -120,7 +114,7 @@ export function FormHeader<T>({ project, onSave, error, onPublish }: HeaderProps
 
             <Button
               asChild
-              variant={isEditPage ? 'secondary' : 'ghost'}
+              variant={isEditPage ? 'default' : 'ghost'}
               className={cn(
                 'h-9 px-4 rounded-full transition-all duration-200',
                 isEditPage ? 'font-semibold ring-0' : 'text-muted-foreground'
@@ -133,7 +127,6 @@ export function FormHeader<T>({ project, onSave, error, onPublish }: HeaderProps
             </Button>
           </div>
 
-          {/* Right Side Actions */}
           <div className="flex items-center gap-2 w-full md:w-auto">
             <Button
               variant="outline"

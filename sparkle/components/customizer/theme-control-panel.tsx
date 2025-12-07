@@ -93,14 +93,13 @@ const ThemeControlPanel = ({
       });
       return;
     }
-    applyThemePreset(preset); // This will apply globally.
+    applyThemePreset(preset);
   };
 
   const handleModeChange = (value: string) => {
     if (value) {
       const newMode = value as Mode;
 
-      // Ensure both themes exist before switching
       const updatedSettings = {
         ...settings,
         ...localSettings,
@@ -196,7 +195,6 @@ const ThemeControlPanel = ({
 
   const form = (
     <div className="flex flex-col gap-6">
-      {/* Top Action Buttons (Copy/Reset) */}
       {!hideTopActionButtons && (
         <div className="flex gap-3">
           <ThemeVariablesDialog
@@ -222,7 +220,6 @@ const ThemeControlPanel = ({
         </div>
       )}
 
-      {/* Themes Selection */}
       <ThemePresetSelect
         presets={presets}
         currentPreset={localSettings?.theme.preset || null}

@@ -211,7 +211,6 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
     setIsFileProcessing(false);
   };
 
-  // Field Handlers
   const onAddWorkExperience = () =>
     workFieldArray.append({
       role: '',

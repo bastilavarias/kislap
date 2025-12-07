@@ -82,10 +82,8 @@ export function Dashboard({ projectId }: { projectId?: number }) {
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Dialog State
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
 
-  // Pagination States
   const [appPage, setAppPage] = useState(1);
   const [viewsPage, setViewsPage] = useState(1);
   const [actPage, setActPage] = useState(1);
@@ -99,7 +97,6 @@ export function Dashboard({ projectId }: { projectId?: number }) {
     try {
       await new Promise((resolve) => setTimeout(resolve, 800));
 
-      // --- GENERATED MOCK DATA ---
       const mockAppointments: Appointment[] = Array.from({ length: 18 }).map((_, i) => ({
         id: i + 1,
         user_id: 100 + i,

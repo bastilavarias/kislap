@@ -100,7 +100,6 @@ export const getAppliedThemeFont = (
 
   // find key of font in fonts object based on value
   const theFont = Object.keys(fonts).find((key) => {
-    console.log('finding the font...');
     return fonts[key as keyof typeof fonts].includes(fontSans as string);
   });
 
