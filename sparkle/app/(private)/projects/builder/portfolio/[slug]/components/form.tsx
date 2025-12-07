@@ -744,7 +744,7 @@ export function Form({
                 <TabsContent value="theme" className="mt-0">
                   <Card>
                     <CardHeader className="pb-2">
-                      <CardTitle className="text-lg">Global Theme</CardTitle>
+                      <CardTitle className="text-lg">Choose Theme</CardTitle>
                       <CardDescription>Customize colors, fonts, and radius.</CardDescription>
                     </CardHeader>
                     <CardContent>
