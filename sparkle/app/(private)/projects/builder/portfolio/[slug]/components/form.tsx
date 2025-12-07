@@ -18,7 +18,6 @@ import {
   Newspaper,
   Zap,
   CloudFog,
-  Monitor,
   CheckCircle2,
 } from 'lucide-react';
 import ThemeControlPanel from '@/components/customizer/theme-control-panel';
@@ -170,7 +169,7 @@ export function Form({
   const {
     register,
     watch,
-    setValue, // We need setValue to sync the prop change to the form data
+    setValue,
     formState: { errors },
   } = formMethods;
 
@@ -179,8 +178,6 @@ export function Form({
   const { fields: showcaseFields, remove: removeShowcase } = showcaseFieldArray;
   const { fields: skillFields, remove: removeSkill, append: appendSkill } = skillFieldArray;
 
-  // Sync the 'layout' prop with the 'layout_name' field in react-hook-form
-  // This ensures that when you submit the form, the currently selected layout from the prop is included.
   useEffect(() => {
     setValue('layout_name', layout);
   }, [layout, setValue]);
@@ -691,7 +688,6 @@ export function Form({
                   </TabsTrigger>
                 </TabsList>
 
-                {/* TAB: LAYOUT SELECTION */}
                 <TabsContent value="layout" className="mt-0">
                   <Card>
                     <CardHeader className="pb-3">
@@ -700,11 +696,11 @@ export function Form({
                     </CardHeader>
                     <CardContent className="grid grid-cols-2 gap-3 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
                       {LAYOUT_OPTIONS.map((option) => {
-                        const isSelected = layout === option.id; // Using Prop
+                        const isSelected = layout === option.id;
                         return (
                           <div
                             key={option.id}
-                            onClick={() => setLayout(option.id)} // Updating Prop
+                            onClick={() => setLayout(option.id)}
                             className={cn(
                               'cursor-pointer group relative flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all duration-200',
                               isSelected
@@ -749,7 +745,6 @@ export function Form({
                   </Card>
                 </TabsContent>
 
-                {/* TAB: THEME CONTROL */}
                 <TabsContent value="theme" className="mt-0">
                   <Card>
                     <CardHeader className="pb-2">
