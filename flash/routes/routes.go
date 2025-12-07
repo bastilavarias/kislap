@@ -4,6 +4,7 @@ import (
 	"flash/internal/appointment"
 	"flash/internal/auth"
 	"flash/internal/document"
+	"flash/internal/page_activity"
 	"flash/internal/portfolio"
 	"flash/internal/project"
 	"flash/internal/user"
@@ -25,16 +26,15 @@ func RegisterRoutes(router *gin.Engine, db *gorm.DB, llm llm.Provider, cf *cloud
 		documentController := document.NewController(db, llm)
 		portfolioController := portfolio.NewController(db)
 		appointmentController := appointment.NewController(db)
+		pageActivityController := page_activity.NewController(db)
 
 		api.POST("/auth/login", authController.Login)
 		api.POST("/auth/github", authController.GithubLogin)
 		api.GET("/auth/refresh", middleware.RefreshTokenValidatorMiddleware(db), authController.Refresh)
 
 		api.POST("/user", userController.Register)
-		//api.POST("/user", middleware.AccessTokenValidatorMiddleware(db), userController.Register)
 
 		api.GET("/projects/list", middleware.AccessTokenValidatorMiddleware(db), projectController.List)
-		//api.GET("/projects/show/:id", middleware.AccessTokenValidatorMiddleware(db), projectController.Show)
 		api.GET("/projects/show/:id", projectController.ShowByID)
 		api.GET("/projects/show/slug/:slug", middleware.AccessTokenValidatorMiddleware(db), projectController.ShowBySlug)
 		api.GET("/projects/show/sub-domain/:sub-domain", projectController.ShowBySubDomain)
@@ -55,5 +55,10 @@ func RegisterRoutes(router *gin.Engine, db *gorm.DB, llm llm.Provider, cf *cloud
 		api.GET("/appointments/show/:id", middleware.AccessTokenValidatorMiddleware(db), appointmentController.Show)
 		api.PUT("/appointments/:id", middleware.AccessTokenValidatorMiddleware(db), appointmentController.Update)
 		api.DELETE("/appointments/:id", middleware.AccessTokenValidatorMiddleware(db), appointmentController.Delete)
+
+		api.POST("/page-activities", pageActivityController.Create)
+		api.GET("/page-activities/:id", middleware.AccessTokenValidatorMiddleware(db), pageActivityController.GetStats)
+		api.GET("/page-activities/:id/top-pages", middleware.AccessTokenValidatorMiddleware(db), pageActivityController.GetTopPages)
+		api.GET("/page-activities/:id/recent-activities", middleware.AccessTokenValidatorMiddleware(db), pageActivityController.GetRecentActivities)
 	}
 }

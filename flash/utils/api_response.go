@@ -6,7 +6,7 @@ type APIResponse[T any] struct {
 	Success bool   `json:"success"`
 	Status  int    `json:"status"`
 	Message string `json:"message"`
-	Data    T      `json:"data,omitempty"`
+	Data    T      `json:"data"`
 	Error   string `json:"error,omitempty"`
 }
 
