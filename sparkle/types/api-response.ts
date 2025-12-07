@@ -1,3 +1,10 @@
+export interface APIResponsePaginationMeta {
+  last_page: number;
+  limit: number;
+  page: number;
+  total: number;
+}
+
 export interface APIResponseDocumentResume {
   name: string;
   location: string;
@@ -196,4 +203,41 @@ export interface APIResponseProject {
   updated_at: string;
   deleted_at?: string;
   portfolio: APIResponsePortfolio;
+}
+export interface APIResponseAppoinment {
+  id: number;
+  name: string;
+  email: string;
+  message: string | null;
+  contact_number: string | null;
+  date: string;
+  time_from: string;
+  time_to: string;
+  created_at: string;
+  updated_at: string;
+  deleted_at?: string;
+}
+
+export interface APIResponsePageActivity {
+  id: number;
+  type: string;
+  page_url: string;
+  ip_address: string;
+  model_id?: number;
+  model_name?: string;
+  created_at: string;
+}
+
+export interface APIResponsePageCount {
+  page_url: string;
+  count: number;
+}
+
+export interface APIResponseDashboardStats {
+  total_views: number;
+  total_clicks: number;
+  unique_visitors: number;
+  top_pages: APIResponsePageCount[];
+  recent_activity: APIResponsePageActivity[];
+  total_activities: number;
 }

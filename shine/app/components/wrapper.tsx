@@ -49,7 +49,6 @@ export function Wrapper() {
       }
 
       if (!extractedSubdomain && (hostname.includes('localhost') || parts.length === 1)) {
-        // Use a default for local testing if no subdomain is present (e.g., 'sebastech')
         extractedSubdomain = 'sebastech';
       }
 

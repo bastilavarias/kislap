@@ -2,6 +2,7 @@ package page_activity
 
 import (
 	"flash/utils"
+	"math"
 	"net/http"
 	"strconv"
 
@@ -65,18 +66,34 @@ func (controller Controller) GetTopPages(context *gin.Context) {
 	projectID, err := strconv.ParseUint(idStr, 10, 64)
 	if err != nil {
 		utils.APIRespondError(context, http.StatusBadRequest, "Invalid Project ID")
+		context.Abort()
 		return
 	}
 
+	page, _ := strconv.Atoi(context.DefaultQuery("page", "1"))
 	limit, _ := strconv.Atoi(context.DefaultQuery("limit", "5"))
 
-	topPages, err := controller.Service.GetTopPages(projectID, limit)
+	topPages, total, err := controller.Service.GetTopPages(projectID, limit)
+
 	if err != nil {
 		utils.APIRespondError(context, http.StatusInternalServerError, err.Error())
+		context.Abort()
 		return
 	}
 
-	utils.APIRespondSuccess(context, http.StatusOK, topPages)
+	lastPage := int(math.Ceil(float64(total) / float64(limit)))
+
+	response := gin.H{
+		"data": topPages,
+		"meta": gin.H{
+			"page":      page,
+			"limit":     limit,
+			"total":     total,
+			"last_page": lastPage,
+		},
+	}
+
+	utils.APIRespondSuccess(context, http.StatusOK, response)
 }
 
 func (controller Controller) GetRecentActivities(context *gin.Context) {

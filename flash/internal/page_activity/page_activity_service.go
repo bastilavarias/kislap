@@ -53,25 +53,32 @@ func (service *Service) GetStats(projectID uint64, page int, limit int) (*Stats,
 	return &stats, nil
 }
 
-func (service *Service) GetTopPages(projectID uint64, limit int) ([]PageCount, error) {
+func (service *Service) GetTopPages(projectID uint64, limit int) ([]PageCount, int64, error) {
 	var topPages []PageCount
+	var total int64
 
 	if limit <= 0 {
 		limit = 5
 	}
 
-	err := service.DB.
-		Model(&models.PageActivity{}).
-		Select("page_url, count(*) as count").
+	pageActivity := service.DB.Model(&models.PageActivity{}).
 		Where("project_id = ?", projectID).
-		Where("type = ?", "view").
+		Where("type = ?", "view")
+
+	if err := pageActivity.Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+
+	err := pageActivity.
+		Select("page_url, count(*) as count").
 		Group("page_url").
 		Order("count(*) DESC").
+		Order("page_url").
 		Limit(limit).
 		Scan(&topPages).
 		Error
 
-	return topPages, err
+	return topPages, total, err
 }
 
 func (service *Service) GetRecentActivities(projectID uint64, page int, limit int) ([]models.PageActivity, error) {

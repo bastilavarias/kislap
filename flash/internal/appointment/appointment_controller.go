@@ -2,6 +2,7 @@ package appointment
 
 import (
 	"flash/utils"
+	"math"
 	"net/http"
 	"strconv"
 
@@ -18,14 +19,35 @@ func NewController(db *gorm.DB) *Controller {
 	return &Controller{Service: service}
 }
 
-func (controller Controller) List(context *gin.Context) {
-	appointments, err := controller.Service.List()
+func (controller Controller) List(c *gin.Context) {
+	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
+	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "10"))
+	projectID := c.Query("project_id")
+
+	if page < 1 {
+		page = 1
+	}
+	if limit < 1 {
+		limit = 10
+	}
+
+	appointments, total, err := controller.Service.List(page, limit, projectID)
 	if err != nil {
-		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
-		context.Abort()
+		utils.APIRespondError(c, http.StatusBadRequest, err.Error())
 		return
 	}
-	utils.APIRespondSuccess(context, http.StatusOK, appointments)
+
+	response := gin.H{
+		"data": appointments,
+		"meta": gin.H{
+			"page":      page,
+			"limit":     limit,
+			"total":     total,
+			"last_page": int(math.Ceil(float64(total) / float64(limit))),
+		},
+	}
+
+	utils.APIRespondSuccess(c, http.StatusOK, response)
 }
 
 func (controller Controller) Create(context *gin.Context) {

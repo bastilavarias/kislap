@@ -10,32 +10,25 @@ type Service struct {
 	DB *gorm.DB
 }
 
-func (service *Service) List(page int, limit int) ([]models.Appointment, int64, error) {
-	if page <= 0 {
-		page = 1
-	}
-
-	if limit <= 0 {
-		limit = 10
-	}
-
-	offset := (page - 1) * limit
-
+func (service *Service) List(page int, limit int, projectID string) ([]models.Appointment, int64, error) {
 	var appointments []models.Appointment
 	var total int64
 
-	query := service.DB.Model(&models.Appointment{})
+	db := service.DB.Model(&models.Appointment{})
 
-	if err := query.Count(&total).Error; err != nil {
+	if projectID != "" {
+		db = db.Where("project_id = ?", projectID)
+	}
+
+	if err := db.Count(&total).Error; err != nil {
 		return nil, 0, err
 	}
 
-	if err := query.
-		Preload("User").
-		Preload("Project").
-		Order("id DESC").
-		Offset(offset).
+	offset := (page - 1) * limit
+	if err := db.Preload("User").Preload("Project").
 		Limit(limit).
+		Offset(offset).
+		Order("id DESC").
 		Find(&appointments).Error; err != nil {
 		return nil, 0, err
 	}

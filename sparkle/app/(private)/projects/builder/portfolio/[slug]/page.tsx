@@ -5,5 +5,5 @@ import { Dashboard } from './components/dashboard'; // Move your dashboard code 
 
 export default function PortfolioDashboardPage() {
   const { project } = usePortfolioBuilder();
-  return <Dashboard projectId={project?.id} />;
+  return <Dashboard projectID={project?.id} />;
 }

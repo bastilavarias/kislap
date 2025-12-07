@@ -197,7 +197,6 @@ export interface APIResponseProject {
   deleted_at?: string;
   portfolio: APIResponsePortfolio;
 }
-
 export interface APIResponseAppoinment {
   id: number;
   name: string;

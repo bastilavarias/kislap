@@ -51,7 +51,7 @@ func RegisterRoutes(router *gin.Engine, db *gorm.DB, llm llm.Provider, cf *cloud
 		api.DELETE("/portfolios/:id", middleware.AccessTokenValidatorMiddleware(db), portfolioController.Delete)
 
 		api.POST("/appointments", appointmentController.Create)
-		api.GET("/appointments/list", middleware.AccessTokenValidatorMiddleware(db), appointmentController.List)
+		api.GET("/appointments", middleware.AccessTokenValidatorMiddleware(db), appointmentController.List)
 		api.GET("/appointments/show/:id", middleware.AccessTokenValidatorMiddleware(db), appointmentController.Show)
 		api.PUT("/appointments/:id", middleware.AccessTokenValidatorMiddleware(db), appointmentController.Update)
 		api.DELETE("/appointments/:id", middleware.AccessTokenValidatorMiddleware(db), appointmentController.Delete)
