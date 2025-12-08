@@ -143,10 +143,7 @@ export function FormHeader<T>({ project, onSave, error, onPublish }: HeaderProps
               size="sm"
               className="flex-1 md:flex-none h-9 bg-foreground text-background hover:bg-foreground/90 shadow-sm"
             >
-              <Link
-                href={`//${project?.sub_domain}.kislap.test/preview?token=sample_token`}
-                target="_blank"
-              >
+              <Link href={`//${project?.sub_domain}.kislap.test`} target="_blank">
                 <ExternalLink className="w-4 h-4 mr-2" />
                 Preview Site
               </Link>
