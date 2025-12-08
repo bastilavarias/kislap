@@ -1,17 +1,24 @@
-import { ChartAreaInteractive } from "@/app/(private)/dashboard/components/chart-area-interactive";
-import { DataTable } from "@/app/(private)/dashboard/components/data-table";
-import { SectionCards } from "@/app/(private)/dashboard/components/section-cards";
-
-import data from "./data.json";
+import { ProjectFormDialog } from '@//components/project-form-dialog';
+import { ProjectList } from '@/app/\(private\)/dashboard/components/projects-list';
 
 export default function Page() {
   return (
-    <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-      <SectionCards />
-      <div className="px-4 lg:px-6">
-        <ChartAreaInteractive />
+    <div className="flex flex-col gap-12">
+      <div className="flex justify-between">
+        <div className="flex gap-1">
+          <div className="text-3xl">📁</div>
+          <div>
+            <h1 className="text-3xl font-bold">Projects</h1>
+            <p className="text-sm">
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Neque, quibusdam.
+            </p>
+          </div>
+        </div>
+        <ProjectFormDialog />
       </div>
-      <DataTable data={data} />
+      <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+        <ProjectList />
+      </div>
     </div>
   );
 }

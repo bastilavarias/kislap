@@ -21,7 +21,7 @@ import {
   CheckCircle2,
 } from 'lucide-react';
 import ThemeControlPanel from '@/components/customizer/theme-control-panel';
-import { FileParserDialog } from '@/app/(private)/projects/builder/portfolio/[slug]/components/file-parser-dialog';
+import { FileParserDialog } from '@/app/\(private\)/dashboard/builder/portfolio/[slug]/components/file-parser-dialog';
 import { PortfolioFormValues } from '@/lib/schemas/portfolio';
 import { UseFormReturn, UseFieldArrayReturn } from 'react-hook-form'; // Removed Controller
 import {

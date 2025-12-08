@@ -60,6 +60,8 @@ interface ProjectFormDialogProps {
   project?: APIResponseProject | null;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
+  trigger?: React.ReactNode;
+  replaceURL?: boolean; // New Prop
 }
 
 export function ProjectFormDialog({
@@ -67,6 +69,7 @@ export function ProjectFormDialog({
   open,
   onOpenChange,
   trigger,
+  replaceURL = false, // Default to false
 }: ProjectFormDialogProps) {
   const { create, update } = useProject();
   const [loading, setLoading] = useState(false);
@@ -118,10 +121,19 @@ export function ProjectFormDialog({
     try {
       if (isEditMode && project) {
         // UPDATE LOGIC
-        // Note: Assuming 'update' hook signature matches (id, payload)
-        const { success, message } = await update(project.id, form);
+        // We now extract 'data' to get the potentially updated slug
+        const { success, data, message } = await update(project.id, form);
+
         if (success) {
           if (onOpenChange) onOpenChange(false);
+
+          // If replaceURL is true and we have a valid slug, perform hard navigation
+          if (replaceURL && data?.slug) {
+            window.location.href = `/dashboard/builder/${currentType}/${data.slug}`;
+            return;
+          }
+
+          // Otherwise just soft refresh
           router.refresh();
         } else {
           setError(message || 'Failed to update project');
@@ -131,7 +143,7 @@ export function ProjectFormDialog({
         const { success, data, message } = await create(form);
         if (success && data) {
           if (onOpenChange) onOpenChange(false);
-          router.push(`/projects/builder/${currentType}/${data.slug}`);
+          router.push(`/dashboard/builder/${currentType}/${data.slug}`);
         } else {
           setError(message || 'Failed to create project');
         }

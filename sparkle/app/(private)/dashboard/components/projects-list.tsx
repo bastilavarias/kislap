@@ -40,7 +40,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { cn } from '@/lib/utils';
-import { ProjectFormDialog } from './project-form-dialog';
+import { ProjectFormDialog } from '@/components/project-form-dialog';
 
 // --- Types ---
 export interface APIResponsePortfolio {
@@ -128,7 +128,7 @@ function ProjectCard({ project, onEdit, onDelete }: ProjectCardProps) {
         </div>
 
         {/* Project Type Icon (Floating) */}
-        <div className="absolute -bottom-5 left-5 z-10">
+        <div className="absolute -bottom-0 left-5 z-10">
           <div className="h-10 w-10 rounded-xl bg-background border shadow-md flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
             <typeInfo.icon className="w-5 h-5 text-foreground/80" />
           </div>
@@ -141,7 +141,7 @@ function ProjectCard({ project, onEdit, onDelete }: ProjectCardProps) {
           <div className="space-y-1 w-full pr-2">
             <h3 className="font-bold text-lg leading-tight tracking-tight group-hover:text-primary transition-colors line-clamp-1">
               <Link
-                href={`/projects/builder/${project.type}/${project.slug}`}
+                href={`/dashboard/builder/${project.type}/${project.slug}`}
                 className="focus:outline-none"
               >
                 <span className="absolute inset-0" aria-hidden="true" />
@@ -180,7 +180,7 @@ function ProjectCard({ project, onEdit, onDelete }: ProjectCardProps) {
               <DropdownMenuContent align="end" className="w-48">
                 <DropdownMenuItem asChild>
                   <Link
-                    href={`/projects/builder/${project.type}/${project.slug}`}
+                    href={`/dashboard/builder/${project.type}/${project.slug}`}
                     className="cursor-pointer"
                   >
                     <Eye className="mr-2 h-4 w-4" /> Open Builder

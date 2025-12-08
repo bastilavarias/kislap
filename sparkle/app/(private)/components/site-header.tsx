@@ -21,7 +21,7 @@ export function SiteHeader() {
   const pathname = usePathname();
 
   const titles: Record<string, string> = {
-    '/dashboard': 'Dashboard',
+    '/dashboard': 'Projects',
     '/projects': 'Projects',
     '/settings': 'Settings',
   };

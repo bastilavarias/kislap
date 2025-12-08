@@ -19,7 +19,7 @@ function BuilderLayoutContent({ children }: { children: ReactNode }) {
 
   return (
     <div>
-      <BackButton to="/projects" className="mb-5" icon={true}>
+      <BackButton to="/dashboard" className="mb-5" icon={true}>
         Go back
       </BackButton>
       <div className="flex flex-col gap-10">

@@ -1,43 +1,32 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { Home, Folder, Settings2 } from "lucide-react";
+import * as React from 'react';
+import { Home, Folder, Settings2 } from 'lucide-react';
 
-import { NavFavorites } from "@/app/(private)/components/nav-favorites";
-import { NavMain } from "@/app/(private)/components/nav-main";
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarHeader,
-  SidebarRail,
-} from "@/components/ui/sidebar";
-import { LogoVersion } from "@/components/logo-version";
+import { NavFavorites } from '@/app/(private)/components/nav-favorites';
+import { NavMain } from '@/app/(private)/components/nav-main';
+import { Sidebar, SidebarContent, SidebarHeader, SidebarRail } from '@/components/ui/sidebar';
+import { LogoVersion } from '@/components/logo-version';
 
 // This is sample data.
 const data = {
   navMain: [
     {
-      title: "Dashboard",
-      url: "/dashboard",
+      title: 'Projects',
+      url: '/dashboard',
       icon: Home,
     },
     {
-      title: "Projects",
-      url: "/projects",
-      icon: Folder,
-      badge: "10",
-    },
-    {
-      title: "Settings",
-      url: "/settings",
+      title: 'Settings',
+      url: '/settings',
       icon: Settings2,
     },
   ],
   favorites: [
     {
-      name: "Project Management & Task Tracking",
-      url: "#",
-      emoji: "📊",
+      name: 'Project Management & Task Tracking',
+      url: '#',
+      emoji: '📊',
     },
   ],
 };
