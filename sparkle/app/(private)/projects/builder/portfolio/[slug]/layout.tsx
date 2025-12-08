@@ -4,11 +4,10 @@ import { ReactNode } from 'react';
 import { PortfolioProvider, usePortfolioBuilder } from './components/portfolio-provider';
 import { FormHeader } from './components/form-header';
 import { BackButton } from '@/components/back-button';
-import { useRouter } from 'next/navigation';
 import { Spinner } from '@/components/ui/shadcn-io/spinner';
 
 function BuilderLayoutContent({ children }: { children: ReactNode }) {
-  const { project, save, publish, isLoading, isSaving, isPublishing } = usePortfolioBuilder();
+  const { project, save, publish, isLoading } = usePortfolioBuilder();
 
   if (isLoading) {
     return (

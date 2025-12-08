@@ -12,7 +12,7 @@ import {
   APIResponsePortfolio,
   APIResponseProject,
 } from '@/types/api-response';
-import { useParams, useRouter, usePathname } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { toast } from 'sonner';
 import { Settings } from '@/contexts/settings-context';
 import { AuthUser, useAuth } from '@/hooks/api/use-auth';

@@ -39,8 +39,6 @@ import { useAppointment } from '@/hooks/api/use-appointment';
 import { usePageActivity } from '@/hooks/api/use-page-activity';
 import { APIResponseAppoinment } from '@/types/api-response';
 
-// --- Interfaces ---
-
 interface PageVisit {
   ip_address: string;
   location: string;
@@ -62,13 +60,9 @@ interface PageStats {
   uniqueVisitors: number;
 }
 
-// --- Constants ---
-
 const APPOINTMENTS_PER_PAGE = 10;
 const VISITS_PER_PAGE = 10;
 const RECENT_ACTS_PER_PAGE = 5;
-
-// --- Helper Components ---
 
 const PaginationControls = ({
   page,
@@ -235,8 +229,6 @@ const RecentActivityFeed = ({
   );
 };
 
-// --- Main Dashboard Component ---
-
 export function Dashboard({ projectID }: { projectID?: number }) {
   const [appointments, setAppointments] = useState<APIResponseAppoinment[]>([]);
   const [pageVisits, setPageVisits] = useState<PageVisit[]>([]);
@@ -248,7 +240,6 @@ export function Dashboard({ projectID }: { projectID?: number }) {
     uniqueVisitors: 0,
   });
 
-  const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedAppointment, setSelectedAppointment] = useState<APIResponseAppoinment | null>(
     null
@@ -278,7 +269,7 @@ export function Dashboard({ projectID }: { projectID?: number }) {
 
     if (success && data) {
       setAppointments(data.data);
-      setAppointmentTotals(data.meta?.last_page || 1);
+      setAppointmentTotals(data.meta?.total || 1);
     } else {
       toast.error(message || 'Failed to load appointments');
     }
@@ -344,13 +335,11 @@ export function Dashboard({ projectID }: { projectID?: number }) {
   useEffect(() => {
     if (projectID) {
       const init = async () => {
-        setIsLoading(true);
         await Promise.all([
           onGetPageStats(),
           onGetAppointments(1, searchTerm),
           onGetPageActivities(1),
         ]);
-        setIsLoading(false);
         onGetPageVisits(1);
       };
 
@@ -380,14 +369,6 @@ export function Dashboard({ projectID }: { projectID?: number }) {
     setActPage(newPage);
     onGetPageActivities(newPage);
   };
-
-  if (isLoading) {
-    return (
-      <div className="flex h-[50vh] w-full items-center justify-center">
-        <Spinner size={40} />
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-10">
@@ -646,16 +627,16 @@ export function Dashboard({ projectID }: { projectID?: number }) {
         open={!!selectedAppointment}
         onOpenChange={(open) => !open && setSelectedAppointment(null)}
       >
-        <DialogContent className="sm:max-w-[500px]">
-          <DialogHeader>
-            <DialogTitle>Appointment Details</DialogTitle>
-            <DialogDescription>
-              Received on{' '}
-              {selectedAppointment && new Date(selectedAppointment.created_at).toLocaleString()}
-            </DialogDescription>
-          </DialogHeader>
+        {selectedAppointment && (
+          <DialogContent className="sm:max-w-[500px]">
+            <DialogHeader>
+              <DialogTitle>Appointment Details</DialogTitle>
+              <DialogDescription>
+                Received on{' '}
+                {selectedAppointment && new Date(selectedAppointment.created_at).toLocaleString()}
+              </DialogDescription>
+            </DialogHeader>
 
-          {selectedAppointment && (
             <div className="grid gap-4 py-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
@@ -690,15 +671,15 @@ export function Dashboard({ projectID }: { projectID?: number }) {
                 </div>
               </div>
             </div>
-          )}
 
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setSelectedAppointment(null)}>
-              Close
-            </Button>
-            <Button>Reply via Email</Button>
-          </DialogFooter>
-        </DialogContent>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setSelectedAppointment(null)}>
+                Close
+              </Button>
+              <Button>Reply via Email</Button>
+            </DialogFooter>
+          </DialogContent>
+        )}
       </Dialog>
     </div>
   );
