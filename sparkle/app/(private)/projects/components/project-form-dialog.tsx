@@ -23,6 +23,7 @@ import { AlertCircleIcon } from 'lucide-react';
 import { Alert, AlertTitle } from '@/components/ui/alert';
 import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
+import { APIResponseProject } from '@/types/api-response';
 
 const projectTypes = [
   {
@@ -55,17 +56,32 @@ const projectTypes = [
   },
 ];
 
-export function ProjectFormDialog() {
-  const { create } = useProject();
+interface ProjectFormDialogProps {
+  project?: APIResponseProject | null;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}
+
+export function ProjectFormDialog({
+  project,
+  open,
+  onOpenChange,
+  trigger,
+}: ProjectFormDialogProps) {
+  const { create, update } = useProject();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const router = useRouter();
+
+  // Determine if we are editing
+  const isEditMode = !!project;
 
   const {
     register,
     handleSubmit,
     setValue,
     watch,
+    reset,
     formState: { errors },
   } = useForm<ProjectFormValues>({
     resolver: zodResolver(ProjectSchema),
@@ -73,42 +89,77 @@ export function ProjectFormDialog() {
       name: '',
       description: '',
       sub_domain: '',
-      type: '',
+      type: 'portfolio',
       published: false,
     },
   });
+
+  // Reset form when dialog opens/closes or project changes
+  useEffect(() => {
+    if (project) {
+      reset({
+        name: project.name,
+        description: project.description || '',
+        sub_domain: project.sub_domain || '',
+        type: project.type,
+        published: project.published,
+      });
+    } else {
+      reset();
+    }
+  }, [project, reset, open]);
 
   const currentType = watch('type');
 
   const onSubmit = async (form: ProjectFormValues) => {
     setError('');
     setLoading(true);
-    const { success, data, message } = await create(form);
-    if (success && data) {
-      router.push(`/projects/builder/${currentType}/${data.slug}`);
-      return;
+
+    try {
+      if (isEditMode && project) {
+        // UPDATE LOGIC
+        // Note: Assuming 'update' hook signature matches (id, payload)
+        const { success, message } = await update(project.id, form);
+        if (success) {
+          if (onOpenChange) onOpenChange(false);
+          router.refresh();
+        } else {
+          setError(message || 'Failed to update project');
+        }
+      } else {
+        // CREATE LOGIC
+        const { success, data, message } = await create(form);
+        if (success && data) {
+          if (onOpenChange) onOpenChange(false);
+          router.push(`/projects/builder/${currentType}/${data.slug}`);
+        } else {
+          setError(message || 'Failed to create project');
+        }
+      }
+    } catch (err) {
+      setError('An unexpected error occurred');
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
-    setError(message);
   };
 
-  useEffect(() => {
-    setValue('type', 'portfolio');
-  }, []);
-
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button className="font-bold">NEW PROJECT</Button>
-      </DialogTrigger>
-      {/* 1. Added 'max-h-[90vh]' to ensure it fits on screen
-         2. Added 'flex flex-col' to manage header/content/footer layout 
-         3. 'overflow-hidden' prevents double scrollbars
-      */}
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
+
+      {/* Default trigger if no props provided (Backward compatibility) */}
+      {!trigger && !onOpenChange && (
+        <DialogTrigger asChild>
+          <Button className="font-bold">NEW PROJECT</Button>
+        </DialogTrigger>
+      )}
+
       <DialogContent className="sm:max-w-[420px] md:max-w-[620px] lg:max-w-[900px] max-h-[95vh] flex flex-col p-0 gap-0 overflow-hidden">
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col h-full max-h-full">
           <DialogHeader className="p-6 pb-2 shrink-0">
-            <DialogTitle className="text-2xl font-bold">Create New Project</DialogTitle>
+            <DialogTitle className="text-2xl font-bold">
+              {isEditMode ? 'Edit Project' : 'Create New Project'}
+            </DialogTitle>
           </DialogHeader>
 
           {/* Scrollable Content Area */}
@@ -170,15 +221,14 @@ export function ProjectFormDialog() {
               {/* Project Type Selection */}
               <div>
                 <Label className="font-medium mb-3 block text-lg">Select Project Type</Label>
-                {/* Responsive Grid: 1 col on mobile, 2 cols on tablet+ */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {projectTypes.map((project) => {
-                    const isActive = project.active;
-                    const isSelected = currentType === project.label;
+                  {projectTypes.map((type) => {
+                    const isActive = type.active;
+                    const isSelected = currentType === type.label;
 
                     return (
                       <Card
-                        key={project.label}
+                        key={type.label}
                         className={cn(
                           'relative overflow-hidden rounded-xl border transition-all duration-200 cursor-pointer text-left group',
                           isSelected
@@ -188,11 +238,10 @@ export function ProjectFormDialog() {
                         )}
                         onClick={() => {
                           if (isActive) {
-                            setValue('type', project.label, { shouldValidate: true });
+                            setValue('type', type.label, { shouldValidate: true });
                           }
                         }}
                       >
-                        {/* Selection Indicator */}
                         <div
                           className={cn(
                             'absolute top-3 right-3 w-4 h-4 rounded-full border border-primary transition-colors flex items-center justify-center',
@@ -203,7 +252,6 @@ export function ProjectFormDialog() {
                           {isSelected && <div className="w-1.5 h-1.5 bg-white rounded-full" />}
                         </div>
 
-                        {/* Coming Soon overlay */}
                         {!isActive && (
                           <div className="absolute inset-0 bg-background/10 backdrop-blur-[1px] flex items-center justify-center z-10 select-none">
                             <span className="bg-muted px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border shadow-sm">
@@ -214,20 +262,19 @@ export function ProjectFormDialog() {
 
                         <CardHeader className="p-4 pb-2">
                           <CardTitle className="text-lg flex items-center gap-2">
-                            <span className="text-2xl">{project.emoji}</span>
-                            <span className="capitalize">{project.label}</span>
+                            <span className="text-2xl">{type.emoji}</span>
+                            <span className="capitalize">{type.label}</span>
                           </CardTitle>
                         </CardHeader>
 
                         <CardContent className="p-4 pt-0">
                           <p className="text-sm text-muted-foreground mb-3 leading-snug min-h-[40px]">
-                            {project.description}
+                            {type.description}
                           </p>
 
-                          {/* Features List */}
-                          {project.features && (
+                          {type.features && (
                             <ul className="space-y-1">
-                              {project.features.map((feat, idx) => (
+                              {type.features.map((feat, idx) => (
                                 <li
                                   key={idx}
                                   className="text-xs text-muted-foreground flex items-center gap-1.5"
@@ -262,7 +309,13 @@ export function ProjectFormDialog() {
               </Button>
             </DialogClose>
             <Button type="submit" disabled={loading} className="h-10 px-8">
-              {loading ? 'Creating...' : 'Create Project'}
+              {loading
+                ? isEditMode
+                  ? 'Updating...'
+                  : 'Creating...'
+                : isEditMode
+                  ? 'Save Changes'
+                  : 'Create Project'}
             </Button>
           </DialogFooter>
         </form>

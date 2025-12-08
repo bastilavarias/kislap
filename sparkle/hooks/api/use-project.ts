@@ -3,10 +3,14 @@ import { ProjectFormValues } from '@/lib/schemas/project';
 import { APIResponseProject } from '@/types/api-response';
 
 export function useProject() {
-  const { apiPost, apiGet, apiPut } = useApi();
+  const { apiPost, apiGet, apiPut, apiDelete } = useApi();
 
   const create = async (form: ProjectFormValues) => {
     return await apiPost<APIResponseProject>('api/projects', form);
+  };
+
+  const update = async (id: number, form: ProjectFormValues) => {
+    return await apiPut<APIResponseProject>(`api/projects/${id}`, form);
   };
 
   const getBySlug = async (slug: string, level: string) => {
@@ -23,10 +27,16 @@ export function useProject() {
     });
   };
 
+  const remove = async (id: number) => {
+    return await apiDelete<APIResponseProject>(`api/projects/${id}`);
+  };
+
   return {
     create,
     getBySlug,
     getList,
     publish,
+    update,
+    remove,
   };
 }

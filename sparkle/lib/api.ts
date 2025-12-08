@@ -10,11 +10,16 @@ export interface APIResponse<T> {
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://api.kislap.test';
 
+// 1. SHARED STATE OUTSIDE THE HOOK
+// This ensures all instances of useApi share the same refresh promise
+let isRefreshing = false;
+let refreshPromise: Promise<string | null> | null = null;
+
 export function useApi() {
   const [accessToken, setAccessToken] = useLocalStorage<string | null>('access_token', null);
   const [_, setStorageAuthUser] = useLocalStorage<AuthUser | null>('auth_user', null);
 
-  const GATEWAY_TIMEOUT_MS = 1200000;
+  const GATEWAY_TIMEOUT_MS = 120000; // 2 minutes
 
   async function apiRequest<T>(
     endpoint: string,
@@ -39,127 +44,130 @@ export function useApi() {
     const timeoutId = setTimeout(() => controller.abort(), GATEWAY_TIMEOUT_MS);
     const isFormData = options.body instanceof FormData;
 
-    const requestOptions: RequestInit = {
-      ...options,
-      headers: buildHeaders(accessToken || undefined, isFormData),
-      credentials: 'include',
-      signal: controller.signal, // Attach the AbortController's signal
+    // Use a local variable for the token so we can swap it during retry
+    let currentToken = accessToken;
+
+    const performFetch = async (token?: string) => {
+      return fetch(`${API_BASE_URL}/${endpoint}`, {
+        ...options,
+        headers: buildHeaders(token || undefined, isFormData),
+        credentials: 'include',
+        signal: controller.signal,
+      });
     };
 
     try {
-      response = await fetch(`${API_BASE_URL}/${endpoint}`, requestOptions);
+      response = await performFetch(currentToken || undefined);
+      clearTimeout(timeoutId);
 
-      clearTimeout(timeoutId); // Clear the timeout if the request finished in time
-
+      // 2. INTERCEPT 401 & HANDLE CONCURRENCY
       if (response.status === 401) {
-        const refreshRes = await fetch(`${API_BASE_URL}/api/auth/refresh`, {
-          method: 'GET',
-          headers: buildHeaders(),
-          credentials: 'include',
-        });
+        if (!isRefreshing) {
+          isRefreshing = true;
+          refreshPromise = (async () => {
+            try {
+              const refreshRes = await fetch(`${API_BASE_URL}/api/auth/refresh`, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include', // Important for cookies
+              });
 
-        if (!refreshRes.ok) {
-          window.location.href = '/login';
-          throw new Error('Unauthorized');
+              if (!refreshRes.ok) throw new Error('Refresh failed');
+
+              const json = await refreshRes.json();
+              const newData = json.data;
+
+              // Update state
+              setAccessToken(newData.access_token);
+              setStorageAuthUser(newData.user);
+
+              return newData.access_token as string;
+            } catch (error) {
+              // Force logout if refresh fails
+              setAccessToken(null);
+              setStorageAuthUser(null);
+              window.location.href = '/login';
+              return null;
+            } finally {
+              isRefreshing = false;
+              refreshPromise = null;
+            }
+          })();
         }
 
-        const refreshedResp = await refreshRes.json();
-        const refreshedUserData = await refreshedResp.data;
-        const newAccessToken = refreshedUserData?.access_token;
+        // Wait for the single refresh request to finish
+        const newAccessToken = await refreshPromise;
 
         if (newAccessToken) {
-          setAccessToken(newAccessToken);
-          setStorageAuthUser(refreshedUserData?.user);
-
+          // 3. RETRY ORIGINAL REQUEST WITH NEW TOKEN
           const retryController = new AbortController();
-          const retryTimeoutId = setTimeout(() => retryController.abort(), GATEWAY_TIMEOUT_MS);
-
-          const retryIsFormData = options.body instanceof FormData;
+          const retryTimeout = setTimeout(() => retryController.abort(), GATEWAY_TIMEOUT_MS);
 
           response = await fetch(`${API_BASE_URL}/${endpoint}`, {
             ...options,
-            headers: buildHeaders(newAccessToken, retryIsFormData),
+            headers: buildHeaders(newAccessToken, isFormData),
             credentials: 'include',
-            signal: retryController.signal, // Use the new signal
+            signal: retryController.signal,
           });
 
-          clearTimeout(retryTimeoutId); // Clear the retry timeout
+          clearTimeout(retryTimeout);
         }
       }
 
-      // Attempt to parse JSON response
       try {
         payload = await response.json();
       } catch (parseError) {
-        // Handle cases where the response is not valid JSON (e.g., 500 error page)
-        console.error('Failed to parse JSON response:', parseError);
-        // Create a generic payload to handle the failure block below
+        console.error('JSON Parse Error:', parseError);
         payload = {
           success: false,
           status: response.status,
-          message: 'Invalid JSON response from server',
-          data: null,
-        } as APIResponse<T>;
-      }
-    } catch (err) {
-      clearTimeout(timeoutId); // Ensure timeout is cleared on any initial error
-      message = err instanceof Error ? err.message : String(err);
-
-      if (message.includes('AbortError')) {
-        // Specific error handling for the timeout
-        message = `Request timed out after ${GATEWAY_TIMEOUT_MS / 1000} seconds.`;
-        return {
-          success: false,
-          status: 408, // 408 Request Timeout is an appropriate status
-          message,
+          message: 'Invalid server response',
           data: null,
         };
       }
+    } catch (err) {
+      clearTimeout(timeoutId);
+      message = err instanceof Error ? err.message : String(err);
 
-      return {
-        success: false,
-        status: response?.status ?? 500,
-        message,
-        data: null,
-      };
+      if (message.includes('AbortError')) {
+        return { success: false, status: 408, message: 'Request timeout', data: null };
+      }
+
+      return { success: false, status: 500, message, data: null };
     }
 
-    // --- Consolidated Error Handling ---
     if (!response?.ok) {
-      // This handles non-2xx HTTP codes and cases where JSON parsing failed (handled in try/catch)
       return {
         success: false,
-        status: payload?.status ?? response.status ?? 500,
-        message: payload?.message || message || 'API Request failed with status code.',
+        status: payload?.status ?? response.status,
+        message: payload?.message || message || 'Request failed',
         data: null,
       };
     }
 
-    // Handle successful 2xx response
     return {
       success: true,
       status: response.status,
-      data: payload!.data as T, // We are confident payload exists and is successful here
-      message: payload?.message || 'API request success.',
+      data: payload!.data as T,
+      message: payload?.message || 'Success',
     };
   }
 
   return {
-    apiGet: <T>(endpoint: string, options?: RequestInit) =>
-      apiRequest<T>(endpoint, { ...options, method: 'GET' }),
-    apiPost: <T, B = unknown>(endpoint: string, body: B, options?: RequestInit) =>
-      apiRequest<T>(endpoint, {
-        ...options,
+    apiGet: <T>(url: string, opts?: RequestInit) => apiRequest<T>(url, { ...opts, method: 'GET' }),
+    apiPost: <T, B = unknown>(url: string, body: B, opts?: RequestInit) =>
+      apiRequest<T>(url, {
+        ...opts,
         method: 'POST',
         body: body instanceof FormData ? body : JSON.stringify(body),
       }),
-    apiPut: <T, B = unknown>(endpoint: string, body: B, options?: RequestInit) =>
-      apiRequest<T>(endpoint, {
-        ...options,
+    apiPut: <T, B = unknown>(url: string, body: B, opts?: RequestInit) =>
+      apiRequest<T>(url, {
+        ...opts,
         method: 'PUT',
         body: body instanceof FormData ? body : JSON.stringify(body),
       }),
-    apiDelete: <T>(endpoint: string, options?: RequestInit) =>
-      apiRequest<T>(endpoint, { ...options, method: 'DELETE' }),
+    apiDelete: <T>(url: string, opts?: RequestInit) =>
+      apiRequest<T>(url, { ...opts, method: 'DELETE' }),
   };
 }

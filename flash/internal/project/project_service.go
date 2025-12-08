@@ -183,12 +183,10 @@ func (service Service) Delete(projectID int) (*models.Project, error) {
 		return nil, err
 	}
 
-	// 1. Delete from DB
 	if err := service.DB.Delete(&proj).Error; err != nil {
 		return nil, err
 	}
 
-	// 2. Delete from Cloudflare
 	if proj.SubDomain != nil {
 		_ = service.DNS.DeleteRecord(*proj.SubDomain)
 	}

@@ -145,12 +145,6 @@ const RecentActivityFeed = ({
             <Activity className="w-4 h-4" />
             Audit Log
           </CardTitle>
-          <Badge
-            variant="outline"
-            className="text-[10px] font-normal text-muted-foreground bg-background"
-          >
-            Live Feed
-          </Badge>
         </div>
       </CardHeader>
 
