@@ -174,6 +174,25 @@ func (service Service) generateTokens(user *models.User) (*LoginResponse, error)
 	}, nil
 }
 
+func (service Service) Logout(userID uint64) error {
+	var user models.User
+
+	if err := service.DB.Where("id = ?", userID).First(&user).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return errors.New("user not found")
+		}
+		return err
+	}
+
+	user.RefreshToken = nil
+
+	if err := service.DB.Save(&user).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func parseGitHubName(fullName string) (string, string) {
 	parts := strings.SplitN(fullName, " ", 2)
 	first := parts[0]

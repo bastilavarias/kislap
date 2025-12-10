@@ -1,6 +1,6 @@
 'use client';
 
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { SidebarTrigger } from '@/components/ui/sidebar';
@@ -14,9 +14,16 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useState } from 'react';
 import { ThemeCustomizer } from '@/components/customizer';
+import { AuthUser, useAuth } from '@/hooks/api/use-auth';
+import { useLocalStorage } from '@/hooks/use-local-storage';
 
 export function SiteHeader() {
   const [isThemeCustomizerOpen, setIsThemeCustomizerOpen] = useState(false);
+  const [_, setAccessToken] = useLocalStorage<string | null>('access_token', null);
+  const [__, setStorageAuthUser] = useLocalStorage<AuthUser | null>('auth_user', null);
+
+  const { logout, setAuthUser } = useAuth();
+  const router = useRouter();
 
   const pathname = usePathname();
 
@@ -26,8 +33,15 @@ export function SiteHeader() {
     '/settings': 'Settings',
   };
 
-  // fallback if no match
   const title = titles[pathname] ?? 'Dashboard';
+
+  const onLogout = () => {
+    setAccessToken(null);
+    setAuthUser(null);
+    setStorageAuthUser(null);
+    router.push('/login');
+    logout();
+  };
 
   return (
     <header className="flex h-(--header-height) shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height)">
@@ -55,9 +69,7 @@ export function SiteHeader() {
                 </a>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => console.log('Logout clicked')}>
-                Logout
-              </DropdownMenuItem>
+              <DropdownMenuItem onClick={onLogout}>Logout</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

@@ -1,6 +1,6 @@
 import { useApi } from '@/lib/api';
-import { useState } from 'react';
 import { useLocalStorage } from '@/hooks/use-local-storage';
+import { useAuthStore } from '@/stores/auth-store';
 
 export type AuthUser = {
   id: number;
@@ -8,7 +8,7 @@ export type AuthUser = {
   last_name: string;
   email: string;
   mobile_number: string;
-  role: 'default' | 'admin' | string; // tighten if you know all roles
+  role: string;
   created_at: string;
   updated_at: string;
   deleted_at: string | null;
@@ -20,15 +20,14 @@ export type AuthLoginData = {
 };
 
 export function useAuth() {
-  const { apiPost } = useApi();
-  const [storageAuthUser, _] = useLocalStorage<AuthUser | null>('auth_user', null);
-  const [authUser, setAuthUser] = useState<AuthUser | null>(null);
+  const { apiPost, apiGet } = useApi();
+  const [storageAuthUser] = useLocalStorage<AuthUser | null>('auth_user', null);
+
+  const authUser = useAuthStore((s) => s.authUser);
+  const setAuthUser = useAuthStore((s) => s.setAuthUser);
 
   const login = async (email: string, password: string) => {
-    return await apiPost<AuthLoginData>('api/auth/login', {
-      email,
-      password,
-    });
+    return await apiPost('api/auth/login', { email, password });
   };
 
   const syncAuthUser = () => {
@@ -37,11 +36,11 @@ export function useAuth() {
     }
   };
 
-  const githubLogin = async (code: string) => {
-    return await apiPost<AuthLoginData>('api/auth/github', {
-      code,
-    });
+  const githubLogin = (code: string) => {
+    return apiPost('api/auth/github', { code });
   };
+
+  const logout = () => apiGet('api/auth/logout');
 
   return {
     login,
@@ -49,5 +48,6 @@ export function useAuth() {
     setAuthUser,
     syncAuthUser,
     githubLogin,
+    logout,
   };
 }

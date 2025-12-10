@@ -37,3 +37,30 @@ func SetCookie(context *gin.Context, name string, data string) {
 
 	http.SetCookie(context.Writer, cookie)
 }
+
+func ClearCookie(context *gin.Context, name string) {
+	domain := ".kislap.test"
+	secure := false
+	sameSite := http.SameSiteLaxMode
+
+	appEnv := os.Getenv("APP_ENV")
+
+	if appEnv == "production" {
+		domain = os.Getenv("APP_DOMAIN")
+		secure = true
+		sameSite = http.SameSiteNoneMode
+	}
+
+	cookie := &http.Cookie{
+		Name:     "refresh_token",
+		Value:    "",
+		Path:     "/",
+		Domain:   domain,
+		HttpOnly: true,
+		MaxAge:   -1,
+		Secure:   secure,
+		SameSite: sameSite,
+	}
+
+	http.SetCookie(context.Writer, cookie)
+}

@@ -153,7 +153,7 @@ export function FormHeader<T>({ project, onSave, error, onPublish }: HeaderProps
                         variant="ghost"
                         size="icon"
                         onClick={() => setIsDialogOpen(true)}
-                        className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                        className="h-8 w-8 hover:bg-secondary hover:text-secondary-foreground"
                       >
                         <Settings className="w-4 h-4" />
                       </Button>
@@ -166,7 +166,6 @@ export function FormHeader<T>({ project, onSave, error, onPublish }: HeaderProps
               </div>
             </div>
 
-            {/* CENTER: Navigation Group (Back Button Removed) */}
             <div className="flex items-center justify-center w-full">
               <div className="flex items-center bg-muted/50 p-1 rounded-lg border border-border/50">
                 <Button
@@ -255,7 +254,6 @@ export function FormHeader<T>({ project, onSave, error, onPublish }: HeaderProps
         </CardContent>
       </Card>
 
-      {/* Integrated Project Settings Dialog */}
       <ProjectFormDialog
         project={project}
         open={isDialogOpen}
@@ -263,7 +261,6 @@ export function FormHeader<T>({ project, onSave, error, onPublish }: HeaderProps
         replaceURL={true}
       />
 
-      {/* Save Confirmation Dialog */}
       <AlertDialog open={isSaveConfirmOpen} onOpenChange={setIsSaveConfirmOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>

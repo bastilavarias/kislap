@@ -109,3 +109,27 @@ func (controller *Controller) GithubLogin(context *gin.Context) {
 		"user":         result.User,
 	})
 }
+
+func (controller Controller) Logout(context *gin.Context) {
+	userID, exists := context.Get("user_id")
+
+	if !exists {
+		utils.APIRespondError(context, http.StatusUnauthorized, "User not exists")
+		context.Abort()
+		return
+	}
+
+	uid := userID.(uint64)
+
+	err := controller.Service.Logout(uid)
+
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		context.Abort()
+		return
+	}
+
+	cookie.ClearCookie(context, "refresh_token")
+
+	utils.APIRespondSuccess(context, http.StatusOK, gin.H{})
+}
