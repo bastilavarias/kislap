@@ -18,6 +18,12 @@ import (
 
 func RegisterRoutes(router *gin.Engine, db *gorm.DB, llm llm.Provider, cf *cloudflare.Client) {
 
+	router.GET("/health", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"status": "up",
+		})
+	})
+
 	api := router.Group("/api")
 	{
 		authController := auth.NewController(db)
