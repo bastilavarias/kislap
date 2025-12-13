@@ -35,13 +35,13 @@ services:
   kislap_admin:
     build:
       context: ./admin
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.prod
     container_name: kislap_admin
     restart: always
     env_file:
       - ./admin/.env
     expose:
-      - "8000"
+      - "3000"
     volumes:
       - ./admin:/var/www/html
       - ./.docker/php/local.ini:/usr/local/etc/php/local.ini

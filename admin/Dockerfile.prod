@@ -1,0 +1,44 @@
+FROM php:8.3-fpm
+
+RUN apt-get update && apt-get install -y \
+    libpng-dev \
+    libjpeg62-turbo-dev \
+    libfreetype6-dev \
+    zip \
+    unzip \
+    curl \
+    libonig-dev \
+    libxml2-dev \
+    libzip-dev \
+    cron \
+    default-mysql-client \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install pdo_mysql mbstring zip exif pcntl gd
+
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+WORKDIR /var/www/html
+
+COPY composer.json composer.lock ./
+
+RUN composer install --no-dev --no-interaction --no-plugins --no-scripts --no-autoloader
+
+COPY --chown=www-data:www-data . .
+
+RUN composer dump-autoload --optimize
+
+RUN chmod -R 775 /var/www/html/storage \
+    && chmod -R 775 /var/www/html/bootstrap/cache
+
+RUN echo "* * * * * www-data /usr/local/bin/php /var/www/html/artisan schedule:run >> /var/log/cron.log 2>&1" > /etc/cron.d/laravel-cron \
+    && chmod 0644 /etc/cron.d/laravel-cron \
+    && crontab /etc/cron.d/laravel-cron \
+    && touch /var/log/cron.log
+
+RUN sed -i 's/listen = .*/listen = 0.0.0.0:3000/' /usr/local/etc/php-fpm.d/zz-docker.conf
+
+EXPOSE 3000
+
+CMD ["sh", "-c", "cron && php-fpm"]
