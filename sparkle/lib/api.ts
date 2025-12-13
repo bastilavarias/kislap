@@ -8,7 +8,7 @@ export interface APIResponse<T> {
   data: T | null;
 }
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://api.kislap.test';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://api.kislap.app/api';
 
 // 1. SHARED STATE OUTSIDE THE HOOK
 // This ensures all instances of useApi share the same refresh promise
