@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('page_activities', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('project_id')->constrained('projects')->nullOnDelete();
+            $table->unsignedBigInteger('project_id')->nullable();
             $table->string('type')->index();
             $table->string('page_url');
             $table->string('ip_address', 45)->nullable();
@@ -22,6 +22,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->index(['model_id', 'model_name']);
+            $table->foreign('project_id')->references('id')->on('projects')->onDelete('set null');
         });
     }
 
