@@ -1,0 +1,93 @@
+services:
+  kislap_web_server:
+    image: nginx:alpine
+    container_name: kislap_web_server
+    ports:
+      - "80:80"
+    restart: always
+    volumes:
+      - ./flash:/app
+      - ./.docker/nginx/conf/prod:/etc/nginx/conf.d
+      - ./.docker/nginx/log:/var/log/nginx
+    depends_on:
+      - kislap_database
+      - kislap_flash
+      - kislap_admin
+    networks:
+      - kislap_subnet
+
+  kislap_flash:
+    build:
+      context: ./flash
+      dockerfile: Dockerfile.prod
+    container_name: kislap_flash
+    env_file:
+      - ./flash/.env
+    restart: always
+    expose:
+      - "5000"
+    depends_on:
+      kislap_database:
+        condition: service_healthy
+    networks:
+      - kislap_subnet
+
+  kislap_admin:
+    build:
+      context: ./admin
+      dockerfile: Dockerfile
+    container_name: kislap_admin
+    restart: always
+    env_file:
+      - ./admin/.env
+    expose:
+      - "8000"
+    volumes:
+      - ./admin:/var/www/html
+      - ./.docker/php/local.ini:/usr/local/etc/php/local.ini
+    depends_on:
+      kislap_database:
+        condition: service_healthy
+    networks:
+      - kislap_subnet
+
+  kislap_database:
+    image: mysql:8
+    container_name: kislap_database
+    env_file:
+      - .env
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: kislap
+    restart: always
+    volumes:
+      - database_data:/var/lib/mysql
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "mysqladmin ping -h localhost -u root -p$${MYSQL_ROOT_PASSWORD} || exit 1",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - kislap_subnet
+
+  kislap_adminer:
+    image: adminer
+    container_name: kislap_adminer
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - kislap_database
+    networks:
+      - kislap_subnet
+
+networks:
+  kislap_subnet:
+    driver: bridge
+
+volumes:
+  database_data:

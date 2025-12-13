@@ -34,3 +34,4 @@ flash/.env
 flash/tmp
 
 .docker/nginx/log
+.env
