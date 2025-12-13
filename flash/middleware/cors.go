@@ -13,24 +13,21 @@ func CORSMiddleware() gin.HandlerFunc {
 			"https://builder.kislap.app",
 			"http://kislap.test",
 		},
-
 		AllowMethods: []string{
-			"GET",
-			"POST",
-			"PUT",
-			"PATCH",
-			"DELETE",
-			"OPTIONS",
+			"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS",
 		},
-
-		AllowHeaders: []string{"Content-Type", "access-control-allow-origin", "access-control-allow-headers"},
-
+		AllowHeaders: []string{
+			"Authorization",
+			"authorization",
+			"Content-Type",
+			"Origin",
+			"Accept",
+			"X-Requested-With",
+		},
 		ExposeHeaders: []string{
 			"Content-Length",
 		},
-
 		AllowCredentials: true,
-
-		MaxAge: 24 * time.Hour,
+		MaxAge:           24 * time.Hour,
 	})
 }
