@@ -3,7 +3,7 @@ services:
     image: nginx:alpine
     container_name: kislap_web_server
     ports:
-      - "80:80"
+      - "2000:2000"
     restart: always
     volumes:
       - ./flash:/app
