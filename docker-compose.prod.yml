@@ -24,8 +24,8 @@ services:
     env_file:
       - ./flash/.env
     restart: always
-    expose:
-      - "5000"
+    ports:
+      - "8000:8000"
     depends_on:
       kislap_database:
         condition: service_healthy
@@ -40,8 +40,8 @@ services:
     restart: always
     env_file:
       - ./admin/.env
-    expose:
-      - "3000"
+    ports:
+      - "3000:3000"
     volumes:
       - ./admin:/var/www/html
       - ./.docker/php/local.ini:/usr/local/etc/php/local.ini
