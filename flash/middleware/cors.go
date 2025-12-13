@@ -9,7 +9,7 @@ import (
 
 func CORSMiddleware() gin.HandlerFunc {
 	return cors.New(cors.Config{
-		AllowOrigins:     []string{"http://kislap.test", "http://sebastech.kislap.test"},
+		AllowOrigins:     []string{"http://kislap.test", "http://sebastech.kislap.test", "https://builder.kislap.app", "https://kislap.app"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length"},
