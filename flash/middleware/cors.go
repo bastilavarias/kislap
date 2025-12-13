@@ -9,11 +9,34 @@ import (
 
 func CORSMiddleware() gin.HandlerFunc {
 	return cors.New(cors.Config{
-		AllowOrigins:     []string{"http://kislap.test", "https://builder.kislap.app"},
-		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
-		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
-		ExposeHeaders:    []string{"Content-Length"},
+		AllowOrigins: []string{
+			"https://builder.kislap.app",
+			"http://kislap.test",
+		},
+
+		AllowMethods: []string{
+			"GET",
+			"POST",
+			"PUT",
+			"PATCH",
+			"DELETE",
+			"OPTIONS",
+		},
+
+		AllowHeaders: []string{
+			"Origin",
+			"Content-Type",
+			"Accept",
+			"Authorization",
+			"X-Requested-With",
+		},
+
+		ExposeHeaders: []string{
+			"Content-Length",
+		},
+
 		AllowCredentials: true,
-		MaxAge:           12 * time.Hour,
+
+		MaxAge: 24 * time.Hour,
 	})
 }
