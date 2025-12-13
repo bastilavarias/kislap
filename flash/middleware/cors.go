@@ -23,13 +23,7 @@ func CORSMiddleware() gin.HandlerFunc {
 			"OPTIONS",
 		},
 
-		AllowHeaders: []string{
-			"Origin",
-			"Content-Type",
-			"Accept",
-			"Authorization",
-			"X-Requested-With",
-		},
+		AllowHeaders: []string{"Content-Type", "access-control-allow-origin", "access-control-allow-headers"},
 
 		ExposeHeaders: []string{
 			"Content-Length",
