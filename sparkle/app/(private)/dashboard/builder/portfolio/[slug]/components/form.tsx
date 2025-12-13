@@ -178,6 +178,7 @@ export function Form({
   const { fields: skillFields, remove: removeSkill, append: appendSkill } = skillFieldArray;
 
   useEffect(() => {
+    //@ts-ignore
     setValue('layout_name', layout);
   }, [layout, setValue]);
 

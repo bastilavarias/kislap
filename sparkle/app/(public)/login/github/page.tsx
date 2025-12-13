@@ -1,5 +1,7 @@
-import Wrapper from '@/app/(public)/login/github/components/wrapper';
+export const dynamic = 'force-dynamic';
+
+import { Callback } from './components/callback';
 
 export default function Page() {
-  return <Wrapper />;
+  return <Callback />;
 }
