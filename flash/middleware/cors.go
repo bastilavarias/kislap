@@ -11,7 +11,7 @@ import (
 func CORSMiddleware() gin.HandlerFunc {
 	return cors.New(cors.Config{
 		AllowOriginFunc: func(origin string) bool {
-			if origin == "https://builder.kislap.app" || origin == "http://kislap.test" {
+			if origin == "https://builder.kislap.app" || origin == "http://kislap.test" || origin == "http://sebastech.kislap.test" {
 				return true
 			}
 
