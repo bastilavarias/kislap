@@ -1,5 +1,3 @@
-import { useLocalStorage } from '@/hooks/use-local-storage';
-
 export interface APIResponse<T> {
   success: boolean;
   status: number;
@@ -7,7 +5,7 @@ export interface APIResponse<T> {
   data: T | null;
 }
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://api.kislap.test';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.kislap.app';
 
 export function useApi() {
   const GATEWAY_TIMEOUT_MS = 1200000;
