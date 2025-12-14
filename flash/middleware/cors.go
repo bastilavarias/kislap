@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"strings"
 	"time"
 
 	"github.com/gin-contrib/cors"
@@ -9,16 +10,22 @@ import (
 
 func CORSMiddleware() gin.HandlerFunc {
 	return cors.New(cors.Config{
-		AllowOrigins: []string{
-			"https://builder.kislap.app",
-			"http://kislap.test",
+		AllowOriginFunc: func(origin string) bool {
+			if origin == "https://builder.kislap.app" || origin == "http://kislap.test" {
+				return true
+			}
+
+			if strings.HasSuffix(origin, ".kislap.app") {
+				return true
+			}
+
+			return false
 		},
 		AllowMethods: []string{
 			"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS",
 		},
 		AllowHeaders: []string{
 			"Authorization",
-			"authorization",
 			"Content-Type",
 			"Origin",
 			"Accept",
