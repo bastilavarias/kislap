@@ -46,8 +46,11 @@ export function Builder() {
         if (!currentSubdomain) {
           throw new Error('No subdomain found.');
         }
+
+        const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://api.kislap.test';
+
         const [response] = await Promise.all([
-          fetch(`http://api.kislap.test/api/projects/show/sub-domain/${currentSubdomain}`),
+          fetch(`${API_BASE_URL}/api/projects/show/sub-domain/${currentSubdomain}`),
           new Promise((resolve) => setTimeout(resolve, 1000)),
         ]);
         if (!response.ok) {
@@ -107,7 +110,7 @@ export function Builder() {
   }
 
   const themeObject = project.portfolio?.theme_object || {};
-  const themeStyles: ThemeStyles = themeObject.styles || {};
+  const themeStyles: ThemeStyles = themeObject?.styles || {};
 
   const settings = {
     theme: JSON.parse(JSON.stringify(themeObject)),
