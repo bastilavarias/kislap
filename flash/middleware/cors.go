@@ -15,6 +15,10 @@ func CORSMiddleware() gin.HandlerFunc {
 				return true
 			}
 
+			if origin == "https://sebastech.kislap.app" {
+				return true
+			}
+
 			if strings.HasSuffix(origin, ".kislap.app") {
 				return true
 			}
