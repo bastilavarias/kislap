@@ -10,9 +10,24 @@
   },
 
   "vars": {
+    "NEXT_PUBLIC_ROOT_DOMAIN": "kislap.app",
     "NEXT_PUBLIC_API_BASE_URL": "https://api.kislap.app",
-    "NEXT_PUBLIC_KISLAP_ROOT_URL": "https://api.kislap.app/health",
     "NEXT_PUBLIC_KISLAP_GITHUB_URL": "https://api.kislap.app/health",
     "NEXT_PUBLIC_KISLAP_FACEBOOK_URL": "https://api.kislap.app/health",
   },
+
+  "routes": [
+    // {
+    //   "pattern": "kislap.app",
+    //   "custom_domain": true,
+    // },
+    // {
+    //   "pattern": "www.kislap.app",
+    //   "custom_domain": true,
+    // },
+    {
+      "pattern": "*.kislap.app/*",
+      "zone_name": "kislap.app",
+    },
+  ],
 }
