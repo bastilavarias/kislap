@@ -8,6 +8,7 @@ import (
 
 type Project struct {
 	ID          uint64         `gorm:"primaryKey;autoIncrement" json:"id"`
+	UserID      uint64         `gorm:"index" json:"user_id"`
 	Name        string         `gorm:"size:255;not null" json:"name"`
 	Description string         `gorm:"type:text" json:"description,omitempty"`
 	Slug        string         `gorm:"size:255;uniqueIndex;not null" json:"slug"`
@@ -18,5 +19,10 @@ type Project struct {
 	UpdatedAt   time.Time      `gorm:"autoUpdateTime" json:"updated_at"`
 	DeletedAt   gorm.DeletedAt `gorm:"index" json:"deleted_at,omitempty"`
 
+	User      *User      `gorm:"foreignKey:UserID" json:"user,omitempty"`
 	Portfolio *Portfolio `gorm:"foreignKey:ProjectID" json:"portfolio,omitempty"`
+}
+
+func (Project) TableName() string {
+	return "projects"
 }

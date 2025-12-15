@@ -9,15 +9,13 @@ import (
 	"flash/internal/project"
 	"flash/internal/user"
 	"flash/middleware"
-	"flash/sdk/cloudflare"
 	"flash/sdk/llm"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
-func RegisterRoutes(router *gin.Engine, db *gorm.DB, llm llm.Provider, cf *cloudflare.Client) {
-
+func RegisterRoutes(router *gin.Engine, db *gorm.DB, llm llm.Provider) {
 	router.GET("/health", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"status": "up",
@@ -28,7 +26,7 @@ func RegisterRoutes(router *gin.Engine, db *gorm.DB, llm llm.Provider, cf *cloud
 	{
 		authController := auth.NewController(db)
 		userController := user.NewController(db)
-		projectController := project.NewController(db, cf)
+		projectController := project.NewController(db)
 		documentController := document.NewController(db, llm)
 		portfolioController := portfolio.NewController(db)
 		appointmentController := appointment.NewController(db)
@@ -67,5 +65,6 @@ func RegisterRoutes(router *gin.Engine, db *gorm.DB, llm llm.Provider, cf *cloud
 		api.GET("/page-activities/:id", middleware.AccessTokenValidatorMiddleware(db), pageActivityController.GetStats)
 		api.GET("/page-activities/:id/visits", middleware.AccessTokenValidatorMiddleware(db), pageActivityController.GetVisits)
 		api.GET("/page-activities/:id/recent-activities", middleware.AccessTokenValidatorMiddleware(db), pageActivityController.GetRecentActivities)
+
 	}
 }

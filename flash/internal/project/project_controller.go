@@ -1,7 +1,6 @@
 package project
 
 import (
-	"flash/sdk/cloudflare"
 	"flash/utils"
 	"net/http"
 	"strconv"
@@ -14,17 +13,21 @@ type Controller struct {
 	Service *Service
 }
 
-func NewController(db *gorm.DB, dns *cloudflare.Client) *Controller {
+func NewController(db *gorm.DB) *Controller {
 	service := &Service{
-		DB:  db,
-		DNS: dns,
+		DB: db,
 	}
 
 	return &Controller{Service: service}
 }
 
 func (controller Controller) List(context *gin.Context) {
-	projects, err := controller.Service.List()
+	userID := context.GetUint64("user_id")
+
+	page, _ := strconv.Atoi(context.DefaultQuery("page", "1"))
+	limit, _ := strconv.Atoi(context.DefaultQuery("limit", "10"))
+
+	projects, err := controller.Service.List(userID, page, limit)
 
 	if err != nil {
 		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
@@ -45,7 +48,9 @@ func (controller Controller) Create(context *gin.Context) {
 		return
 	}
 
-	project, err := controller.Service.Create(request.ToServicePayload())
+	userID := context.GetUint64("user_id")
+
+	project, err := controller.Service.Create(userID, request.ToServicePayload())
 	if err != nil {
 		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
 		context.Abort()

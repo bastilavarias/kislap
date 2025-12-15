@@ -30,7 +30,7 @@ func SetCookie(context *gin.Context, name string, data string) {
 		Path:     "/",
 		Domain:   domain,
 		HttpOnly: true,
-		MaxAge:   int((7 * 24 * time.Hour).Seconds()),
+		MaxAge:   int((7 * 24 * time.Hour).Seconds()), // 1 week
 		Secure:   secure,
 		SameSite: sameSite,
 	}

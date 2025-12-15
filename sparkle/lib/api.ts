@@ -10,8 +10,6 @@ export interface APIResponse<T> {
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://api.kislap.app/api';
 
-// 1. SHARED STATE OUTSIDE THE HOOK
-// This ensures all instances of useApi share the same refresh promise
 let isRefreshing = false;
 let refreshPromise: Promise<string | null> | null = null;
 
@@ -44,9 +42,7 @@ export function useApi() {
     const timeoutId = setTimeout(() => controller.abort(), GATEWAY_TIMEOUT_MS);
     const isFormData = options.body instanceof FormData;
 
-    // Use a local variable for the token so we can swap it during retry
     let currentToken = accessToken;
-
     const performFetch = async (token?: string) => {
       return fetch(`${API_BASE_URL}/${endpoint}`, {
         ...options,
@@ -60,7 +56,6 @@ export function useApi() {
       response = await performFetch(currentToken || undefined);
       clearTimeout(timeoutId);
 
-      // 2. INTERCEPT 401 & HANDLE CONCURRENCY
       if (response.status === 401) {
         if (!isRefreshing) {
           isRefreshing = true;
@@ -77,13 +72,12 @@ export function useApi() {
               const json = await refreshRes.json();
               const newData = json.data;
 
-              // Update state
               setAccessToken(newData.access_token);
               setStorageAuthUser(newData.user);
 
               return newData.access_token as string;
             } catch (error) {
-              // Force logout if refresh fails
+              console.error('Token refresh error:', error);
               setAccessToken(null);
               setStorageAuthUser(null);
               window.location.href = '/login';

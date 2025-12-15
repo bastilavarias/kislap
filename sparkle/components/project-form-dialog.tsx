@@ -97,9 +97,9 @@ export function ProjectFormDialog({
     },
   });
 
-  // Reset form when dialog opens/closes or project changes
   useEffect(() => {
     if (project) {
+      //@ts-ignore
       reset({
         name: project.name,
         description: project.description || '',
@@ -120,26 +120,21 @@ export function ProjectFormDialog({
 
     try {
       if (isEditMode && project) {
-        // UPDATE LOGIC
-        // We now extract 'data' to get the potentially updated slug
         const { success, data, message } = await update(project.id, form);
 
         if (success) {
           if (onOpenChange) onOpenChange(false);
 
-          // If replaceURL is true and we have a valid slug, perform hard navigation
           if (replaceURL && data?.slug) {
             window.location.href = `/dashboard/builder/${currentType}/${data.slug}`;
             return;
           }
 
-          // Otherwise just soft refresh
           router.refresh();
         } else {
           setError(message || 'Failed to update project');
         }
       } else {
-        // CREATE LOGIC
         const { success, data, message } = await create(form);
         if (success && data) {
           if (onOpenChange) onOpenChange(false);
