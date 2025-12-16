@@ -231,7 +231,6 @@ const ThemeControlPanel = ({
         hideRandomButton={hideImportButton}
       />
 
-      {/* Original Mode Toggle (Hidden based on props) */}
       {!hideModeToggle && (
         <div className="flex flex-col gap-4">
           <h3 className="text-lg font-medium">Mode</h3>

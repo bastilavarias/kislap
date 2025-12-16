@@ -13,15 +13,6 @@ type Props = {
 export function ThemeCustomizer({ open, setOpen }: Props) {
   return (
     <Sheet open={open} modal={true}>
-      {/*<SheetTrigger asChild onClick={() => setOpen(true)}>*/}
-      {/*  <RainbowButton*/}
-      {/*    className="cursor-pointer"*/}
-      {/*    aria-label="Theme customizer"*/}
-      {/*    data-tour="theme-customizer"*/}
-      {/*  >*/}
-      {/*    <Palette className="h-4 w-4" />*/}
-      {/*  </RainbowButton>*/}
-      {/*</SheetTrigger>*/}
       <SheetContent className="h-full w-full gap-0 sm:max-w-[400px] [&>button]:hidden">
         <SheetHeader className="min-h-(--header-height) flex-row items-center justify-between border-b border-dashed px-6">
           <SheetTitle>Theme Customizer</SheetTitle>
