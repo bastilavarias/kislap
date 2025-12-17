@@ -77,6 +77,7 @@ export function useApi() {
 
               return newData.access_token as string;
             } catch (error) {
+              window.localStorage.setItem('error', JSON.stringify(error));
               console.error('Token refresh error:', error);
               setAccessToken(null);
               setStorageAuthUser(null);
@@ -89,11 +90,9 @@ export function useApi() {
           })();
         }
 
-        // Wait for the single refresh request to finish
         const newAccessToken = await refreshPromise;
 
         if (newAccessToken) {
-          // 3. RETRY ORIGINAL REQUEST WITH NEW TOKEN
           const retryController = new AbortController();
           const retryTimeout = setTimeout(() => retryController.abort(), GATEWAY_TIMEOUT_MS);
 
