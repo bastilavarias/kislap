@@ -1,6 +1,7 @@
 package cookie
 
 import (
+	"log"
 	"net/http"
 	"os"
 	"time"
@@ -10,17 +11,28 @@ import (
 )
 
 func SetCookie(context *gin.Context, name string, data string) {
-	_ = godotenv.Load()
+	log.Printf("[Cookie] SetCookie called for: %s", name)
 
+	_ = godotenv.Load()
 	appEnv := os.Getenv("APP_ENV")
 
 	domain := ".kislap.test"
 	secure := false
 	sameSite := http.SameSiteLaxMode
 
+	log.Printf("[Cookie] Environment detected: '%s'", appEnv)
+
 	if appEnv == "production" {
-		domain = os.Getenv("APP_COOKIE_DOMAIN")
+		envDomain := os.Getenv("APP_COOKIE_DOMAIN")
+
+		// 3. Log raw env var to catch empty strings
+		if envDomain == "" {
+			log.Println("[Cookie] CRITICAL WARNING: APP_COOKIE_DOMAIN is empty!")
+		}
+
+		domain = envDomain
 		secure = true
+		// Note: Keeping SameSiteLaxMode is correct for subdomains (.kislap.app)
 	}
 
 	cookie := &http.Cookie{
@@ -34,10 +46,15 @@ func SetCookie(context *gin.Context, name string, data string) {
 		SameSite: sameSite,
 	}
 
+	log.Printf("[Cookie] Final Config -> Domain: '%s' | Secure: %v | SameSite: %v",
+		cookie.Domain, cookie.Secure, cookie.SameSite)
+
 	http.SetCookie(context.Writer, cookie)
 }
 
 func ClearCookie(context *gin.Context, name string) {
+	log.Printf("[Cookie] ClearCookie called for: %s", name)
+
 	domain := ".kislap.test"
 	secure := false
 	sameSite := http.SameSiteLaxMode
@@ -50,7 +67,7 @@ func ClearCookie(context *gin.Context, name string) {
 	}
 
 	cookie := &http.Cookie{
-		Name:     "refresh_token",
+		Name:     name,
 		Value:    "",
 		Path:     "/",
 		Domain:   domain,
@@ -59,6 +76,8 @@ func ClearCookie(context *gin.Context, name string) {
 		Secure:   secure,
 		SameSite: sameSite,
 	}
+
+	log.Printf("[Cookie] Clearing -> Domain: '%s' | Secure: %v", cookie.Domain, cookie.Secure)
 
 	http.SetCookie(context.Writer, cookie)
 }
