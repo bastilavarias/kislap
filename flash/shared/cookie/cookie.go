@@ -25,14 +25,12 @@ func SetCookie(context *gin.Context, name string, data string) {
 	if appEnv == "production" {
 		envDomain := os.Getenv("APP_COOKIE_DOMAIN")
 
-		// 3. Log raw env var to catch empty strings
 		if envDomain == "" {
 			log.Println("[Cookie] CRITICAL WARNING: APP_COOKIE_DOMAIN is empty!")
 		}
 
 		domain = envDomain
 		secure = true
-		// Note: Keeping SameSiteLaxMode is correct for subdomains (.kislap.app)
 	}
 
 	cookie := &http.Cookie{
