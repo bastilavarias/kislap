@@ -21,7 +21,6 @@ func SetCookie(context *gin.Context, name string, data string) {
 	if appEnv == "production" {
 		domain = os.Getenv("APP_COOKIE_DOMAIN")
 		secure = true
-		sameSite = http.SameSiteNoneMode
 	}
 
 	cookie := &http.Cookie{
@@ -48,7 +47,6 @@ func ClearCookie(context *gin.Context, name string) {
 	if appEnv == "production" {
 		domain = os.Getenv("APP_COOKIE_DOMAIN")
 		secure = true
-		sameSite = http.SameSiteNoneMode
 	}
 
 	cookie := &http.Cookie{
