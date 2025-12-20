@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Loader2, Github } from 'lucide-react';
 import { useLocalStorage } from '@/hooks/use-local-storage';
@@ -14,6 +14,7 @@ export function Callback() {
   const [error, setError] = useState('');
   const [_, setAccessToken] = useLocalStorage<string | null>('access_token', null);
   const [__, setStorageAuthUser] = useLocalStorage<AuthUser | null>('auth_user', null);
+  const hasFetched = useRef(false);
 
   useEffect(() => {
     const code = searchParams.get('code');

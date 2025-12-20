@@ -1,6 +1,6 @@
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
-import ClientAuthGuard from '@/app/(private)/components/client-auth-guard';
+import ClientAuthGuard from '@/components/client-auth-guard';
 import { AuthProvider } from '@/contexts/auth-context';
 
 export default function Layout({ children }: { children: React.ReactNode }) {

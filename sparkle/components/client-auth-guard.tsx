@@ -5,7 +5,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { useLocalStorage } from '@/hooks/use-local-storage';
 import { useAuthContext } from '@/contexts/auth-context';
 
-const GUEST_ONLY_ROUTES = ['/', '/login', '/about-us'];
+const GUEST_ONLY_ROUTES = ['/', '/login', '/login/github', '/about-us'];
 
 export default function ClientAuthGuard({ children }: { children: React.ReactNode }) {
   const { syncAuthUser } = useAuthContext();
@@ -23,24 +23,26 @@ export default function ClientAuthGuard({ children }: { children: React.ReactNod
     if (!mounted) return;
 
     const isGuestRoute = GUEST_ONLY_ROUTES.includes(pathname);
+    const isCallbackRoute = pathname.includes('callback');
 
     if (accessToken) {
-      if (isGuestRoute) {
+      if (isGuestRoute || isCallbackRoute) {
         router.replace('/dashboard');
       } else {
+        //@ts-ignore
         syncAuthUser();
       }
       return;
     }
 
     if (!accessToken) {
-      if (isGuestRoute) {
+      if (isGuestRoute || isCallbackRoute) {
         return;
       }
 
       router.replace('/login');
     }
-  }, [accessToken, router, pathname, mounted, syncAuthUser]);
+  }, [accessToken, router, pathname, mounted]);
 
   if (!mounted) return null;
 
