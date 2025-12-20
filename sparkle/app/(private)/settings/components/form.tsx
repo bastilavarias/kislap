@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, use } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { userSchema, type UserFormValues } from '@/lib/schemas/user';
@@ -21,7 +21,8 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Loader2, Mail, Phone, Github, Globe, Camera } from 'lucide-react';
+import { Loader2, Mail, Github, Globe, Camera } from 'lucide-react';
+import { useAuth } from '@/hooks/api/use-auth';
 
 export function SettingsForm() {
   const [loading, setLoading] = useState(true);
@@ -29,38 +30,29 @@ export function SettingsForm() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const { authUser } = useAuth();
+
   const form = useForm<UserFormValues>({
     resolver: zodResolver(userSchema),
     defaultValues: {
       first_name: '',
       last_name: '',
+      email: '',
       mobile_number: '',
       newsletter: false,
     },
   });
 
   useEffect(() => {
-    async function loadUserData() {
-      try {
-        const response = await fetch('/api/user');
-        const data = await response.json();
-
-        setUser(data);
-        setImagePreview(data.image_url);
-        form.reset({
-          first_name: data.first_name,
-          last_name: data.last_name,
-          mobile_number: data.mobile_number || '',
-          newsletter: Boolean(data.newsletter),
-        });
-      } catch (error) {
-        toast.error('Failed to load user settings');
-      } finally {
-        setLoading(false);
-      }
+    if (authUser) {
+      form.setValue('first_name', authUser.first_name);
+      form.setValue('last_name', authUser.last_name);
+      form.setValue('email', authUser.email);
+      form.setValue('mobile_number', authUser.mobile_number);
+      setUser(authUser);
+      setLoading(false);
     }
-    loadUserData();
-  }, [form]);
+  }, [authUser]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -70,7 +62,6 @@ export function SettingsForm() {
         setImagePreview(reader.result as string);
       };
       reader.readAsDataURL(file);
-      // Here you would typically upload the file to your API
       toast.info('Image preview updated locally.');
     }
   };
@@ -139,89 +130,99 @@ export function SettingsForm() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
-            {/* Personal Details */}
-            <Card className="shadow-none border-zinc-200 dark:border-zinc-800">
+            <Card className="shadow-none">
               <CardHeader className="pb-4">
                 <CardTitle className="text-base">Personal Details</CardTitle>
               </CardHeader>
-              <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField
-                  control={form.control}
-                  name="first_name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-xs uppercase tracking-wider text-muted-foreground">
-                        First Name
-                      </FormLabel>
-                      <FormControl>
-                        <Input {...field} className="bg-transparent" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="last_name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-xs uppercase tracking-wider text-muted-foreground">
-                        Last Name
-                      </FormLabel>
-                      <FormControl>
-                        <Input {...field} className="bg-transparent" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <div className="space-y-2">
-                  <FormLabel className="text-xs uppercase tracking-wider text-muted-foreground">
-                    Email (Locked)
-                  </FormLabel>
-                  <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-muted-foreground text-sm">
-                    <Mail className="w-4 h-4" />
-                    {user?.email}
-                  </div>
+              <CardContent className="grid grid-cols-1 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="first_name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-xs uppercase tracking-wider text-muted-foreground">
+                          First Name
+                        </FormLabel>
+                        <FormControl>
+                          <Input {...field} className="bg-transparent" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="last_name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-xs uppercase tracking-wider text-muted-foreground">
+                          Last Name
+                        </FormLabel>
+                        <FormControl>
+                          <Input {...field} className="bg-transparent" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </div>
-                <FormField
-                  control={form.control}
-                  name="mobile_number"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-xs uppercase tracking-wider text-muted-foreground">
-                        Mobile
-                      </FormLabel>
-                      <FormControl>
-                        <Input {...field} value={field.value ?? ''} className="bg-transparent" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </CardContent>
-            </Card>
+                <div className="grid grid-cols-1 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-xs uppercase tracking-wider text-muted-foreground">
+                          Email (Locked)
+                        </FormLabel>
 
-            {/* Newsletter */}
-            <Card className="shadow-none border-zinc-200 dark:border-zinc-800">
-              <CardContent className="pt-6">
-                <FormField
-                  control={form.control}
-                  name="newsletter"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-center space-x-3 space-y-0">
-                      <FormControl>
-                        <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-                      </FormControl>
-                      <div className="space-y-1">
-                        <FormLabel className="text-sm font-medium">Email Marketing</FormLabel>
-                        <FormDescription className="text-xs">
-                          Receive updates about new features.
-                        </FormDescription>
-                      </div>
-                    </FormItem>
-                  )}
-                />
+                        <FormControl>
+                          <Input {...field} readOnly className="cursor-not-allowed" />
+                        </FormControl>
+
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="mobile_number"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-xs uppercase tracking-wider text-muted-foreground">
+                          Mobile
+                        </FormLabel>
+                        <FormControl>
+                          <Input {...field} value={field.value ?? ''} className="bg-transparent" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <Card className="shadow-none border-zinc-200 dark:border-zinc-800">
+                  <CardContent>
+                    <FormField
+                      control={form.control}
+                      name="newsletter"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-row items-center space-x-3 space-y-0">
+                          <FormControl>
+                            <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                          </FormControl>
+                          <div className="space-y-1">
+                            <FormLabel className="text-sm font-medium">Email Marketing</FormLabel>
+                            <FormDescription className="text-xs">
+                              Receive updates about new features.
+                            </FormDescription>
+                          </div>
+                        </FormItem>
+                      )}
+                    />
+                  </CardContent>
+                </Card>
               </CardContent>
             </Card>
           </div>

@@ -5,7 +5,6 @@ import { Home, Settings2, LogOut, Command, Sparkles, Sun, Moon, Check, Laptop } 
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 
-import { SidebarTrigger } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import {
@@ -156,9 +155,6 @@ export function SiteHeader() {
     <header className="sticky top-0 z-50 flex h-[var(--header-height)] w-full items-center border-b bg-background/80 backdrop-blur-md py-10">
       <div className="container relative flex h-full items-center justify-between px-4 lg:px-6 mx-auto">
         <div className="flex items-center gap-4">
-          <div className="md:hidden">
-            <SidebarTrigger />
-          </div>
           <LogoVersion />
         </div>
 

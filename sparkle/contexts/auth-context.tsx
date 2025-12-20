@@ -6,7 +6,7 @@ import { useAuth } from '@/hooks/api/use-auth';
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const auth = useAuth(); // one shared instance
+  const auth = useAuth();
 
   return <AuthContext.Provider value={auth}>{children}</AuthContext.Provider>;
 }

@@ -8,9 +8,9 @@ export default function Page() {
         <div className="flex gap-1">
           <div className="text-3xl">📁</div>
           <div>
-            <h1 className="text-3xl font-bold">Projects</h1>
-            <p className="text-sm">
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Neque, quibusdam.
+            <h1 className="text-3xl font-bold tracking-tight">Projects</h1>
+            <p className="text-sm text-muted-foreground">
+              Manage nad customize all of your projects.
             </p>
           </div>
         </div>
