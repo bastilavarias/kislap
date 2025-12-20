@@ -124,15 +124,17 @@ func (service Service) GithubLogin(code string) (*LoginResponse, error) {
 
 	firstName, lastName := parseGitHubName(githubUser.Name)
 	var user models.User
-	err = service.DB.Where("email = ?", githubUser.Email).First(&user).Error
+	err = service.DB.Where("email = ?", githubUser.Email).Where("github = ?", 1).First(&user).Error
 
-	if errors.Is(err, gorm.ErrRecordNotFound) {
+	if errors.Is(err, gorm.ErrRecordNotFound) && firstName != "" && lastName != "" && githubUser.Email != "" {
 		registeredUser := &models.User{
-			FirstName: firstName,
-			LastName:  lastName,
-			Email:     githubUser.Email,
-			Role:      "default",
-			ImageURL:  &githubUser.AvatarURL,
+			FirstName:  firstName,
+			LastName:   lastName,
+			Email:      githubUser.Email,
+			Role:       "default",
+			ImageURL:   &githubUser.AvatarURL,
+			Newsletter: true,
+			Github:     true,
 		}
 		emptyPassword := ""
 		registeredUser.Password = &emptyPassword

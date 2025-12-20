@@ -10,6 +10,9 @@ export type AuthUser = {
   mobile_number: string;
   role: string;
   image_url: string;
+  newsletter: boolean;
+  github: boolean;
+  google: boolean;
   created_at: string;
   updated_at: string;
   deleted_at: string | null;
@@ -22,7 +25,10 @@ export type AuthLoginData = {
 
 export function useAuth() {
   const { apiPost, apiGet } = useApi();
-  const [storageAuthUser] = useLocalStorage<AuthUser | null>('auth_user', null);
+
+  // 1. Get Setters for LocalStorage
+  const [storageAuthUser, setStorageAuthUser] = useLocalStorage<AuthUser | null>('auth_user', null);
+  const [accessToken, setAccessToken] = useLocalStorage<string | null>('access_token', null);
 
   const authUser = useAuthStore((s) => s.authUser);
   const setAuthUser = useAuthStore((s) => s.setAuthUser);
@@ -41,7 +47,17 @@ export function useAuth() {
     return apiPost('api/auth/github', { code });
   };
 
-  const logout = () => apiGet('api/auth/logout');
+  const logout = async () => {
+    setAuthUser(null);
+    setStorageAuthUser(null);
+    setAccessToken(null);
+
+    try {
+      await apiGet('api/auth/logout');
+    } catch (error) {
+      console.error('Logout API failed', error);
+    }
+  };
 
   return {
     login,

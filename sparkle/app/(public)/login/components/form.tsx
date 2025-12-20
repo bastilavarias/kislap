@@ -11,7 +11,6 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { useLocalStorage } from '@/hooks/use-local-storage';
 import Link from 'next/link';
 
-// Helper to wrap "Coming Soon" sections
 function ComingSoonWrapper({
   children,
   className,

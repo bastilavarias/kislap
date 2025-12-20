@@ -22,6 +22,9 @@ return new class extends Migration
             $table->string('role', 50)->default('default');
             $table->string('refresh_token')->nullable();
             $table->string('image_url')->nullable();
+            $table->boolean('newsletter')->default(0);
+            $table->boolean('github')->default(0);
+            $table->boolean('google')->default(0);
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

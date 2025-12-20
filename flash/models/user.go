@@ -16,6 +16,9 @@ type User struct {
 	Role         string         `gorm:"size:50;not null;default:default" json:"role"`
 	RefreshToken *string        `gorm:"size:255" json:"refresh_token,omitempty"`
 	ImageURL     *string        `gorm:"size:255" json:"image_url,omitempty"`
+	Newsletter   bool           `gorm:"type:int" json:"newsletter"`
+	Github       bool           `gorm:"type:int" json:"github"`
+	Google       bool           `gorm:"type:int" json:"google"`
 	CreatedAt    time.Time      `gorm:"autoCreateTime" json:"created_at"`
 	UpdatedAt    time.Time      `gorm:"autoUpdateTime" json:"updated_at"`
 	DeletedAt    gorm.DeletedAt `gorm:"index" json:"deleted_at,omitempty"`

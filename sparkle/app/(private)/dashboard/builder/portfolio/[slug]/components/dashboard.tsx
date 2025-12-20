@@ -262,7 +262,7 @@ export function Dashboard({ projectID }: { projectID?: number }) {
 
     if (success && data) {
       setAppointments(data.data);
-      setAppointmentTotals(data.meta?.total || 1);
+      setAppointmentTotals(data.meta?.total || 0);
     } else {
       toast.error(message || 'Failed to load appointments');
     }
