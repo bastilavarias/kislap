@@ -10,6 +10,9 @@ export type AuthUser = {
   mobile_number: string;
   role: string;
   image_url: string;
+  newsletter: boolean;
+  github: boolean;
+  google: boolean;
   created_at: string;
   updated_at: string;
   deleted_at: string | null;

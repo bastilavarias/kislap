@@ -61,7 +61,7 @@ interface ProjectFormDialogProps {
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
   trigger?: React.ReactNode;
-  replaceURL?: boolean; // New Prop
+  replaceURL?: boolean;
 }
 
 export function ProjectFormDialog({
@@ -69,14 +69,13 @@ export function ProjectFormDialog({
   open,
   onOpenChange,
   trigger,
-  replaceURL = false, // Default to false
+  replaceURL = false,
 }: ProjectFormDialogProps) {
   const { create, update } = useProject();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const router = useRouter();
 
-  // Determine if we are editing
   const isEditMode = !!project;
 
   const {
@@ -154,23 +153,27 @@ export function ProjectFormDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
 
-      {/* Default trigger if no props provided (Backward compatibility) */}
       {!trigger && !onOpenChange && (
         <DialogTrigger asChild>
           <Button className="font-bold">NEW PROJECT</Button>
         </DialogTrigger>
       )}
 
-      <DialogContent className="sm:max-w-[420px] md:max-w-[620px] lg:max-w-[900px] max-h-[95vh] flex flex-col p-0 gap-0 overflow-hidden">
+      {/* RESPONSIVE UPDATE: 
+         - Mobile: w-screen h-screen (Full screen)
+         - Desktop (sm+): Adaptive width, max-height limit, rounded corners 
+      */}
+      <DialogContent className="w-screen h-screen sm:w-full sm:h-auto sm:max-h-[90vh] sm:max-w-[420px] md:max-w-[620px] lg:max-w-[900px] p-0 gap-0 overflow-hidden flex flex-col rounded-none sm:rounded-lg border-0 sm:border">
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col h-full max-h-full">
-          <DialogHeader className="p-6 pb-2 shrink-0">
-            <DialogTitle className="text-2xl font-bold">
+          {/* Header: Smaller padding on mobile */}
+          <DialogHeader className="p-4 sm:p-6 pb-2 sm:pb-2 shrink-0 border-b sm:border-b-0">
+            <DialogTitle className="text-xl sm:text-2xl font-bold">
               {isEditMode ? 'Edit Project' : 'Create New Project'}
             </DialogTitle>
           </DialogHeader>
 
-          {/* Scrollable Content Area */}
-          <div className="flex-1 overflow-y-auto p-6 pt-2">
+          {/* Scrollable Content: Smaller padding on mobile */}
+          <div className="flex-1 overflow-y-auto p-4 sm:p-6 pt-4 sm:pt-2">
             {error && (
               <Alert variant="destructive" className="mb-6">
                 <AlertCircleIcon className="h-4 w-4" />
@@ -200,7 +203,7 @@ export function ProjectFormDialog({
                       <Input
                         {...register('sub_domain')}
                         placeholder="myportfolio"
-                        className="shadow-sm pr-24" // padding for the suffix
+                        className="shadow-sm pr-24"
                       />
                       <span className="absolute right-3 text-muted-foreground font-mono text-sm bg-background/50 pointer-events-none">
                         .kislap.app
@@ -212,11 +215,11 @@ export function ProjectFormDialog({
                   </div>
                 </div>
 
-                <div className="h-full">
+                <div className="flex flex-col h-full">
                   <Label className="font-medium mb-1.5 block">Description</Label>
                   <Textarea
                     {...register('description')}
-                    className="shadow-sm h-[calc(100%-28px)] min-h-[100px] resize-none"
+                    className="shadow-sm flex-1 min-h-[120px] md:min-h-[100px] resize-none"
                     placeholder="A brief description of what this project is about..."
                   />
                   {errors.description && (
@@ -227,7 +230,9 @@ export function ProjectFormDialog({
 
               {/* Project Type Selection */}
               <div>
-                <Label className="font-medium mb-3 block text-lg">Select Project Type</Label>
+                <Label className="font-medium mb-3 block text-base sm:text-lg">
+                  Select Project Type
+                </Label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {projectTypes.map((type) => {
                     const isActive = type.active;
@@ -268,8 +273,8 @@ export function ProjectFormDialog({
                         )}
 
                         <CardHeader className="p-4 pb-2">
-                          <CardTitle className="text-lg flex items-center gap-2">
-                            <span className="text-2xl">{type.emoji}</span>
+                          <CardTitle className="text-base sm:text-lg flex items-center gap-2">
+                            <span className="text-xl sm:text-2xl">{type.emoji}</span>
                             <span className="capitalize">{type.label}</span>
                           </CardTitle>
                         </CardHeader>
@@ -280,7 +285,9 @@ export function ProjectFormDialog({
                           </p>
 
                           {type.features && (
-                            <ul className="space-y-1">
+                            <ul className="space-y-1 hidden sm:block">
+                              {' '}
+                              {/* Hide details on very small screens if needed, or keep */}
                               {type.features.map((feat, idx) => (
                                 <li
                                   key={idx}
@@ -309,13 +316,13 @@ export function ProjectFormDialog({
             </div>
           </div>
 
-          <DialogFooter className="p-6 border-t bg-muted/20 shrink-0">
+          <DialogFooter className="p-4 sm:p-6 border-t bg-muted/20 shrink-0 gap-3 sm:gap-2 flex-col-reverse sm:flex-row">
             <DialogClose asChild>
-              <Button type="button" variant="outline" className="h-10 px-8">
+              <Button type="button" variant="outline" className="h-10 w-full sm:w-auto px-8">
                 Cancel
               </Button>
             </DialogClose>
-            <Button type="submit" disabled={loading} className="h-10 px-8">
+            <Button type="submit" disabled={loading} className="h-10 w-full sm:w-auto px-8">
               {loading
                 ? isEditMode
                   ? 'Updating...'

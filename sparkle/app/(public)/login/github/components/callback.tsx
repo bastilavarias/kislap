@@ -11,10 +11,10 @@ export function Callback() {
   const { githubLogin, setAuthUser } = useAuth();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [hasFetched, setHasFetched] = useState(false);
   const [error, setError] = useState('');
   const [_, setAccessToken] = useLocalStorage<string | null>('access_token', null);
   const [__, setStorageAuthUser] = useLocalStorage<AuthUser | null>('auth_user', null);
-  const hasFetched = useRef(false);
 
   useEffect(() => {
     const code = searchParams.get('code');
@@ -23,19 +23,23 @@ export function Callback() {
       return;
     }
 
-    handleAuth(code);
+    //@TODO:  Fix this, this page always called TWICE.
+    if (!hasFetched) {
+      handleAuth(code);
+    }
   }, [searchParams]);
 
   const handleAuth = async (code: string) => {
+    setHasFetched(true);
     setError('');
     setLoading(true);
 
     const { success, data, message } = await githubLogin(code);
-
     if (success && data) {
       setAccessToken(data.access_token);
       setAuthUser(data.user);
       setStorageAuthUser(data.user);
+
       router.push('/dashboard');
       return;
     }

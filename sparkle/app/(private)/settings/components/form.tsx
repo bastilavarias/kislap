@@ -21,8 +21,9 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Loader2, Mail, Github, Globe, Camera } from 'lucide-react';
+import { Loader2, Github, Globe, Camera, CheckCircle2, CircleOff, LinkIcon } from 'lucide-react';
 import { useAuth } from '@/hooks/api/use-auth';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 export function SettingsForm() {
   const [loading, setLoading] = useState(true);
@@ -33,6 +34,7 @@ export function SettingsForm() {
   const { authUser } = useAuth();
 
   const form = useForm<UserFormValues>({
+    // @ts-ignore
     resolver: zodResolver(userSchema),
     defaultValues: {
       first_name: '',
@@ -49,7 +51,9 @@ export function SettingsForm() {
       form.setValue('last_name', authUser.last_name);
       form.setValue('email', authUser.email);
       form.setValue('mobile_number', authUser.mobile_number);
+      form.setValue('newsletter', authUser.newsletter);
       setUser(authUser);
+      setImagePreview(authUser?.image_url);
       setLoading(false);
     }
   }, [authUser]);
@@ -86,7 +90,6 @@ export function SettingsForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        {/* Profile Header & Avatar */}
         <div className="flex flex-col md:flex-row items-start md:items-center gap-6 pb-6 border-b">
           <div className="relative group">
             <Avatar className="w-24 h-24 border">
@@ -226,36 +229,64 @@ export function SettingsForm() {
               </CardContent>
             </Card>
           </div>
-
           <div className="space-y-6">
-            {/* Connected Accounts */}
             <Card className="shadow-none border-zinc-200 dark:border-zinc-800">
               <CardHeader className="pb-4">
                 <CardTitle className="text-base">Connected Accounts</CardTitle>
                 <CardDescription className="text-xs">
-                  Log in providers linked to this account.
+                  Manage the providers linked to your account.
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center justify-between text-sm">
+              <CardContent className="space-y-5">
+                <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <Github className="w-4 h-4" />
-                    <span>GitHub</span>
+                    <div className="p-2 bg-zinc-100 dark:bg-zinc-800 rounded-full">
+                      <Github className="w-4 h-4" />
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-sm font-medium leading-none">GitHub</span>
+                      <span className="text-[10px] text-muted-foreground mt-1">Authentication</span>
+                    </div>
                   </div>
-                  {user?.github_id ? (
-                    <span className="text-[10px] bg-zinc-100 dark:bg-zinc-800 px-2 py-0.5 rounded text-zinc-600 dark:text-zinc-400 font-medium">
-                      CONNECTED
-                    </span>
+
+                  {user?.github ? (
+                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20">
+                      <CheckCircle2 className="w-3 h-3" />
+                      LINKED
+                    </div>
                   ) : (
-                    <span className="text-[10px] text-muted-foreground">NOT LINKED</span>
+                    <Button variant="outline" size="sm" className="h-7 text-xs gap-2 rounded-full">
+                      <LinkIcon className="w-3 h-3" />
+                      Connect
+                    </Button>
                   )}
                 </div>
-                <div className="flex items-center justify-between text-sm">
+
+                <div className="h-px bg-zinc-100 dark:bg-zinc-800 w-full" />
+
+                {/* Google Row */}
+                <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <Globe className="w-4 h-4" />
-                    <span>Google</span>
+                    <div className="p-2 bg-zinc-100 dark:bg-zinc-800 rounded-full">
+                      <Globe className="w-4 h-4" />
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-sm font-medium leading-none">Google</span>
+                      <span className="text-[10px] text-muted-foreground mt-1">Authentication</span>
+                    </div>
                   </div>
-                  <span className="text-[10px] text-muted-foreground uppercase">NOT LINKED</span>
+
+                  {user?.google ? (
+                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20">
+                      <CheckCircle2 className="w-3 h-3" />
+                      LINKED
+                    </div>
+                  ) : (
+                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-medium bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-700">
+                      <CircleOff className="w-3 h-3" />
+                      NOT LINKED
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -264,15 +295,28 @@ export function SettingsForm() {
 
         <div className="flex items-center justify-between pt-4 border-t">
           <p className="text-xs text-muted-foreground">
-            Last updated: {new Date(user?.updated_at).toLocaleDateString()}
+            Last updated: {new Date(user?.updated_at).toLocaleDateString()}{' '}
+            {new Date(user?.updated_at).toLocaleTimeString()}
           </p>
-          <Button type="submit" disabled={form.formState.isSubmitting} className="min-w-[120px]">
-            {form.formState.isSubmitting ? (
-              <Loader2 className="h-4 w-4 animate-spin text-zinc-400" />
-            ) : (
-              'Save Settings'
-            )}
-          </Button>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="inline-block">
+                  <Button type="submit" disabled className="min-w-[120px]">
+                    {form.formState.isSubmitting ? (
+                      <Loader2 className="h-4 w-4 animate-spin text-zinc-400" />
+                    ) : (
+                      'Save Settings'
+                    )}
+                  </Button>
+                </span>
+              </TooltipTrigger>
+
+              <TooltipContent>
+                <p>This feature is underway!</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
       </form>
     </Form>
