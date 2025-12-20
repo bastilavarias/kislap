@@ -17,6 +17,7 @@ import { cn } from '@/lib/utils';
 
 // Style Imports
 import './globals.css';
+import { StorageInitializer } from '@/components/storage-initializer';
 
 const fontSans = Geist({
   subsets: ['latin'],
@@ -137,6 +138,7 @@ const RootLayout = async ({ children }: { children: ReactNode }) => {
         />
       </head>
       <body className="flex min-h-full w-full flex-auto flex-col">
+        <StorageInitializer />
         <NextProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <SettingsProvider settingsCookie={settingsCookie} mode={mode}>
             <ThemeProvider>{children}</ThemeProvider>
