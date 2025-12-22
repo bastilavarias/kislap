@@ -36,7 +36,7 @@ export default function Form({ className, ...props }: React.ComponentPropsWithou
 
   const clientId = process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID;
   const redirectUri = process.env.NEXT_PUBLIC_GITHUB_REDIRECT_URI;
-  const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}`;
+  const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=user:email`;
 
   return (
     <div className={cn('flex flex-col gap-6', className)} {...props}>

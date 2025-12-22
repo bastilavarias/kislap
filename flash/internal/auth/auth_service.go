@@ -7,6 +7,8 @@ import (
 	"errors"
 	"flash/models"
 	"flash/shared/jwt"
+	"fmt"
+	"io"
 	"os"
 	"strings"
 
@@ -107,26 +109,47 @@ func (service Service) GithubLogin(code string) (*LoginResponse, error) {
 	}
 
 	if githubUser.Email == "" {
-		emailResp, _ := client.Get("https://api.github.com/user/emails")
-		defer emailResp.Body.Close()
-		var emails []struct {
-			Email   string `json:"email"`
-			Primary bool   `json:"primary"`
+		emailResp, err := client.Get("https://api.github.com/user/emails")
+		if err != nil {
+			return nil, err
 		}
-		json.NewDecoder(emailResp.Body).Decode(&emails)
+		defer emailResp.Body.Close()
+
+		if emailResp.StatusCode != 200 {
+			bodyBytes, _ := io.ReadAll(emailResp.Body)
+			return nil, fmt.Errorf("github API error: %s - %s", emailResp.Status, string(bodyBytes))
+		}
+
+		var emails []struct {
+			Email    string `json:"email"`
+			Primary  bool   `json:"primary"`
+			Verified bool   `json:"verified"`
+		}
+
+		if err := json.NewDecoder(emailResp.Body).Decode(&emails); err != nil {
+			return nil, fmt.Errorf("error decoding emails: %v", err)
+		}
+
 		for _, e := range emails {
-			if e.Primary {
+			if e.Primary && e.Verified {
 				githubUser.Email = e.Email
 				break
 			}
 		}
 	}
 
+	if githubUser.Email == "" {
+		return nil, fmt.Errorf("could not retrieve a primary, verified email from GitHub")
+	}
+
 	firstName, lastName := parseGitHubName(githubUser.Name)
 	var user models.User
+
 	err = service.DB.Where("email = ?", githubUser.Email).Where("github = ?", 1).First(&user).Error
 
-	if errors.Is(err, gorm.ErrRecordNotFound) && firstName != "" && lastName != "" && githubUser.Email != "" {
+	fmt.Println("the email:", githubUser.Email)
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
 		registeredUser := &models.User{
 			FirstName:  firstName,
 			LastName:   lastName,
@@ -138,7 +161,12 @@ func (service Service) GithubLogin(code string) (*LoginResponse, error) {
 		}
 		emptyPassword := ""
 		registeredUser.Password = &emptyPassword
+
+		if createErr := service.DB.Create(registeredUser).Error; createErr != nil {
+			return nil, createErr
+		}
 		user = *registeredUser
+
 	} else if err != nil {
 		return nil, err
 	}
