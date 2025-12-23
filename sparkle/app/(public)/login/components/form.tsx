@@ -31,8 +31,8 @@ function ComingSoonWrapper({
 }
 
 export default function Form({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
-  const [termsAccepted, setTermsAccepted] = useState(false);
-  const [_, setNewsletter] = useLocalStorage<boolean>('newsletter_opt_in', false);
+  const [termsAccepted, setTermsAccepted] = useState(true);
+  const [_, setNewsletter] = useLocalStorage<boolean>('newsletter_opt_in', true);
 
   const clientId = process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID;
   const redirectUri = process.env.NEXT_PUBLIC_GITHUB_REDIRECT_URI;
@@ -49,11 +49,17 @@ export default function Form({ className, ...props }: React.ComponentPropsWithou
           <div className="grid gap-4">
             <Button
               variant="outline"
-              className="w-full h-12 text-lg flex items-center justify-center gap-3 relative"
-              disabled={!termsAccepted}
+              className={cn(
+                'w-full h-12 text-lg flex items-center justify-center gap-3 relative',
+                !termsAccepted && 'pointer-events-none opacity-50'
+              )}
               asChild
             >
-              <Link href={githubAuthUrl}>
+              <Link
+                href={githubAuthUrl}
+                aria-disabled={!termsAccepted}
+                tabIndex={!termsAccepted ? -1 : undefined}
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="32"
@@ -101,7 +107,6 @@ export default function Form({ className, ...props }: React.ComponentPropsWithou
             </span>
           </div>
 
-          {/* Inactive: Manual Form */}
           <ComingSoonWrapper>
             <div className="grid gap-6 p-1">
               <div className="grid gap-2">
@@ -126,7 +131,6 @@ export default function Form({ className, ...props }: React.ComponentPropsWithou
             </div>
           </ComingSoonWrapper>
 
-          {/* Active: Terms & Newsletter */}
           <div className="grid gap-4 mt-2">
             <div className="flex items-top space-x-2">
               <Checkbox
@@ -143,13 +147,13 @@ export default function Form({ className, ...props }: React.ComponentPropsWithou
                 </Label>
                 <p className="text-xs text-muted-foreground">
                   You agree to our{' '}
-                  <a href="#" className="underline hover:text-primary">
+                  <Link href="/terms" target="_blank" className="underline hover:text-primary">
                     Terms of Service
-                  </a>{' '}
+                  </Link>{' '}
                   and{' '}
-                  <a href="#" className="underline hover:text-primary">
+                  <Link href="/privacy" target="_blank" className="underline hover:text-primary">
                     Privacy Policy
-                  </a>
+                  </Link>
                   .
                 </p>
               </div>

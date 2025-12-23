@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, ReactNode, useMemo } from 'react';
 import { useForm, UseFormReturn, useFieldArray, UseFieldArrayReturn } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { PortfolioFormValues, PortfolioSchema } from '@/lib/schemas/portfolio';
@@ -44,14 +44,21 @@ interface PortfolioContextType {
   setIsFileUploadDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
   isFileProcessing: boolean;
   fileProcessingError: string;
-  processResumeFile: () => Promise<void>;
+  hasContent: boolean;
+  hasContentWorkExperience: boolean;
+  hasContentEducation: boolean;
+  hasContentProjects: boolean;
+  hasContentSkills: boolean;
+  hasLayout: boolean;
+  hasTheme: boolean;
 
-  // Handlers for Form
   onAddWorkExperience: () => void;
   onAddEducation: () => void;
   onAddShowcase: () => void;
   onAddTechnologyToShowcase: (index: number, name: string) => void;
   onRemoveTechnologyFromShowcase: (showcaseIndex: number, technologyIndex: number) => void;
+
+  processResumeFile: () => Promise<void>;
 }
 
 const PortfolioContext = createContext<PortfolioContextType | undefined>(undefined);
@@ -147,6 +154,8 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
   const educationFieldArray = useFieldArray({ control, name: 'education' });
   const showcaseFieldArray = useFieldArray({ control, name: 'showcases' });
   const skillFieldArray = useFieldArray({ control, name: 'skills' });
+
+  const values = watch();
 
   useEffect(() => {
     if (authUser) setUser(authUser);
@@ -245,6 +254,34 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
     );
   };
 
+  const hasContent = useMemo(() => {
+    return !!(values.name?.trim() && values.job_title?.trim());
+  }, [values.name, values.job_title]);
+
+  const hasContentWorkExperience = useMemo(() => {
+    return (values.work_experiences?.length ?? 0) > 0;
+  }, [values.work_experiences]);
+
+  const hasContentEducation = useMemo(() => {
+    return (values.education?.length ?? 0) > 0;
+  }, [values.education]);
+
+  const hasContentProjects = useMemo(() => {
+    return (values.showcases?.length ?? 0) > 0;
+  }, [values.showcases]);
+
+  const hasContentSkills = useMemo(() => {
+    return (values.skills?.length ?? 0) > 0;
+  }, [values.skills]);
+
+  const hasLayout = useMemo(() => {
+    return !!layout;
+  }, [layout]);
+
+  const hasTheme = useMemo(() => {
+    return !!localThemeSettings;
+  }, [localThemeSettings]);
+
   return (
     <PortfolioContext.Provider
       value={{
@@ -269,12 +306,19 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
         setIsFileUploadDialogOpen,
         isFileProcessing,
         fileProcessingError,
-        processResumeFile,
+        hasContent,
+        hasContentWorkExperience,
+        hasContentEducation,
+        hasContentProjects,
+        hasContentSkills,
+        hasLayout,
+        hasTheme,
         onAddWorkExperience,
         onAddEducation,
         onAddShowcase,
         onAddTechnologyToShowcase,
         onRemoveTechnologyFromShowcase,
+        processResumeFile,
       }}
     >
       {children}
