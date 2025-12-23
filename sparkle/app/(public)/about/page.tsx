@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { ArrowRight, Code2, Heart, Zap, Globe2, Users, Sparkles } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 export default function Page() {
   return (
@@ -141,13 +141,21 @@ export default function Page() {
         <div className="container px-4 md:px-6">
           <div className="flex flex-col md:flex-row items-center gap-12 md:gap-24">
             <div className="w-full md:w-1/3 flex justify-center md:justify-end">
-              <div className="relative w-64 h-64 md:w-80 md:h-80 rounded-2xl overflow-hidden bg-gradient-to-br from-primary/20 to-purple-500/20 shadow-2xl rotate-3 hover:rotate-0 transition-transform duration-500">
-                <div className="absolute inset-0 flex items-center justify-center bg-zinc-900 text-zinc-700">
-                  <span className="text-sm font-mono">Founder Image</span>
-                </div>
+              <div className="relative w-64 h-64 md:w-80 md:h-80 rounded-2xl overflow-hidden bg-gradient-to-br from-primary/20 to-purple-500/20 shadow-2xl rotate-3 hover:rotate-0 transition-transform duration-500 ring-1 ring-white/10">
+                <Avatar className="w-full h-full rounded-none">
+                  <AvatarImage
+                    src="https://avatars.githubusercontent.com/u/24890911?v=4"
+                    alt="Sebastian Curtis Lavarias"
+                    className="object-cover w-full h-full"
+                  />
+                  <AvatarFallback className="text-4xl font-bold rounded-none bg-zinc-900 text-zinc-500">
+                    SC
+                  </AvatarFallback>
+                </Avatar>
               </div>
             </div>
 
+            {/* Text Content */}
             <div className="w-full md:w-2/3 space-y-6 text-center md:text-left">
               <h2 className="text-3xl md:text-4xl font-bold">
                 Built with{' '}
@@ -156,13 +164,13 @@ export default function Page() {
               </h2>
               <p className="text-lg text-muted-foreground leading-relaxed">
                 "I started Kislap because I was tired of spending weekends fighting with CSS just to
-                update my portfolio. I wanted a tool that felt like magic something that respected
+                update my portfolio. I wanted a tool that felt like magic—something that respected
                 my time as a builder but delivered the polish of a professional designer."
               </p>
 
               <div>
-                <h4 className="font-bold text-xl">The Creator</h4>
-                <p className="text-muted-foreground">Founder & Lead Engineer</p>
+                <h4 className="font-bold text-xl">Sebastian Curtis Lavarias</h4>
+                <p className="text-muted-foreground">"Ang Pasimuno ng Kalokohan :D"</p>
               </div>
             </div>
           </div>
