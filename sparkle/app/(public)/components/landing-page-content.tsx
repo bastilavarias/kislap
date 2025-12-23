@@ -10,15 +10,11 @@ import {
   Globe,
   LayoutTemplate,
   Code2,
-  Rocket,
   ShieldCheck,
-  Sparkles,
   GitBranch,
   Terminal,
   Cpu,
   Database,
-  Clock,
-  Calendar,
   FileText,
   Wand2,
   Send,
@@ -33,9 +29,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
-import { Card } from '@/components/ui/card';
 
-// --- Animations ---
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
@@ -75,7 +69,7 @@ export function LandingPageContent() {
             variants={fadeIn}
             className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed"
           >
-            No drag-and-drop chaos. No design skills needed. <br className="hidden md:block" />
+            No drag and drop chaos. No design skills needed. <br className="hidden md:block" />
             Just fill in the blanks, and Kislap generates a high-performance site instantly.
           </motion.p>
 
@@ -95,23 +89,24 @@ export function LandingPageContent() {
               </Link>
             </Button>
             <Button variant="outline" size="lg" className="h-14 px-8 text-lg rounded-full" asChild>
-              <a href="https://github.com/your-repo" target="_blank" rel="noopener noreferrer">
+              <a
+                href="https://github.com/bastilavarias/kislap"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <Github className="mr-2 w-5 h-5" /> Star on GitHub
               </a>
             </Button>
           </motion.div>
 
-          {/* 2. HERO VISUAL: The "Transformation" Engine */}
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
             className="relative mx-auto max-w-6xl mt-16"
           >
-            {/* Ambient Background Glow */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[110%] h-[110%] bg-indigo-500/20 blur-[120px] rounded-full -z-10 opacity-40" />
 
-            {/* THE FLOATING ARROW (Moved Outside) */}
             <div className="hidden lg:flex absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30">
               <div className="w-12 h-12 rounded-full bg-background border border-zinc-200 dark:border-zinc-700 shadow-xl flex items-center justify-center">
                 <ArrowRight className="w-5 h-5 text-primary animate-pulse" />
@@ -119,7 +114,6 @@ export function LandingPageContent() {
             </div>
 
             <div className="relative grid lg:grid-cols-2 gap-8 items-stretch">
-              {/* --- LEFT SIDE: The Builder UI (Simplified) --- */}
               <div className="relative flex flex-col rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 shadow-2xl h-[500px]">
                 {/* Window Header */}
                 <div className="h-10 border-b border-zinc-100 dark:border-zinc-800 flex items-center justify-between px-4 bg-zinc-50/80 dark:bg-zinc-900/50 backdrop-blur-md z-10">
@@ -133,13 +127,10 @@ export function LandingPageContent() {
                   </div>
                 </div>
 
-                {/* Editor Content */}
                 <div className="p-6 flex flex-col h-full overflow-hidden relative">
-                  {/* Background Grid */}
                   <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:20px_20px] -z-10" />
 
                   <div className="space-y-5">
-                    {/* Section 1: Inputs */}
                     <div className="space-y-4">
                       <div className="flex items-center justify-between">
                         <h4 className="text-xs font-bold text-zinc-500 uppercase tracking-wider">
@@ -366,7 +357,6 @@ export function LandingPageContent() {
             </div>
           </motion.div>
 
-          {/* Card 2: Analytics */}
           <motion.div
             variants={fadeIn}
             className="relative group overflow-hidden rounded-3xl border bg-background p-8 hover:border-primary/50 transition-colors"
@@ -375,7 +365,7 @@ export function LandingPageContent() {
               <LineChart className="w-6 h-6" />
             </div>
             <h3 className="text-2xl font-bold mb-2">Analytics</h3>
-            <p className="text-muted-foreground mb-6">
+            <p className="text-muted-foreground mb-6 mt-5">
               Privacy-friendly view counts and click tracking built-in.
             </p>
             <div className="mt-auto h-24 w-full bg-muted/50 rounded-lg border border-dashed flex items-center justify-center text-xs text-muted-foreground font-mono">
@@ -383,7 +373,6 @@ export function LandingPageContent() {
             </div>
           </motion.div>
 
-          {/* Card 3: Domains */}
           <motion.div
             variants={fadeIn}
             className="relative group overflow-hidden rounded-3xl border bg-background p-8 hover:border-primary/50 transition-colors"
@@ -391,10 +380,10 @@ export function LandingPageContent() {
             <div className="absolute top-6 right-6 p-3 bg-purple-500/10 rounded-2xl text-purple-500">
               <Globe className="w-6 h-6" />
             </div>
-            <h3 className="text-2xl font-bold mb-2">Custom Domains</h3>
-            <p className="text-muted-foreground">
-              Connect <code>yourname.com</code> instantly. We handle the SSL certificates
-              automatically.
+            <h3 className="text-2xl font-bold mb-2">Free Domains</h3>
+            <p className="text-muted-foreground mt-5">
+              You will have a <strong>FREE</strong> <code>kislap.app</code> domain instantly. We
+              handle the SSL certificates automatically.
             </p>
           </motion.div>
 
@@ -569,34 +558,38 @@ export function LandingPageContent() {
               </p>
 
               <div className="flex flex-wrap gap-4 pt-4 justify-center md:justify-start">
-                {/* Button 1: View Source (Adaptive Outline) */}
                 <Button
                   variant="outline"
                   className="h-12 border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-900 dark:text-zinc-100 bg-transparent"
                   asChild
                 >
-                  <a href="https://github.com/your-repo" target="_blank" rel="noreferrer">
+                  <a
+                    href="https://github.com/bastilavarias/kislap"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
                     <Github className="mr-2 w-4 h-4" /> View Source
                   </a>
                 </Button>
 
-                {/* Button 2: Contribute (Adaptive Ghost) */}
                 <Button
                   variant="ghost"
                   className="h-12 text-zinc-600 dark:text-zinc-400 hover:text-foreground hover:bg-zinc-200/50 dark:hover:bg-zinc-800"
                   asChild
                 >
-                  <a href="https://github.com/your-repo/issues" target="_blank" rel="noreferrer">
+                  <a
+                    href="https://github.com/bastilavarias/kislap/issues"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
                     <GitBranch className="mr-2 w-4 h-4" /> Contribute
                   </a>
                 </Button>
               </div>
             </div>
 
-            {/* Code Snippet Visual - Kept Dark for "IDE Feel" but refined border/shadow */}
             <div className="flex-1 w-full max-w-md">
               <div className="rounded-xl bg-[#09090b] border border-zinc-200 dark:border-zinc-800 shadow-2xl dark:shadow-none overflow-hidden font-mono text-sm relative group">
-                {/* Glow Effect behind code block */}
                 <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 to-purple-500/20 blur-xl opacity-0 group-hover:opacity-50 transition duration-1000" />
 
                 <div className="relative">
@@ -604,31 +597,42 @@ export function LandingPageContent() {
                     <div className="w-2.5 h-2.5 rounded-full bg-red-500/80" />
                     <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/80" />
                     <div className="w-2.5 h-2.5 rounded-full bg-green-500/80" />
-                    <div className="ml-auto text-xs text-zinc-500">config.ts</div>
+                    <div className="ml-auto text-xs text-zinc-500">stack.ts</div>
                   </div>
+
                   <div className="p-6 text-blue-200/90 space-y-2 leading-relaxed selection:bg-white/20">
                     <div className="flex">
                       <span className="text-purple-400 mr-2">export</span>{' '}
-                      <span className="text-yellow-300">const</span> config = {'{'}
+                      <span className="text-yellow-300 mr-1">const </span> architecture = {'{'}
                     </div>
+
                     <div className="pl-4">
-                      <span className="text-zinc-100">framework:</span>{' '}
-                      <span className="text-green-400">'Next.js 15'</span>,
+                      <span className="text-zinc-100">backend:</span>{' '}
+                      <span className="text-green-400">'Go'</span>,
                     </div>
+
                     <div className="pl-4">
-                      <span className="text-zinc-100">deployment:</span>{' '}
+                      <span className="text-zinc-100">frontend:</span>{' '}
+                      <span className="text-green-400">'Next.js'</span>,
+                    </div>
+
+                    <div className="pl-4">
+                      <span className="text-zinc-100">cloud:</span>{' '}
                       <span className="text-green-400">'Cloudflare'</span>,
                     </div>
+
                     <div className="pl-4">
-                      <span className="text-zinc-100">license:</span>{' '}
-                      <span className="text-green-400">'MIT'</span>,
+                      <span className="text-zinc-100">ai_engine:</span>{' '}
+                      <span className="text-green-400">'Gemini'</span>,
                     </div>
+
                     <div className="pl-4">
-                      <span className="text-zinc-100">price:</span>{' '}
-                      <span className="text-green-400">0</span>,
+                      <span className="text-zinc-100">os:</span>{' '}
+                      <span className="text-green-400">'Linux'</span>,
                     </div>
+
                     <div>{'}'};</div>
-                    <div className="pt-4 text-zinc-500 italic">// Join us on GitHub!</div>
+                    <div className="pt-4 text-zinc-500 italic">// Built for performance.</div>
                   </div>
                 </div>
               </div>
