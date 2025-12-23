@@ -19,6 +19,8 @@ import {
   Layout,
   BarChart3,
   Zap,
+  CheckCircle2,
+  XCircle,
 } from 'lucide-react';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import {
@@ -36,15 +38,22 @@ import { cn } from '@/lib/utils';
 import { ProjectFormDialog } from '@/components/project-form-dialog';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
-type HeaderProps<T> = {
+interface Props<T> {
   error?: string;
   project: APIResponseProject | null;
+  hasContent: boolean; // Treating this as "Basic Info"
+  hasContentWorkExperience: boolean;
+  hasContentEducation: boolean;
+  hasContentProjects: boolean;
+  hasContentSkills: boolean;
+  hasLayout: boolean;
+  hasTheme: boolean;
+
   onTabChange?: (value: string) => void;
   onSave: (e?: React.BaseSyntheticEvent) => void | Promise<void>;
   onPublish: (isPublished: boolean) => Promise<void>;
-};
+}
 
-// Helper to get icon based on type
 const getProjectIcon = (type?: string) => {
   switch (type) {
     case 'biz':
@@ -57,10 +66,20 @@ const getProjectIcon = (type?: string) => {
   }
 };
 
-export function FormHeader<T>({ project, onSave, error, onPublish }: HeaderProps<T>) {
+export function FormHeader<T>({
+  project,
+  onSave,
+  error,
+  onPublish,
+  hasContent,
+  hasContentWorkExperience,
+  hasContentEducation,
+  hasContentProjects,
+  hasContentSkills,
+  hasLayout,
+  hasTheme,
+}: Props<T>) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-
-  // Confirmation Dialog States
   const [isSaveConfirmOpen, setIsSaveConfirmOpen] = useState(false);
   const [isPublishConfirmOpen, setIsPublishConfirmOpen] = useState(false);
 
@@ -71,8 +90,20 @@ export function FormHeader<T>({ project, onSave, error, onPublish }: HeaderProps
   const isEditPage = pathname.endsWith('/edit');
   const ProjectIcon = getProjectIcon(project?.type);
 
-  // Construct the live URL
-  const liveUrl = project?.sub_domain ? `https://${project.sub_domain}.kislap.app` : '#';
+  // 2. Logic: Check if all content pieces are ready
+  const isContentReady =
+    hasContent &&
+    hasContentWorkExperience &&
+    hasContentEducation &&
+    hasContentProjects &&
+    hasContentSkills;
+
+  // Global readiness
+  const isReadyToPublish = isContentReady && hasLayout && hasTheme;
+
+  const urlPrefix = process.env.NEXT_PUBLIC_URL_PREFIX || 'http://';
+  const rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN || 'kislap.test';
+  const liveUrl = project?.sub_domain ? `${urlPrefix}${project.sub_domain}.${rootDomain}` : '#';
 
   const handleDialogChange = (open: boolean) => {
     setIsDialogOpen(open);
@@ -82,6 +113,7 @@ export function FormHeader<T>({ project, onSave, error, onPublish }: HeaderProps
   };
 
   const handlePublishConfirm = async () => {
+    if (!isPublished && !isReadyToPublish) return;
     await onPublish(!isPublished);
     setIsPublishConfirmOpen(false);
   };
@@ -90,6 +122,39 @@ export function FormHeader<T>({ project, onSave, error, onPublish }: HeaderProps
     await onSave();
     setIsSaveConfirmOpen(false);
   };
+
+  // Helper component for checklist items
+  const RequirementItem = ({
+    label,
+    met,
+    nested = false,
+  }: {
+    label: string;
+    met: boolean;
+    nested?: boolean;
+  }) => (
+    <div
+      className={cn(
+        'flex items-center gap-3 p-2 rounded-md border border-transparent transition-colors',
+        nested ? 'ml-6 text-sm py-1 h-8' : 'bg-muted/30 hover:border-border/50'
+      )}
+    >
+      {met ? (
+        <CheckCircle2 className={cn('text-green-500', nested ? 'w-4 h-4' : 'w-5 h-5')} />
+      ) : (
+        <XCircle className={cn('text-destructive/70', nested ? 'w-4 h-4' : 'w-5 h-5')} />
+      )}
+      <span
+        className={cn(
+          'font-medium',
+          met ? 'text-foreground' : 'text-muted-foreground',
+          nested && 'text-xs font-normal'
+        )}
+      >
+        {label}
+      </span>
+    </div>
+  );
 
   return (
     <>
@@ -103,10 +168,6 @@ export function FormHeader<T>({ project, onSave, error, onPublish }: HeaderProps
             </Alert>
           )}
 
-          {/* LAYOUT CHANGE: 
-            Using a 3-column grid on md+ screens ensures the center group 
-            is truly centered regardless of the width of the left/right sections.
-          */}
           <div className="flex flex-col md:grid md:grid-cols-3 items-center gap-4">
             {/* LEFT: Project Identity */}
             <div className="flex items-center gap-4 w-full justify-start">
@@ -166,6 +227,7 @@ export function FormHeader<T>({ project, onSave, error, onPublish }: HeaderProps
               </div>
             </div>
 
+            {/* CENTER: Navigation */}
             <div className="flex items-center justify-center w-full">
               <div className="flex items-center bg-muted/50 p-1 rounded-lg border border-border/50">
                 <Button
@@ -277,24 +339,79 @@ export function FormHeader<T>({ project, onSave, error, onPublish }: HeaderProps
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* Publish Confirmation Dialog */}
+      {/* PUBLISH CONFIRMATION DIALOG */}
       <AlertDialog open={isPublishConfirmOpen} onOpenChange={setIsPublishConfirmOpen}>
-        <AlertDialogContent>
+        <AlertDialogContent className="max-w-md">
           <AlertDialogHeader>
             <AlertDialogTitle>
-              {isPublished ? 'Unpublish Project?' : 'Publish Project?'}
-            </AlertDialogTitle>
-            <AlertDialogDescription>
               {isPublished
-                ? 'This will make your project inaccessible to the public. You can republish it at any time.'
-                : 'This will make your project live and visible to the public at your custom domain.'}
-            </AlertDialogDescription>
+                ? 'Unpublish Project?'
+                : !isReadyToPublish
+                  ? 'Requirements Missing'
+                  : 'Ready to Publish?'}
+            </AlertDialogTitle>
+
+            <div className="text-sm text-muted-foreground mt-2">
+              {isPublished ? (
+                <p>
+                  This will make your project inaccessible to the public. You can republish it at
+                  any time.
+                </p>
+              ) : (
+                <div className="space-y-4">
+                  <p>
+                    {!isReadyToPublish
+                      ? 'Complete the following sections to go live:'
+                      : 'Your project is ready! Confirm your checklist:'}
+                  </p>
+
+                  <div className="flex flex-col gap-1">
+                    {/* Top Level: Content with Nested Items */}
+                    <div className="bg-muted/30 rounded-md pb-2">
+                      <RequirementItem label="Content Sections" met={isContentReady} />
+                      <div className="flex flex-col gap-0.5 mt-1">
+                        <RequirementItem label="Basic Info" met={hasContent} nested />
+                        <RequirementItem
+                          label="Work Experience"
+                          met={hasContentWorkExperience}
+                          nested
+                        />
+                        <RequirementItem label="Education" met={hasContentEducation} nested />
+                        <RequirementItem label="Projects" met={hasContentProjects} nested />
+                        <RequirementItem label="Skills" met={hasContentSkills} nested />
+                      </div>
+                    </div>
+
+                    <RequirementItem label="Layout Selected" met={hasLayout} />
+
+                    <RequirementItem label="Theme Configured" met={hasTheme} />
+                  </div>
+
+                  {isReadyToPublish && (
+                    <p className="text-xs text-muted-foreground mt-2 bg-primary/5 p-3 rounded border border-primary/10">
+                      🚀 Making live at{' '}
+                      <span className="font-semibold text-primary">
+                        {project?.sub_domain}.{rootDomain}
+                      </span>
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
           </AlertDialogHeader>
-          <AlertDialogFooter>
+
+          <AlertDialogFooter className="mt-4">
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={handlePublishConfirm}
-              className={cn(isPublished && 'bg-destructive text-white hover:bg-destructive/90')}
+              disabled={!isPublished && !isReadyToPublish}
+              className={cn(
+                isPublished
+                  ? 'bg-destructive text-white hover:bg-destructive/90'
+                  : !isReadyToPublish
+                    ? 'opacity-50 cursor-not-allowed'
+                    : ''
+              )}
             >
               {isPublished ? 'Yes, Unpublish' : 'Yes, Publish Live'}
             </AlertDialogAction>

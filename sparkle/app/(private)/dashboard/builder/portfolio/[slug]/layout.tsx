@@ -7,7 +7,19 @@ import { BackButton } from '@/components/back-button';
 import { Spinner } from '@/components/ui/shadcn-io/spinner';
 
 function BuilderLayoutContent({ children }: { children: ReactNode }) {
-  const { project, save, publish, isLoading } = usePortfolioBuilder();
+  const {
+    project,
+    save,
+    publish,
+    isLoading,
+    hasContent,
+    hasContentWorkExperience,
+    hasContentEducation,
+    hasContentProjects,
+    hasContentSkills,
+    hasLayout,
+    hasTheme,
+  } = usePortfolioBuilder();
 
   if (isLoading) {
     return (
@@ -23,7 +35,18 @@ function BuilderLayoutContent({ children }: { children: ReactNode }) {
         Go back
       </BackButton>
       <div className="flex flex-col gap-10">
-        <FormHeader project={project} onSave={save} onPublish={publish} />
+        <FormHeader
+          project={project}
+          onSave={save}
+          onPublish={publish}
+          hasContent={hasContent}
+          hasContentWorkExperience={hasContentWorkExperience}
+          hasContentEducation={hasContentEducation}
+          hasContentProjects={hasContentProjects}
+          hasContentSkills={hasContentSkills}
+          hasLayout={hasLayout}
+          hasTheme={hasTheme}
+        />
         <div className="w-full">{children}</div>
       </div>
     </div>
