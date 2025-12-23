@@ -109,14 +109,14 @@ export function SiteError({ type }: SiteErrorProps) {
           >
             <a href={url}>
               <Home className="mr-2 h-4 w-4" />
-              Kislap Home
+              Kislap Builder
             </a>
           </Button>
         </div>
 
         <div className="mt-12">
           <p className="text-[10px] text-muted-foreground/40 uppercase tracking-[0.2em] font-medium">
-            Powered by Kislap Engine
+            Powered by Kislap
           </p>
         </div>
       </div>
