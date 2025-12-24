@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 
 // Next Imports
 import { Geist, Geist_Mono } from 'next/font/google';
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next'; // Added Viewport type
 
 // Component Imports
 import NextProvider from '@/providers/NextProvider';
@@ -28,94 +28,83 @@ const fontMono = Geist_Mono({
   variable: '--font-mono',
 });
 
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://kislap.app';
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: 'white' },
+    { media: '(prefers-color-scheme: dark)', color: 'black' },
+  ],
+  width: 'device-width',
+  initialScale: 1,
+};
+
 export const metadata: Metadata = {
+  metadataBase: new URL(APP_URL),
   title: {
-    template: '%s - KISLAP',
-    default: 'KISLAP - Craft Stunning Shadcn UI, Lightning Fast',
+    default: 'Kislap | Turn Forms into Stunning Websites',
+    template: '%s | Kislap',
   },
   description:
-    'KISLAP, a complete Shadcn UI collection of customizable components, blocks & templates with powerful theme generator for faster customization.',
+    'The open-source website builder for developers. Transform simple forms and JSON into professional portfolios, landing pages, and waitlists in seconds.',
+  applicationName: 'Kislap',
+  authors: [{ name: 'Kislap Team', url: APP_URL }],
+  generator: 'Next.js',
   keywords: [
-    'shadcn ui',
-    'shadcn studio',
-    'shadcn components',
-    'shadcn blocks',
-    'shadcn templates',
-    'shadcn figma',
-    'shadcn themes',
-    'shadcn/ui',
+    'website builder',
+    'portfolio builder',
+    'form to website',
+    'json to website',
+    'resume builder',
+    'developer portfolio',
+    'open source website builder',
+    'shadcn ui builder',
   ],
-  icons: {
-    icon: [
-      {
-        url: 'https://cdn.shadcnstudio.com/ss-assets/favicon/favicon-16x16.png',
-        sizes: '16x16',
-        type: 'image/png',
-      },
-      {
-        url: 'https://cdn.shadcnstudio.com/ss-assets/favicon/favicon-32x32.png',
-        sizes: '32x32',
-        type: 'image/png',
-      },
-      {
-        url: 'https://cdn.shadcnstudio.com/ss-assets/favicon/favicon.ico',
-        sizes: '48x48',
-        type: 'image/x-icon',
-      },
-    ],
-    apple: [
-      {
-        url: 'https://cdn.shadcnstudio.com/ss-assets/favicon/apple-touch-icon.png',
-        sizes: '180x180',
-        type: 'image/png',
-      },
-    ],
-    other: [
-      {
-        url: 'https://cdn.shadcnstudio.com/ss-assets/favicon/android-chrome-192x192.png',
-        rel: 'icon',
-        sizes: '192x192',
-        type: 'image/png',
-      },
-      {
-        url: 'https://cdn.shadcnstudio.com/ss-assets/favicon/android-chrome-512x512.png',
-        rel: 'icon',
-        sizes: '512x512',
-        type: 'image/png',
-      },
-    ],
+  referrer: 'origin-when-cross-origin',
+  creator: 'Kislap',
+  publisher: 'Kislap',
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  alternates: {
+    canonical: APP_URL,
   },
   openGraph: {
-    title: {
-      template: '%s - KISLAP',
-      default: 'KISLAP - Craft Stunning Shadcn UI, Lightning Fast',
-    },
+    type: 'website',
+    locale: 'en_US',
+    url: APP_URL,
+    siteName: 'Kislap',
+    title: 'Kislap | Turn Forms into Stunning Websites',
     description:
-      'KISLAP, a complete Shadcn UI collection of customizable components, blocks & templates with powerful theme generator for faster customization.',
-    url: 'https://shadcnstudio.com',
+      'Stop coding boilerplate. Transform your resume or data into a polished website instantly with Kislap.',
     images: [
       {
-        url: 'https://cdn.shadcnstudio.com/ss-assets/smm/marketing/shadcn-studio-smm-banner.png',
-        type: 'image/png',
+        url: '/og-image.png', // Ensure you have this image in your public folder
         width: 1200,
         height: 630,
-        alt: 'KISLAP - Craft Stunning Shadcn UI, Lightning Fast',
+        alt: 'Kislap - AI Powered Website Builder',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: {
-      template: '%s - KISLAP',
-      default: 'KISLAP - Craft Stunning Shadcn UI, Lightning Fast',
-    },
+    title: 'Kislap | Turn Forms into Stunning Websites',
     description:
-      'KISLAP, a complete Shadcn UI collection of customizable components, blocks & templates with powerful theme generator for faster customization.',
+      'Stop coding boilerplate. Transform your resume or data into a polished website instantly with Kislap.',
+    images: ['/og-image.png'],
+    creator: '@bastilavarias',
   },
 };
 
 const RootLayout = async ({ children }: { children: ReactNode }) => {
-  // Vars
   const mode = await getMode();
   const settingsCookie = await getSettingsFromCookie();
 
@@ -129,6 +118,7 @@ const RootLayout = async ({ children }: { children: ReactNode }) => {
         mode
       )}
       style={{ colorScheme: mode }}
+      suppressHydrationWarning
     >
       <head>
         <link
@@ -136,7 +126,7 @@ const RootLayout = async ({ children }: { children: ReactNode }) => {
           rel="stylesheet"
         />
       </head>
-      <body className="flex min-h-full w-full flex-auto flex-col">
+      <body className="flex min-h-full w-full flex-auto flex-col antialiased">
         <NextProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <SettingsProvider settingsCookie={settingsCookie} mode={mode}>
             <ThemeProvider>{children}</ThemeProvider>

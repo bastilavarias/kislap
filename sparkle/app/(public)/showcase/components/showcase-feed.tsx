@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { LivePreviewFrame } from '@/components/live-preview';
 
 const ITEMS_PER_PAGE = 9;
 
@@ -48,12 +49,16 @@ const styleConfig: Record<string, { label: string; gradient: string; icon: any; 
 };
 
 function ShowcaseCard({ project }: { project: APIResponseProject }) {
-  const styles = styleConfig[project.type] || styleConfig.default;
-  const Icon = styles.icon;
+  const [isHovered, setIsHovered] = useState(false);
+
+  const styles = styleConfig[project.type] || styleConfig.portfolio;
 
   const urlPrefix = process.env.NEXT_PUBLIC_URL_PREFIX || 'http://';
   const rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN || 'kislap.test';
-  const liveUrl = project?.sub_domain ? `${urlPrefix}${project.sub_domain}.kislap.app` : '#';
+
+  const liveUrl = project?.sub_domain ? `${urlPrefix}${project.sub_domain}.${rootDomain}` : null;
+
+  const displayUrl = liveUrl ? liveUrl.replace(/^https?:\/\//, '') : 'loading...';
 
   return (
     <div
@@ -62,32 +67,29 @@ function ShowcaseCard({ project }: { project: APIResponseProject }) {
         styles.glow,
         'hover:shadow-xl'
       )}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="relative h-[220px] w-full overflow-hidden bg-muted/30">
+      <div className="relative h-[220px] w-full overflow-hidden bg-muted/30 group-hover:bg-muted/40 transition-colors">
         <div
           className={cn(
-            'absolute inset-0 bg-gradient-to-br opacity-60 transition-transform duration-700 group-hover:scale-110',
+            'absolute inset-0 bg-gradient-to-br opacity-20 transition-transform duration-700 group-hover:scale-110',
             styles.gradient
           )}
         />
 
-        <div className="absolute inset-0 opacity-[0.15] bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:20px_20px]" />
-
-        <div className="absolute top-8 left-8 right-8 bottom-0 bg-background/90 backdrop-blur-md rounded-t-xl border border-border/40 shadow-2xl transition-transform duration-500 group-hover:translate-y-2">
-          <div className="flex items-center gap-1.5 p-3 border-b border-border/40">
+        <div className="absolute top-8 left-8 right-8 bottom-0 bg-background/40 backdrop-blur-md rounded-t-xl border border-border/40 shadow-2xl transition-transform duration-500 group-hover:translate-y-1 overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-8 bg-background/80 backdrop-blur-md border-b border-border/40 z-20 flex items-center px-3 gap-1.5">
             <div className="w-2.5 h-2.5 rounded-full bg-red-400/80" />
             <div className="w-2.5 h-2.5 rounded-full bg-amber-400/80" />
             <div className="w-2.5 h-2.5 rounded-full bg-emerald-400/80" />
-            <div className="ml-2 h-4 w-32 rounded-full bg-muted/50 text-[8px] flex items-center px-2 text-muted-foreground truncate">
-              {project.sub_domain}.{rootDomain}
+            <div className="ml-2 h-4 flex-1 max-w-[140px] rounded-sm bg-muted/60 text-[9px] flex items-center px-2 text-muted-foreground truncate font-mono opacity-70">
+              {displayUrl}
             </div>
           </div>
 
-          <div className="p-6 flex flex-col items-center justify-center h-full text-muted-foreground/30">
-            <Icon className="w-16 h-16 mb-2 opacity-20" />
-            <span className="text-xs uppercase font-bold tracking-widest opacity-20">
-              {project.name}
-            </span>
+          <div className="absolute top-8 left-0 right-0 bottom-0 bg-white">
+            <LivePreviewFrame url={liveUrl} isHovered={isHovered} />
           </div>
         </div>
       </div>
@@ -120,7 +122,7 @@ function ShowcaseCard({ project }: { project: APIResponseProject }) {
             size="sm"
             className="w-full font-semibold shadow-sm group-hover:bg-primary group-hover:text-primary-foreground transition-all"
           >
-            <a href={liveUrl} target="_blank" rel="noopener noreferrer">
+            <a href={liveUrl || '#'} target="_blank" rel="noopener noreferrer">
               Visit Site{' '}
               <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
             </a>
