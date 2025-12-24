@@ -75,7 +75,7 @@ interface ProjectCardProps {
 
 function ProjectCard({ project, onEdit, onDelete }: ProjectCardProps) {
   const urlPrefix = process.env.NEXT_PUBLIC_URL_PREFIX || 'http://';
-  const rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN || 'kislap.test';
+  const rootDomain = process.env.NEXT_PUBLIC_SHINE_SUFFIX_URL || 'kislap.test';
   const liveUrl = project?.sub_domain ? `${urlPrefix}${project.sub_domain}.${rootDomain}` : '#';
 
   const typeInfo = typeConfig[project.type] || typeConfig.portfolio;
