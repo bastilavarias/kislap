@@ -56,7 +56,7 @@ function ShowcaseCard({ project }: { project: APIResponseProject }) {
   const urlPrefix = process.env.NEXT_PUBLIC_URL_PREFIX || 'http://';
   const rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN || 'kislap.test';
 
-  const liveUrl = project?.sub_domain ? `${urlPrefix}${project.sub_domain}.${rootDomain}` : null;
+  const liveUrl = project?.sub_domain ? `${urlPrefix}${project.sub_domain}.kislap.app` : null;
 
   const displayUrl = liveUrl ? liveUrl.replace(/^https?:\/\//, '') : 'loading...';
 
