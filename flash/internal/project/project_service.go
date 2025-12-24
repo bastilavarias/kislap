@@ -13,7 +13,7 @@ type Service struct {
 	DB *gorm.DB
 }
 
-func (service Service) List(userID uint64, page int, limit int) (*[]models.Project, error) {
+func (service Service) List(userID *uint64, page int, limit int) (*[]models.Project, error) {
 	var projects []models.Project
 
 	if limit <= 0 {
@@ -26,8 +26,23 @@ func (service Service) List(userID uint64, page int, limit int) (*[]models.Proje
 
 	offset := (page - 1) * limit
 
+	if userID != nil {
+		err := service.DB.
+			Where("user_id = ?", userID).
+			Order("created_at DESC").
+			Limit(limit).
+			Offset(offset).
+			Find(&projects).Error
+
+		if err != nil {
+			return nil, err
+		}
+
+		return &projects, nil
+	}
+
 	err := service.DB.
-		Where("user_id = ?", userID).
+		Where("published = ?", 1).
 		Order("created_at DESC").
 		Limit(limit).
 		Offset(offset).

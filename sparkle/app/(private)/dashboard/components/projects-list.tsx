@@ -6,7 +6,6 @@ import { useProject } from '@/hooks/api/use-project';
 import type { APIResponseProject } from '@/types/api-response';
 import { toast } from 'sonner';
 
-// UI Components
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -45,8 +44,6 @@ import {
   ArrowUpRight,
 } from 'lucide-react';
 
-// --- Configuration ---
-
 const typeConfig: Record<string, { label: string; color: string; icon: any }> = {
   portfolio: {
     label: 'Portfolio',
@@ -70,8 +67,6 @@ const typeConfig: Record<string, { label: string; color: string; icon: any }> = 
   },
 };
 
-// --- Components ---
-
 interface ProjectCardProps {
   project: APIResponseProject;
   onEdit: (project: APIResponseProject) => void;
@@ -79,6 +74,10 @@ interface ProjectCardProps {
 }
 
 function ProjectCard({ project, onEdit, onDelete }: ProjectCardProps) {
+  const urlPrefix = process.env.NEXT_PUBLIC_URL_PREFIX || 'http://';
+  const rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN || 'kislap.test';
+  const liveUrl = project?.sub_domain ? `${urlPrefix}${project.sub_domain}.${rootDomain}` : '#';
+
   const typeInfo = typeConfig[project.type] || typeConfig.portfolio;
   const createdDate = new Date(project.created_at).toLocaleDateString('en-US', {
     month: 'short',
@@ -87,14 +86,9 @@ function ProjectCard({ project, onEdit, onDelete }: ProjectCardProps) {
 
   return (
     <div className="group relative flex flex-col bg-card hover:bg-muted/20 border border-border/60 hover:border-primary/20 rounded-xl transition-all duration-200 hover:shadow-lg hover:shadow-primary/5">
-      {/* 1. Card Header: Visual Preview Area */}
       <div className="relative h-32 w-full overflow-hidden rounded-t-xl bg-muted/30 border-b border-border/40">
-        {/* Abstract Pattern / 'Browser' feel */}
         <div className="absolute inset-0 flex items-center justify-center">
-          {/* Subtle Grid Background */}
           <div className="absolute inset-0 opacity-[0.03] bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
-
-          {/* Center Icon Representation */}
           <div
             className={cn(
               'h-12 w-12 rounded-xl flex items-center justify-center shadow-sm border bg-background/50 backdrop-blur-sm',
@@ -105,7 +99,6 @@ function ProjectCard({ project, onEdit, onDelete }: ProjectCardProps) {
           </div>
         </div>
 
-        {/* Status Badge (Top Right) */}
         <div className="absolute top-3 right-3">
           <Badge
             variant="secondary"
@@ -121,10 +114,8 @@ function ProjectCard({ project, onEdit, onDelete }: ProjectCardProps) {
         </div>
       </div>
 
-      {/* 2. Card Content */}
       <div className="p-5 flex flex-col flex-grow">
         <div className="flex justify-between items-start mb-3">
-          {/* Title & Domain */}
           <div className="space-y-1">
             <Link
               href={`/dashboard/builder/${project.type}/${project.slug}`}
@@ -135,20 +126,19 @@ function ProjectCard({ project, onEdit, onDelete }: ProjectCardProps) {
 
             {project.sub_domain && (
               <a
-                href={`https://${project.sub_domain}.kislap.app`}
+                href={liveUrl}
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors group/link"
                 onClick={(e) => e.stopPropagation()}
               >
                 <Globe className="w-3 h-3" />
-                <span>{project.sub_domain}.kislap.app</span>
+                <span>{liveUrl}</span>
                 <ArrowUpRight className="w-2.5 h-2.5 opacity-0 -translate-y-0.5 translate-x-0.5 group-hover/link:opacity-100 transition-all" />
               </a>
             )}
           </div>
 
-          {/* Context Menu */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
@@ -173,12 +163,7 @@ function ProjectCard({ project, onEdit, onDelete }: ProjectCardProps) {
               </DropdownMenuItem>
               {project.sub_domain && (
                 <DropdownMenuItem asChild>
-                  <a
-                    href={`https://${project.sub_domain}.kislap.app`}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="cursor-pointer"
-                  >
+                  <a href={liveUrl} target="_blank" rel="noreferrer" className="cursor-pointer">
                     <ExternalLink className="mr-2 h-4 w-4 text-muted-foreground" /> View Live Site
                   </a>
                 </DropdownMenuItem>
@@ -194,12 +179,10 @@ function ProjectCard({ project, onEdit, onDelete }: ProjectCardProps) {
           </DropdownMenu>
         </div>
 
-        {/* Description */}
         <p className="text-sm text-muted-foreground/80 line-clamp-2 leading-relaxed mb-6">
           {project.description || 'No description provided.'}
         </p>
 
-        {/* Footer Info */}
         <div className="mt-auto pt-4 border-t border-border/40 flex items-center justify-between text-xs text-muted-foreground">
           <div className="flex items-center gap-2">
             <CalendarDays className="w-3.5 h-3.5 opacity-70" />
@@ -223,11 +206,9 @@ export function ProjectList() {
   const [loading, setLoading] = useState(false);
   const [booted, setBooted] = useState(false);
 
-  // Edit State
   const [editingProject, setEditingProject] = useState<APIResponseProject | null>(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
 
-  // Delete State
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
 
@@ -277,7 +258,6 @@ export function ProjectList() {
     }
   };
 
-  // --- Loading Skeleton ---
   if (!booted || loading) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -291,7 +271,6 @@ export function ProjectList() {
     );
   }
 
-  // --- Empty State ---
   if (booted && projects.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-24 text-center rounded-2xl border border-dashed border-border/60 bg-muted/5">
@@ -304,13 +283,11 @@ export function ProjectList() {
         </p>
         <div className="relative">
           <ProjectFormDialog onOpenChange={handleDialogChange} />
-          {/* Small animated arrow hint could go here */}
         </div>
       </div>
     );
   }
 
-  // --- Main List ---
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-20">
@@ -323,7 +300,6 @@ export function ProjectList() {
           />
         ))}
 
-        {/* "New Project" Ghost Card (Optional - encourages creation) */}
         <div
           className="group relative flex flex-col items-center justify-center h-full min-h-[300px] border border-dashed border-border/60 rounded-xl hover:bg-muted/30 transition-colors cursor-pointer"
           onClick={() => setIsEditOpen(true)}

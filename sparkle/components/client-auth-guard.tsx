@@ -5,7 +5,15 @@ import { useRouter, usePathname } from 'next/navigation';
 import { useLocalStorage } from '@/hooks/use-local-storage';
 import { useAuthContext } from '@/contexts/auth-context';
 
-const GUEST_ONLY_ROUTES = ['/', '/login', '/login/github', '/about', '/terms', '/privacy'];
+const GUEST_ONLY_ROUTES = [
+  '/',
+  '/login',
+  '/login/github',
+  '/about',
+  '/terms',
+  '/privacy',
+  '/showcase',
+];
 
 export default function ClientAuthGuard({ children }: { children: React.ReactNode }) {
   const { syncAuthUser } = useAuthContext();

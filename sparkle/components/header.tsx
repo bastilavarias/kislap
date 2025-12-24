@@ -228,7 +228,10 @@ export function Header() {
             </DropdownMenu>
           ) : (
             <div className="flex items-center gap-3">
-              <Button className="shadow-none" variant="outline" size="sm" asChild>
+              <Button variant="ghost" size="sm" asChild>
+                <Link href="/showcase">Showcase</Link>
+              </Button>
+              <Button variant="ghost" size="sm" asChild>
                 <Link href="/about">About us</Link>
               </Button>
               <Button size="sm" asChild>
