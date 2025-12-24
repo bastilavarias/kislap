@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { Home, Settings2, LogOut, Sun, Moon, Menu, LifeBuoy } from 'lucide-react';
+import { Home, Settings2, LogOut, Sun, Moon, LifeBuoy } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 
@@ -240,44 +240,6 @@ export function Header() {
               </Button>
             </div>
           )}
-
-          <div className="md:hidden">
-            <DropdownMenu open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <Menu className="h-5 w-5" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56 mt-2">
-                {currentLinks.map((link) => (
-                  <DropdownMenuItem key={link.url} asChild>
-                    <Link href={link.url} className="cursor-pointer flex w-full items-center gap-2">
-                      <link.icon className="h-4 w-4" />
-                      {link.title}
-                    </Link>
-                  </DropdownMenuItem>
-                ))}
-
-                {!hasUser && (
-                  <>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem asChild>
-                      <Link href="/login" className="cursor-pointer w-full font-semibold">
-                        Login
-                      </Link>
-                    </DropdownMenuItem>
-                  </>
-                )}
-
-                {hasUser && (
-                  <DropdownMenuItem onClick={onLogout} className="cursor-pointer text-red-600">
-                    <LogOut className="mr-2 h-4 w-4" />
-                    <span>Log out</span>
-                  </DropdownMenuItem>
-                )}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
         </div>
       </div>
     </header>

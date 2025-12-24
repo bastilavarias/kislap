@@ -90,7 +90,6 @@ export function FormHeader<T>({
   const isEditPage = pathname.endsWith('/edit');
   const ProjectIcon = getProjectIcon(project?.type);
 
-  // 2. Logic: Check if all content pieces are ready
   const isContentReady =
     hasContent &&
     hasContentWorkExperience &&
@@ -98,7 +97,6 @@ export function FormHeader<T>({
     hasContentProjects &&
     hasContentSkills;
 
-  // Global readiness
   const isReadyToPublish = isContentReady && hasLayout && hasTheme;
 
   const urlPrefix = process.env.NEXT_PUBLIC_URL_PREFIX || 'http://';
