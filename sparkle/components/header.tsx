@@ -121,8 +121,6 @@ const ModeToggle = () => {
 };
 
 export function Header() {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
   const { logout, authUser } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
@@ -136,8 +134,6 @@ export function Header() {
     router.push('/login');
     router.refresh();
   };
-
-  const currentLinks = hasUser ? DASHBOARD_LINKS : PUBLIC_LINKS;
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-md">
@@ -231,8 +227,8 @@ export function Header() {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <div className="hidden md:flex items-center gap-3">
-              <Button variant="outline" size="sm" asChild>
+            <div className="flex items-center gap-3">
+              <Button className="shadow-none" variant="outline" size="sm" asChild>
                 <Link href="/about">About us</Link>
               </Button>
               <Button size="sm" asChild>
