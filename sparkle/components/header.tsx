@@ -131,8 +131,8 @@ export function Header() {
 
   const onLogout = async () => {
     await logout();
+
     router.push('/login');
-    router.refresh();
   };
 
   return (
