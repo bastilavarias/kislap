@@ -7,7 +7,7 @@ import { ShieldCheck, Bot, HeartHandshake, ArrowLeft } from 'lucide-react';
 
 export default function Page() {
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-background p-4">
+    <div className="min-h-screen w-full flex items-center justify-center p-4">
       <div className="w-full max-w-2xl animate-in fade-in slide-in-from-bottom-4 duration-700">
         <div className="text-center mb-8 space-y-2">
           <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 text-primary mb-4">
