@@ -23,14 +23,13 @@ export function Footer() {
           <div className="flex flex-col space-y-4">
             <h4 className="font-bold text-sm uppercase tracking-wider text-foreground">Product</h4>
             <Link
-              href="/builder"
+              href="/login"
               className="text-sm text-muted-foreground hover:text-primary transition-colors w-fit"
             >
               Builder
             </Link>
             <Link
-              href="http://sebastech.kislap.app"
-              target="_blank"
+              href="/showcase"
               className="text-sm text-muted-foreground hover:text-primary transition-colors w-fit"
             >
               Showcase

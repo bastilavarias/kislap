@@ -13,7 +13,7 @@ export function LogoVersion({ url }: Props) {
       <div>
         ✨<span className="text-xl font-black">KISLAP</span>✨
       </div>
-      <Badge variant="secondary" className="hidden sm:inline-flex">
+      <Badge variant="secondary" className="inline-flex">
         v{appVersion}
       </Badge>
     </Link>

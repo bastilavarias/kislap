@@ -9,7 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 export default function Page() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen">
       <section className="relative pt-20 pb-32 overflow-hidden">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-6xl h-[500px] bg-primary/5 blur-[100px] rounded-full pointer-events-none" />
 
@@ -155,7 +155,6 @@ export default function Page() {
               </div>
             </div>
 
-            {/* Text Content */}
             <div className="w-full md:w-2/3 space-y-6 text-center md:text-left">
               <h2 className="text-3xl md:text-4xl font-bold">
                 Built with{' '}

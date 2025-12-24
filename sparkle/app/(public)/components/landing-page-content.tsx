@@ -48,7 +48,7 @@ const staggerContainer = {
 export function LandingPageContent() {
   return (
     <div className="flex flex-col gap-24 pb-20 overflow-x-hidden">
-      <section className="relative pt-32 pb-16 md:pt-32 md:pb-32 px-4">
+      <section className="relative pt-16 pb-16 md:pt-32 md:pb-32 px-4">
         <div className="absolute top-0 left-0 right-0 h-[800px] bg-[radial-gradient(circle_at_50%_0%,_var(--tw-gradient-stops))] from-indigo-500/10 via-background to-background -z-10" />
         <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
 

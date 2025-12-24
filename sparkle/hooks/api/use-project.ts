@@ -21,6 +21,10 @@ export function useProject() {
     return await apiGet<APIResponseProject[]>('api/projects/list');
   };
 
+  const getPublicList = async () => {
+    return await apiGet<APIResponseProject[]>('api/projects/list/public');
+  };
+
   const publish = async (id: number, isPublished: boolean) => {
     return await apiPut<APIResponseProject>(`api/projects/publish/${id}`, {
       published: isPublished,
@@ -35,6 +39,7 @@ export function useProject() {
     create,
     getBySlug,
     getList,
+    getPublicList,
     publish,
     update,
     remove,
