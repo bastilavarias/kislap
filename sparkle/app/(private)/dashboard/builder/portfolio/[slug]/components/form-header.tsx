@@ -220,7 +220,7 @@ export function FormHeader<T>({
                       target="_blank"
                       className="hover:text-primary hover:underline truncate max-w-[200px]"
                     >
-                      {project?.sub_domain ? `${project.sub_domain}.kislap.app` : 'No domain'}
+                      {liveUrl}
                     </a>
                   </div>
                 </div>

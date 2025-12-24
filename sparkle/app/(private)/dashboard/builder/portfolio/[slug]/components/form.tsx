@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react'; // Added useEffect
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -19,11 +19,12 @@ import {
   Zap,
   CloudFog,
   CheckCircle2,
+  Palette,
 } from 'lucide-react';
 import ThemeControlPanel from '@/components/customizer/theme-control-panel';
-import { FileParserDialog } from '@/app/\(private\)/dashboard/builder/portfolio/[slug]/components/file-parser-dialog';
+import { FileParserDialog } from '@/app/(private)/dashboard/builder/portfolio/[slug]/components/file-parser-dialog';
 import { PortfolioFormValues } from '@/lib/schemas/portfolio';
-import { UseFormReturn, UseFieldArrayReturn } from 'react-hook-form'; // Removed Controller
+import { UseFormReturn, UseFieldArrayReturn } from 'react-hook-form';
 import {
   Accordion,
   AccordionContent,
@@ -38,6 +39,7 @@ import {
   SheetTrigger,
   SheetFooter,
   SheetClose,
+  SheetDescription,
 } from '@/components/ui/sheet';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Settings } from '@/contexts/settings-context';
@@ -53,7 +55,6 @@ const LAYOUT_OPTIONS = [
   { id: 'kinetic', name: 'Kinetic', icon: Zap, description: 'Interactive' },
   { id: 'vaporware', name: 'Vaporware', icon: CloudFog, description: 'Retro 80s' },
 ];
-
 interface Props {
   formMethods: UseFormReturn<PortfolioFormValues>;
   workFieldArray: UseFieldArrayReturn<PortfolioFormValues, 'work_experiences', 'id'>;
@@ -142,6 +143,116 @@ function AddItemDrawer({
   );
 }
 
+// Extracted Design Panel for reuse in Sidebar (Desktop) and Sheet (Mobile)
+function DesignPanel({
+  layout,
+  setLayout,
+  localThemeSettings,
+  setLocalThemeSettings,
+}: {
+  layout: string;
+  setLayout: (l: string) => void;
+  localThemeSettings: Settings | null;
+  setLocalThemeSettings: React.Dispatch<React.SetStateAction<Settings | null>>;
+}) {
+  return (
+    <Card className="border-none shadow-none bg-transparent">
+      <h2 className="text-xl font-bold mb-4 hidden lg:block">Design & Style</h2>
+
+      <Tabs defaultValue="layout" className="w-full">
+        <TabsList className="grid w-full grid-cols-2 h-12 mb-4 p-1 bg-muted/50 rounded-xl">
+          <TabsTrigger
+            value="layout"
+            className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm"
+          >
+            Layout
+          </TabsTrigger>
+          <TabsTrigger
+            value="theme"
+            className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm"
+          >
+            Theme
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="layout" className="mt-0">
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg">Choose Layout</CardTitle>
+              <CardDescription>Select a structure for your portfolio.</CardDescription>
+            </CardHeader>
+            <CardContent className="grid grid-cols-2 gap-3 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
+              {LAYOUT_OPTIONS.map((option) => {
+                const isSelected = layout === option.id;
+                return (
+                  <div
+                    key={option.id}
+                    onClick={() => setLayout(option.id)}
+                    className={cn(
+                      'cursor-pointer group relative flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all duration-200',
+                      isSelected
+                        ? 'border-primary bg-primary/5 shadow-sm'
+                        : 'border-muted hover:border-muted-foreground/30 hover:bg-muted/30'
+                    )}
+                  >
+                    {isSelected && (
+                      <div className="absolute top-2 right-2 text-primary">
+                        <CheckCircle2 className="w-4 h-4" />
+                      </div>
+                    )}
+
+                    <div
+                      className={cn(
+                        'p-3 rounded-full mb-3 transition-colors',
+                        isSelected
+                          ? 'bg-background text-primary shadow-sm'
+                          : 'bg-muted text-muted-foreground group-hover:bg-background'
+                      )}
+                    >
+                      <option.icon className="w-6 h-6" />
+                    </div>
+
+                    <div className="text-center">
+                      <p className={cn('font-semibold text-sm', isSelected && 'text-primary')}>
+                        {option.name}
+                      </p>
+                      <p className="text-[10px] text-muted-foreground mt-1 line-clamp-1">
+                        {option.description}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="theme" className="mt-0">
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg">Choose Theme</CardTitle>
+              <CardDescription>Customize colors, fonts, and radius.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ThemeControlPanel
+                stateless={true}
+                themeSettings={localThemeSettings}
+                setThemeSettings={setLocalThemeSettings}
+                hideTopActionButtons={true}
+                hideModeToggle={true}
+                hideScrollArea={true}
+                hideThemeSaverButton={false}
+                hideImportButton={true}
+                hideRandomButton={true}
+              />
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+    </Card>
+  );
+}
+
 export function Form({
   formMethods,
   workFieldArray,
@@ -183,8 +294,9 @@ export function Form({
   }, [layout, setValue]);
 
   return (
-    <div className="w-full">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+    <div className="w-full relative">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start pb-20 lg:pb-0">
+        {/* --- LEFT COLUMN: CONTENT (Always Visible) --- */}
         <div className="lg:col-span-8 space-y-6">
           <Card>
             <CardContent className="p-6">
@@ -425,7 +537,6 @@ export function Form({
                   </AccordionItem>
                 </Accordion>
 
-                {/* Education Accordion */}
                 <Accordion type="single" defaultValue="edu" collapsible>
                   <AccordionItem value="edu" className="rounded-lg border px-4">
                     <AccordionTrigger className="cursor-pointer py-3 text-base font-medium hover:no-underline">
@@ -664,109 +775,44 @@ export function Form({
           </Card>
         </div>
 
-        <div className="lg:col-span-4 relative">
+        <div className="hidden lg:col-span-4 lg:block relative">
           <div className="sticky top-6 space-y-4">
-            <Card className="border-none shadow-none bg-transparent">
-              <h2 className="text-xl font-bold mb-4">Design & Style</h2>
-
-              <Tabs defaultValue="layout" className="w-full">
-                <TabsList className="grid w-full grid-cols-2 h-12 mb-4 p-1 bg-muted/50 rounded-xl">
-                  <TabsTrigger
-                    value="layout"
-                    className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm"
-                  >
-                    Layout
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="theme"
-                    className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm"
-                  >
-                    Theme
-                  </TabsTrigger>
-                </TabsList>
-
-                <TabsContent value="layout" className="mt-0">
-                  <Card>
-                    <CardHeader className="pb-3">
-                      <CardTitle className="text-lg">Choose Layout</CardTitle>
-                      <CardDescription>Select a structure for your portfolio.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="grid grid-cols-2 gap-3 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
-                      {LAYOUT_OPTIONS.map((option) => {
-                        const isSelected = layout === option.id;
-                        return (
-                          <div
-                            key={option.id}
-                            onClick={() => setLayout(option.id)}
-                            className={cn(
-                              'cursor-pointer group relative flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all duration-200',
-                              isSelected
-                                ? 'border-primary bg-primary/5 shadow-sm'
-                                : 'border-muted hover:border-muted-foreground/30 hover:bg-muted/30'
-                            )}
-                          >
-                            {isSelected && (
-                              <div className="absolute top-2 right-2 text-primary">
-                                <CheckCircle2 className="w-4 h-4" />
-                              </div>
-                            )}
-
-                            <div
-                              className={cn(
-                                'p-3 rounded-full mb-3 transition-colors',
-                                isSelected
-                                  ? 'bg-background text-primary shadow-sm'
-                                  : 'bg-muted text-muted-foreground group-hover:bg-background'
-                              )}
-                            >
-                              <option.icon className="w-6 h-6" />
-                            </div>
-
-                            <div className="text-center">
-                              <p
-                                className={cn(
-                                  'font-semibold text-sm',
-                                  isSelected && 'text-primary'
-                                )}
-                              >
-                                {option.name}
-                              </p>
-                              <p className="text-[10px] text-muted-foreground mt-1 line-clamp-1">
-                                {option.description}
-                              </p>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-
-                <TabsContent value="theme" className="mt-0">
-                  <Card>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-lg">Choose Theme</CardTitle>
-                      <CardDescription>Customize colors, fonts, and radius.</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <ThemeControlPanel
-                        stateless={true}
-                        themeSettings={localThemeSettings}
-                        setThemeSettings={setLocalThemeSettings}
-                        hideTopActionButtons={true}
-                        hideModeToggle={true}
-                        hideScrollArea={true}
-                        hideThemeSaverButton={false}
-                        hideImportButton={true}
-                        hideRandomButton={true}
-                      />
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-              </Tabs>
-            </Card>
+            <DesignPanel
+              layout={layout}
+              setLayout={setLayout}
+              localThemeSettings={localThemeSettings}
+              setLocalThemeSettings={setLocalThemeSettings}
+            />
           </div>
         </div>
+      </div>
+
+      <div className="lg:hidden fixed bottom-6 right-6 z-50">
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button
+              size="lg"
+              className="rounded-full h-14 w-14 shadow-xl bg-primary hover:bg-primary/90 flex items-center justify-center"
+            >
+              <Palette className="w-6 h-6 text-primary-foreground" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="bottom" className="h-[85vh] rounded-t-[20px] pt-6 px-4">
+            <SheetHeader className="mb-4 text-left">
+              <SheetTitle>Design & Style</SheetTitle>
+              <SheetDescription>Switch layouts and customize your theme.</SheetDescription>
+            </SheetHeader>
+
+            <div className="h-full overflow-y-auto pb-20">
+              <DesignPanel
+                layout={layout}
+                setLayout={setLayout}
+                localThemeSettings={localThemeSettings}
+                setLocalThemeSettings={setLocalThemeSettings}
+              />
+            </div>
+          </SheetContent>
+        </Sheet>
       </div>
 
       <FileParserDialog
