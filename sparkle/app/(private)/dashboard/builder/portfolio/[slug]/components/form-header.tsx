@@ -8,12 +8,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import {
-  LayoutDashboardIcon,
-  EditIcon,
   AlertCircle,
   ExternalLink,
-  Globe,
-  Settings,
   Save,
   Rocket,
   Layout,
@@ -21,6 +17,10 @@ import {
   Zap,
   CheckCircle2,
   XCircle,
+  MoreHorizontal,
+  Eye,
+  PenTool,
+  Edit,
 } from 'lucide-react';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import {
@@ -33,6 +33,14 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { APIResponseProject } from '@/types/api-response';
 import { cn } from '@/lib/utils';
 import { ProjectFormDialog } from '@/components/project-form-dialog';
@@ -41,7 +49,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 interface Props<T> {
   error?: string;
   project: APIResponseProject | null;
-  hasContent: boolean; // Treating this as "Basic Info"
+  hasContent: boolean;
   hasContentWorkExperience: boolean;
   hasContentEducation: boolean;
   hasContentProjects: boolean;
@@ -121,7 +129,6 @@ export function FormHeader<T>({
     setIsSaveConfirmOpen(false);
   };
 
-  // Helper component for checklist items
   const RequirementItem = ({
     label,
     met,
@@ -156,8 +163,8 @@ export function FormHeader<T>({
 
   return (
     <>
-      <Card className="rounded-xl shadow-sm border-border/60 bg-card/80 backdrop-blur-md sticky top-4 z-50">
-        <CardContent className="p-4 flex flex-col gap-4">
+      <Card className="rounded-xl shadow-sm border-border/60 bg-card/80 backdrop-blur-md sticky top-4 z-50 overflow-hidden py-0">
+        <CardContent className="p-3 md:p-4 flex flex-col gap-4">
           {error && (
             <Alert variant="destructive" className="animate-in slide-in-from-top-2">
               <AlertCircle className="h-4 w-4" />
@@ -166,113 +173,144 @@ export function FormHeader<T>({
             </Alert>
           )}
 
-          <div className="flex flex-col md:grid md:grid-cols-3 items-center gap-4">
-            {/* LEFT: Project Identity */}
-            <div className="flex items-center gap-4 w-full justify-start">
-              <div className="hidden md:flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary border border-primary/20">
-                <ProjectIcon className="h-6 w-6" />
-              </div>
-
-              <div className="space-y-1">
-                <div className="flex items-center gap-2">
-                  <h1 className="font-bold text-lg leading-none tracking-tight">
-                    {project?.name || 'Untitled Project'}
-                  </h1>
-                  <Badge
-                    variant={isPublished ? 'default' : 'secondary'}
-                    className={cn(
-                      'text-[10px] h-5 px-1.5 font-mono uppercase tracking-wider transition-colors',
-                      isPublished
-                        ? 'bg-green-500/15 text-green-600 hover:bg-green-500/25'
-                        : 'bg-muted text-muted-foreground'
-                    )}
-                  >
-                    {isPublished ? 'Live' : 'Draft'}
-                  </Badge>
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-2">
+            <div className="flex items-center justify-between w-full md:w-auto">
+              <div className="flex items-center gap-3 overflow-hidden mr-2">
+                <div className="hidden md:flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary border border-primary/20 shrink-0">
+                  <ProjectIcon className="h-5 w-5" />
                 </div>
 
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Globe className="w-3.5 h-3.5 opacity-70" />
-                  <a
-                    href={liveUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="hover:text-primary hover:underline transition-colors truncate max-w-[200px] md:max-w-[300px]"
-                  >
-                    {project?.sub_domain ? `${project.sub_domain}.kislap.app` : 'No domain set'}
-                  </a>
+                <div className="flex flex-col min-w-0">
+                  <div className="flex items-center gap-2">
+                    <h1 className="font-bold text-base md:text-lg leading-none tracking-tight truncate max-w-[120px] md:max-w-[200px]">
+                      {project?.name || 'Untitled'}
+                    </h1>
+                    <Badge
+                      variant={isPublished ? 'default' : 'secondary'}
+                      className={cn(
+                        'text-[10px] h-5 px-1.5 font-mono uppercase tracking-wider shrink-0',
+                        isPublished
+                          ? 'bg-green-500/15 text-green-600'
+                          : 'bg-muted text-muted-foreground'
+                      )}
+                    >
+                      {isPublished ? 'Live' : 'Draft'}
+                    </Badge>
+
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => setIsDialogOpen(true)}
+                            className="h-6 w-6 text-muted-foreground shrink-0 ml-1"
+                          >
+                            <Edit className="w-3.5 h-3.5" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Edit Project</TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </div>
+
+                  <div className="hidden md:flex items-center gap-2 text-xs text-muted-foreground mt-0.5">
+                    <a
+                      href={liveUrl}
+                      target="_blank"
+                      className="hover:text-primary hover:underline truncate max-w-[200px]"
+                    >
+                      {project?.sub_domain ? `${project.sub_domain}.kislap.app` : 'No domain'}
+                    </a>
+                  </div>
                 </div>
               </div>
 
-              <div className="ml-auto md:ml-2">
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => setIsDialogOpen(true)}
-                        className="h-8 w-8 hover:bg-secondary hover:text-secondary-foreground"
-                      >
-                        <Settings className="w-4 h-4" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Project Settings</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
+              <div className="flex md:hidden items-center gap-2 shrink-0">
+                <Button
+                  size="sm"
+                  onClick={() => setIsPublishConfirmOpen(true)}
+                  className="h-8 px-3 text-xs font-bold transition-all shadow-none"
+                  variant="outline"
+                >
+                  Save
+                </Button>
+
+                <Button
+                  size="sm"
+                  onClick={() => setIsPublishConfirmOpen(true)}
+                  className={cn(
+                    'h-8 px-3 text-xs font-bold transition-all',
+                    isPublished ? 'bg-red-100 text-red-600 border border-red-200' : 'bg-primary'
+                  )}
+                >
+                  {isPublished ? 'Stop' : 'Publish'}
+                </Button>
+
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon" className="h-8 w-8">
+                      <MoreHorizontal className="w-4 h-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                      <a href={liveUrl} target="_blank" rel="noreferrer">
+                        <ExternalLink className="w-4 h-4 mr-2" /> View Live Site
+                      </a>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </div>
 
-            {/* CENTER: Navigation */}
-            <div className="flex items-center justify-center w-full">
-              <div className="flex items-center bg-muted/50 p-1 rounded-lg border border-border/50">
+            <div className="w-full md:w-auto flex justify-center order-last md:order-none">
+              <div className="grid grid-cols-2 w-full md:w-auto md:flex items-center bg-muted/50 p-1 rounded-lg border border-border/50">
                 <Button
                   asChild
                   variant={!isEditPage ? 'secondary' : 'ghost'}
                   size="sm"
                   className={cn(
-                    'h-8 px-4 transition-all',
+                    'h-8 px-4 transition-all w-full md:w-auto',
                     !isEditPage && 'bg-background shadow-sm font-semibold'
                   )}
                 >
                   <Link
                     href={`/dashboard/builder/${project?.type || 'portfolio'}/${project?.slug}`}
                   >
-                    <LayoutDashboardIcon className="w-3.5 h-3.5 mr-2 opacity-70" />
+                    <Eye className="w-3.5 h-3.5 mr-2 opacity-70" />
                     Preview
                   </Link>
                 </Button>
-
-                <Separator orientation="vertical" className="h-4 mx-1" />
 
                 <Button
                   asChild
                   variant={isEditPage ? 'secondary' : 'ghost'}
                   size="sm"
                   className={cn(
-                    'h-8 px-4 transition-all',
+                    'h-8 px-4 transition-all w-full md:w-auto',
                     isEditPage && 'bg-background shadow-sm font-semibold'
                   )}
                 >
                   <Link
                     href={`/dashboard/builder/${project?.type || 'portfolio'}/${project?.slug}/edit`}
                   >
-                    <EditIcon className="w-3.5 h-3.5 mr-2 opacity-70" />
+                    <PenTool className="w-3.5 h-3.5 mr-2 opacity-70" />
                     Editor
                   </Link>
                 </Button>
               </div>
             </div>
 
-            {/* RIGHT: Actions Toolbar */}
-            <div className="flex items-center gap-2 w-full justify-end">
+            {/* --- RIGHT COL (Desktop Only): Toolbar --- */}
+            <div className="hidden md:flex items-center gap-2 justify-end">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => setIsSaveConfirmOpen(true)}
-                className="h-9 border-border/60 hover:border-primary/50 hover:bg-primary/5 hover:text-primary transition-all"
+                className="h-9 border-border/60 hover:bg-primary/5 hover:text-primary transition-all"
               >
                 <Save className="w-4 h-4 mr-2" />
                 Save
@@ -282,7 +320,7 @@ export function FormHeader<T>({
                 size="sm"
                 onClick={() => setIsPublishConfirmOpen(true)}
                 className={cn(
-                  'h-9 font-bold shadow-sm transition-all duration-300 min-w-[100px]',
+                  'h-9 font-bold shadow-sm transition-all duration-300 min-w-[110px]',
                   isPublished
                     ? 'bg-red-500/10 text-red-600 hover:bg-red-500/20 border border-red-200 dark:border-red-900'
                     : 'bg-primary text-primary-foreground hover:bg-primary/90'
@@ -298,15 +336,9 @@ export function FormHeader<T>({
                 )}
               </Button>
 
-              <Button
-                asChild
-                size="sm"
-                variant="ghost"
-                className="h-9 text-muted-foreground hover:text-primary px-3"
-              >
+              <Button asChild size="icon" variant="ghost" className="h-9 w-9 text-muted-foreground">
                 <a href={liveUrl} target="_blank" rel="noopener noreferrer">
-                  <ExternalLink className="w-4 h-4 mr-2" />
-                  Live Site
+                  <ExternalLink className="w-4 h-4" />
                 </a>
               </Button>
             </div>
@@ -326,13 +358,12 @@ export function FormHeader<T>({
           <AlertDialogHeader>
             <AlertDialogTitle>Save Changes?</AlertDialogTitle>
             <AlertDialogDescription>
-              This will overwrite the current version of your project. Are you sure you want to
-              proceed?
+              This will overwrite the current version of your project.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleSaveConfirm}>Yes, Save Changes</AlertDialogAction>
+            <AlertDialogAction onClick={handleSaveConfirm}>Yes, Save</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
@@ -388,9 +419,7 @@ export function FormHeader<T>({
                   {isReadyToPublish && (
                     <p className="text-xs text-muted-foreground mt-2 bg-primary/5 p-3 rounded border border-primary/10">
                       🚀 Making live at{' '}
-                      <span className="font-semibold text-primary">
-                        {project?.sub_domain}.{rootDomain}
-                      </span>
+                      <span className="font-semibold text-primary">{liveUrl}</span>
                     </p>
                   )}
                 </div>
