@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { Home, Settings2, LogOut, Sun, Moon, LifeBuoy } from 'lucide-react';
+// Added Menu and LayoutGrid to imports
+import { Home, Settings2, LogOut, Sun, Moon, LifeBuoy, Menu, LayoutGrid } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 
@@ -35,7 +36,11 @@ const DASHBOARD_LINKS = [
   { title: 'Settings', url: '/settings', icon: Settings2 },
 ];
 
-const PUBLIC_LINKS = [{ title: 'About us', url: '/about', icon: LifeBuoy }];
+// Updated PUBLIC_LINKS to match your UI needs
+const PUBLIC_LINKS = [
+  { title: 'Showcase', url: '/showcase', icon: LayoutGrid },
+  { title: 'About us', url: '/about', icon: LifeBuoy },
+];
 
 const ThemeSelector = () => {
   const { settings, updateSettings, applyThemePreset } = useSettings();
@@ -131,7 +136,6 @@ export function Header() {
 
   const onLogout = async () => {
     await logout();
-
     router.push('/login');
   };
 
@@ -140,7 +144,6 @@ export function Header() {
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <div className="flex items-center gap-8">
           <LogoVersion url={hasUser ? '/dashboard' : '/'} />
-          {!!hasUser}
         </div>
 
         {hasUser && (
@@ -212,6 +215,18 @@ export function Header() {
 
                 <DropdownMenuSeparator />
 
+                <div className="md:hidden">
+                  {DASHBOARD_LINKS.map((link) => (
+                    <DropdownMenuItem key={link.url} asChild>
+                      <Link href={link.url} className="cursor-pointer">
+                        <link.icon className="mr-2 h-4 w-4" />
+                        {link.title}
+                      </Link>
+                    </DropdownMenuItem>
+                  ))}
+                  <DropdownMenuSeparator />
+                </div>
+
                 <ThemeSelector />
                 <ModeToggle />
 
@@ -227,17 +242,47 @@ export function Header() {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <div className="flex items-center gap-3">
-              <Button variant="ghost" size="sm" asChild>
-                <Link href="/showcase">Showcase</Link>
-              </Button>
-              <Button variant="ghost" size="sm" asChild>
-                <Link href="/about">About us</Link>
-              </Button>
-              <Button size="sm" asChild>
-                <Link href="/login">Login</Link>
-              </Button>
-            </div>
+            <>
+              <div className="md:hidden">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon">
+                      <Menu className="h-5 w-5" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56 p-2">
+                    {PUBLIC_LINKS.map((link) => (
+                      <DropdownMenuItem key={link.url} asChild>
+                        <Link href={link.url} className="w-full cursor-pointer py-2 font-medium">
+                          {link.icon && <link.icon className="mr-2 h-4 w-4" />}
+                          {link.title}
+                        </Link>
+                      </DropdownMenuItem>
+                    ))}
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                      <Link
+                        href="/login"
+                        className="w-full cursor-pointer justify-center bg-primary text-primary-foreground focus:bg-primary/90 focus:text-primary-foreground"
+                      >
+                        Login
+                      </Link>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+
+              <div className="hidden md:flex items-center gap-3">
+                {PUBLIC_LINKS.map((link) => (
+                  <Button key={link.url} variant="ghost" size="sm" asChild>
+                    <Link href={link.url}>{link.title}</Link>
+                  </Button>
+                ))}
+                <Button size="sm" asChild>
+                  <Link href="/login">Login</Link>
+                </Button>
+              </div>
+            </>
           )}
         </div>
       </div>
