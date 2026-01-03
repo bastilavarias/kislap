@@ -18,10 +18,8 @@ func CORSMiddleware() gin.HandlerFunc {
 
 			log.Printf("[CORS] Checking Origin: %s", origin)
 
-			allowed := strings.HasSuffix(origin, ".localhost:3000") ||
+			allowed := strings.HasSuffix(origin, "localhost:3000") ||
 				strings.HasSuffix(origin, ".localhost:3001") ||
-				strings.HasSuffix(origin, "kislap.test") ||
-				strings.HasSuffix(origin, ".kislap.test") ||
 				strings.HasSuffix(origin, ".kislap.app")
 
 			if allowed {
