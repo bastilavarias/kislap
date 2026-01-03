@@ -110,6 +110,33 @@ func (controller *Controller) GithubLogin(context *gin.Context) {
 	})
 }
 
+func (controller *Controller) GoogleLogin(context *gin.Context) {
+	var input struct {
+		Code string `json:"code" binding:"required"`
+	}
+
+	if err := context.ShouldBindJSON(&input); err != nil {
+		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
+		context.Abort()
+		return
+	}
+
+	result, err := controller.Service.GoogleLogin(input.Code)
+
+	if err != nil {
+		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
+		context.Abort()
+		return
+	}
+
+	cookie.SetCookie(context, "refresh_token", result.RefreshToken)
+
+	utils.APIRespondSuccess(context, http.StatusOK, gin.H{
+		"access_token": result.AccessToken,
+		"user":         result.User,
+	})
+}
+
 func (controller Controller) Logout(context *gin.Context) {
 	userID, exists := context.Get("user_id")
 

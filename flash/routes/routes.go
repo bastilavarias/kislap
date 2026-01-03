@@ -34,6 +34,7 @@ func RegisterRoutes(router *gin.Engine, db *gorm.DB, llm llm.Provider) {
 
 		api.POST("/auth/login", authController.Login)
 		api.POST("/auth/github", authController.GithubLogin)
+		api.POST("/auth/google", authController.GoogleLogin)
 		api.GET("/auth/refresh", middleware.RefreshTokenValidatorMiddleware(db), authController.Refresh)
 		api.GET("/auth/logout", middleware.AccessTokenValidatorMiddleware(db), authController.Logout)
 

@@ -26,7 +26,6 @@ export type AuthLoginData = {
 export function useAuth() {
   const { apiPost, apiGet } = useApi();
 
-  // 1. Get Setters for LocalStorage
   const [storageAuthUser, setStorageAuthUser] = useLocalStorage<AuthUser | null>('auth_user', null);
   const [accessToken, setAccessToken] = useLocalStorage<string | null>('access_token', null);
 
@@ -45,6 +44,10 @@ export function useAuth() {
 
   const githubLogin = (code: string) => {
     return apiPost('api/auth/github', { code });
+  };
+
+  const googleLogin = (code: string) => {
+    return apiPost('api/auth/google', { code });
   };
 
   const logout = async () => {
@@ -66,5 +69,6 @@ export function useAuth() {
     syncAuthUser,
     githubLogin,
     logout,
+    googleLogin,
   };
 }
