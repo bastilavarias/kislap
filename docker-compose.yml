@@ -5,7 +5,7 @@ services:
     ports:
       - "80:80"
     volumes:
-      - ./flash:/app
+      - ./apps/api-service:/app
       - ./.docker/nginx/conf/local:/etc/nginx/conf.d
       - ./.docker/nginx/log:/var/log/nginx
     depends_on:
@@ -16,13 +16,13 @@ services:
       - kislap_subnet
 
   kislap_flash:
-    build: ./flash
+    build: ./apps/api-service
     container_name: kislap_flash
     env_file:
-      - ./flash/.env
+      - ./apps/api-service/.env
     volumes:
-      - ./flash:/app
-      - ./flash/tmp:/app/tmp
+      - ./apps/api-service:/app
+      - ./apps/api-service/tmp:/app/tmp
       - kislap_flash_go_mod:/go/pkg/mod
       - kislap_flash_go_build:/root/.cache/go-build
     ports:
@@ -37,16 +37,16 @@ services:
 
   kislap_admin:
     build:
-      context: ./admin
+      context: ./apps/web-admin
       dockerfile: Dockerfile
     container_name: kislap_admin
     restart: unless-stopped
     env_file:
-      - ./admin/.env
+      - ./apps/web-admin/.env
     ports:
       - "8000:8000"
     volumes:
-      - ./admin:/var/www/html
+      - ./apps/web-admin:/var/www/html
       - ./.docker/php/local.ini:/usr/local/etc/php/local.ini
     depends_on:
       kislap_database:

@@ -1,0 +1,18 @@
+@no-cookie-jar=false
+
+### Parse resume
+POST {{host}}/api/documents
+Authorization: Bearer {{access_token}}
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="type"
+
+resume
+
+--boundary
+Content-Disposition: form-data; name="file"; filename="resume.pdf"
+Content-Type: application/pdf
+
+< ./files/sample.pdf
+--boundary--

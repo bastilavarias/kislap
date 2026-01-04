@@ -1,0 +1,8 @@
+{
+  "name": "kislap",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
+}
