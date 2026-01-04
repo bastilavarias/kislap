@@ -68,6 +68,14 @@ const HeroSection = ({
 
   return (
     <header className="space-y-8">
+      <div className="flex justify-between items-center">
+        <div className="flex-1" />
+        <ThemeSwitchToggle
+          isDarkMode={isDarkMode}
+          onSetThemeMode={onSetThemeMode}
+        />
+      </div>
+
       <div className="flex flex-col-reverse md:flex-row justify-between items-start gap-6 md:gap-8">
         <div className="space-y-4 flex-1 w-full">
           <div className="space-y-2 text-center md:text-left">
@@ -114,13 +122,6 @@ const HeroSection = ({
         </div>
 
         <div className="flex flex-row md:flex-col items-center md:items-end justify-between w-full md:w-auto gap-4">
-          <div className="md:hidden">
-            <ThemeSwitchToggle
-              isDarkMode={isDarkMode}
-              onSetThemeMode={onSetThemeMode}
-            />
-          </div>
-
           {portfolio?.user?.image_url && (
             <Avatar className="w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 border bg-muted">
               <AvatarImage
@@ -132,13 +133,6 @@ const HeroSection = ({
               </AvatarFallback>
             </Avatar>
           )}
-
-          <div className="hidden md:block">
-            <ThemeSwitchToggle
-              isDarkMode={isDarkMode}
-              onSetThemeMode={onSetThemeMode}
-            />
-          </div>
         </div>
       </div>
 
@@ -459,66 +453,14 @@ const ContactFormSection = ({
 };
 
 const FooterSection = ({ portfolio }: { portfolio: Portfolio }) => {
-  const rootURL = process.env.NEXT_PUBLIC_ROOT_URL || "https://kislap.app";
-  const githubURL =
-    process.env.NEXT_PUBLIC_KISLAP_GITHUB_URL || "https://kislap.app";
-  const facebookURL =
-    process.env.NEXT_PUBLIC_KISLAP_FACEBOOK_URL || "https://kislap.app";
-
   return (
-    <footer className="border-t py-12 mt-auto bg-muted/5">
+    <footer className="border-t py-4 mt-auto bg-muted/5">
       <div className="flex flex-col items-center justify-center gap-6 text-center px-4">
         <div className="space-y-1">
           <p className="text-sm font-medium text-foreground">
             © {new Date().getFullYear()} {portfolio?.name || "My Portfolio"}.
+            All rights reserved.
           </p>
-          <p className="text-xs text-muted-foreground">
-            All rights reserved. Made with{" "}
-            <span className="text-red-500 animate-pulse">❤️</span>
-          </p>
-        </div>
-
-        <div className="w-8 h-px bg-border/60" />
-
-        <div className="flex flex-col items-center gap-3 opacity-80 hover:opacity-100 transition-opacity">
-          <div className="flex flex-col items-center gap-1">
-            <span className="text-xs font-bold tracking-widest text-muted-foreground uppercase flex items-center gap-1.5">
-              <span className="text-amber-400">✨</span> Powered by Kislap
-            </span>
-            <p className="text-[10px] text-muted-foreground/60 uppercase tracking-widest">
-              Transform your forms into beautiful websites
-            </p>
-          </div>
-
-          <div className="flex items-center gap-4 mt-1">
-            <a
-              href={githubURL}
-              target="_blank"
-              rel="noreferrer"
-              className="text-muted-foreground hover:text-foreground transition-colors"
-              title="Kislap Github"
-            >
-              <Github className="w-4 h-4" />
-            </a>
-            <a
-              href={rootURL}
-              target="_blank"
-              rel="noreferrer"
-              className="text-muted-foreground hover:text-foreground transition-colors"
-              title="Kislap Website"
-            >
-              <Globe className="w-4 h-4" />
-            </a>
-            <a
-              href={facebookURL}
-              target="_blank"
-              rel="noreferrer"
-              className="text-muted-foreground hover:text-foreground transition-colors"
-              title="Kislap Facebook"
-            >
-              <Facebook className="w-4 h-4" />
-            </a>
-          </div>
         </div>
       </div>
     </footer>
@@ -535,7 +477,7 @@ export function Default({
 
   return (
     <div className="min-h-screen bg-background text-foreground selection:bg-primary/10 selection:text-primary font-sans">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10 sm:py-20 space-y-16 sm:space-y-20">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 space-y-16">
         <HeroSection
           portfolio={portfolio}
           themeMode={themeMode}

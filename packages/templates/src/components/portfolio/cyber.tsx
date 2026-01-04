@@ -577,71 +577,14 @@ const EducationSection = ({ portfolio }: { portfolio: Portfolio }) => {
 };
 
 const FooterSection = ({ portfolio }: { portfolio: Portfolio }) => {
-  const rootURL = process.env.NEXT_PUBLIC_ROOT_URL || "https://kislap.app";
-  const githubURL =
-    process.env.NEXT_PUBLIC_KISLAP_GITHUB_URL ||
-    "https://github.com/sebas-tech/kislap";
-  const facebookURL =
-    process.env.NEXT_PUBLIC_KISLAP_FACEBOOK_URL || "https://facebook.com";
-
   return (
-    <footer className="border-t border-primary/20 pt-12 mt-12 ">
+    <footer className="border-t py-4 mt-auto bg-muted/5">
       <div className="flex flex-col items-center justify-center gap-6 text-center px-4">
-        <div className="space-y-1 font-mono text-xs">
-          <p className="text-primary/70 mb-2 tracking-widest">
-            SYSTEM_END_OF_LINE
-          </p>
-          <p className="opacity-50">
+        <div className="space-y-1">
+          <p className="text-sm font-medium text-foreground">
             © {new Date().getFullYear()} {portfolio?.name || "My Portfolio"}.
-            SECURE_CONNECTION.
+            All rights reserved.
           </p>
-          <p className="text-[10px] text-muted-foreground mt-1">
-            All rights reserved. Made with{" "}
-            <span className="text-red-500 animate-pulse">❤️</span>
-          </p>
-        </div>
-
-        <div className="w-24 h-px bg-primary/30" />
-
-        <div className="flex flex-col items-center gap-3 opacity-80 hover:opacity-100 transition-opacity">
-          <div className="flex flex-col items-center gap-1">
-            <span className="text-xs font-bold tracking-widest text-primary uppercase flex items-center gap-1.5 font-mono">
-              <span className="text-amber-400">✨</span> Powered by Kislap
-            </span>
-            <p className="text-[10px] text-muted-foreground/60 uppercase tracking-widest font-mono">
-              Transform your forms into beautiful websites
-            </p>
-          </div>
-
-          <div className="flex items-center gap-4 mt-1">
-            <a
-              href={githubURL}
-              target="_blank"
-              rel="noreferrer"
-              className="text-primary/60 hover:text-primary transition-colors"
-              title="Kislap Github"
-            >
-              <Github className="w-4 h-4" />
-            </a>
-            <a
-              href={rootURL}
-              target="_blank"
-              rel="noreferrer"
-              className="text-primary/60 hover:text-primary transition-colors"
-              title="Kislap Website"
-            >
-              <Globe className="w-4 h-4" />
-            </a>
-            <a
-              href={facebookURL}
-              target="_blank"
-              rel="noreferrer"
-              className="text-primary/60 hover:text-primary transition-colors"
-              title="Kislap Facebook"
-            >
-              <Facebook className="w-4 h-4" />
-            </a>
-          </div>
         </div>
       </div>
     </footer>

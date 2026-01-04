@@ -8,6 +8,7 @@ import { ThemeStyles } from '@/types/theme';
 
 import { renderTemplate } from '@/hooks/use-template-renderer';
 import { usePageActivity } from '@/hooks/api/use-page-activity';
+import AcknowledgementBanner from './acknowledgement-banner';
 
 interface BuilderProps {
   initialProject: Project | null;
@@ -58,6 +59,7 @@ export function Builder({ initialProject, initialSubdomain }: BuilderProps) {
   return (
     <div className="relative flex min-h-full w-full flex-auto flex-col gap-10">
       <ComponentThemeProvider themeStyles={themeStyles} mode={themeMode}>
+        <AcknowledgementBanner />
         <div
           style={{
             fontFamily: 'var(--font-sans)',
@@ -66,6 +68,7 @@ export function Builder({ initialProject, initialSubdomain }: BuilderProps) {
         >
           <div className="container mx-auto max-w-5xl pt-10">{TemplateComponent}</div>
         </div>
+        <AcknowledgementBanner />
       </ComponentThemeProvider>
     </div>
   );

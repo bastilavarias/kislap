@@ -639,74 +639,21 @@ const ContactFormSection = ({
   );
 };
 
+// @TODO: Check other themes footer if as so much space in the top.
 const FooterSection = ({ portfolio }: { portfolio: Portfolio }) => {
-  const rootURL = process.env.NEXT_PUBLIC_ROOT_URL || "https://kislap.app";
-  const githubURL =
-    process.env.NEXT_PUBLIC_KISLAP_GITHUB_URL ||
-    "https://github.com/sebas-tech/kislap";
-  const facebookURL =
-    process.env.NEXT_PUBLIC_KISLAP_FACEBOOK_URL || "https://facebook.com";
-
   return (
-    <footer className="border-t border-border bg-muted/20 py-12 mt-12">
-      <div className="max-w-7xl mx-auto px-4 flex flex-col items-center gap-6 text-center">
+    <footer className="border-t py-4 mt-auto bg-muted/5">
+      <div className="flex flex-col items-center justify-center gap-6 text-center px-4">
         <div className="space-y-1">
           <p className="text-sm font-medium text-foreground">
             © {new Date().getFullYear()} {portfolio?.name || "My Portfolio"}.
+            All rights reserved.
           </p>
-          <p className="text-xs text-muted-foreground">
-            All rights reserved. Built with Kinetic Energy &{" "}
-            <span className="text-red-500 animate-pulse">❤️</span>
-          </p>
-        </div>
-
-        <div className="w-8 h-px bg-border/60" />
-
-        <div className="flex flex-col items-center gap-3 opacity-80 hover:opacity-100 transition-opacity">
-          <div className="flex flex-col items-center gap-1">
-            <span className="text-xs font-bold tracking-widest text-muted-foreground uppercase flex items-center gap-1.5">
-              <span className="text-amber-400">✨</span> Powered by Kislap
-            </span>
-            <p className="text-[10px] text-muted-foreground/60 uppercase tracking-widest">
-              Transform your forms into beautiful websites
-            </p>
-          </div>
-
-          <div className="flex items-center gap-4 mt-1">
-            <a
-              href={githubURL}
-              target="_blank"
-              rel="noreferrer"
-              className="text-muted-foreground hover:text-foreground transition-colors"
-              title="Kislap Github"
-            >
-              <Github className="w-4 h-4" />
-            </a>
-            <a
-              href={rootURL}
-              target="_blank"
-              rel="noreferrer"
-              className="text-muted-foreground hover:text-foreground transition-colors"
-              title="Kislap Website"
-            >
-              <Globe className="w-4 h-4" />
-            </a>
-            <a
-              href={facebookURL}
-              target="_blank"
-              rel="noreferrer"
-              className="text-muted-foreground hover:text-foreground transition-colors"
-              title="Kislap Facebook"
-            >
-              <Facebook className="w-4 h-4" />
-            </a>
-          </div>
         </div>
       </div>
     </footer>
   );
 };
-
 // --- Main Component ---
 
 export function Kinetic({
