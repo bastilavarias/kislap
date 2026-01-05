@@ -68,7 +68,6 @@ export function Builder({ initialProject, initialSubdomain }: BuilderProps) {
         >
           <div className="container mx-auto max-w-5xl pt-10">{TemplateComponent}</div>
         </div>
-        <AcknowledgementBanner />
       </ComponentThemeProvider>
     </div>
   );

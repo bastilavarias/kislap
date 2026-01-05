@@ -18,7 +18,6 @@ import {
   AlertCircleIcon,
   ArrowUpRight,
   Loader2,
-  Facebook,
 } from "lucide-react";
 import {
   Card,
@@ -75,18 +74,17 @@ const HeroCard = ({ portfolio, className, style }: SectionProps) => {
       )}
       style={style}
     >
-      {/* Gradient Background */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/5 opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
 
-      <CardHeader className="relative z-10">
-        <div className="flex justify-between items-start">
+      <CardHeader className="relative z-10 p-6 md:p-8">
+        <div className="flex justify-between items-start gap-4">
           {portfolio.user?.image_url && (
-            <Avatar className="w-24 h-24 md:w-32 md:h-32 border-4 border-background shadow-2xl ring-2 ring-primary/10 group-hover:scale-105 transition-transform duration-300">
+            <Avatar className="w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 border-4 border-background shadow-2xl ring-2 ring-primary/10 group-hover:scale-105 transition-transform duration-300">
               <AvatarImage
                 src={portfolio.user.image_url}
                 className="object-cover"
               />
-              <AvatarFallback className="text-4xl font-black bg-muted text-muted-foreground">
+              <AvatarFallback className="text-2xl md:text-4xl font-black bg-muted text-muted-foreground">
                 {portfolio.name?.charAt(0) ?? "U"}
               </AvatarFallback>
             </Avatar>
@@ -94,7 +92,7 @@ const HeroCard = ({ portfolio, className, style }: SectionProps) => {
           {portfolio.location && (
             <Badge
               variant="secondary"
-              className="text-xs py-1.5 px-3 gap-1.5 backdrop-blur shadow-sm"
+              className="text-[10px] sm:text-xs py-1 px-2 sm:py-1.5 sm:px-3 gap-1 backdrop-blur shadow-sm whitespace-nowrap"
             >
               <MapPin className="w-3 h-3" />
               {portfolio.location}
@@ -102,19 +100,19 @@ const HeroCard = ({ portfolio, className, style }: SectionProps) => {
           )}
         </div>
         <div className="space-y-2 mt-6">
-          <CardTitle className="text-4xl md:text-6xl font-black tracking-tight leading-[0.9]">
+          <CardTitle className="text-3xl sm:text-4xl md:text-6xl font-black tracking-tight leading-[0.95] md:leading-[0.9]">
             {portfolio.name || "Untitled Portfolio"}
           </CardTitle>
           {portfolio.job_title && (
-            <CardDescription className="text-xl md:text-2xl font-medium text-primary">
+            <CardDescription className="text-lg sm:text-xl md:text-2xl font-medium text-primary">
               {portfolio.job_title}
             </CardDescription>
           )}
         </div>
       </CardHeader>
       {(portfolio.introduction || portfolio.about) && (
-        <CardContent className="relative z-10">
-          <p className="text-muted-foreground leading-relaxed text-base md:text-lg max-w-lg">
+        <CardContent className="relative z-10 p-6 md:p-8 pt-0">
+          <p className="text-muted-foreground leading-relaxed text-sm sm:text-base md:text-lg max-w-lg">
             {portfolio.introduction || portfolio.about}
           </p>
         </CardContent>
@@ -127,17 +125,17 @@ const ContactInfoCard = ({ portfolio, className, style }: SectionProps) => {
   return (
     <Card
       className={cn(
-        "bg-primary text-primary-foreground border-none shadow-lg animate-in fade-in slide-in-from-bottom-4",
+        "bg-primary text-primary-foreground border-none shadow-lg animate-in fade-in slide-in-from-bottom-4 flex flex-col justify-center",
         className
       )}
       style={style}
     >
-      <CardHeader>
+      <CardHeader className="pb-2">
         <CardTitle className="flex items-center gap-2 text-lg">
           <Mail className="h-5 w-5 opacity-80" /> Contact
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-5 text-sm font-medium">
+      <CardContent className="space-y-4 text-sm font-medium">
         {portfolio.email && (
           <div
             className="flex flex-col gap-1 group cursor-pointer"
@@ -146,7 +144,7 @@ const ContactInfoCard = ({ portfolio, className, style }: SectionProps) => {
             <span className="opacity-70 text-xs uppercase tracking-wider">
               Email
             </span>
-            <span className="truncate text-base group-hover:underline decoration-white/50 underline-offset-4">
+            <span className="truncate text-base group-hover:underline decoration-white/50 underline-offset-4 break-all">
               {portfolio.email}
             </span>
           </div>
@@ -179,7 +177,7 @@ const SocialsCard = ({ portfolio, className, style }: SectionProps) => {
   return (
     <Card
       className={cn(
-        "flex flex-col justify-center items-center gap-6 p-6 animate-in fade-in slide-in-from-bottom-4 border-dashed border-2 hover:border-solid hover:border-primary/50 transition-all duration-300",
+        "flex flex-col justify-center items-center gap-4 sm:gap-6 p-4 sm:p-6 animate-in fade-in slide-in-from-bottom-4 border-dashed border-2 hover:border-solid hover:border-primary/50 transition-all duration-300",
         className
       )}
       style={style}
@@ -187,15 +185,15 @@ const SocialsCard = ({ portfolio, className, style }: SectionProps) => {
       <div className="text-center font-bold text-muted-foreground text-xs uppercase tracking-widest">
         Connect
       </div>
-      <div className="flex gap-3 flex-wrap justify-center">
+      <div className="flex gap-2 sm:gap-3 flex-wrap justify-center">
         {socialLinks.map((social, idx) => (
           <Link key={idx} href={social.url!} target="_blank">
             <Button
               variant="outline"
               size="icon"
-              className="h-12 w-12 rounded-full hover:bg-primary hover:text-primary-foreground hover:scale-110 hover:-rotate-6 transition-all duration-300 shadow-sm"
+              className="h-10 w-10 sm:h-12 sm:w-12 rounded-full hover:bg-primary hover:text-primary-foreground hover:scale-110 hover:-rotate-6 transition-all duration-300 shadow-sm"
             >
-              <social.icon className="h-5 w-5" />
+              <social.icon className="h-4 w-4 sm:h-5 sm:w-5" />
             </Button>
           </Link>
         ))}
@@ -221,7 +219,7 @@ const AboutCard = ({ portfolio, className, style }: SectionProps) => {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <p className="text-foreground/80 leading-relaxed text-lg">
+        <p className="text-foreground/80 leading-relaxed text-base sm:text-lg">
           {portfolio.about}
         </p>
       </CardContent>
@@ -249,7 +247,7 @@ const SkillsCard = ({ portfolio, className, style }: SectionProps) => {
             <Badge
               key={skill.id}
               variant="secondary"
-              className="px-4 py-2 text-sm border hover:border-primary/50 hover:bg-primary/5 transition-all cursor-default animate-in zoom-in duration-300"
+              className="px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm border hover:border-primary/50 hover:bg-primary/5 transition-all cursor-default animate-in zoom-in duration-300"
               style={{ animationDelay: `${300 + i * 50}ms` }}
             >
               {skill.name}
@@ -277,16 +275,16 @@ const ProjectsSection = ({
 
   return (
     <div className={className} style={style}>
-      <div className="py-6 animate-in fade-in">
-        <h2 className="text-3xl font-black uppercase tracking-tighter flex items-center gap-2">
+      <div className="py-4 sm:py-6 animate-in fade-in col-span-full">
+        <h2 className="text-2xl sm:text-3xl font-black uppercase tracking-tighter flex items-center gap-2">
           Selected Work{" "}
-          <ArrowUpRight className="w-6 h-6 text-muted-foreground" />
+          <ArrowUpRight className="w-5 h-5 sm:w-6 sm:h-6 text-muted-foreground" />
         </h2>
       </div>
       {portfolio.showcases.map((showcase, i) => (
         <Card
           key={showcase.id}
-          className="group relative overflow-hidden border-2 hover:border-primary/50 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl animate-in fade-in slide-in-from-bottom-8 mb-4 last:mb-0"
+          className="group relative overflow-hidden border-2 hover:border-primary/50 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl animate-in fade-in slide-in-from-bottom-8 mb-4 last:mb-0 h-full"
           style={{ animationDelay: `${400 + i * 100}ms` }}
         >
           {showcase.url && (
@@ -296,11 +294,11 @@ const ProjectsSection = ({
           )}
 
           <CardHeader>
-            <CardTitle className="text-xl font-bold truncate pr-6 group-hover:text-primary transition-colors">
+            <CardTitle className="text-lg sm:text-xl font-bold truncate pr-6 group-hover:text-primary transition-colors">
               {showcase.name}
             </CardTitle>
             {showcase.description && (
-              <CardDescription className="line-clamp-2 mt-2">
+              <CardDescription className="line-clamp-2 mt-2 text-sm sm:text-base">
                 {showcase.description}
               </CardDescription>
             )}
@@ -349,19 +347,21 @@ const ExperienceEducationSection = ({
       {portfolio.work_experiences && portfolio.work_experiences.length > 0 && (
         <Card className="border-none shadow-none bg-muted/30 animate-in fade-in slide-in-from-left-4 h-full">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-xl">
+            <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
               <Briefcase className="w-5 h-5 text-primary" /> Experience
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-8">
+          <CardContent className="space-y-6 sm:space-y-8">
             {portfolio.work_experiences.map((exp) => (
               <div
                 key={exp.id}
-                className="relative pl-6 border-l-2 border-primary/20 hover:border-primary transition-colors group"
+                className="relative pl-4 sm:pl-6 border-l-2 border-primary/20 hover:border-primary transition-colors group"
               >
                 <div className="absolute -left-[5px] top-1.5 w-2 h-2 rounded-full bg-primary/20 group-hover:bg-primary transition-colors" />
                 <div className="flex flex-col">
-                  <span className="font-bold text-lg">{exp.company}</span>
+                  <span className="font-bold text-base sm:text-lg">
+                    {exp.company}
+                  </span>
                   <span className="text-primary font-medium text-sm">
                     {exp.role}
                   </span>
@@ -384,19 +384,21 @@ const ExperienceEducationSection = ({
       {portfolio.education && portfolio.education.length > 0 && (
         <Card className="border-none shadow-none bg-muted/30 animate-in fade-in slide-in-from-right-4 h-full">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-xl">
+            <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
               <GraduationCap className="w-5 h-5 text-primary" /> Education
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-8">
+          <CardContent className="space-y-6 sm:space-y-8">
             {portfolio.education.map((edu) => (
               <div
                 key={edu.id}
-                className="relative pl-6 border-l-2 border-primary/20 hover:border-primary transition-colors group"
+                className="relative pl-4 sm:pl-6 border-l-2 border-primary/20 hover:border-primary transition-colors group"
               >
                 <div className="absolute -left-[5px] top-1.5 w-2 h-2 rounded-full bg-primary/20 group-hover:bg-primary transition-colors" />
                 <div className="flex flex-col">
-                  <span className="font-bold text-lg">{edu.school}</span>
+                  <span className="font-bold text-base sm:text-lg">
+                    {edu.school}
+                  </span>
                   {edu.degree && (
                     <span className="text-primary font-medium text-sm">
                       {edu.degree}
@@ -485,18 +487,18 @@ const ContactFormSection = ({
       )}
       style={style}
     >
-      <div className="grid md:grid-cols-5 h-full">
+      <div className="grid grid-cols-1 md:grid-cols-5 h-full">
         {/* Decorative Side Panel */}
-        <div className="md:col-span-2 bg-primary text-primary-foreground p-8 md:p-12 flex flex-col justify-center relative overflow-hidden">
+        <div className="md:col-span-2 bg-primary text-primary-foreground p-6 sm:p-8 md:p-12 flex flex-col justify-center relative overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.1),transparent)]" />
-          <h3 className="text-3xl md:text-4xl font-black mb-6 uppercase tracking-tight relative z-10">
+          <h3 className="text-2xl sm:text-3xl md:text-4xl font-black mb-4 sm:mb-6 uppercase tracking-tight relative z-10">
             Let's Work Together
           </h3>
-          <p className="opacity-90 text-lg relative z-10 leading-relaxed">
+          <p className="opacity-90 text-base sm:text-lg relative z-10 leading-relaxed">
             Have a project in mind? Fill out the form and I'll get back to you
             as soon as possible.
           </p>
-          <div className="mt-12 space-y-3 opacity-80 text-sm font-mono relative z-10">
+          <div className="mt-8 sm:mt-12 space-y-3 opacity-80 text-sm font-mono relative z-10">
             {portfolio.email && (
               <div className="flex items-center gap-3">
                 <Mail className="w-4 h-4" /> {portfolio.email}
@@ -511,7 +513,7 @@ const ContactFormSection = ({
         </div>
 
         {/* Form Area */}
-        <div className="md:col-span-3 p-6 md:p-12 bg-card">
+        <div className="md:col-span-3 p-6 sm:p-8 md:p-12 bg-card">
           {error && (
             <Alert
               variant="destructive"
@@ -522,8 +524,8 @@ const ContactFormSection = ({
             </Alert>
           )}
 
-          <div className="space-y-6">
-            <div className="grid grid-cols-2 gap-6">
+          <div className="space-y-4 sm:space-y-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
               <div className="space-y-2">
                 <Label>Name</Label>
                 <Input
@@ -626,11 +628,9 @@ export function Bento({
 
   if (!portfolio) return null;
 
-  console.log("im used");
-
   return (
     <div className="min-h-screen bg-background text-foreground p-4 md:p-8 font-sans transition-colors duration-500">
-      <div className="max-w-7xl mx-auto space-y-6">
+      <div className="max-w-7xl mx-auto space-y-4 md:space-y-6">
         {/* Top Bar */}
         <div className="flex justify-between items-center mb-4 fade-in slide-in-from-top-4 duration-700 animate-in">
           <div className="flex-1" />
@@ -643,51 +643,51 @@ export function Bento({
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 auto-rows-[minmax(180px,auto)]">
           <HeroCard
             portfolio={portfolio}
-            className="md:col-span-2 md:row-span-2"
+            className="col-span-1 md:col-span-2 md:row-span-2"
             style={delay(0)}
           />
 
           <ContactInfoCard
             portfolio={portfolio}
-            className="md:col-span-1"
+            className="col-span-1 md:col-span-1"
             style={delay(100)}
           />
 
           <SocialsCard
             portfolio={portfolio}
-            className="md:col-span-1"
+            className="col-span-1 md:col-span-1"
             style={delay(150)}
           />
 
           <AboutCard
             portfolio={portfolio}
-            className="md:col-span-2 lg:col-span-2"
+            className="col-span-1 md:col-span-2 lg:col-span-2"
             style={delay(200)}
           />
 
           <SkillsCard
             portfolio={portfolio}
-            className="col-span-4 md:col-span-4"
+            className="col-span-1 md:col-span-4"
             style={delay(250)}
           />
 
           <ProjectsSection
             portfolio={portfolio}
             projectId={project.id}
-            className="md:col-span-3 lg:col-span-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+            className="col-span-1 md:col-span-3 lg:col-span-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
             style={delay(300)}
           />
 
           <ExperienceEducationSection
             portfolio={portfolio}
-            className="md:col-span-3 lg:col-span-4 grid grid-cols-1 md:grid-cols-2 gap-4 mt-4"
+            className="col-span-1 md:col-span-3 lg:col-span-4 grid grid-cols-1 md:grid-cols-2 gap-4 mt-4"
             style={delay(600)}
           />
 
           <ContactFormSection
             portfolio={portfolio}
             project={project}
-            className="md:col-span-3 lg:col-span-4 mt-8 animate-in fade-in zoom-in-95"
+            className="col-span-1 md:col-span-3 lg:col-span-4 mt-8 animate-in fade-in zoom-in-95"
             style={delay(800)}
           />
         </div>

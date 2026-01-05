@@ -121,9 +121,9 @@ const HeroSection = ({
           )}
         </div>
 
-        <div className="flex flex-row md:flex-col items-center md:items-end justify-between w-full md:w-auto gap-4">
+        <div className="flex flex-row justify-center md:flex-col md:items-center md:items-end md:justify-between w-full md:w-auto gap-4">
           {portfolio?.user?.image_url && (
-            <Avatar className="w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 border bg-muted">
+            <Avatar className="w-24 h-24 md:w-32 md:h-32 border bg-muted">
               <AvatarImage
                 src={portfolio.user.image_url}
                 className="object-cover"

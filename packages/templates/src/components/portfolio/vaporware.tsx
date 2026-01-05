@@ -47,7 +47,6 @@ import { Project } from "@/types/project";
 import { Portfolio } from "@/types/portfolio";
 import { cn } from "@/lib/utils";
 
-// --- Types ---
 interface Props {
   project: Project;
   portfolio: Portfolio;
@@ -55,8 +54,6 @@ interface Props {
   onSetThemeMode: React.Dispatch<React.SetStateAction<Mode>>;
   themeStyles: ThemeStyles;
 }
-
-// --- VISUAL EFFECTS COMPONENTS ---
 
 const ScanlineOverlay = () => (
   <div className="pointer-events-none fixed inset-0 z-50 h-screen w-screen overflow-hidden">
@@ -534,6 +531,9 @@ const ContactSection = ({
   const [isLoading, setIsLoading] = useState(false);
   const { create } = useAppointment();
 
+  // Assuming neonText is defined elsewhere, if not, provide a fallback
+  const neonText = "drop-shadow-[0_0_10px_rgba(var(--primary),0.8)]";
+
   const {
     register,
     handleSubmit,
@@ -577,30 +577,38 @@ const ContactSection = ({
   };
 
   return (
-    <section className="max-w-4xl mx-auto">
+    // Added outer padding (px-4) so it doesn't touch screen edges on mobile
+    <section className="w-full max-w-4xl mx-auto px-4 sm:px-6">
       <VwReveal>
         <div className="bg-background border-2 border-primary rounded-lg shadow-[0_0_30px_hsl(var(--primary)/0.2)] overflow-hidden">
+          {/* Header Bar: Prevent shrinking of dots and allow text truncation */}
           <div className="bg-primary/5 p-2 flex items-center gap-2 border-b border-primary/20">
-            <div className="w-3 h-3 rounded-full bg-red-500" />
-            <div className="w-3 h-3 rounded-full bg-yellow-500" />
-            <div className="w-3 h-3 rounded-full bg-green-500" />
-            <span className="text-xs font-mono ml-2 text-muted-foreground opacity-70">
+            <div className="flex shrink-0 gap-1.5 sm:gap-2">
+              <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-red-500" />
+              <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-yellow-500" />
+              <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-green-500" />
+            </div>
+            <span className="text-[10px] sm:text-xs font-mono ml-2 text-muted-foreground opacity-70 truncate">
               bash --login contact-form
             </span>
           </div>
 
-          <div className="p-6 md:p-12 bg-background/95 backdrop-blur">
-            <div className="grid md:grid-cols-2 gap-12">
+          {/* Content Area: Adjusted padding for mobile vs desktop */}
+          <div className="p-5 sm:p-8 md:p-12 bg-background/95 backdrop-blur">
+            {/* Grid: Explicit single column on mobile, 2 cols on md+ */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+              {/* Left Column: Info */}
               <div className="space-y-6">
                 <h3
-                  className={`text-3xl font-black italic uppercase ${neonText} text-secondary`}
+                  className={`text-2xl sm:text-3xl font-black italic uppercase ${neonText} text-secondary`}
                 >
                   Uplink
                 </h3>
-                <div className="space-y-4 text-sm font-bold tracking-wider text-muted-foreground">
+
+                <div className="space-y-4 text-sm font-bold tracking-wider text-muted-foreground break-all sm:break-normal">
                   {portfolio.email && (
                     <div className="flex items-center gap-3">
-                      <Mail className="w-5 h-5 text-primary" />
+                      <Mail className="w-5 h-5 min-w-5 text-primary" />
                       <span className="hover:text-primary transition-colors cursor-default">
                         {portfolio.email}
                       </span>
@@ -608,12 +616,14 @@ const ContactSection = ({
                   )}
                   {portfolio.phone && (
                     <div className="flex items-center gap-3">
-                      <Phone className="w-5 h-5 text-primary" />
+                      <Phone className="w-5 h-5 min-w-5 text-primary" />
                       <span>{portfolio.phone}</span>
                     </div>
                   )}
                 </div>
-                <div className="font-mono text-xs text-primary/60 mt-8 p-4 border border-primary/20 rounded bg-primary/5">
+
+                {/* Status Terminal: Added overflow handling for small screens */}
+                <div className="font-mono text-xs text-primary/60 mt-6 sm:mt-8 p-4 border border-primary/20 rounded bg-primary/5 overflow-x-auto whitespace-nowrap">
                   $ status check
                   <br />
                   {`> `} port 8080 open
@@ -625,11 +635,12 @@ const ContactSection = ({
                 </div>
               </div>
 
+              {/* Right Column: Form */}
               <div className="space-y-4">
                 {error && (
                   <Alert
                     variant="destructive"
-                    className="border-destructive/50 bg-destructive/10 rounded-none"
+                    className="border-destructive/50 bg-destructive/10 rounded-none animate-in fade-in slide-in-from-top-2"
                   >
                     <AlertCircle className="w-4 h-4" />
                     <AlertTitle className="font-mono uppercase text-xs">
@@ -644,7 +655,7 @@ const ContactSection = ({
                   </Label>
                   <Input
                     {...register("name")}
-                    className="bg-muted/30 border-primary/30 focus:border-primary rounded-none font-mono text-sm"
+                    className="bg-muted/30 border-primary/30 focus:border-primary rounded-none font-mono text-sm h-10 sm:h-11"
                     placeholder="GUEST_USER"
                   />
                   {errors.name && (
@@ -653,13 +664,14 @@ const ContactSection = ({
                     </p>
                   )}
                 </div>
+
                 <div className="space-y-1">
                   <Label className="text-primary text-xs font-bold uppercase">
                     Target_Mail
                   </Label>
                   <Input
                     {...register("email")}
-                    className="bg-muted/30 border-primary/30 focus:border-primary rounded-none font-mono text-sm"
+                    className="bg-muted/30 border-primary/30 focus:border-primary rounded-none font-mono text-sm h-10 sm:h-11"
                     placeholder="USER@NET.COM"
                   />
                   {errors.email && (
@@ -668,23 +680,25 @@ const ContactSection = ({
                     </p>
                   )}
                 </div>
+
                 <div className="space-y-1">
                   <Label className="text-primary text-xs font-bold uppercase">
                     Frequency
                   </Label>
                   <Input
                     {...register("contact_number")}
-                    className="bg-muted/30 border-primary/30 focus:border-primary rounded-none font-mono text-sm"
+                    className="bg-muted/30 border-primary/30 focus:border-primary rounded-none font-mono text-sm h-10 sm:h-11"
                     placeholder="OPTIONAL"
                   />
                 </div>
+
                 <div className="space-y-1">
                   <Label className="text-primary text-xs font-bold uppercase">
                     Data_Packet
                   </Label>
                   <Textarea
                     {...register("message")}
-                    className="bg-muted/30 border-primary/30 focus:border-primary rounded-none font-mono text-sm min-h-[100px]"
+                    className="bg-muted/30 border-primary/30 focus:border-primary rounded-none font-mono text-sm min-h-[120px]"
                     placeholder="INPUT MESSAGE..."
                   />
                   {errors.message && (
@@ -697,7 +711,7 @@ const ContactSection = ({
                 <Button
                   onClick={handleSubmit(onSubmit)}
                   disabled={isLoading}
-                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-black uppercase tracking-widest rounded-none h-12 mt-2"
+                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-black uppercase tracking-widest rounded-none h-12 mt-2 transition-all hover:scale-[1.01] active:scale-[0.99]"
                 >
                   {isLoading ? (
                     <>
@@ -720,73 +734,19 @@ const ContactSection = ({
 };
 
 const FooterSection = ({ portfolio }: { portfolio: Portfolio }) => {
-  const rootURL = process.env.NEXT_PUBLIC_ROOT_URL || "https://kislap.app";
-  const githubURL =
-    process.env.NEXT_PUBLIC_KISLAP_GITHUB_URL ||
-    "https://github.com/sebas-tech/kislap";
-  const facebookURL =
-    process.env.NEXT_PUBLIC_KISLAP_FACEBOOK_URL || "https://facebook.com";
-
   return (
-    <footer className="relative z-10 py-12 border-t border-primary/20 bg-background/80 backdrop-blur font-mono uppercase tracking-widest">
+    <footer className="border-t py-4 mt-auto bg-muted/5">
       <div className="flex flex-col items-center justify-center gap-6 text-center px-4">
-        <div className="space-y-1 text-xs">
-          <p className="text-primary/70 mb-2">END OF LINE</p>
-          <p className="text-muted-foreground opacity-70">
-            © {new Date().getFullYear()} {portfolio?.name || "USER"}. ALL
-            RIGHTS RESERVED.
+        <div className="space-y-1">
+          <p className="text-sm font-medium text-foreground">
+            © {new Date().getFullYear()} {portfolio?.name || "My Portfolio"}.
+            All rights reserved.
           </p>
-        </div>
-
-        <div className="w-16 h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent opacity-50" />
-
-        <div className="flex flex-col items-center gap-3 opacity-80 hover:opacity-100 transition-opacity">
-          <div className="flex flex-col items-center gap-1">
-            <span className="text-[10px] font-bold text-primary flex items-center gap-1.5">
-              <span className="text-secondary animate-pulse">✨</span> POWERED
-              BY KISLAP
-            </span>
-            <p className="text-[8px] text-muted-foreground/60">
-              TRANSFORM YOUR FORMS INTO BEAUTIFUL WEBSITES
-            </p>
-          </div>
-
-          <div className="flex items-center gap-4 mt-1">
-            <a
-              href={githubURL}
-              target="_blank"
-              rel="noreferrer"
-              className="text-primary/60 hover:text-primary transition-colors hover:drop-shadow-[0_0_5px_rgba(var(--primary-rgb),0.8)]"
-              title="Kislap Github"
-            >
-              <Github className="w-4 h-4" />
-            </a>
-            <a
-              href={rootURL}
-              target="_blank"
-              rel="noreferrer"
-              className="text-primary/60 hover:text-primary transition-colors hover:drop-shadow-[0_0_5px_rgba(var(--primary-rgb),0.8)]"
-              title="Kislap Website"
-            >
-              <Globe className="w-4 h-4" />
-            </a>
-            <a
-              href={facebookURL}
-              target="_blank"
-              rel="noreferrer"
-              className="text-primary/60 hover:text-primary transition-colors hover:drop-shadow-[0_0_5px_rgba(var(--primary-rgb),0.8)]"
-              title="Kislap Facebook"
-            >
-              <Facebook className="w-4 h-4" />
-            </a>
-          </div>
         </div>
       </div>
     </footer>
   );
 };
-
-// --- Main Component ---
 
 export function Vaporware({
   project,

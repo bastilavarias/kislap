@@ -17,55 +17,23 @@ function ActionLink({ href, children }: ActionLinkProps) {
   );
 }
 
-function MarqueeContent() {
-  const builderUrl = 'https://builder.kislap.app/';
-  return (
-    <div className="flex items-center mx-8 whitespace-nowrap">
-      <span className="opacity-80">This site is powered by</span>
-      <span className="mx-2 font-bold tracking-tight text-primary">✨KISLAP✨</span>
-      <span className="hidden sm:inline text-muted-foreground/40 mx-2">|</span>
-      <span>
-        Visit <ActionLink href={builderUrl}>{builderUrl}</ActionLink>
-      </span>
-    </div>
-  );
-}
-
 export default function AcknowledgementBanner() {
-  return (
-    <div className="bg-background relative w-full overflow-hidden border-b border-border py-2.5 text-xs text-muted-foreground backdrop-blur-sm">
-      <div className="group flex w-full overflow-hidden select-none">
-        <div className="animate-marquee flex min-w-full shrink-0 items-center justify-around group-hover:[animation-play-state:paused]">
-          <MarqueeContent />
-          <MarqueeContent />
-          <MarqueeContent />
-          <MarqueeContent />
-        </div>
+  const builderUrl = 'https://builder.kislap.app/';
 
-        <div
-          aria-hidden="true"
-          className="animate-marquee flex min-w-full shrink-0 items-center justify-around group-hover:[animation-play-state:paused]"
-        >
-          <MarqueeContent />
-          <MarqueeContent />
-          <MarqueeContent />
-          <MarqueeContent />
+  return (
+    <div className="w-full border-b border-border bg-background py-2.5 text-center text-xs text-muted-foreground backdrop-blur-sm ">
+      <div className="container mx-auto max-w-5xl">
+        <div className="flex flex-wrap justify-center items-center md:justify-between gap-2 px-4">
+          <div>
+            <span className="opacity-80">This site is powered by</span>
+            <span className="font-bold tracking-tight text-primary">✨KISLAP✨</span>
+          </div>
+
+          <div>
+            Visit <ActionLink href={builderUrl}>{builderUrl}</ActionLink>
+          </div>
         </div>
       </div>
-
-      <style jsx>{`
-        .animate-marquee {
-          animation: marquee 40s linear infinite;
-        }
-        @keyframes marquee {
-          from {
-            transform: translateX(0);
-          }
-          to {
-            transform: translateX(-100%);
-          }
-        }
-      `}</style>
     </div>
   );
 }

@@ -1,7 +1,6 @@
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import {
   Mail,
   Phone,
@@ -10,16 +9,10 @@ import {
   Github,
   Linkedin,
   Twitter,
-  ExternalLink,
-  Briefcase,
-  GraduationCap,
-  Send,
   AlertCircleIcon,
   ArrowUpRight,
-  Facebook,
   Loader2,
 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Mode } from "@/contexts/settings-context";
 import { useMemo, useState } from "react";
@@ -37,10 +30,8 @@ import {
 import { usePageActivity } from "@/hooks/api/use-page-activity";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Alert, AlertTitle } from "@/components/ui/alert";
 import { toast } from "sonner";
 import { Project } from "@/types/project";
 import { Portfolio } from "@/types/portfolio";
@@ -478,57 +469,14 @@ const RightColumn = ({
 };
 
 const Footer = ({ portfolio }: { portfolio: Portfolio }) => {
-  const rootURL = process.env.NEXT_PUBLIC_ROOT_URL || "https://kislap.app";
-  const githubURL =
-    process.env.NEXT_PUBLIC_KISLAP_GITHUB_URL ||
-    "https://github.com/sebas-tech/kislap";
-  const facebookURL =
-    process.env.NEXT_PUBLIC_KISLAP_FACEBOOK_URL || "https://facebook.com";
-
   return (
-    <footer className="border-t-4 border-foreground mt-12 py-8 text-center bg-muted/20">
-      <div className="flex flex-col items-center gap-4">
-        {/* Newspaper Style Copyright */}
-        <p className="font-sans text-[10px] uppercase tracking-[0.2em] text-muted-foreground border-b border-foreground/10 pb-4 w-full max-w-md mx-auto">
-          Printed in {new Date().getFullYear()} • All Rights Reserved •{" "}
-          {portfolio.name}
-        </p>
-
-        {/* Kislap Branding (Styled for Newspaper) */}
-        <div className="flex flex-col items-center gap-2 pt-2">
-          <div className="flex items-center gap-1.5 font-sans font-black uppercase text-xs tracking-wider">
-            <span className="text-amber-500">✨</span> Powered by Kislap
-          </div>
-          <p className="font-serif italic text-[10px] text-muted-foreground">
-            "Transform your forms into beautiful websites."
+    <footer className="border-t py-4 mt-auto bg-muted/5">
+      <div className="flex flex-col items-center justify-center gap-6 text-center px-4">
+        <div className="space-y-1">
+          <p className="text-sm font-medium text-foreground">
+            © {new Date().getFullYear()} {portfolio?.name || "My Portfolio"}.
+            All rights reserved.
           </p>
-
-          <div className="flex items-center gap-3 mt-1">
-            <a
-              href={githubURL}
-              target="_blank"
-              rel="noreferrer"
-              className="hover:text-primary"
-            >
-              <Github className="w-3 h-3" />
-            </a>
-            <a
-              href={rootURL}
-              target="_blank"
-              rel="noreferrer"
-              className="hover:text-primary"
-            >
-              <Globe className="w-3 h-3" />
-            </a>
-            <a
-              href={facebookURL}
-              target="_blank"
-              rel="noreferrer"
-              className="hover:text-primary"
-            >
-              <Facebook className="w-3 h-3" />
-            </a>
-          </div>
         </div>
       </div>
     </footer>

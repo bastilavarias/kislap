@@ -80,8 +80,6 @@ const cyberButtonClass = `
   clip-path-polygon-[0_0,_100%_0,_100%_80%,_90%_100%,_0_100%]
 `;
 
-// --- Sub-Components ---
-
 const HeroSection = ({
   portfolio,
   themeMode,
@@ -103,8 +101,18 @@ const HeroSection = ({
   }, [portfolio]);
 
   return (
-    <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-b border-primary/20 pb-6 relative">
-      <div className="space-y-2">
+    <header className="relative flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-b border-primary/20 pb-6 pt-2 md:pt-0">
+      {/* Positioned Absolutely:
+        This keeps it in the top-right corner regardless of the layout direction (row/col)
+      */}
+      <div className="absolute top-0 right-0 z-50">
+        <ThemeSwitchToggle
+          isDarkMode={isDarkMode}
+          onSetThemeMode={onSetThemeMode}
+        />
+      </div>
+
+      <div className="space-y-2 mt-2 md:mt-0">
         <div className="flex items-center gap-2 text-[10px] font-mono text-primary uppercase tracking-[0.2em]">
           <Activity className="w-3 h-3 animate-pulse" />
           <span>System_Online</span>
@@ -130,10 +138,6 @@ const HeroSection = ({
       </div>
 
       <div className="flex flex-col items-end gap-4">
-        <ThemeSwitchToggle
-          isDarkMode={isDarkMode}
-          onSetThemeMode={onSetThemeMode}
-        />
         {socialLinks.length > 0 && (
           <div className="flex gap-2">
             {socialLinks.map((link, i) => (
@@ -591,8 +595,6 @@ const FooterSection = ({ portfolio }: { portfolio: Portfolio }) => {
   );
 };
 
-// --- Main Component ---
-
 export function Cyber({
   project,
   portfolio,
@@ -605,7 +607,6 @@ export function Cyber({
 
   return (
     <div className="min-h-screen relative font-sans text-foreground overflow-hidden selection:bg-primary selection:text-primary-foreground">
-      {/* 1. CYBER GRID BACKGROUND */}
       <div className="fixed inset-0 -z-10 bg-background">
         <div
           className="absolute inset-0 opacity-[0.03] dark:opacity-[0.07] pointer-events-none"

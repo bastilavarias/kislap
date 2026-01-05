@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -23,7 +24,6 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Mode } from "@/contexts/settings-context";
-import { useMemo, useState } from "react";
 import { ThemeSwitchToggle } from "../theme-switch-toggle";
 import Link from "next/link";
 import { ThemeStyles } from "@/types/theme";
@@ -161,7 +161,13 @@ const AboutSection = ({ portfolio }: { portfolio: Portfolio }) => {
 
   return (
     <section className="bg-muted p-6 border-4 border-foreground relative">
-      <div className="absolute top-0 right-0 bg-foreground text-background px-2 py-1 text-xs font-bold uppercase translate-y-[-50%] translate-x-[50%] rotate-3">
+      <div
+        className="
+    bg-foreground text-background px-2 py-1 text-xs font-bold uppercase
+    md:absolute md:top-0 md:right-0 md:translate-y-[-50%] md:translate-x-[50%] md:rotate-3
+    md:block text-center
+  "
+      >
         About_Me.txt
       </div>
       {portfolio.introduction && (
