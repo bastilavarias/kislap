@@ -1,0 +1,3 @@
+Clear Go modules:
+go clean -cache
+go clean -modcache

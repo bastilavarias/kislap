@@ -6,7 +6,7 @@ services:
       - "2000:2000"
     restart: always
     volumes:
-      - ./flash:/app
+      - ./apps/api-service:/app
       - ./.docker/nginx/conf/prod:/etc/nginx/conf.d
       - ./.docker/nginx/log:/var/log/nginx
     depends_on:
@@ -18,11 +18,11 @@ services:
 
   kislap_flash:
     build:
-      context: ./flash
+      context: ./apps/api-service
       dockerfile: Dockerfile.prod
     container_name: kislap_flash
     env_file:
-      - ./flash/.env
+      - ./apps/api-service/.env
     restart: always
     ports:
       - "5000:5000"
@@ -34,16 +34,16 @@ services:
 
   kislap_admin:
     build:
-      context: ./admin
+      context: ./apps/web-admin
       dockerfile: Dockerfile.prod
     container_name: kislap_admin
     restart: always
     env_file:
-      - ./admin/.env
+      - ./apps/web-admin/.env
     ports:
       - "3000:3000"
     volumes:
-      - ./admin:/var/www/html
+      - ./apps/web-admin:/var/www/html
       - ./.docker/php/local.ini:/usr/local/etc/php/local.ini
     depends_on:
       kislap_database:

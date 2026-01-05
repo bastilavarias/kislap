@@ -1,0 +1,52 @@
+package document
+
+import (
+	"errors"
+	"flash/internal/project"
+	"flash/sdk/llm"
+	"flash/sdk/llm/prompt"
+	pdfExtractor "flash/shared/pdf_extractor"
+	"flash/utils"
+
+	"gorm.io/gorm"
+)
+
+type Service struct {
+	DB  *gorm.DB
+	LLM llm.Provider
+}
+
+func (service Service) Parse(payload Payload) (*PortfolioResponse, error) {
+	extractor := pdfExtractor.Default()
+	content, err := extractor.ExtractFromReader(payload.File)
+	if err != nil {
+		return nil, err
+	}
+
+	if content == "" {
+		return nil, errors.New("failed-pdf-extraction")
+	}
+
+
+	var generatedPrompt string
+	givenType := payload.Type
+
+	if givenType == project.TypeResume {
+		generatedPrompt = prompt.ResumeToJSON(content)
+	} else {
+		return nil, errors.New("invalid type")
+	}
+
+	aiResp, err := service.LLM.Generate(generatedPrompt)
+	if err != nil || aiResp == "" || aiResp == "null" {
+		return nil, err
+	}
+
+
+	structData, err := utils.ParseLLMJSON[PortfolioResponse](aiResp)
+	if err != nil {
+		return nil, err
+	}
+
+	return structData, nil
+}

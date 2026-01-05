@@ -1,0 +1,17 @@
+@no-cookie-jar=false
+
+@host = http://api.kislap.test
+
+### Login User
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "john.doe@kislap.com",
+  "password": "secret123"
+}
+
+### Refresh User
+GET {{host}}/api/auth/refresh
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNlYmFzdGlhbi5sYXZhcmlhc0BraXNsYXAuY29tIiwiZXhwIjoxNzU4NjM2NDU3LCJyb2xlIjoiZGVmYXVsdCIsInVzZXJfaWQiOjF9.ZityNPvCPxNIy3cKOkVjSm_rip3XvrOCzMOCrFxs3RY
