@@ -12,6 +12,7 @@
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
   },
   "dependencies": {
+    "@kislap/templates": "*",
     "@hookform/resolvers": "^5.2.2",
     "@opennextjs/cloudflare": "^1.14.6",
     "chroma-js": "^3.2.0",
@@ -29,8 +30,7 @@
     "sonner": "^2.0.7",
     "swr": "^2.3.6",
     "tailwind-merge": "^3.3.1",
-    "zod": "^4.1.13",
-    "@kislap/templates": "*"
+    "zod": "^4.1.13"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
@@ -46,8 +46,5 @@
     "tw-animate-css": "^1.3.7",
     "typescript": "^5",
     "wrangler": "^4.54.0"
-  },
-  "optionalDependencies": {
-    "lightningcss-win32-x64-msvc": "^1.30.2"
   }
 }
