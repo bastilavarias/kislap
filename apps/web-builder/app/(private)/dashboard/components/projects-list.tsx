@@ -38,7 +38,6 @@ import {
   CalendarDays,
   Pencil,
   Trash2,
-  Eye,
   Loader2,
   Plus,
   ArrowUpRight,
@@ -274,9 +273,6 @@ export function ProjectList() {
   if (booted && projects.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-24 text-center rounded-2xl border border-dashed border-border/60 bg-muted/5">
-        <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-6">
-          <Plus className="w-8 h-8 text-primary" />
-        </div>
         <h3 className="text-xl font-semibold tracking-tight mb-2">Create your first project</h3>
         <p className="text-muted-foreground max-w-sm mx-auto mb-8 leading-relaxed">
           You haven't created any portfolios yet. Launch your first site in minutes.
@@ -305,7 +301,7 @@ export function ProjectList() {
           onClick={() => setIsEditOpen(true)}
         >
           <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-            <Plus className="w-6 h-6 text-muted-foreground" />
+            <Plus className="w-6 h-6 text-muted-foreground cursor-pointer" />
           </div>
           <span className="font-medium text-muted-foreground">Create New Project</span>
         </div>
