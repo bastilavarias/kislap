@@ -152,27 +152,27 @@ export function ProjectFormDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
-
       {!trigger && !onOpenChange && (
         <DialogTrigger asChild>
           <Button className="font-bold">NEW PROJECT</Button>
         </DialogTrigger>
       )}
 
-      {/* RESPONSIVE UPDATE: 
-         - Mobile: w-screen h-screen (Full screen)
-         - Desktop (sm+): Adaptive width, max-height limit, rounded corners 
-      */}
-      <DialogContent className="w-screen h-screen sm:w-full sm:h-auto sm:max-h-[90vh] sm:max-w-[420px] md:max-w-[620px] lg:max-w-[900px] p-0 gap-0 overflow-hidden flex flex-col rounded-none sm:rounded-lg border-0 sm:border">
+      <DialogContent
+        className="
+  w-screen h-screen 
+  sm:w-full 
+  sm:h-[90vh]  {/* CHANGED: Fixed height ensures internal scrolling always works */}
+  sm:max-w-[420px] md:max-w-[620px] lg:max-w-[900px] 
+  p-0 gap-0 overflow-hidden flex flex-col rounded-none sm:rounded-lg border-0 sm:border"
+      >
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col h-full max-h-full">
-          {/* Header: Smaller padding on mobile */}
           <DialogHeader className="p-4 sm:p-6 pb-2 sm:pb-2 shrink-0 border-b sm:border-b-0">
             <DialogTitle className="text-xl sm:text-2xl font-bold">
               {isEditMode ? 'Edit Project' : 'Create New Project'}
             </DialogTitle>
           </DialogHeader>
 
-          {/* Scrollable Content: Smaller padding on mobile */}
           <div className="flex-1 overflow-y-auto p-4 sm:p-6 pt-4 sm:pt-2">
             {error && (
               <Alert variant="destructive" className="mb-6">
@@ -182,7 +182,6 @@ export function ProjectFormDialog({
             )}
 
             <div className="space-y-6">
-              {/* Project Details Section */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-4">
                   <div>
