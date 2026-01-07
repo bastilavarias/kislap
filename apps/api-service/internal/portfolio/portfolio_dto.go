@@ -98,7 +98,7 @@ type CreateUpdatePortfolioRequest struct {
 	Introduction    string                  `json:"introduction"`
 	About           string                  `json:"about"`
 	Email           string                  `json:"email" binding:"required,email"`
-	Phone           string                  `json:"phone" binding:"required"`
+	Phone           string                  `json:"phone"`
 	Website         string                  `json:"website"`
 	Github          string                  `json:"github"`
 	Linkedin        string                  `json:"linkedin"`
