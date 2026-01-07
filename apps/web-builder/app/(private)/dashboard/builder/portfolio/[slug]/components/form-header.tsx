@@ -120,6 +120,7 @@ export function FormHeader<T>({
 
   const handlePublishConfirm = async () => {
     if (!isPublished && !isReadyToPublish) return;
+    await onSave();
     await onPublish(!isPublished);
     setIsPublishConfirmOpen(false);
   };
