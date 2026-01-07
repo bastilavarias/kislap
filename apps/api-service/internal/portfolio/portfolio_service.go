@@ -36,7 +36,7 @@ func (service Service) Save(payload Payload) (*models.Portfolio, error) {
 			Introduction:    &payload.Introduction,
 			About:           &payload.About,
 			Email:           &payload.Email,
-			Phone:           &payload.Phone,
+			Phone:           payload.Phone,
 			Website:         &payload.Website,
 			Github:          &payload.Github,
 			Linkedin:        &payload.Linkedin,
@@ -67,7 +67,7 @@ func (service Service) Save(payload Payload) (*models.Portfolio, error) {
 		portfolio.Introduction = &payload.Introduction
 		portfolio.About = &payload.About
 		portfolio.Email = &payload.Email
-		portfolio.Phone = &payload.Phone
+		portfolio.Phone = payload.Phone
 		portfolio.Website = &payload.Website
 		portfolio.Github = &payload.Github
 		portfolio.Linkedin = &payload.Linkedin
