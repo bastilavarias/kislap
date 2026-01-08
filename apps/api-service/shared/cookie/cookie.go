@@ -30,6 +30,7 @@ func SetCookie(context *gin.Context, name string, data string) {
 		}
 
 		domain = envDomain
+		sameSite = http.SameSiteNoneMode
 		secure = true
 	}
 
