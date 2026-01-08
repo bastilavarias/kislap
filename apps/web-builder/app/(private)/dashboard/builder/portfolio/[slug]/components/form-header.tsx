@@ -113,13 +113,11 @@ export function FormHeader<T>({
 
   const handleDialogChange = (open: boolean) => {
     setIsDialogOpen(open);
-    if (!open) {
-      router.refresh();
-    }
   };
 
   const handlePublishConfirm = async () => {
     if (!isPublished && !isReadyToPublish) return;
+    await onSave();
     await onPublish(!isPublished);
     setIsPublishConfirmOpen(false);
   };
@@ -229,7 +227,7 @@ export function FormHeader<T>({
               <div className="flex md:hidden items-center gap-2 shrink-0">
                 <Button
                   size="sm"
-                  onClick={() => setIsPublishConfirmOpen(true)}
+                  onClick={() => setIsSaveConfirmOpen(true)}
                   className="h-8 px-3 text-xs font-bold transition-all shadow-none"
                   variant="outline"
                 >
@@ -244,7 +242,7 @@ export function FormHeader<T>({
                     isPublished ? 'bg-red-100 text-red-600 border border-red-200' : 'bg-primary'
                   )}
                 >
-                  {isPublished ? 'Stop' : 'Publish'}
+                  {isPublished ? 'Unpublish' : 'Publish'}
                 </Button>
 
                 <DropdownMenu>
@@ -304,7 +302,6 @@ export function FormHeader<T>({
               </div>
             </div>
 
-            {/* --- RIGHT COL (Desktop Only): Toolbar --- */}
             <div className="hidden md:flex items-center gap-2 justify-end">
               <Button
                 variant="outline"
@@ -368,7 +365,6 @@ export function FormHeader<T>({
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* PUBLISH CONFIRMATION DIALOG */}
       <AlertDialog open={isPublishConfirmOpen} onOpenChange={setIsPublishConfirmOpen}>
         <AlertDialogContent className="max-w-md">
           <AlertDialogHeader>
@@ -395,7 +391,6 @@ export function FormHeader<T>({
                   </p>
 
                   <div className="flex flex-col gap-1">
-                    {/* Top Level: Content with Nested Items */}
                     <div className="bg-muted/30 rounded-md pb-2">
                       <RequirementItem label="Content Sections" met={isContentReady} />
                       <div className="flex flex-col gap-0.5 mt-1">
