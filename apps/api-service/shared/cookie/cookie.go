@@ -32,6 +32,19 @@ func SetCookie(context *gin.Context, name string, data string) {
 		domain = envDomain
 		sameSite = http.SameSiteNoneMode
 		secure = true
+
+		// Kill the old "HOST ONLY" cookie
+		oldCookieKiller := &http.Cookie{
+			Name:     name,
+			Value:    "",
+			Path:     "/",
+			Domain:   "",
+			MaxAge:   -1,
+			Secure:   true,
+			SameSite: http.SameSiteNoneMode,
+		}
+		http.SetCookie(context.Writer, oldCookieKiller)
+		log.Println("[Cookie] Sent 'Killer' cookie for old Host-Only domain")
 	}
 
 	cookie := &http.Cookie{
@@ -40,7 +53,7 @@ func SetCookie(context *gin.Context, name string, data string) {
 		Path:     "/",
 		Domain:   domain,
 		HttpOnly: true,
-		MaxAge:   int((7 * 24 * time.Hour).Seconds()), // 1 week
+		MaxAge:   int((7 * 24 * time.Hour).Seconds()),
 		Secure:   secure,
 		SameSite: sameSite,
 	}
