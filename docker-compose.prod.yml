@@ -13,6 +13,7 @@ services:
       - kislap_database
       - kislap_flash
       - kislap_admin
+      - kislap_marketing
     networks:
       - kislap_subnet
 
@@ -48,6 +49,20 @@ services:
     depends_on:
       kislap_database:
         condition: service_healthy
+    networks:
+      - kislap_subnet
+
+  kislap_marketing:
+    build:
+      context: ./apps/web-marketing
+      dockerfile: Dockerfile.prod
+    container_name: kislap_marketing
+    restart: always
+    environment:
+      - HOST=0.0.0.0
+      - PORT=4321
+    ports:
+      - "4321:4321"
     networks:
       - kislap_subnet
 
