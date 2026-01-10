@@ -2,13 +2,13 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-import { useLocalStorage } from '@/hooks/use-local-storage';
 import { useAuthContext } from '@/contexts/auth-context';
+import { GlobalLoader } from '@/components/global-loader';
 
 const GUEST_ONLY_ROUTES = [
   '/',
-  '/login',
   '/login/github',
+  '/login/google',
   '/about',
   '/terms',
   '/privacy',
@@ -16,43 +16,56 @@ const GUEST_ONLY_ROUTES = [
 ];
 
 export default function ClientAuthGuard({ children }: { children: React.ReactNode }) {
-  const { syncAuthUser } = useAuthContext();
+  const { authUser, syncAuthUser } = useAuthContext();
   const router = useRouter();
   const pathname = usePathname();
-  const [mounted, setMounted] = useState(false);
-
-  const [accessToken] = useLocalStorage<string | null>('access_token', null);
+  const [isInitializing, setIsInitializing] = useState(true);
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (!mounted) return;
-
-    const isGuestRoute = GUEST_ONLY_ROUTES.includes(pathname);
-    const isCallbackRoute = pathname.includes('callback');
-
-    if (accessToken) {
-      if (isGuestRoute || isCallbackRoute) {
-        router.replace('/dashboard');
-      } else {
-        //@ts-ignore
-        syncAuthUser();
-      }
-      return;
-    }
-
-    if (!accessToken) {
-      if (isGuestRoute || isCallbackRoute) {
+    const init = async () => {
+      if (authUser) {
+        setIsInitializing(false);
         return;
       }
+      try {
+        await syncAuthUser();
+      } catch (error) {
+        // Ignored: failure just means no user
+      } finally {
+        setIsInitializing(false);
+      }
+    };
+    init();
+  }, [authUser, syncAuthUser]);
 
-      router.replace('/');
+  const isGuestRoute = GUEST_ONLY_ROUTES.includes(pathname);
+  const isCallbackRoute = pathname.includes('callback');
+  const isProtectedRoute = !isGuestRoute && !isCallbackRoute;
+
+  let redirectPath = null;
+
+  if (!isInitializing) {
+    if (authUser) {
+      if (isGuestRoute || isCallbackRoute) {
+        redirectPath = '/dashboard';
+      }
+    } else {
+      if (isProtectedRoute) {
+        redirectPath = '/';
+      }
     }
-  }, [accessToken, router, pathname, mounted]);
+  }
 
-  if (!mounted) return null;
+  useEffect(() => {
+    if (redirectPath) {
+      router.replace(redirectPath);
+    }
+  }, [redirectPath, router]);
+
+  // 4. Render Logic: Show loader if initializing OR if a redirect is pending
+  if (isInitializing || redirectPath) {
+    return <GlobalLoader />;
+  }
 
   return <>{children}</>;
 }

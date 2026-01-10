@@ -1,22 +1,19 @@
-// React Imports
 import type { ReactNode } from 'react';
 
-// Next Imports
 import { Geist, Geist_Mono } from 'next/font/google';
-import type { Metadata, Viewport } from 'next'; // Added Viewport type
+import type { Metadata, Viewport } from 'next';
 
-// Component Imports
 import NextProvider from '@/providers/NextProvider';
 import { SettingsProvider } from '@/contexts/settings-context';
 import { ThemeProvider } from '@/providers/ThemesProvider';
 import { Toaster } from '@/components/ui/sonner';
 
-// Util Imports
 import { getMode, getSettingsFromCookie } from '@/lib/serverHelpers';
 import { cn } from '@/lib/utils';
 
-// Style Imports
 import './globals.css';
+
+import NextTopLoader from 'nextjs-toploader';
 
 const fontSans = Geist({
   subsets: ['latin'],
@@ -127,6 +124,17 @@ const RootLayout = async ({ children }: { children: ReactNode }) => {
         />
       </head>
       <body className="flex min-h-full w-full flex-auto flex-col antialiased">
+        <NextTopLoader
+          color="#ff3132"
+          initialPosition={0.08}
+          crawlSpeed={200}
+          height={3}
+          crawl={true}
+          showSpinner={false}
+          easing="ease"
+          speed={200}
+          shadow="0 0 10px #2299DD,0 0 5px #2299DD"
+        />
         <NextProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <SettingsProvider settingsCookie={settingsCookie} mode={mode}>
             <ThemeProvider>{children}</ThemeProvider>

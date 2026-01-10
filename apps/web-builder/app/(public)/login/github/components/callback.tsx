@@ -42,7 +42,7 @@ export function Callback() {
         setStorageAuthUser(data.user);
         setAccessToken(data.access_token);
 
-        router.push('/dashboard');
+        await router.push('/dashboard');
       } else {
         setLoading(false);
         setError(message || 'Login failed');

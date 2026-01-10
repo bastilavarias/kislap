@@ -81,7 +81,7 @@ export function useApi() {
               console.error('Token refresh error:', error);
               setAccessToken(null);
               setStorageAuthUser(null);
-              window.location.href = '/login';
+              window.location.href = '/';
               return null;
             } finally {
               isRefreshing = false;

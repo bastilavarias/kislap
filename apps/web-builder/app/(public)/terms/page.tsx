@@ -73,7 +73,7 @@ export default function Page() {
 
             <div className="pt-4">
               <Button asChild size="lg" className="w-full md:w-auto font-bold">
-                <Link href="/login">
+                <Link href="/">
                   <ArrowLeft className="w-4 h-4 mr-2" />I Agree, Let me Build
                 </Link>
               </Button>

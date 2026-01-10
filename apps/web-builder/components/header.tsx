@@ -135,7 +135,7 @@ export function Header() {
 
   const onLogout = async () => {
     await logout();
-    router.push('/');
+    await router.push('/');
   };
 
   return (
