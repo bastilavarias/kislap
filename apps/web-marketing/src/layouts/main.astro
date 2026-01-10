@@ -10,9 +10,10 @@ import {
   X, 
   Github, 
   Heart, 
-  MessageCircle 
-} from 'lucide-react';
-import { buttonVariants } from "@/components/ui/button";
+  MessageCircle, 
+ArrowUpRight
+} from '@lucide/astro';
+import { Button, buttonVariants } from "@/components/ui/button";
 
 interface Props {
   title?: string;
@@ -41,7 +42,6 @@ const FOOTER_LINKS = {
   product: [
     { title: 'Builder', url: '/login' },
     { title: 'Showcase', url: '/showcase' },
-    { title: 'Pricing', url: '/pricing' }, 
   ],
   resources: [
     { title: 'Documentation', url: '/docs' },
@@ -91,7 +91,7 @@ const FOOTER_LINKS = {
   "@context": "https://schema.org",
   "@type": "SiteNavigationElement",
   "name": [...PUBLIC_LINKS.map(l => l.title), "Builder"],
-  "url": [...PUBLIC_LINKS.map(l => new URL(l.url, site).toString()), "https://builder.kislap.app"]
+  "url": [...PUBLIC_LINKS.map(l => new URL(l.url, site).toString()), "https://builder.kislap.app/"]
 })} />
   </head>
   <body class="min-h-screen bg-background grid-background text-foreground font-sans antialiased flex flex-col">
@@ -117,7 +117,7 @@ const FOOTER_LINKS = {
     ))}
     <li>
       <a 
-        href="https://builder.kislap.app" 
+        href="https://builder.kislap.app/" 
         class={`${buttonVariants({ variant: "default", size: "lg" })} 
           border-2 border-black dark:border-white
           shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)]
@@ -133,8 +133,8 @@ const FOOTER_LINKS = {
 </nav>
 
         <button id="mobile-menu-btn" class="md:hidden p-2 text-muted-foreground hover:text-foreground">
-          <Menu className="w-6 h-6" id="menu-icon" />
-          <X className="w-6 h-6 hidden" id="close-icon" />
+          <Menu class="w-6 h-6" id="menu-icon" />
+          <X class="w-6 h-6 hidden" id="close-icon" />
         </button>
       </div>
 
@@ -148,7 +148,7 @@ const FOOTER_LINKS = {
           </a>
         ))}
 		        <a 
-        href="https://builder.kislap.app" 
+        href="https://builder.kislap.app/" 
         class={`${buttonVariants({ variant: "default", size: "lg" })} 
           border-2 border-black dark:border-white
           shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)]
@@ -166,12 +166,11 @@ const FOOTER_LINKS = {
       <slot />
     </main>
 
-    <footer class="border-t border-border bg-background/50 backdrop-blur-xl mt-auto">
+    <footer class="border-t border-border bg-background/50 backdrop-blur-xl">
       <div class="container mx-auto max-w-7xl px-4 md:px-6 py-16">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-8 mb-16">
-          
           <div class="md:col-span-1 space-y-4">
-            <LogoVersion url="/"/>
+            <LogoVersion url="/" />
             <p class="text-muted-foreground text-sm leading-relaxed max-w-xs">
               Turn your forms into stunning portfolios. The open source website builder for
               developers who value their time.
@@ -180,37 +179,58 @@ const FOOTER_LINKS = {
 
           <div class="flex flex-col space-y-4">
             <h4 class="font-bold text-sm uppercase tracking-wider text-foreground">Product</h4>
-            {FOOTER_LINKS.product.map((link) => (
-              <a href={link.url} class="text-sm text-muted-foreground hover:text-primary transition-colors w-fit">
-                {link.title}
-              </a>
-            ))}
+            <a
+              href="https://builder.kislap.app/"
+              class="text-sm text-muted-foreground hover:text-primary transition-colors w-fit"
+            >
+              Builder
+            </a>
+            <a
+              href="https://kislap.app/showcase"
+              class="text-sm text-muted-foreground hover:text-primary transition-colors w-fit"
+            >
+              Showcase
+            </a>
           </div>
 
           <div class="flex flex-col space-y-4">
-            <h4 class="font-bold text-sm uppercase tracking-wider text-foreground">Community</h4>
+            <a
+              href="https://kislap.app/about"
+              class="text-sm text-muted-foreground hover:text-primary transition-colors w-fit"
+            >
+              About Us
+            </a>
+            <a
+              href="https://github.com/bastilavarias/kislap"
+              target="_blank"
+              rel="noreferrer"
+              class="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center w-fit"
+            >
+              Open Source
+              <ArrowUpRight class="ml-1 w-3 h-3 opacity-50" />
+            </a>
+          </div>
+
+          <div class="flex flex-col space-y-4">
+            <h4 class="font-bold text-sm uppercase tracking-wider text-foreground">
+              Community
+            </h4>
             <div class="flex gap-2">
-              <a 
-                href="https://github.com/bastilavarias/kislap" 
-                target="_blank" 
-                rel="noreferrer"
-                class="inline-flex items-center justify-center rounded-full text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none border border-input hover:bg-accent hover:text-accent-foreground h-9 w-9"
-              >
-                <Github className="h-4 w-4" />
-                <span class="sr-only">GitHub</span>
-              </a>
-              <a 
-                href="https://discord.gg/YcmUebEWhT" 
-                target="_blank" 
-                rel="noreferrer"
-                class="inline-flex items-center justify-center rounded-full text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none border border-input hover:bg-accent hover:text-accent-foreground h-9 w-9"
-              >
-                <MessageCircle className="h-4 w-4" />
-                <span class="sr-only">Discord</span>
-              </a>
+              <Button variant="outline" size="icon" className="h-9 w-9 rounded-full" asChild>
+                <a href="https://github.com/bastilavarias/kislap" target="_blank" rel="noreferrer">
+                  <Github class="h-4 w-4" />
+                  <span class="sr-only">GitHub</span>
+                </a>
+              </Button>
+              <Button variant="outline" size="icon" className="h-9 w-9 rounded-full" asChild>
+                <a href="https://discord.gg/YcmUebEWhT" target="_blank" rel="noreferrer">
+                  <MessageCircle class="h-4 w-4" />
+                  <span class="sr-only">Discord</span>
+                </a>
+              </Button>
             </div>
             <p class="text-xs text-muted-foreground mt-4">
-              Join our discord to get help with your site.
+              Join our discord to get help with your portfolio.
             </p>
           </div>
         </div>
@@ -222,9 +242,12 @@ const FOOTER_LINKS = {
 
           <div class="flex items-center gap-1 text-sm text-muted-foreground">
             <span>Made with</span>
-            <Heart className="h-4 w-4 text-red-500 fill-red-500 animate-pulse" />
+            <Heart class="h-4 w-4 text-red-500 fill-red-500 animate-pulse" />
             <span>by</span>
-            <a href="https://github.com/bastilavarias" class="font-medium text-foreground hover:underline underline-offset-4">
+            <a
+              href="https://github.com/bastilavarias"
+              class="font-medium text-foreground hover:underline underline-offset-4"
+            >
               bastilavarias
             </a>
           </div>

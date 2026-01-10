@@ -44,7 +44,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(APP_URL),
   title: {
     template: '%s | Kislap',
-    default: 'Kislap | Turn Forms into Stunning Websites',
+    default: 'Kislap - Turn Forms into Stunning Websites',
   },
   description:
     'Turn your forms and data into stunning portfolios. The open-source website builder for developers who value their time.',
@@ -83,7 +83,7 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: APP_URL,
     siteName: 'Kislap',
-    title: 'Kislap | Turn Forms into Stunning Websites',
+    title: 'Kislap - Turn Forms into Stunning Websites',
     description: 'Turn your forms and data into stunning portfolios instantly.',
     images: [
       {
@@ -96,7 +96,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Kislap | Turn Forms into Stunning Websites',
+    title: 'Kislap - Turn Forms into Stunning Websites',
     description: 'Turn your forms and data into stunning portfolios instantly.',
     images: ['/og-image.png'],
     creator: '@kislap_app', // Replace with your handle

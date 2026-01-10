@@ -1,7 +1,7 @@
-import { Moon, Sun } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Button } from '@/components/ui/button';
-import { Mode } from '@/contexts/settings-context';
+import { Moon, Sun } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Mode } from "@/contexts/settings-context";
 
 interface Props {
   isDarkMode: Boolean;
@@ -11,14 +11,14 @@ interface Props {
 export function ThemeSwitchToggle({ isDarkMode, onSetThemeMode }: Props) {
   return (
     <Button
-      onClick={() => onSetThemeMode(isDarkMode ? 'light' : 'dark')}
+      onClick={() => onSetThemeMode(isDarkMode ? "light" : "dark")}
       className="relative flex items-center justify-between w-14 h-7 rounded-full bg-muted hover:bg-accent transition-colors p-1"
       aria-label="Toggle theme"
     >
       <motion.div
         layout
         className={`absolute top-1 left-1 w-5 h-5 rounded-full bg-background shadow-md transition-transform ${
-          isDarkMode ? 'translate-x-7' : ''
+          isDarkMode ? "translate-x-7" : ""
         }`}
       />
 

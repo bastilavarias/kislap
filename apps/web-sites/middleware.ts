@@ -21,15 +21,11 @@ export default function middleware(req: NextRequest) {
     return NextResponse.rewrite(url);
   }
 
-  response.headers.set(
-    'Content-Security-Policy',
-    "frame-ancestors 'self' http://*.localhost https://*.kislap.app;"
-  );
+  response.headers.set('Content-Security-Policy', "frame-ancestors 'self' https://kislap.app;");
 
   return NextResponse.next();
 }
 
 export const config = {
-  // matcher: ['/((?!api|_next/static|_next/image|favicon.svg).*)'],
   matcher: ['/((?!api|_next/static|_next/image|icon.svg).*)'],
 };

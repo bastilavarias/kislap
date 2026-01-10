@@ -39,14 +39,13 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL(APP_URL),
   title: {
-    default: 'Kislap | Turn Forms into Stunning Websites',
+    default: 'Kislap - Turn Forms into Stunning Websites',
     template: '%s | Kislap',
   },
   description:
     'The open-source website builder for developers. Transform simple forms and JSON into professional portfolios, landing pages, and waitlists in seconds.',
   applicationName: 'Kislap',
-  authors: [{ name: 'Kislap Team', url: APP_URL }],
-  generator: 'Next.js',
+  authors: [{ name: '@bastilavarias', url: APP_URL }],
   keywords: [
     'website builder',
     'portfolio builder',
@@ -79,12 +78,12 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: APP_URL,
     siteName: 'Kislap',
-    title: 'Kislap | Turn Forms into Stunning Websites',
+    title: 'Kislap - Turn Forms into Stunning Websites',
     description:
-      'Stop coding boilerplate. Transform your resume or data into a polished website instantly with Kislap.',
+      'No drag and drop chaos. No design skills needed. Just fill in the blanks, and Kislap generates a high-performance site instantly.',
     images: [
       {
-        url: '/og-image.png', // Ensure you have this image in your public folder
+        url: '/og-image.png',
         width: 1200,
         height: 630,
         alt: 'Kislap - AI Powered Website Builder',
@@ -93,9 +92,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Kislap | Turn Forms into Stunning Websites',
+    title: 'Kislap - Turn Forms into Stunning Websites',
     description:
-      'Stop coding boilerplate. Transform your resume or data into a polished website instantly with Kislap.',
+      'No drag and drop chaos. No design skills needed. Just fill in the blanks, and Kislap generates a high-performance site instantly.',
     images: ['/og-image.png'],
     creator: '@bastilavarias',
   },

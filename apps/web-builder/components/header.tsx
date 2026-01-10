@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-// Added Menu and LayoutGrid to imports
 import { Home, Settings2, LogOut, Sun, Moon, LifeBuoy, Menu, LayoutGrid } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
