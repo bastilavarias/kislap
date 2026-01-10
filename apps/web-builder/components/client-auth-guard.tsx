@@ -48,7 +48,7 @@ export default function ClientAuthGuard({ children }: { children: React.ReactNod
         return;
       }
 
-      router.replace('/login');
+      router.replace('/');
     }
   }, [accessToken, router, pathname, mounted]);
 

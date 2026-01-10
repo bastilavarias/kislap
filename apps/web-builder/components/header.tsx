@@ -36,10 +36,9 @@ const DASHBOARD_LINKS = [
   { title: 'Settings', url: '/settings', icon: Settings2 },
 ];
 
-// Updated PUBLIC_LINKS to match your UI needs
 const PUBLIC_LINKS = [
-  { title: 'Showcase', url: '/showcase', icon: LayoutGrid },
-  { title: 'About us', url: '/about', icon: LifeBuoy },
+  { title: 'Showcase', url: 'https://kislap.app/showcase', icon: LayoutGrid },
+  { title: 'About us', url: 'https://kislap.app/about', icon: LifeBuoy },
 ];
 
 const ThemeSelector = () => {
@@ -136,7 +135,7 @@ export function Header() {
 
   const onLogout = async () => {
     await logout();
-    router.push('/login');
+    router.push('/');
   };
 
   return (
@@ -261,12 +260,18 @@ export function Header() {
                     ))}
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
-                      <Link
-                        href="/login"
-                        className="w-full cursor-pointer justify-center bg-primary text-primary-foreground focus:bg-primary/90 focus:text-primary-foreground"
+                      <Button
+                        asChild
+                        variant="default"
+                        size="lg"
+                        className="border-2 border-black dark:border-white 
+                 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] 
+                 transition-all 
+                 hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none 
+                 active:translate-x-[3px] active:translate-y-[3px] active:shadow-none"
                       >
-                        Login
-                      </Link>
+                        <Link href="https://kislap.app">Home</Link>
+                      </Button>
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -278,8 +283,17 @@ export function Header() {
                     <Link href={link.url}>{link.title}</Link>
                   </Button>
                 ))}
-                <Button size="sm" asChild>
-                  <Link href="/login">Login</Link>
+                <Button
+                  asChild
+                  variant="default"
+                  size="lg"
+                  className="border-2 border-black dark:border-white 
+                 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] 
+                 transition-all 
+                 hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none 
+                 active:translate-x-[3px] active:translate-y-[3px] active:shadow-none"
+                >
+                  <Link href="https://kislap.app">Home</Link>
                 </Button>
               </div>
             </>
