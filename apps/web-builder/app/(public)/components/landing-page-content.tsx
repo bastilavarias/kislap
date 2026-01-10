@@ -387,7 +387,6 @@ export function LandingPageContent() {
             </p>
           </motion.div>
 
-          {/* Card 4: Design */}
           <motion.div
             variants={fadeIn}
             className="md:col-span-2 relative group overflow-hidden rounded-3xl border bg-gradient-to-tr from-background to-muted/20 p-8 hover:border-primary/50 transition-colors"
@@ -400,7 +399,7 @@ export function LandingPageContent() {
               Don't stress about design theory. Our templates are crafted by top designers to look
               good on mobile, tablet, and desktop.
             </p>
-            <div className="flex gap-4 overflow-hidden mask-linear-fade opacity-50">
+            <div className="flex gap-4 overflow-hidden">
               {[1, 2, 3].map((i) => (
                 <div key={i} className="w-40 h-32 bg-muted rounded-lg border shadow-sm shrink-0" />
               ))}
@@ -409,9 +408,7 @@ export function LandingPageContent() {
         </motion.div>
       </section>
 
-      {/* --- 5. NEW: PORTFOLIO SUPERPOWERS (The "And if..." Section) --- */}
       <section className="container mx-auto px-4 max-w-6xl pb-24">
-        {/* Subtle Divider / Transition */}
         <div className="flex items-center gap-4 mb-12 opacity-50">
           <div className="h-px bg-border flex-1" />
           <span className="text-sm font-mono uppercase tracking-widest text-muted-foreground">
