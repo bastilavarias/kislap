@@ -1,0 +1,54 @@
+---
+export const prerender = false;
+import Layout from '@/layouts/main.astro';
+import { ShowcaseFeed } from '@/components/showcase-feed';
+
+const apiUrl = `${import.meta.env.API_URL}/api/projects/list/public?limit=9`;
+let initialProjects = [];
+
+try {
+  const response = await fetch(apiUrl);
+  
+  if (!response.ok) {
+    console.error("❌ API Error:", response.statusText);
+  } else {
+    const result = await response.json();
+    initialProjects = result.data || result; 
+  }
+} catch (error) {
+  console.error("🔥 Network/Fetch Error:", error);
+}
+
+const title = "Kislap - Showcase";
+const description = "Explore thousands of portfolios, landing pages, and waitlists built by the Kislap community.";
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": title,
+  "description": description,
+  "mainEntity": {
+    "@type": "ItemList",
+    "itemListElement": initialProjects.map((project: any, index: number) => ({
+      "@type": "ListItem",
+      "position": index + 1,
+      "url": `https://${project.sub_domain}.kislap.app`,
+      "name": project.name
+    }))
+  }
+};
+---
+
+<Layout title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  
+  <section class="relative pt-20 pb-32 overflow-hidden">
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-6xl h-[500px] bg-primary/5 blur-[120px] rounded-full pointer-events-none opacity-50"></div>
+    <div class="container mx-auto px-4 max-w-6xl relative z-10">
+      <ShowcaseFeed 
+        client:load 
+        projects={initialProjects} 
+      />
+    </div>
+  </section>
+</Layout>

@@ -1,0 +1,12 @@
+---
+export const prerender = false;
+import Layout from '@/layouts/main.astro'; 
+import { AboutPageContent } from '@/components/about-page-content';
+
+const title = "Kislap - About Kislap";
+const description = "We help developers, designers, and founders tell their story with world-class portfolios built in minutes.";
+---
+
+<Layout title={title} description={description}>
+  <AboutPageContent client:load />
+</Layout>

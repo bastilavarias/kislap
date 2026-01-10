@@ -1,0 +1,250 @@
+---
+import { LogoVersion } from '@/components/logo-version';
+import '@fontsource/poppins/400.css';
+import '@fontsource/poppins/600.css';
+import '@fontsource/poppins/700.css';
+import '@fontsource/jetbrains-mono';
+import '@/styles/global.css';
+import { 
+  Menu, 
+  X, 
+  Github, 
+  Heart, 
+  MessageCircle 
+} from 'lucide-react';
+import { buttonVariants } from "@/components/ui/button";
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  type?: 'website' | 'article';
+}
+
+const { 
+  title = "Kislap - Turn forms into websites",
+  description = "No drag and drop chaos. No design skills needed. Just fill in the blanks, and Kislap generates a high-performance site instantly.",
+  image = "/og-image.jpeg",
+  type = "website"
+} = Astro.props;
+
+const site = Astro.site ? Astro.site : Astro.url.origin;
+const canonicalURL = new URL(Astro.url.pathname, site);
+const currentYear = new Date().getFullYear();
+
+const PUBLIC_LINKS = [
+  { title: 'Showcase', url: '/showcase' },
+  { title: 'About us', url: '/about' },
+];
+
+const FOOTER_LINKS = {
+  product: [
+    { title: 'Builder', url: '/login' },
+    { title: 'Showcase', url: '/showcase' },
+    { title: 'Pricing', url: '/pricing' }, 
+  ],
+  resources: [
+    { title: 'Documentation', url: '/docs' },
+    { title: 'Blog', url: '/blog' },
+    { title: 'Community', url: 'https://discord.gg/YcmUebEWhT', external: true },
+  ]
+};
+---
+
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+
+    <meta property="og:type" content={type} />
+    <meta property="og:url" content={Astro.url} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL(image, site)} />
+
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={Astro.url} />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={new URL(image, site)} />
+
+    <script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": title,
+  "url": site,
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": `${site}/search?q={search_term_string}`,
+    "query-input": "required name=search_term_string"
+  }
+})} />
+
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "SiteNavigationElement",
+  "name": [...PUBLIC_LINKS.map(l => l.title), "Builder"],
+  "url": [...PUBLIC_LINKS.map(l => new URL(l.url, site).toString()), "https://builder.kislap.app"]
+})} />
+  </head>
+  <body class="min-h-screen bg-background grid-background text-foreground font-sans antialiased flex flex-col">
+    
+    <header class="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-md">
+      <div class="container mx-auto flex h-16 items-center justify-between px-4">
+        
+        <div class="flex items-center gap-8">
+          <LogoVersion url="/" />
+        </div>
+
+      <nav class="hidden md:flex items-center gap-6" aria-label="Main Navigation">
+  <ul class="flex items-center gap-6 m-0 p-0 list-none">
+    {PUBLIC_LINKS.map((link) => (
+      <li>
+        <a 
+          href={link.url} 
+          class="text-sm font-medium text-muted-foreground hover:text-primary transition-colors flex items-center gap-2"
+        >
+          {link.title}
+        </a>
+      </li>
+    ))}
+    <li>
+      <a 
+        href="https://builder.kislap.app" 
+        class={`${buttonVariants({ variant: "default", size: "lg" })} 
+          border-2 border-black dark:border-white
+          shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)]
+          transition-all
+          hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none
+          active:translate-x-[3px] active:translate-y-[3px] active:shadow-none
+        `}
+      >
+        Visit Builder
+      </a>
+    </li>
+  </ul>
+</nav>
+
+        <button id="mobile-menu-btn" class="md:hidden p-2 text-muted-foreground hover:text-foreground">
+          <Menu className="w-6 h-6" id="menu-icon" />
+          <X className="w-6 h-6 hidden" id="close-icon" />
+        </button>
+      </div>
+
+      <div id="mobile-menu" class="hidden md:hidden border-t bg-background px-4 py-4 space-y-4 shadow-lg text-center">
+        {PUBLIC_LINKS.map((link) => (
+          <a 
+            href={link.url} 
+            class="flex items-center justify-center gap-3 py-2 text-sm font-medium text-muted-foreground hover:text-primary"
+          >
+            {link.title}
+          </a>
+        ))}
+		        <a 
+        href="https://builder.kislap.app" 
+        class={`${buttonVariants({ variant: "default", size: "lg" })} 
+          border-2 border-black dark:border-white
+          shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)]
+          transition-all
+          hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none
+          active:translate-x-[3px] active:translate-y-[3px] active:shadow-none
+        `}
+      >
+        Visit Builder
+      </a>
+      </div>
+    </header>
+
+    <main class="flex-1">
+      <slot />
+    </main>
+
+    <footer class="border-t border-border bg-background/50 backdrop-blur-xl mt-auto">
+      <div class="container mx-auto max-w-7xl px-4 md:px-6 py-16">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-8 mb-16">
+          
+          <div class="md:col-span-1 space-y-4">
+            <LogoVersion url="/"/>
+            <p class="text-muted-foreground text-sm leading-relaxed max-w-xs">
+              Turn your forms into stunning portfolios. The open source website builder for
+              developers who value their time.
+            </p>
+          </div>
+
+          <div class="flex flex-col space-y-4">
+            <h4 class="font-bold text-sm uppercase tracking-wider text-foreground">Product</h4>
+            {FOOTER_LINKS.product.map((link) => (
+              <a href={link.url} class="text-sm text-muted-foreground hover:text-primary transition-colors w-fit">
+                {link.title}
+              </a>
+            ))}
+          </div>
+
+          <div class="flex flex-col space-y-4">
+            <h4 class="font-bold text-sm uppercase tracking-wider text-foreground">Community</h4>
+            <div class="flex gap-2">
+              <a 
+                href="https://github.com/bastilavarias/kislap" 
+                target="_blank" 
+                rel="noreferrer"
+                class="inline-flex items-center justify-center rounded-full text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none border border-input hover:bg-accent hover:text-accent-foreground h-9 w-9"
+              >
+                <Github className="h-4 w-4" />
+                <span class="sr-only">GitHub</span>
+              </a>
+              <a 
+                href="https://discord.gg/YcmUebEWhT" 
+                target="_blank" 
+                rel="noreferrer"
+                class="inline-flex items-center justify-center rounded-full text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none border border-input hover:bg-accent hover:text-accent-foreground h-9 w-9"
+              >
+                <MessageCircle className="h-4 w-4" />
+                <span class="sr-only">Discord</span>
+              </a>
+            </div>
+            <p class="text-xs text-muted-foreground mt-4">
+              Join our discord to get help with your site.
+            </p>
+          </div>
+        </div>
+
+        <div class="pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4">
+          <p class="text-sm text-muted-foreground">
+            &copy; {currentYear} Kislap. All rights reserved.
+          </p>
+
+          <div class="flex items-center gap-1 text-sm text-muted-foreground">
+            <span>Made with</span>
+            <Heart className="h-4 w-4 text-red-500 fill-red-500 animate-pulse" />
+            <span>by</span>
+            <a href="https://github.com/bastilavarias" class="font-medium text-foreground hover:underline underline-offset-4">
+              bastilavarias
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      const menuBtn = document.getElementById('mobile-menu-btn');
+      const mobileMenu = document.getElementById('mobile-menu');
+      const menuIcon = document.getElementById('menu-icon');
+      const closeIcon = document.getElementById('close-icon');
+
+      if (menuBtn && mobileMenu && menuIcon && closeIcon) {
+        menuBtn.addEventListener('click', () => {
+          mobileMenu.classList.toggle('hidden');
+          menuIcon.classList.toggle('hidden');
+          closeIcon.classList.toggle('hidden');
+        });
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,37 @@
+"use client";
+
+import { useState } from "react";
+import { cn } from "@/lib/utils";
+
+interface LivePreviewFrameProps {
+  url: string;
+  className?: string;
+  isHovered: boolean;
+}
+
+export function LivePreviewFrame({
+  url,
+  className,
+  isHovered,
+}: LivePreviewFrameProps) {
+  const [isLoading, setIsLoading] = useState(true);
+
+  return (
+    <div className={cn("relative w-full h-full bg-white", className)}>
+      <div className="w-[400%] h-[400%] origin-top-left scale-25 select-none">
+        <iframe
+          src={url}
+          onLoad={() => setIsLoading(false)}
+          tabIndex={-1}
+          loading="lazy"
+          className={cn(
+            "w-full h-full border-0 pointer-events-none bg-white transition-opacity duration-500",
+            isLoading ? "opacity-0" : "opacity-100"
+          )}
+          title="Live Preview"
+        />
+      </div>
+      <div className="absolute inset-0 z-30 bg-transparent" />
+    </div>
+  );
+}

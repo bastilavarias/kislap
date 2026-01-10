@@ -1,0 +1,11 @@
+---
+export const prerender = false;
+import Layout from '@/layouts/main.astro';
+import { LandingPageContent } from '@/components/landing-page-content';
+---
+
+<Layout 
+  title="Kislap - Turn simple forms into stunning websites." 
+  description="No drag and drop chaos. No design skills needed. Just fill in the blanks, and Kislap generates a high performance site instantly.">
+  <LandingPageContent client:load />
+</Layout>
