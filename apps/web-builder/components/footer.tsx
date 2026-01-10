@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { LogoVersion } from '@/components/logo-version';
-import { Github, Twitter, Disc, Heart, ArrowUpRight, MessageCircle } from 'lucide-react';
+import { Github, Heart, ArrowUpRight, MessageCircle } from 'lucide-react';
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
@@ -23,13 +23,13 @@ export function Footer() {
           <div className="flex flex-col space-y-4">
             <h4 className="font-bold text-sm uppercase tracking-wider text-foreground">Product</h4>
             <Link
-              href="/login"
+              href="/"
               className="text-sm text-muted-foreground hover:text-primary transition-colors w-fit"
             >
               Builder
             </Link>
             <Link
-              href="/showcase"
+              href="https://kislap.app/showcase"
               className="text-sm text-muted-foreground hover:text-primary transition-colors w-fit"
             >
               Showcase
@@ -38,7 +38,7 @@ export function Footer() {
 
           <div className="flex flex-col space-y-4">
             <Link
-              href="/about"
+              href="https://kislap.app/about"
               className="text-sm text-muted-foreground hover:text-primary transition-colors w-fit"
             >
               About Us
@@ -86,7 +86,13 @@ export function Footer() {
           <div className="flex items-center gap-1 text-sm text-muted-foreground">
             <span>Made with</span>
             <Heart className="h-4 w-4 text-red-500 fill-red-500 animate-pulse" />
-            <span>in Manila</span>
+            <span>by</span>
+            <a
+              href="https://github.com/bastilavarias"
+              className="font-medium text-foreground hover:underline underline-offset-4"
+            >
+              bastilavarias
+            </a>
           </div>
         </div>
       </div>
