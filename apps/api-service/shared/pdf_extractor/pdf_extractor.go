@@ -1,10 +1,9 @@
 package pdfExtractor
 
-import "io"
-
 import (
 	"bytes"
 	"fmt"
+	"io"
 
 	"github.com/ledongthuc/pdf"
 )
