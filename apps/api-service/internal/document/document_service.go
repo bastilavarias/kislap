@@ -1,47 +1,74 @@
 package document
 
 import (
-	"errors"
-	"flash/internal/project"
+	"fmt"
+	"io"
+	"time"
+
 	"flash/sdk/llm"
 	"flash/sdk/llm/prompt"
-	pdfExtractor "flash/shared/pdf_extractor"
+	objectStorage "flash/sdk/object_storage"
+	pdf "flash/shared/pdf"
 	"flash/utils"
 
 	"gorm.io/gorm"
 )
 
 type Service struct {
-	DB  *gorm.DB
-	LLM llm.Provider
+	DB            *gorm.DB
+	LLM           llm.Provider
+	ObjectStorage objectStorage.Provider
 }
 
 func (service Service) Parse(payload Payload) (*PortfolioResponse, error) {
-	extractor := pdfExtractor.Default()
-	content, err := extractor.ExtractFromReader(payload.File)
-	if err != nil {
-		return nil, err
+	resetCursor := func() error {
+		seeker, ok := payload.File.(io.Seeker)
+		if !ok {
+			return fmt.Errorf("file payload does not support seeking, cannot reset cursor")
+		}
+		if _, err := seeker.Seek(0, io.SeekStart); err != nil {
+			return fmt.Errorf("failed to seek file: %w", err)
+		}
+		return nil
 	}
 
-	if content == "" {
-		return nil, errors.New("failed-pdf-extraction")
-	}
-
-
+	content, err := pdf.ExtractText(payload.File)
 	var generatedPrompt string
-	givenType := payload.Type
 
-	if givenType == project.TypeResume {
-		generatedPrompt = prompt.ResumeToJSON(content)
+	if err != nil || content == "" {
+
+		if err := resetCursor(); err != nil {
+			return nil, err
+		}
+
+		if err := pdf.ValidatePageCount(payload.File, 1, 3); err != nil {
+			return nil, err
+		}
+
+		if err := resetCursor(); err != nil {
+			return nil, err
+		}
+
+		imgReader, err := pdf.ConvertToImage(payload.File, 0)
+		if err != nil {
+			return nil, err
+		}
+
+		filename := fmt.Sprintf("resumes/%d_fallback.png", time.Now().Unix())
+		uploadedURL, err := service.ObjectStorage.Upload(filename, imgReader, "image/png")
+		if err != nil {
+			return nil, err
+		}
+
+		generatedPrompt = prompt.ObjectStorageFileToContent(uploadedURL)
 	} else {
-		return nil, errors.New("invalid type")
+		generatedPrompt = prompt.ResumeToJSON(content)
 	}
 
-	aiResp, err := service.LLM.Generate(generatedPrompt)
+	aiResp, err := service.LLM.Generate(generatedPrompt, nil)
 	if err != nil || aiResp == "" || aiResp == "null" {
 		return nil, err
 	}
-
 
 	structData, err := utils.ParseLLMJSON[PortfolioResponse](aiResp)
 	if err != nil {

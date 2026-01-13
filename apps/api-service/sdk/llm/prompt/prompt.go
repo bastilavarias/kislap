@@ -2,7 +2,7 @@ package prompt
 
 import "fmt"
 
-const rawPrompt = `
+const resumeToJSONPrompt = `
 You are a parser that converts resume-like text into structured JSON. 
 The input is raw extracted text from a PDF. 
 Return ONLY a single **valid JSON object**, without explanations, markdown, or comments.
@@ -76,5 +76,9 @@ Things to consider: Instead of returning empty string on results, put null.
 `
 
 func ResumeToJSON(content string) string {
-	return fmt.Sprintf(rawPrompt, content)
+	return fmt.Sprintf(resumeToJSONPrompt, content)
+}
+
+func ObjectStorageFileToContent(content string) string {
+	return fmt.Sprintf(resumeToJSONPrompt, content)
 }
