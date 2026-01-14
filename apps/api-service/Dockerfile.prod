@@ -2,18 +2,25 @@ FROM golang:1.25-alpine AS builder
 
 WORKDIR /app
 
+# 1. Install build tools (gcc, musl-dev)
+# These are required to compile the C code inside go-fitz.
+RUN apk add --no-cache build-base
+
 COPY go.mod go.sum ./
 RUN go mod download
 
 COPY . .
 
-RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o main .
+# 2. Enable CGO (Set to 1)
+# This compiles the PDF engine directly into your binary.
+RUN CGO_ENABLED=1 GOOS=linux go build -ldflags="-s -w" -o main .
 
 FROM alpine:latest
 
 WORKDIR /app
 
-RUN apk add --no-cache libffi
+# 3. No extra installs needed!
+# Since the library is now inside the binary, your runtime image stays clean.
 
 COPY --from=builder /app/main .
 
