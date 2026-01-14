@@ -13,9 +13,10 @@ FROM alpine:latest
 
 WORKDIR /app
 
+RUN apk add --no-cache libffi
+
 COPY --from=builder /app/main .
 
 EXPOSE 5000
 
-# Run the binary
 CMD ["./main"]
