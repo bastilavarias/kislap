@@ -5,7 +5,7 @@ import (
 	"flash/middleware"
 	"flash/routes"
 	"flash/sdk/llm"
-	"flash/sdk/objectStorage" // 1. Add the import
+	objectStorage "flash/sdk/object_storage"
 	"fmt"
 	"log"
 	"os"
