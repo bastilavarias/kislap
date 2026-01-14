@@ -14,5 +14,5 @@ func Generate(prompt string) (string, error) {
 	if defaultProvider == nil {
 		return "", fmt.Errorf("no LLM provider initialized")
 	}
-	return defaultProvider.Generate(prompt)
+	return defaultProvider.Generate(prompt, nil)
 }

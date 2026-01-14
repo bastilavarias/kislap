@@ -1,6 +1,7 @@
 @no-cookie-jar=false
 
-### Parse resume
+@host = http://api.kislap.test
+@access_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImpvaG4uZG9lQGtpc2xhcC5jb20iLCJleHAiOjE3NjgzODMyMDgsInJvbGUiOiJkZWZhdWx0IiwidXNlcl9pZCI6M30.egLqoVXh-wBrT_v6x2s8-ZPQ8c7xQjBKYyTtpFl8trI
 POST {{host}}/api/documents
 Authorization: Bearer {{access_token}}
 Content-Type: multipart/form-data; boundary=boundary
@@ -14,5 +15,5 @@ resume
 Content-Disposition: form-data; name="file"; filename="resume.pdf"
 Content-Type: application/pdf
 
-< ./files/sample.pdf
---boundary--
+< ./files/sample3.pdf
+--boundary--    
