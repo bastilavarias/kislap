@@ -63,7 +63,6 @@ func (service Service) Parse(payload Payload) (*PortfolioResponse, error) {
 
 		generatedPrompt = prompt.ObjectStorageFileToContent(uploadedURL)
 		if uploadedURL != "" {
-			fmt.Println("Uploaded resume image URL:", uploadedURL)
 			media = &llm.Media{
 				URL: uploadedURL,
 			}
