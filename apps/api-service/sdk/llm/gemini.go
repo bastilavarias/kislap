@@ -35,7 +35,7 @@ func (g *GeminiSDK) init() {
 	})
 }
 
-func (g *GeminiSDK) Generate(prompt string) (string, error) {
+func (g *GeminiSDK) Generate(prompt string, media *Media) (string, error) {
 	g.init()
 	if g.err != nil {
 		return "", g.err

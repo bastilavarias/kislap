@@ -3,6 +3,7 @@ package project
 import (
 	"errors"
 	"flash/models"
+	"strings"
 
 	"flash/utils"
 
@@ -109,14 +110,24 @@ func (service Service) Update(projectID int, payload Payload) (*models.Project, 
 }
 
 func (service Service) CheckDomain(subDomain string) (bool, error) {
+	subDomain = strings.ToLower(subDomain)
+
+	var reserved models.ReservedSubDomain
+	err := service.DB.Where("sub_domain = ?", subDomain).First(&reserved).Error
+
+	if err == nil {
+		return false, errors.New("this subdomain is reserved by the system")
+	}
+
 	var count int64
 	if err := service.DB.Model(&models.Project{}).
 		Where("sub_domain = ?", subDomain).
 		Count(&count).Error; err != nil {
 		return false, err
 	}
+
 	if count > 0 {
-		return false, errors.New("subdomain already taken in database")
+		return false, errors.New("subdomain already taken")
 	}
 
 	return true, nil

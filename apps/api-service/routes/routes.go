@@ -10,12 +10,13 @@ import (
 	"flash/internal/user"
 	"flash/middleware"
 	"flash/sdk/llm"
+	objectStorage "flash/sdk/object_storage"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
-func RegisterRoutes(router *gin.Engine, db *gorm.DB, llm llm.Provider) {
+func RegisterRoutes(router *gin.Engine, db *gorm.DB, llm llm.Provider, objectStorage objectStorage.Provider) {
 	router.GET("/health", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"status": "up",
@@ -27,7 +28,7 @@ func RegisterRoutes(router *gin.Engine, db *gorm.DB, llm llm.Provider) {
 		authController := auth.NewController(db)
 		userController := user.NewController(db)
 		projectController := project.NewController(db)
-		documentController := document.NewController(db, llm)
+		documentController := document.NewController(db, llm, objectStorage)
 		portfolioController := portfolio.NewController(db)
 		appointmentController := appointment.NewController(db)
 		pageActivityController := page_activity.NewController(db)
