@@ -40,6 +40,9 @@ func (controller Controller) Save(context *gin.Context) {
 		return
 	}
 
+	// @TODO: find a better way to handle background tasks
+	// Generate OG Image in the background
+	// This still now working
 	go func(pid int64) {
 		defer func() {
 			if r := recover(); r != nil {
