@@ -18,7 +18,7 @@ function ActionLink({ href, children }: ActionLinkProps) {
 }
 
 export default function AcknowledgementBanner() {
-  const builderUrl = 'https://builder.kislap.app/';
+  const builderUrl = 'https://kislap.app/';
 
   return (
     <div className="w-full border-b border-border bg-background py-2.5 text-center text-xs text-muted-foreground backdrop-blur-sm ">

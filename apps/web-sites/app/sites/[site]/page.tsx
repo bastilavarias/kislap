@@ -36,7 +36,10 @@ async function getProject(subdomain: string) {
   }
 }
 
-export async function generateMetadata(props: any, parent: ResolvingMetadata): Promise<Metadata> {
+export async function generateMetadata(
+  props: { params: { site: string } }, // Note: 'site' param comes from the folder name
+  parent: ResolvingMetadata
+): Promise<Metadata> {
   const subdomain = await getSubdomain();
 
   if (!subdomain) return { title: 'Not Found' };
@@ -47,36 +50,23 @@ export async function generateMetadata(props: any, parent: ResolvingMetadata): P
   const rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN || 'kislap.app';
   const liveUrl = `https://${subdomain}.${rootDomain}`;
 
-  // const screenshotUrl = `https://api.microlink.io?url=${encodeURIComponent(liveUrl)}&screenshot=true&meta=false&embed=screenshot.url&viewport.width=1200&viewport.height=630`;
-  const screenshotUrl = null;
-
-  const meta = {
+  return {
     title: project.name,
     description: project.description,
+    metadataBase: new URL(liveUrl),
     icons: {
       icon: '/icon.svg',
     },
     openGraph: {
       title: project.name,
       description: project.description,
-      images: [
-        {
-          url: screenshotUrl,
-          width: 1200,
-          height: 630,
-          alt: `${project.name} preview`,
-        },
-      ],
     },
     twitter: {
       card: 'summary_large_image',
       title: project.name,
       description: project.description,
-      images: [screenshotUrl],
     },
   };
-
-  return meta;
 }
 
 export default async function Page() {

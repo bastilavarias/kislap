@@ -87,7 +87,7 @@ export const metadata: Metadata = {
     description: 'Turn your forms and data into stunning portfolios instantly.',
     images: [
       {
-        url: '/og-image.png', // Make sure this file exists in /public
+        url: '/og-image.png',
         width: 1200,
         height: 630,
         alt: 'Kislap Builder Preview',
@@ -99,7 +99,7 @@ export const metadata: Metadata = {
     title: 'Kislap - Turn Forms into Stunning Websites',
     description: 'Turn your forms and data into stunning portfolios instantly.',
     images: ['/og-image.png'],
-    creator: '@kislap_app', // Replace with your handle
+    creator: '@kislap_app',
   },
 };
 
