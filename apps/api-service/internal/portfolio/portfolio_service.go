@@ -3,6 +3,7 @@ package portfolio
 import (
 	"encoding/json"
 	"errors"
+	Project "flash/internal/project"
 	"flash/models"
 	"fmt"
 
@@ -10,7 +11,8 @@ import (
 )
 
 type Service struct {
-	DB *gorm.DB
+	DB             *gorm.DB
+	ProjectService *Project.Service
 }
 
 func (service Service) Save(payload Payload) (*models.Portfolio, error) {

@@ -1,5 +1,6 @@
 @no-cookie-jar=false
-
+@host = http://api.kislap.test
+@access_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImpvaG4uZG9lQGtpc2xhcC5jb20iLCJleHAiOjE3Njg0OTM1NjAsInJvbGUiOiJkZWZhdWx0IiwidXNlcl9pZCI6Mn0.F15BdoDbLbYX1_Bj2rwUod4nqwDh8nMsGD02wG1DT4o
 ### Create a new project
 POST {{host}}/api/projects
 Content-Type: application/json
@@ -137,3 +138,7 @@ DELETE {{host}}/api/projects/1
 
 ### Check a project sub domain
 GET {{host}}/api/projects/check/sub-domain/sebastech
+
+### Save OG Image for a project
+POST {{host}}/api/projects/og-image/1
+Authorization: Bearer {{access_token}}

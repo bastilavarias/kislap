@@ -2,15 +2,19 @@ package portfolio
 
 import (
 	"flash/utils"
+	"fmt"
 	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
+
+	"flash/internal/project"
 )
 
 type Controller struct {
-	Service *Service
+	Service        *Service
+	ProjectService *project.Service
 }
 
 func NewController(db *gorm.DB) *Controller {
@@ -35,6 +39,19 @@ func (controller Controller) Save(context *gin.Context) {
 		context.Abort()
 		return
 	}
+
+	go func(pid int64) {
+		defer func() {
+			if r := recover(); r != nil {
+				fmt.Printf("Recovered from panic in SaveOGImage: %v\n", r)
+			}
+		}()
+
+		_, err := controller.ProjectService.SaveOGImage(pid)
+		if err != nil {
+			fmt.Printf("Background OG Image generation failed for project %d: %v\n", pid, err)
+		}
+	}(int64(request.ProjectID))
 
 	utils.APIRespondSuccess(context, http.StatusOK, gin.H{
 		"portfolio": portfolio,

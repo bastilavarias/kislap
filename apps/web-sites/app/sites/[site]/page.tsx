@@ -1,6 +1,6 @@
 import { Metadata, ResolvingMetadata } from 'next';
 import { headers } from 'next/headers';
-import { Builder } from '@/app/components/builder'; // Adjust path as needed
+import { Builder } from '@/app/components/builder';
 import { SiteError } from '@/components/site-error';
 
 const getSubdomain = async () => {
@@ -8,8 +8,7 @@ const getSubdomain = async () => {
   const host = headersList.get('host') || '';
 
   if (host.includes('localhost')) {
-    // You might want to return a hardcoded test subdomain here for dev
-    // return 'sebastech';
+    return;
   }
 
   const hostname = host.split(':')[0];
@@ -37,7 +36,7 @@ async function getProject(subdomain: string) {
 }
 
 export async function generateMetadata(
-  props: { params: { site: string } }, // Note: 'site' param comes from the folder name
+  props: { params: { site: string } },
   parent: ResolvingMetadata
 ): Promise<Metadata> {
   const subdomain = await getSubdomain();
@@ -50,6 +49,8 @@ export async function generateMetadata(
   const rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN || 'kislap.app';
   const liveUrl = `https://${subdomain}.${rootDomain}`;
 
+  const ogImage = project.og_image_url || '/og-image.png';
+
   return {
     title: project.name,
     description: project.description,
@@ -60,11 +61,23 @@ export async function generateMetadata(
     openGraph: {
       title: project.name,
       description: project.description,
+      url: liveUrl,
+      siteName: 'Kislap',
+      images: [
+        {
+          url: ogImage,
+          width: 1200,
+          height: 630,
+          alt: `${project.name} Portfolio Preview`,
+        },
+      ],
+      type: 'website',
     },
     twitter: {
       card: 'summary_large_image',
       title: project.name,
       description: project.description,
+      images: [ogImage], // Same logic applies here
     },
   };
 }

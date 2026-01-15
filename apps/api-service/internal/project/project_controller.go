@@ -1,6 +1,7 @@
 package project
 
 import (
+	objectStorage "flash/sdk/object_storage"
 	"flash/utils"
 	"net/http"
 	"strconv"
@@ -13,9 +14,10 @@ type Controller struct {
 	Service *Service
 }
 
-func NewController(db *gorm.DB) *Controller {
+func NewController(db *gorm.DB, objectStorage objectStorage.Provider) *Controller {
 	service := &Service{
-		DB: db,
+		DB:            db,
+		ObjectStorage: objectStorage,
 	}
 
 	return &Controller{Service: service}
@@ -212,4 +214,19 @@ func (controller Controller) PublicList(context *gin.Context) {
 
 	utils.APIRespondSuccess(context, http.StatusOK, projects)
 
+}
+
+func (controller Controller) SaveOGImage(context *gin.Context) {
+	idStr := context.Param("id")
+	projectID, err := strconv.Atoi(idStr)
+
+	project, err := controller.Service.SaveOGImage(int64(projectID))
+
+	if err != nil {
+		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
+		context.Abort()
+		return
+	}
+
+	utils.APIRespondSuccess(context, http.StatusOK, project)
 }

@@ -1,8 +1,11 @@
 package project
 
 import (
+	"bytes"
 	"errors"
 	"flash/models"
+	objectStorage "flash/sdk/object_storage"
+	"fmt"
 	"strings"
 
 	"flash/utils"
@@ -11,7 +14,8 @@ import (
 )
 
 type Service struct {
-	DB *gorm.DB
+	DB            *gorm.DB
+	ObjectStorage objectStorage.Provider
 }
 
 func (service Service) List(userID *uint64, page int, limit int) (*[]models.Project, error) {
@@ -227,4 +231,37 @@ func (service Service) Publish(projectID int, payload PublishProjectPayload) (*m
 	})
 
 	return &proj, nil
+}
+
+func (service Service) SaveOGImage(projectID int64) (*models.Project, error) {
+	var project models.Project
+	if err := service.DB.First(&project, projectID).Error; err != nil {
+		return nil, err
+	}
+
+	if project.SubDomain == nil {
+		return nil, errors.New("project does not have a subdomain")
+	}
+
+	url := fmt.Sprintf("https://%s.%s", *project.SubDomain, "kislap.app")
+	imageData, err := utils.CaptureBrowser(url)
+	if err != nil {
+		return nil, fmt.Errorf("failed to capture screenshot: %w", err)
+	}
+
+	imagePath := fmt.Sprintf("og_images/%d.png", projectID)
+	imageReader := bytes.NewReader(imageData)
+
+	uploadedURL, err := service.ObjectStorage.Upload(imagePath, imageReader, "image/png")
+	if err != nil {
+		return nil, fmt.Errorf("failed to upload OG image: %w", err)
+	}
+
+	project.OGImageURL = &uploadedURL
+
+	if err := service.DB.Save(&project).Error; err != nil {
+		return nil, fmt.Errorf("failed to save project with OG image URL: %w", err)
+	}
+
+	return &project, nil
 }
