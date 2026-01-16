@@ -15,6 +15,18 @@ FROM alpine:latest
 
 WORKDIR /app
 
+RUN apk add --no-cache \
+    chromium \
+    font-noto \
+    font-noto-cjk \
+    ttf-liberation \
+    freetype \
+    harfbuzz \
+    ca-certificates \
+    ttf-freefont
+
+ENV CHROME_BIN="/usr/bin/chromium-browser"
+
 COPY --from=builder /app/main .
 
 EXPOSE 5000
