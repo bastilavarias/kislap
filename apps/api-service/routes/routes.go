@@ -27,9 +27,9 @@ func RegisterRoutes(router *gin.Engine, db *gorm.DB, llm llm.Provider, objectSto
 	{
 		authController := auth.NewController(db)
 		userController := user.NewController(db)
-		projectController := project.NewController(db)
+		projectController := project.NewController(db, objectStorage)
 		documentController := document.NewController(db, llm, objectStorage)
-		portfolioController := portfolio.NewController(db)
+		portfolioController := portfolio.NewController(db, objectStorage)
 		appointmentController := appointment.NewController(db)
 		pageActivityController := page_activity.NewController(db)
 
@@ -47,6 +47,7 @@ func RegisterRoutes(router *gin.Engine, db *gorm.DB, llm llm.Provider, objectSto
 		api.GET("/projects/show/slug/:slug", middleware.AccessTokenValidatorMiddleware(db), projectController.ShowBySlug)
 		api.GET("/projects/show/sub-domain/:sub-domain", projectController.ShowBySubDomain)
 		api.GET("/projects/check/sub-domain/:sub-domain", middleware.AccessTokenValidatorMiddleware(db), projectController.CheckDomain)
+		api.POST("/projects/og-image/:id", middleware.AccessTokenValidatorMiddleware(db), projectController.SaveOGImage)
 		api.POST("/projects", middleware.AccessTokenValidatorMiddleware(db), projectController.Create)
 		api.PUT("/projects/publish/:id", middleware.AccessTokenValidatorMiddleware(db), projectController.Publish)
 		api.PUT("/projects/:id", middleware.AccessTokenValidatorMiddleware(db), projectController.Update)

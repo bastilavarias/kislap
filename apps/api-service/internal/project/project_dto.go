@@ -14,6 +14,10 @@ type PublishProjectRequest struct {
 	Published bool `json:"published"`
 }
 
+type SaveOGImageRequest struct {
+	URL string `json:"url" binding:"required"`
+}
+
 type Payload struct {
 	Name        string
 	Description string

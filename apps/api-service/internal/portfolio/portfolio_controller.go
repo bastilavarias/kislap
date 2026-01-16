@@ -1,7 +1,10 @@
 package portfolio
 
 import (
+	"flash/internal/project"
+	objectStorage "flash/sdk/object_storage"
 	"flash/utils"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -10,14 +13,18 @@ import (
 )
 
 type Controller struct {
-	Service *Service
+	Service        *Service
+	ProjectService *project.Service
 }
 
-func NewController(db *gorm.DB) *Controller {
+func NewController(db *gorm.DB, objectStorage objectStorage.Provider) *Controller {
 	service := &Service{
 		DB: db,
 	}
-	return &Controller{Service: service}
+
+	projectService := project.NewService(db, objectStorage)
+
+	return &Controller{Service: service, ProjectService: projectService}
 }
 
 func (controller Controller) Save(context *gin.Context) {
@@ -35,6 +42,21 @@ func (controller Controller) Save(context *gin.Context) {
 		context.Abort()
 		return
 	}
+
+	go func(projectID int64) {
+		defer func() {
+			if r := recover(); r != nil {
+				fmt.Printf("Recovered from panic in SaveOGImage: %v\n", r)
+			}
+		}()
+
+		_, err := controller.ProjectService.SaveOGImage(projectID)
+
+		if err != nil {
+			fmt.Printf("Background OG Image generation failed for project %d: %v\n", projectID, err)
+		}
+
+	}(int64(request.ProjectID))
 
 	utils.APIRespondSuccess(context, http.StatusOK, gin.H{
 		"portfolio": portfolio,

@@ -71,7 +71,6 @@ func (cloudflare *CloudflareR2SDK) Upload(path string, content io.Reader, conten
 		return "", fmt.Errorf("R2 Upload error: %w", err)
 	}
 
-	// Use the private resolver
 	return cloudflare.resolveURL(path), nil
 }
 
