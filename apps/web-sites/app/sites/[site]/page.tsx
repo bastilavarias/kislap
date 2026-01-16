@@ -7,10 +7,6 @@ const getSubdomain = async () => {
   const headersList = await headers();
   const host = headersList.get('host') || '';
 
-  if (host.includes('localhost')) {
-    return;
-  }
-
   const hostname = host.split(':')[0];
   const parts = hostname.split('.');
 
@@ -49,35 +45,44 @@ export async function generateMetadata(
   const rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN || 'kislap.app';
   const liveUrl = `https://${subdomain}.${rootDomain}`;
 
+  const typeWithDesc = {
+    portfolio: 'Portfolio Preview',
+  };
   const ogImage = project.og_image_url || '/og-image.png';
+  const name =
+    project.portfolio?.name ||
+    `${project.name} ${typeWithDesc[project.type as keyof typeof typeWithDesc] || ''}`;
+  const description =
+    project.portfolio?.description ||
+    `${project.name} ${typeWithDesc[project.type as keyof typeof typeWithDesc] || ''}`;
 
   return {
-    title: project.name,
-    description: project.description,
+    title: name,
+    description: description,
     metadataBase: new URL(liveUrl),
     icons: {
       icon: '/icon.svg',
     },
     openGraph: {
-      title: project.name,
-      description: project.description,
+      title: name,
+      description: description,
       url: liveUrl,
-      siteName: 'Kislap',
+      siteName: `${project.name} | Kislap - Turn simple forms into stunning websites.`,
       images: [
         {
           url: ogImage,
           width: 1200,
           height: 630,
-          alt: `${project.name} Portfolio Preview`,
+          alt: name,
         },
       ],
       type: 'website',
     },
     twitter: {
       card: 'summary_large_image',
-      title: project.name,
-      description: project.description,
-      images: [ogImage], // Same logic applies here
+      title: name,
+      description: description,
+      images: [ogImage],
     },
   };
 }

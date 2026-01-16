@@ -15,7 +15,9 @@ const getSubdomain = async () => {
 };
 
 async function getProject(subdomain: string) {
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://api.kislap.test';
+  // const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://api.kislap.test';
+  const API_BASE_URL = 'http://api.kislap.test';
+  console.log('API_BASE_URL:', API_BASE_URL);
   try {
     const res = await fetch(`${API_BASE_URL}/api/projects/show/sub-domain/${subdomain}?level=full`);
     if (!res.ok) {
