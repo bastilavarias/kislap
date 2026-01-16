@@ -29,7 +29,7 @@ func RegisterRoutes(router *gin.Engine, db *gorm.DB, llm llm.Provider, objectSto
 		userController := user.NewController(db)
 		projectController := project.NewController(db, objectStorage)
 		documentController := document.NewController(db, llm, objectStorage)
-		portfolioController := portfolio.NewController(db)
+		portfolioController := portfolio.NewController(db, objectStorage)
 		appointmentController := appointment.NewController(db)
 		pageActivityController := page_activity.NewController(db)
 

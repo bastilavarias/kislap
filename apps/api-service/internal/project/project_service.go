@@ -18,6 +18,10 @@ type Service struct {
 	ObjectStorage objectStorage.Provider
 }
 
+func NewService(db *gorm.DB, objectStorage objectStorage.Provider) *Service {
+	return &Service{DB: db, ObjectStorage: objectStorage}
+}
+
 func (service Service) List(userID *uint64, page int, limit int) (*[]models.Project, error) {
 	var projects []models.Project
 

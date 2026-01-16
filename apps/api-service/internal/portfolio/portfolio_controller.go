@@ -1,6 +1,8 @@
 package portfolio
 
 import (
+	"flash/internal/project"
+	objectStorage "flash/sdk/object_storage"
 	"flash/utils"
 	"fmt"
 	"net/http"
@@ -8,8 +10,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
-
-	"flash/internal/project"
 )
 
 type Controller struct {
@@ -17,11 +17,14 @@ type Controller struct {
 	ProjectService *project.Service
 }
 
-func NewController(db *gorm.DB) *Controller {
+func NewController(db *gorm.DB, objectStorage objectStorage.Provider) *Controller {
 	service := &Service{
 		DB: db,
 	}
-	return &Controller{Service: service}
+
+	projectService := project.NewService(db, objectStorage)
+
+	return &Controller{Service: service, ProjectService: projectService}
 }
 
 func (controller Controller) Save(context *gin.Context) {
@@ -40,20 +43,19 @@ func (controller Controller) Save(context *gin.Context) {
 		return
 	}
 
-	// @TODO: find a better way to handle background tasks
-	// Generate OG Image in the background
-	// This still now working
-	go func(pid int64) {
+	go func(projectID int64) {
 		defer func() {
 			if r := recover(); r != nil {
 				fmt.Printf("Recovered from panic in SaveOGImage: %v\n", r)
 			}
 		}()
 
-		_, err := controller.ProjectService.SaveOGImage(pid)
+		_, err := controller.ProjectService.SaveOGImage(projectID)
+
 		if err != nil {
-			fmt.Printf("Background OG Image generation failed for project %d: %v\n", pid, err)
+			fmt.Printf("Background OG Image generation failed for project %d: %v\n", projectID, err)
 		}
+
 	}(int64(request.ProjectID))
 
 	utils.APIRespondSuccess(context, http.StatusOK, gin.H{
