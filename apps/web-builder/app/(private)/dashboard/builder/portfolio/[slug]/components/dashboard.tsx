@@ -169,7 +169,13 @@ const RecentActivityFeed = ({
                         <span className="text-sm font-medium text-foreground">{config.label}</span>
                         <span className="text-[10px] text-muted-foreground flex items-center gap-1">
                           <Clock className="w-3 h-3" />
-                          {new Date(activity.created_at).toLocaleTimeString([], { hour12: true })}
+                          {new Date(activity.created_at).toLocaleTimeString([], {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: '2-digit',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          })}
                         </span>
                       </div>
 
@@ -213,7 +219,6 @@ const RecentActivityFeed = ({
           )}
         </div>
 
-        {/* Footer Pagination */}
         <div className="px-4 py-3 border-t bg-muted/20 mt-auto">
           <PaginationControls page={page} total={totalPages} onPageChange={onPageChange} />
         </div>
@@ -439,7 +444,6 @@ export function Dashboard({ projectID }: { projectID?: number }) {
         </CardContent>
       </Card>
 
-      {/* 3. Appointments Table */}
       <Card className="shadow-sm">
         <CardHeader>
           <div className="flex items-center justify-between">
@@ -450,13 +454,16 @@ export function Dashboard({ projectID }: { projectID?: number }) {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="rounded-md border">
-            <table className="w-full text-sm text-left">
+          {/* CHANGE 1: Added 'overflow-x-auto' here. This creates the scrollbar if content is too wide */}
+          <div className="rounded-md border overflow-x-auto">
+            {/* CHANGE 2: Added 'min-w-[600px]' (optional) so the table doesn't squash too much */}
+            <table className="w-full text-sm text-left min-w-[600px] md:min-w-full">
               <thead className="bg-muted/50 text-muted-foreground uppercase text-xs font-semibold">
                 <tr>
                   <th className="px-4 py-3">Client</th>
                   <th className="px-4 py-3 hidden md:table-cell">Contact</th>
-                  <th className="px-4 py-3">Message</th>
+                  {/* CHANGE 3: Added 'hidden sm:table-cell' to hide message on very small screens if desired, or keep as is */}
+                  <th className="px-4 py-3 hidden sm:table-cell">Message</th>
                   <th className="px-4 py-3">Date</th>
                   <th className="px-4 py-3 text-right"></th>
                 </tr>
@@ -474,7 +481,8 @@ export function Dashboard({ projectID }: { projectID?: number }) {
                           <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs shrink-0">
                             {app.name.charAt(0)}
                           </div>
-                          <div className="group-hover:text-primary transition-colors">
+                          {/* CHANGE 4: Added whitespace-nowrap to prevent name breaking awkwardly */}
+                          <div className="group-hover:text-primary transition-colors whitespace-nowrap">
                             {app.name}
                           </div>
                         </div>
@@ -485,7 +493,8 @@ export function Dashboard({ projectID }: { projectID?: number }) {
                           <span className="text-muted-foreground">{app.contact_number}</span>
                         </div>
                       </td>
-                      <td className="px-4 py-3 max-w-[200px]">
+                      {/* CHANGE 5: Matches the header hidden state */}
+                      <td className="px-4 py-3 max-w-[150px] hidden sm:table-cell">
                         <p
                           className="truncate text-muted-foreground text-xs"
                           title={app.message || ''}
@@ -531,8 +540,10 @@ export function Dashboard({ projectID }: { projectID?: number }) {
             </div>
           </CardHeader>
           <CardContent className="p-0 flex-1 flex flex-col">
-            <div className="flex-1">
-              <table className="w-full text-sm text-left">
+            {/* CHANGE 1: Added overflow-x-auto here to enable horizontal scrolling */}
+            <div className="flex-1 overflow-x-auto">
+              {/* CHANGE 2: Added min-w-[500px] to ensure columns have breathing room */}
+              <table className="w-full text-sm text-left min-w-[500px]">
                 <thead className="bg-muted/30 text-muted-foreground text-xs sticky top-0 backdrop-blur-sm">
                   <tr>
                     <th className="px-4 py-2 font-medium">Location</th>
@@ -561,7 +572,8 @@ export function Dashboard({ projectID }: { projectID?: number }) {
                         key={index}
                         className="hover:bg-muted/20 border-t border-dashed border-border/50"
                       >
-                        <td className="px-4 py-2.5">
+                        {/* CHANGE 3: Added whitespace-nowrap to prevent text wrapping */}
+                        <td className="px-4 py-2.5 whitespace-nowrap">
                           <div className="flex items-center gap-2">
                             <MapPin className="w-3 h-3 text-muted-foreground" />
                             <span className="text-xs font-medium">
@@ -569,7 +581,7 @@ export function Dashboard({ projectID }: { projectID?: number }) {
                             </span>
                           </div>
                         </td>
-                        <td className="px-4 py-2.5 text-xs text-muted-foreground font-mono">
+                        <td className="px-4 py-2.5 text-xs text-muted-foreground font-mono whitespace-nowrap">
                           <div className="inline-flex items-center gap-1.5 px-1.5 py-0.5 rounded-sm bg-muted/50 border border-border/50">
                             <Server className="w-3 h-3 text-muted-foreground" />
                             <span className="text-[10px] font-mono text-muted-foreground">
@@ -577,10 +589,13 @@ export function Dashboard({ projectID }: { projectID?: number }) {
                             </span>
                           </div>
                         </td>
-                        <td className="px-4 py-2.5 text-xs text-muted-foreground">
+                        <td className="px-4 py-2.5 text-xs text-muted-foreground whitespace-nowrap">
                           <div className="flex items-center gap-1">
                             <Clock className="w-3 h-3" />
                             {new Date(view.created_at).toLocaleTimeString([], {
+                              day: '2-digit',
+                              month: '2-digit',
+                              year: '2-digit',
                               hour: '2-digit',
                               minute: '2-digit',
                             })}
