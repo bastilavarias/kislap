@@ -14,10 +14,11 @@ return new class extends Migration
         Schema::create('testimonials', function (Blueprint $table) {
             $table->id();
             $table->foreignId('biz_id')->constrained('bizs')->cascadeOnDelete();
+            $table->integer('placement_order')->default(0);
             $table->string('author');
             $table->text('content');
             $table->integer('rating')->nullable();
-            $table->string('image_url')->nullable();
+            $table->string('avatar_image_url')->nullable();
             $table->timestamps();
         });
     }

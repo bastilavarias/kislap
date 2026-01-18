@@ -17,9 +17,9 @@ import {
   CheckCircle2,
   XCircle,
   MoreHorizontal,
-  Eye,
   PenTool,
   Edit,
+  LayoutDashboard,
 } from 'lucide-react';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import {
@@ -277,8 +277,8 @@ export function FormHeader<T>({
                   <Link
                     href={`/dashboard/builder/${project?.type || 'portfolio'}/${project?.slug}`}
                   >
-                    <Eye className="w-3.5 h-3.5 mr-2 opacity-70" />
-                    Preview
+                    <LayoutDashboard className="w-3.5 h-3.5 mr-2 opacity-70" />
+                    Dashboard
                   </Link>
                 </Button>
 

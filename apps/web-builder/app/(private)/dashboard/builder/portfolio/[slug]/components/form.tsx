@@ -65,6 +65,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Settings } from '@/contexts/settings-context';
 import { cn } from '@/lib/utils';
+import { SortableList } from '@/components/sortable-list';
 
 const LAYOUT_OPTIONS = [
   { id: 'default', name: 'Default', icon: LayoutTemplate, description: 'Clean & Standard' },
@@ -104,7 +105,6 @@ interface Props {
   onProcessResumeFile: () => Promise<void>;
 }
 
-// Renamed and Refactored to use Dialog
 function AddItemDialog({
   onAdd,
   title,
@@ -167,7 +167,6 @@ function AddItemDialog({
   );
 }
 
-// Extracted Design Panel (Unchanged)
 function DesignPanel({
   layout,
   setLayout,
@@ -305,12 +304,15 @@ export function Form({
     formState: { errors },
   } = formMethods;
 
-  const { fields: workFields, remove: removeWork } = workFieldArray;
-  const { fields: educationFields, remove: removeEducation } = educationFieldArray;
-  const { fields: showcaseFields, remove: removeShowcase } = showcaseFieldArray;
+  const { fields: workFields, remove: removeWork, move: moveWork } = workFieldArray;
+  const {
+    fields: educationFields,
+    remove: removeEducation,
+    move: moveEducation,
+  } = educationFieldArray;
+  const { fields: showcaseFields, remove: removeShowcase, move: moveShowcase } = showcaseFieldArray;
   const { fields: skillFields, remove: removeSkill, append: appendSkill } = skillFieldArray;
 
-  // --- Master Detail State ---
   const [editState, setEditState] = useState<{
     type: 'work' | 'education' | 'project' | null;
     index: number | null;
@@ -326,7 +328,6 @@ export function Form({
   return (
     <div className="w-full relative">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start pb-20 lg:pb-0">
-        {/* --- LEFT COLUMN: CONTENT --- */}
         <div className="lg:col-span-8 space-y-6">
           <Card className="shadow-none border-border">
             <CardContent className="p-6">
@@ -353,8 +354,7 @@ export function Form({
                 </Button>
               </div>
 
-              <div className="flex flex-col gap-4">
-                {/* 1. HEADER & BIO */}
+              <div className="flex flex-col gap-10">
                 <Accordion type="single" defaultValue="details" collapsible>
                   <AccordionItem value="details" className="rounded-lg border px-4 shadow-none">
                     <AccordionTrigger className="cursor-pointer py-3 text-base font-medium hover:no-underline">
@@ -490,7 +490,7 @@ export function Form({
                   </AccordionItem>
                 </Accordion>
 
-                {/* 2. WORK EXPERIENCE */}
+                {/* 2. WORK EXPERIENCE (Using SortableList) */}
                 <Accordion type="single" defaultValue="work" collapsible>
                   <AccordionItem value="work" className="rounded-lg border px-4 shadow-none">
                     <AccordionTrigger className="cursor-pointer py-3 text-base font-medium hover:no-underline">
@@ -503,15 +503,14 @@ export function Form({
                           <p className="text-muted-foreground text-sm">No work experience yet.</p>
                         </div>
                       ) : (
-                        <div className="grid gap-2">
-                          {workFields.map((field, index) => {
+                        <SortableList
+                          items={workFields}
+                          onDragEnd={(oldIndex, newIndex) => moveWork(oldIndex, newIndex)}
+                          renderItem={(field, index) => {
                             const role = watch(`work_experiences.${index}.role`);
                             const company = watch(`work_experiences.${index}.company`);
                             return (
-                              <div
-                                key={field.id}
-                                className="flex items-center justify-between p-3 border rounded-lg bg-card hover:bg-muted/50 transition-colors"
-                              >
+                              <div className="flex items-center justify-between p-3 border rounded-lg bg-card hover:bg-muted/50 transition-colors">
                                 <div className="flex flex-col">
                                   <span className="font-medium text-sm">
                                     {role || 'Untitled Role'}
@@ -540,8 +539,8 @@ export function Form({
                                 </div>
                               </div>
                             );
-                          })}
-                        </div>
+                          }}
+                        />
                       )}
                       <Button
                         onClick={onAddWorkExperience}
@@ -554,7 +553,7 @@ export function Form({
                   </AccordionItem>
                 </Accordion>
 
-                {/* 3. EDUCATION */}
+                {/* 3. EDUCATION (Using SortableList) */}
                 <Accordion type="single" defaultValue="edu" collapsible>
                   <AccordionItem value="edu" className="rounded-lg border px-4 shadow-none">
                     <AccordionTrigger className="cursor-pointer py-3 text-base font-medium hover:no-underline">
@@ -567,15 +566,14 @@ export function Form({
                           <p className="text-muted-foreground text-sm">No education listed.</p>
                         </div>
                       ) : (
-                        <div className="grid gap-2">
-                          {educationFields.map((field, index) => {
+                        <SortableList
+                          items={educationFields}
+                          onDragEnd={(oldIndex, newIndex) => moveEducation(oldIndex, newIndex)}
+                          renderItem={(field, index) => {
                             const degree = watch(`education.${index}.degree`);
                             const school = watch(`education.${index}.school`);
                             return (
-                              <div
-                                key={field.id}
-                                className="flex items-center justify-between p-3 border rounded-lg bg-card hover:bg-muted/50 transition-colors"
-                              >
+                              <div className="flex items-center justify-between p-3 border rounded-lg bg-card hover:bg-muted/50 transition-colors">
                                 <div className="flex flex-col">
                                   <span className="font-medium text-sm">
                                     {degree || 'Untitled Degree'}
@@ -604,8 +602,8 @@ export function Form({
                                 </div>
                               </div>
                             );
-                          })}
-                        </div>
+                          }}
+                        />
                       )}
                       <Button
                         onClick={onAddEducation}
@@ -618,7 +616,7 @@ export function Form({
                   </AccordionItem>
                 </Accordion>
 
-                {/* 4. PROJECTS */}
+                {/* 4. PROJECTS (Using SortableList) */}
                 <Accordion type="single" defaultValue="projects" collapsible>
                   <AccordionItem value="projects" className="rounded-lg border px-4 shadow-none">
                     <AccordionTrigger className="cursor-pointer py-3 text-base font-medium hover:no-underline">
@@ -631,14 +629,13 @@ export function Form({
                           <p className="text-muted-foreground text-sm">No projects added.</p>
                         </div>
                       ) : (
-                        <div className="grid gap-2">
-                          {showcaseFields.map((field, index) => {
+                        <SortableList
+                          items={showcaseFields}
+                          onDragEnd={(oldIndex, newIndex) => moveShowcase(oldIndex, newIndex)}
+                          renderItem={(field, index) => {
                             const name = watch(`showcases.${index}.name`);
                             return (
-                              <div
-                                key={field.id}
-                                className="flex items-center justify-between p-3 border rounded-lg bg-card hover:bg-muted/50 transition-colors"
-                              >
+                              <div className="flex items-center justify-between p-3 border rounded-lg bg-card hover:bg-muted/50 transition-colors">
                                 <div className="flex flex-col">
                                   <span className="font-medium text-sm">
                                     {name || 'Untitled Project'}
@@ -664,8 +661,8 @@ export function Form({
                                 </div>
                               </div>
                             );
-                          })}
-                        </div>
+                          }}
+                        />
                       )}
                       <Button
                         onClick={onAddShowcase}
@@ -678,7 +675,7 @@ export function Form({
                   </AccordionItem>
                 </Accordion>
 
-                {/* 5. SKILLS (Uses AddItemDialog now) */}
+                {/* 5. SKILLS (Unchanged) */}
                 <Accordion type="single" defaultValue="skills" collapsible>
                   <AccordionItem value="skills" className="rounded-lg border px-4 shadow-none">
                     <AccordionTrigger className="cursor-pointer py-3 text-base font-medium hover:no-underline">
@@ -730,7 +727,7 @@ export function Form({
         </div>
       </div>
 
-      {/* --- MASTER EDITING DIALOG --- */}
+      {/* --- MASTER EDITING DIALOG (UNCHANGED) --- */}
       <Dialog open={editState.type !== null} onOpenChange={(open) => !open && closeDialog()}>
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
@@ -908,7 +905,7 @@ export function Form({
         </DialogContent>
       </Dialog>
 
-      {/* MOBILE TRIGGER (Kept as Sheet) */}
+      {/* MOBILE TRIGGER */}
       <div className="lg:hidden fixed bottom-6 right-6 z-50">
         <Sheet>
           <SheetTrigger asChild>

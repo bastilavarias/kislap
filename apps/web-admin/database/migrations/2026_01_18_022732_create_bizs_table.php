@@ -14,11 +14,10 @@ return new class extends Migration
         Schema::create('bizs', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('slug')->unique();
             $table->string('tagline')->nullable();
             $table->text('description')->nullable();
-            $table->string('logo')->nullable();
-            $table->string('hero_image')->nullable();
+            $table->string('logo_image_url')->nullable();
+            $table->string('hero_image_url')->nullable();
             $table->enum('type', ['service', 'product', 'both'])->default('service');
             $table->string('industry')->nullable();
             $table->string('email')->nullable();

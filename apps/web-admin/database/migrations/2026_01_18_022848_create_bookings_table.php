@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('customer_phone')->nullable();
             $table->dateTime('scheduled_at');
             $table->enum('status', ['pending', 'confirmed', 'cancelled'])->default('pending');
+            $table->text('notes')->nullable();
             $table->timestamps();
         });
     }

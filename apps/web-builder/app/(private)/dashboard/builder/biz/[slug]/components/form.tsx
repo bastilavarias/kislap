@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -63,6 +63,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Settings } from '@/contexts/settings-context';
 import { cn } from '@/lib/utils';
 import { BizFormValues } from '@/lib/schemas/biz';
+import { SortableList } from '@/components/sortable-list';
 
 const LAYOUT_OPTIONS = [
   { id: 'default', name: 'Default', icon: LayoutTemplate, description: 'Clean & Standard' },
@@ -95,8 +96,8 @@ interface Props {
 
 // --- Helper Component for Image Upload ---
 function ImageUploadField({
-  previewUrl, // From DB (image_url)
-  currentFile, // From State (image)
+  previewUrl,
+  currentFile,
   onFileSelect,
 }: {
   previewUrl?: string | null;
@@ -105,7 +106,6 @@ function ImageUploadField({
 }) {
   const [localPreview, setLocalPreview] = useState<string | null>(null);
 
-  // Generate preview for newly selected file
   useEffect(() => {
     if (currentFile) {
       const objectUrl = URL.createObjectURL(currentFile);
@@ -116,7 +116,6 @@ function ImageUploadField({
     }
   }, [currentFile]);
 
-  // Determine which image to show (New File > Existing URL)
   const displayImage = localPreview || previewUrl;
 
   return (
@@ -153,7 +152,6 @@ function ImageUploadField({
   );
 }
 
-// Extracted Design Panel
 function DesignPanel({
   layout,
   setLayout,
@@ -283,9 +281,13 @@ export function Form({
   } = formMethods;
 
   const { fields: socialFields, remove: removeSocial } = socialLinksFieldArray;
-  const { fields: serviceFields, remove: removeService } = servicesFieldArray;
-  const { fields: productFields, remove: removeProduct } = productsFieldArray;
-  const { fields: testimonialFields, remove: removeTestimonial } = testimonialsFieldArray;
+  const { fields: serviceFields, remove: removeService, move: moveService } = servicesFieldArray;
+  const { fields: productFields, remove: removeProduct, move: moveProduct } = productsFieldArray;
+  const {
+    fields: testimonialFields,
+    remove: removeTestimonial,
+    move: moveTestimonial,
+  } = testimonialsFieldArray;
 
   const [editState, setEditState] = useState<{
     type: 'service' | 'product' | 'testimonial' | null;
@@ -302,7 +304,6 @@ export function Form({
   return (
     <div className="w-full relative">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start pb-20 lg:pb-0">
-        {/* --- LEFT COLUMN: CONTENT --- */}
         <div className="lg:col-span-8 space-y-6">
           <Card className="shadow-none border-border">
             <CardContent className="p-6">
@@ -312,8 +313,7 @@ export function Form({
                 </h1>
               </div>
 
-              <div className="flex flex-col gap-4">
-                {/* 1. General Information */}
+              <div className="flex flex-col gap-10">
                 <Accordion type="single" defaultValue="details" collapsible>
                   <AccordionItem value="details" className="rounded-lg border px-4 shadow-none">
                     <AccordionTrigger className="cursor-pointer py-3 text-base font-medium hover:no-underline">
@@ -464,30 +464,25 @@ export function Form({
                           <p>No services yet.</p>
                         </div>
                       ) : (
-                        <div className="grid gap-2">
-                          {serviceFields.map((field, index) => {
+                        <SortableList
+                          items={serviceFields}
+                          onDragEnd={(oldIndex, newIndex) => moveService(oldIndex, newIndex)}
+                          renderItem={(field, index) => {
                             const name = watch(`services.${index}.name`);
                             const price = watch(`services.${index}.price`);
-                            // Watch for image_url or a File object in 'image'
                             const imageUrl = watch(`services.${index}.image_url`);
                             const imageFile = watch(`services.${index}.image`);
 
-                            // Determine preview for list item
                             let thumbnail = null;
-                            if (imageFile instanceof File) {
+                            if (imageFile instanceof File)
                               thumbnail = URL.createObjectURL(imageFile);
-                            } else if (imageUrl) {
-                              thumbnail = imageUrl;
-                            }
+                            else if (imageUrl) thumbnail = imageUrl;
 
                             return (
-                              <div
-                                key={field.id}
-                                className="flex items-center justify-between p-3 border rounded-lg bg-card hover:bg-muted/50 transition-colors"
-                              >
+                              <div className="flex items-center justify-between p-3 border rounded-lg bg-card hover:bg-muted/50 transition-colors">
                                 <div className="flex items-center gap-3">
                                   {/* List Thumbnail */}
-                                  <div className="h-10 w-10 rounded-md bg-muted overflow-hidden shrink-0 flex items-center justify-center">
+                                  <div className="h-10 w-10 rounded-md bg-muted overflow-hidden shrink-0 flex items-center justify-center border">
                                     {thumbnail ? (
                                       <img
                                         src={thumbnail}
@@ -525,8 +520,8 @@ export function Form({
                                 </div>
                               </div>
                             );
-                          })}
-                        </div>
+                          }}
+                        />
                       )}
                       <Button
                         onClick={onAddService}
@@ -552,12 +547,13 @@ export function Form({
                           <p>No products yet.</p>
                         </div>
                       ) : (
-                        <div className="grid gap-2">
-                          {productFields.map((field, index) => {
+                        <SortableList
+                          items={productFields}
+                          onDragEnd={(oldIndex, newIndex) => moveProduct(oldIndex, newIndex)}
+                          renderItem={(field, index) => {
                             const name = watch(`products.${index}.name`);
                             const price = watch(`products.${index}.price`);
                             const active = watch(`products.${index}.is_active`);
-
                             const imageUrl = watch(`products.${index}.image_url`);
                             const imageFile = watch(`products.${index}.image`);
 
@@ -567,12 +563,9 @@ export function Form({
                             else if (imageUrl) thumbnail = imageUrl;
 
                             return (
-                              <div
-                                key={field.id}
-                                className="flex items-center justify-between p-3 border rounded-lg bg-card hover:bg-muted/50 transition-colors"
-                              >
+                              <div className="flex items-center justify-between p-3 border rounded-lg bg-card hover:bg-muted/50 transition-colors">
                                 <div className="flex items-center gap-3">
-                                  <div className="h-10 w-10 rounded-md bg-muted overflow-hidden shrink-0 flex items-center justify-center">
+                                  <div className="h-10 w-10 rounded-md bg-muted overflow-hidden shrink-0 flex items-center justify-center border">
                                     {thumbnail ? (
                                       <img
                                         src={thumbnail}
@@ -620,8 +613,8 @@ export function Form({
                                 </div>
                               </div>
                             );
-                          })}
-                        </div>
+                          }}
+                        />
                       )}
                       <Button
                         onClick={onAddProduct}
@@ -650,11 +643,12 @@ export function Form({
                           <p>No reviews yet.</p>
                         </div>
                       ) : (
-                        <div className="grid gap-2">
-                          {testimonialFields.map((field, index) => {
+                        <SortableList
+                          items={testimonialFields}
+                          onDragEnd={(oldIndex, newIndex) => moveTestimonial(oldIndex, newIndex)}
+                          renderItem={(field, index) => {
                             const author = watch(`testimonials.${index}.author`);
                             const rating = watch(`testimonials.${index}.rating`);
-
                             const imageUrl = watch(`testimonials.${index}.image_url`);
                             const imageFile = watch(`testimonials.${index}.image`);
 
@@ -664,10 +658,7 @@ export function Form({
                             else if (imageUrl) thumbnail = imageUrl;
 
                             return (
-                              <div
-                                key={field.id}
-                                className="flex items-center justify-between p-3 border rounded-lg bg-card hover:bg-muted/50 transition-colors"
-                              >
+                              <div className="flex items-center justify-between p-3 border rounded-lg bg-card hover:bg-muted/50 transition-colors">
                                 <div className="flex items-center gap-3">
                                   <div className="h-10 w-10 rounded-full bg-muted overflow-hidden shrink-0 flex items-center justify-center border">
                                     {thumbnail ? (
@@ -709,8 +700,8 @@ export function Form({
                                 </div>
                               </div>
                             );
-                          })}
-                        </div>
+                          }}
+                        />
                       )}
                       <Button
                         onClick={onAddTestimonial}
@@ -806,7 +797,6 @@ export function Form({
             {/* SERVICE FORM */}
             {editState.type === 'service' && editState.index !== null && (
               <>
-                {/* Image Upload for Service */}
                 <div>
                   <Label className="mb-2 block">Service Image</Label>
                   <ImageUploadField
@@ -861,7 +851,6 @@ export function Form({
             {/* PRODUCT FORM */}
             {editState.type === 'product' && editState.index !== null && (
               <>
-                {/* Image Upload for Product */}
                 <div>
                   <Label className="mb-2 block">Product Image</Label>
                   <ImageUploadField
@@ -916,7 +905,6 @@ export function Form({
             {/* TESTIMONIAL FORM */}
             {editState.type === 'testimonial' && editState.index !== null && (
               <>
-                {/* Image Upload for Testimonial */}
                 <div>
                   <Label className="mb-2 block">Author Avatar</Label>
                   <ImageUploadField

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->enum('type', ['portfolio', 'biz', 'links', 'waitlist'])->default('portfolio');
             $table->string('name');
-            $table->string('preview_image_url')->nullable();
+            $table->string('image_url')->nullable();
             $table->timestamps();
         });
     }
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('bizs');
+        Schema::dropIfExists('layouts');
     }
 };
