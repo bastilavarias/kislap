@@ -63,7 +63,6 @@ interface PortfolioContextType {
 
 const PortfolioContext = createContext<PortfolioContextType | undefined>(undefined);
 
-// Helper to map API data to Form
 function mapToFormValues(
   source: APIResponseDocumentResume | APIResponsePortfolio
 ): PortfolioFormValues {
