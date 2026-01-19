@@ -21,6 +21,8 @@ return new class extends Migration
             $table->dateTime('scheduled_at');
             $table->enum('status', ['pending', 'confirmed', 'cancelled'])->default('pending');
             $table->text('notes')->nullable();
+            $table->softDeletes();
+
             $table->timestamps();
         });
     }

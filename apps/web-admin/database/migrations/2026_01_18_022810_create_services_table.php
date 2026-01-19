@@ -21,6 +21,8 @@ return new class extends Migration
             $table->integer('duration_minutes')->nullable();
             $table->string('image_url')->nullable();
             $table->boolean('is_featured')->default(false);
+            $table->softDeletes();
+
             $table->timestamps();
         });
     }

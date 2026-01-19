@@ -21,6 +21,8 @@ return new class extends Migration
             $table->integer('stock')->nullable();
             $table->boolean('is_active')->default(true);
             $table->string('image_url')->nullable();
+            $table->softDeletes();
+
             $table->timestamps();
         });
     }

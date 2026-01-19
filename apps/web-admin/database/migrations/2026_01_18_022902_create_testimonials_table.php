@@ -19,6 +19,8 @@ return new class extends Migration
             $table->text('content');
             $table->integer('rating')->nullable();
             $table->string('avatar_image_url')->nullable();
+            $table->softDeletes();
+
             $table->timestamps();
         });
     }

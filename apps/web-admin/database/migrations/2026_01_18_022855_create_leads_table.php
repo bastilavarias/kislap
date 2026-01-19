@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('phone')->nullable();
             $table->text('message')->nullable();
             $table->string('source')->nullable();
+            $table->softDeletes();
+
             $table->timestamps();
         });
     }

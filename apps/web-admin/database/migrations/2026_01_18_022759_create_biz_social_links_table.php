@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('platform');
             $table->string('url');
             $table->timestamps();
+            $table->softDeletes();
 
             $table->foreign('biz_id')->references('id')->on('bizs')->onDelete('cascade');
         });

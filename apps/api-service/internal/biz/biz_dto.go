@@ -46,16 +46,17 @@ type ThemeRequest struct {
 type CreateUpdateBizRequest struct {
 	BizID     *int64 `form:"biz_id" json:"biz_id"`
 	ProjectID int64  `form:"project_id" json:"project_id" binding:"required"`
+	UserID    int64  `form:"user_id" json:"user_id" binding:"required"`
 
 	Name        string `form:"name" json:"name"`
-	Slug        string `form:"slug" json:"slug"`
 	Tagline     string `form:"tagline" json:"tagline"`
 	Description string `form:"description" json:"description"`
 
-	Email   string  `form:"email" json:"email"`
-	Phone   *string `form:"phone" json:"phone"`
-	Address *string `form:"address" json:"address"`
-	Website string  `form:"website" json:"website"`
+	Email     string  `form:"email" json:"email"`
+	Phone     *string `form:"phone" json:"phone"`
+	Address   *string `form:"address" json:"address"`
+	Website   string  `form:"website" json:"website"`
+	Instagram string  `form:"instagram" json:"instagram"`
 
 	ServicesEnabled bool `form:"services_enabled" json:"services_enabled"`
 	ProductsEnabled bool `form:"products_enabled" json:"products_enabled"`
@@ -73,12 +74,10 @@ type CreateUpdateBizRequest struct {
 
 type Payload struct {
 	CreateUpdateBizRequest
-	UserID int64
 }
 
-func (request CreateUpdateBizRequest) ToServicePayload(userID int64) Payload {
+func (request CreateUpdateBizRequest) ToServicePayload() Payload {
 	return Payload{
 		CreateUpdateBizRequest: request,
-		UserID:                 userID,
 	}
 }

@@ -13,14 +13,14 @@ type Biz struct {
 	UserID    uint64 `gorm:"index" json:"user_id"`
 
 	Name        string  `gorm:"size:255" json:"name"`
-	Slug        string  `gorm:"size:255" json:"slug"`
 	Tagline     *string `gorm:"size:255" json:"tagline"`
 	Description *string `gorm:"type:text" json:"description"`
 
-	Email   *string `gorm:"size:255" json:"email"`
-	Phone   *string `gorm:"size:255" json:"phone"`
-	Address *string `gorm:"size:255" json:"address"`
-	Website *string `gorm:"size:255" json:"website"`
+	Email     *string `gorm:"size:255" json:"email"`
+	Phone     *string `gorm:"size:255" json:"phone"`
+	Address   *string `gorm:"size:255" json:"address"`
+	Website   *string `gorm:"size:255" json:"website"`
+	Instagram *string `gorm:"size:255" json:"instagram"`
 
 	ServicesEnabled bool `gorm:"default:true" json:"services_enabled"`
 	ProductsEnabled bool `gorm:"default:true" json:"products_enabled"`
