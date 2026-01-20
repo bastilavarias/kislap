@@ -1,6 +1,6 @@
 @no-cookie-jar=false
 @host=http://api.kislap.test
-@access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImpvaG4uZG9lQGtpc2xhcC5jb20iLCJleHAiOjE3Njg4MTU0MTAsInJvbGUiOiJkZWZhdWx0IiwidXNlcl9pZCI6M30.n6XspE89d3TnDGL-v3QcpkP7zTvrSa8ID7jt6rbaBqs
+@access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImpvaG4uZG9lQGtpc2xhcC5jb20iLCJleHAiOjE3Njg4NzQ5NTAsInJvbGUiOiJkZWZhdWx0IiwidXNlcl9pZCI6M30.Wk1zzj1fbQFJ516KROasdwJl0dWLkqUfxD4BfPVA4wU
 
 ### Create a new Biz
 POST {{host}}/api/biz
@@ -63,7 +63,7 @@ Authorization: Bearer {{ access_token }}
       "author": "Juan Dela Cruz",
       "rating": 5,
       "content": "The best cookies I've ever tasted!",
-      "image_url": "https://example.com/avatars/juan.jpg"
+      "avatar_url": "https://example.com/avatars/juan.jpg"
     }
   ]
 }

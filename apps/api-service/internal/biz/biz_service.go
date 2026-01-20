@@ -144,7 +144,6 @@ func (s Service) buildServices(reqs []ServiceRequest, projectID int64) ([]models
 	var services []models.Service
 	for _, req := range reqs {
 		imgURL := req.ImageURL
-		// If file provided, upload it and override ImageURL
 		if req.Image != nil {
 			url, err := s.uploadImage(req.Image, projectID, "services")
 			if err != nil {
@@ -192,20 +191,20 @@ func (s Service) buildProducts(reqs []ProductRequest, projectID int64) ([]models
 func (s Service) buildTestimonials(reqs []TestimonialRequest, projectID int64) ([]models.Testimonial, error) {
 	var testimonials []models.Testimonial
 	for _, req := range reqs {
-		imgURL := req.ImageURL
+		avatarURL := req.ImageURL
 		if req.Image != nil {
 			url, err := s.uploadImage(req.Image, projectID, "testimonials")
 			if err != nil {
 				return nil, err
 			}
-			imgURL = &url
+			avatarURL = &url
 		}
 
 		testimonials = append(testimonials, models.Testimonial{
-			Author:   req.Author,
-			Rating:   req.Rating,
-			Content:  req.Content,
-			ImageURL: imgURL,
+			Author:    req.Author,
+			Rating:    req.Rating,
+			Content:   req.Content,
+			AvatarURL: avatarURL,
 		})
 	}
 	return testimonials, nil

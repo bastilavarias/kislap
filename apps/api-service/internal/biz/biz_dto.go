@@ -26,11 +26,11 @@ type ProductRequest struct {
 }
 
 type TestimonialRequest struct {
-	Author   string                `form:"author" json:"author"`
-	Rating   int                   `form:"rating" json:"rating"`
-	Content  *string               `form:"content" json:"content"`
-	ImageURL *string               `form:"image_url" json:"image_url"`
-	Image    *multipart.FileHeader `form:"image" json:"-"`
+	Author    string                `form:"author" json:"author"`
+	Rating    int                   `form:"rating" json:"rating"`
+	Content   *string               `form:"content" json:"content"`
+	AvatarURL *string               `form:"avatar_url" json:"avatar_url"`
+	Avatar    *multipart.FileHeader `form:"avatar" json:"-"`
 }
 
 type SocialLinkRequest struct {
