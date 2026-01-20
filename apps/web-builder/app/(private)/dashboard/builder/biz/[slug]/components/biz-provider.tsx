@@ -185,6 +185,8 @@ export function BizProvider({ children }: { children: ReactNode }) {
   const save = async () => {
     setIsSaving(true);
     await handleSubmit(async (data) => {
+      console.log('Saving biz data:', data);
+
       const res = await create({
         biz_id: project?.biz?.id,
         user_id: user?.id,
