@@ -12,13 +12,6 @@ import {
   Plus,
   X,
   LayoutTemplate,
-  Grid,
-  Box,
-  Ghost,
-  Cpu,
-  Newspaper,
-  Zap,
-  CloudFog,
   CheckCircle2,
   Palette,
   Store,
@@ -366,11 +359,11 @@ export function Form({
                           </div>
                           <div>
                             <Label className="mb-2 flex items-center gap-2">
-                              <Phone className="w-3 h-3" /> Phone
+                              <Phone className="w-3 h-3" /> Contact
                             </Label>
                             <Input
                               {...register('phone')}
-                              placeholder="+1 234..."
+                              placeholder="+639171234567"
                               className="shadow-none"
                             />
                           </div>
