@@ -15,7 +15,7 @@ import {
 import { useParams } from 'next/navigation';
 import { toast } from 'sonner';
 import { Settings } from '@/contexts/settings-context';
-import { AuthUser, useAuth } from '@/hooks/api/use-auth';
+import { AuthUser } from '@/hooks/api/use-auth';
 import { useAuthContext } from '@/contexts/auth-context';
 
 interface PortfolioContextType {
@@ -125,6 +125,7 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
   const [isSaving, setIsSaving] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
   const [user, setUser] = useState<AuthUser | null>(null);
+  const [portfolioID, setPortfolioID] = useState(null);
 
   const [files, setFiles] = useState<File[]>([]);
   const [isFileUploadDialogOpen, setIsFileUploadDialogOpen] = useState(false);
@@ -187,34 +188,48 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
 
   const save = async () => {
     setIsSaving(true);
-    await handleSubmit(async (data) => {
-      const formattedData = Object.assign({
-        ...data,
-        work_experiences: data.work_experiences?.map((workExp, index) => ({
-          placement_order: index,
-          ...workExp,
-        })),
-        education: data.education?.map((education, index) => ({
-          placement_order: index,
-          ...education,
-        })),
-        showcases: data.showcases?.map((showcase, index) => ({
-          placement_order: index,
-          ...showcase,
-        })),
-      });
 
-      const res = await create({
-        portfolio_id: project?.portfolio?.id,
-        user_id: user?.id,
-        project_id: project?.id,
-        ...formattedData,
-        theme: { ...localThemeSettings?.theme },
-        layout_name: layout,
-      });
-      if (res.success) toast.success('Saved successfully');
-      else toast.error(res.message || 'Error saving');
-    })();
+    await handleSubmit(
+      async (data) => {
+        const formattedData = Object.assign({
+          ...data,
+          work_experiences: data.work_experiences?.map((workExp, index) => ({
+            ...workExp,
+            placement_order: index,
+          })),
+          education: data.education?.map((education, index) => ({
+            ...education,
+            placement_order: index,
+          })),
+          showcases: data.showcases?.map((showcase, index) => ({
+            ...showcase,
+            placement_order: index,
+          })),
+        });
+
+        const response = await create({
+          project_id: project?.id,
+          portfolio_id: portfolioID || project?.portfolio?.id,
+          user_id: user?.id,
+          ...formattedData,
+          theme: { ...localThemeSettings?.theme },
+          layout_name: layout,
+        });
+
+        if (response.success) {
+          //@ts-ignore
+          setPortfolioID(response?.data?.portfolio?.id || null);
+          toast.success('Saved successfully');
+        } else {
+          toast.error(response.message || 'Error saving');
+        }
+      },
+      (errors) => {
+        console.error('Validation failed:', errors);
+        toast.error('Please check the form for errors.');
+      }
+    )();
+
     setIsSaving(false);
   };
 
@@ -224,7 +239,7 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
     const res = await apiPublish(project.id, isPublished);
     if (res.success) {
       setProject(res.data);
-      toast.success(res.data.published ? 'Published' : 'Unpublished');
+      toast.success(res?.data?.published ? 'Published' : 'Unpublished');
     }
     setIsPublishing(false);
   };

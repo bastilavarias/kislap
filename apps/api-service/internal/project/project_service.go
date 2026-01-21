@@ -189,6 +189,7 @@ func (service Service) ShowBySlug(slug string, level string) (*models.Project, e
 
 func (service Service) ShowBySubDomain(subDomain string) (*models.Project, error) {
 	var project models.Project
+	fmt.Println("wew")
 
 	query := service.DB
 
@@ -199,9 +200,15 @@ func (service Service) ShowBySubDomain(subDomain string) (*models.Project, error
 	if err := service.DB.
 		Preload("Portfolio").
 		Preload("Portfolio.User").
-		Preload("Portfolio.WorkExperiences").
-		Preload("Portfolio.Education").
-		Preload("Portfolio.Showcases").
+		Preload("Portfolio.WorkExperiences", func(db *gorm.DB) *gorm.DB {
+			return db.Order("placement_order ASC")
+		}).
+		Preload("Portfolio.Education", func(db *gorm.DB) *gorm.DB {
+			return db.Order("placement_order ASC")
+		}).
+		Preload("Portfolio.Showcases", func(db *gorm.DB) *gorm.DB {
+			return db.Order("placement_order ASC")
+		}).
 		Preload("Portfolio.Showcases.ShowcaseTechnologies").
 		Preload("Portfolio.Skills").
 		First(&project, project.ID).Error; err != nil {
