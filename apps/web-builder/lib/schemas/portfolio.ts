@@ -23,6 +23,7 @@ export const PortfolioSchema = z.object({
         startDate: z.string().optional(), // or z.coerce.date().optional() if string from API
         endDate: z.string().optional().nullable(),
         about: z.string().optional().nullable(),
+        placement_order: z.number().optional().nullable(),
       })
     )
     .optional()
@@ -38,6 +39,7 @@ export const PortfolioSchema = z.object({
         yearStart: z.string().optional().nullable(),
         yearEnd: z.string().optional().nullable(),
         about: z.string().optional().nullable(),
+        placement_order: z.number().optional().nullable(),
       })
     )
     .optional()
@@ -58,6 +60,7 @@ export const PortfolioSchema = z.object({
           )
           .optional()
           .nullable(),
+        placement_order: z.number().optional().nullable(),
       })
     )
     .optional()
