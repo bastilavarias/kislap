@@ -189,7 +189,6 @@ func (service Service) ShowBySlug(slug string, level string) (*models.Project, e
 
 func (service Service) ShowBySubDomain(subDomain string) (*models.Project, error) {
 	var project models.Project
-	fmt.Println("wew")
 
 	query := service.DB
 
