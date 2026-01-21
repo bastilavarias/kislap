@@ -18,7 +18,8 @@ type Service struct {
 }
 
 func (service Service) Save(payload Payload) (*models.Biz, error) {
-	// 1. Handle Theme
+	fmt.Println(payload)
+
 	var themeRaw []byte
 	if payload.Theme != nil {
 		var err error
@@ -27,9 +28,7 @@ func (service Service) Save(payload Payload) (*models.Biz, error) {
 			return nil, fmt.Errorf("failed to marshal theme: %w", err)
 		}
 	}
-	// (You can also use helper function like in Portfolio)
 
-	// 2. Build Nested Entities & Upload Images
 	services, err := service.buildServices(payload.Services, payload.ProjectID)
 	if err != nil {
 		return nil, err
@@ -49,14 +48,11 @@ func (service Service) Save(payload Payload) (*models.Biz, error) {
 
 	var biz models.Biz
 
-	// 3. Prepare Biz Object
 	if payload.BizID == nil {
-		// CREATE
 		biz = models.Biz{
 			UserID:          uint64(payload.UserID),
 			ProjectID:       uint64(payload.ProjectID),
 			Name:            payload.Name,
-			Slug:            payload.Slug,
 			Tagline:         &payload.Tagline,
 			Description:     &payload.Description,
 			Email:           &payload.Email,
@@ -83,23 +79,17 @@ func (service Service) Save(payload Payload) (*models.Biz, error) {
 			return nil, err
 		}
 	} else {
-		// UPDATE (Full Replacement of nested items usually easier for CMS style)
-		// NOTE: In production, consider smarter updates. For now, we replace relations.
 		err := service.DB.Transaction(func(tx *gorm.DB) error {
-			// Find Existing
 			if err := tx.First(&biz, payload.BizID).Error; err != nil {
 				return err
 			}
 
-			// Clear old relations
 			tx.Where("biz_id = ?", biz.ID).Delete(&models.Service{})
 			tx.Where("biz_id = ?", biz.ID).Delete(&models.Product{})
 			tx.Where("biz_id = ?", biz.ID).Delete(&models.Testimonial{})
 			tx.Where("biz_id = ?", biz.ID).Delete(&models.BizSocialLink{})
 
-			// Update fields
 			biz.Name = payload.Name
-			biz.Slug = payload.Slug
 			biz.Tagline = &payload.Tagline
 			biz.Description = &payload.Description
 			biz.Email = &payload.Email
@@ -117,7 +107,6 @@ func (service Service) Save(payload Payload) (*models.Biz, error) {
 				biz.ThemeObject = &msg
 			}
 
-			// Update relations with new IDs
 			biz.Services = services
 			biz.Products = products
 			biz.Testimonials = testimonials
@@ -155,7 +144,6 @@ func (s Service) buildServices(reqs []ServiceRequest, projectID int64) ([]models
 	var services []models.Service
 	for _, req := range reqs {
 		imgURL := req.ImageURL
-		// If file provided, upload it and override ImageURL
 		if req.Image != nil {
 			url, err := s.uploadImage(req.Image, projectID, "services")
 			if err != nil {
@@ -203,20 +191,20 @@ func (s Service) buildProducts(reqs []ProductRequest, projectID int64) ([]models
 func (s Service) buildTestimonials(reqs []TestimonialRequest, projectID int64) ([]models.Testimonial, error) {
 	var testimonials []models.Testimonial
 	for _, req := range reqs {
-		imgURL := req.ImageURL
+		avatarURL := req.ImageURL
 		if req.Image != nil {
 			url, err := s.uploadImage(req.Image, projectID, "testimonials")
 			if err != nil {
 				return nil, err
 			}
-			imgURL = &url
+			avatarURL = &url
 		}
 
 		testimonials = append(testimonials, models.Testimonial{
-			Author:   req.Author,
-			Rating:   req.Rating,
-			Content:  req.Content,
-			ImageURL: imgURL,
+			Author:    req.Author,
+			Rating:    req.Rating,
+			Content:   req.Content,
+			AvatarURL: avatarURL,
 		})
 	}
 	return testimonials, nil

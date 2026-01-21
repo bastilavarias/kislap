@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('bizs', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('project_id')->nullable()->constrained('projects')->nullOnDelete();
+            $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
             $table->string('name');
             $table->string('tagline')->nullable();
             $table->text('description')->nullable();
@@ -22,7 +24,9 @@ return new class extends Migration
             $table->string('industry')->nullable();
             $table->string('email')->nullable();
             $table->string('phone')->nullable();
+            $table->string('website')->nullable();
             $table->string('address')->nullable();
+            $table->string('instagram')->nullable();
             $table->string('map_link')->nullable();
             $table->string('domain')->nullable();
             $table->string('subdomain')->nullable();
@@ -30,6 +34,10 @@ return new class extends Migration
             $table->boolean('products_enabled')->default(false);
             $table->boolean('booking_enabled')->default(false);
             $table->boolean('ordering_enabled')->default(false);
+            $table->string('theme_name')->nullable();
+            $table->json('theme_object')->nullable();
+            $table->string('layout_name')->default('default');
+            $table->softDeletes();
 
             $table->timestamps();
         });

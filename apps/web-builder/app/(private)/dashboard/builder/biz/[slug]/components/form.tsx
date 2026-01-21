@@ -12,13 +12,6 @@ import {
   Plus,
   X,
   LayoutTemplate,
-  Grid,
-  Box,
-  Ghost,
-  Cpu,
-  Newspaper,
-  Zap,
-  CloudFog,
   CheckCircle2,
   Palette,
   Store,
@@ -67,13 +60,6 @@ import { SortableList } from '@/components/sortable-list';
 
 const LAYOUT_OPTIONS = [
   { id: 'default', name: 'Default', icon: LayoutTemplate, description: 'Clean & Standard' },
-  { id: 'bento', name: 'Bento', icon: Grid, description: 'Modern Grid' },
-  { id: 'neo-brutalist', name: 'Neo-Brutal', icon: Box, description: 'Bold Borders' },
-  { id: 'glass', name: 'Glass', icon: Ghost, description: 'Frosted UI' },
-  { id: 'cyber', name: 'Cyber', icon: Cpu, description: 'Futuristic' },
-  { id: 'newspaper', name: 'Editorial', icon: Newspaper, description: 'Classic Print' },
-  { id: 'restaurant', name: 'Menu', icon: Zap, description: 'Food Focused' },
-  { id: 'retail', name: 'Retail', icon: CloudFog, description: 'Product Focused' },
 ];
 
 interface Props {
@@ -94,7 +80,6 @@ interface Props {
   onAddTestimonial: () => void;
 }
 
-// --- Helper Component for Image Upload ---
 function ImageUploadField({
   previewUrl,
   currentFile,
@@ -319,32 +304,21 @@ export function Form({
                     <AccordionTrigger className="cursor-pointer py-3 text-base font-medium hover:no-underline">
                       General Information
                     </AccordionTrigger>
-                    <AccordionContent className="pt-2 pb-4 space-y-6">
-                      {/* Group: Identity */}
+                    <AccordionContent className="pt-2 pb-4 space-y-6 px-1">
                       <div className="space-y-4">
                         <div className="flex items-center gap-2 text-sm text-primary font-semibold uppercase tracking-wider">
                           <Store className="w-4 h-4" /> Identity
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-                          <div className="col-span-1 md:col-span-8">
-                            <Label className="mb-2 block">Business Name</Label>
-                            <Input
-                              {...register('name')}
-                              placeholder="My Awesome Shop"
-                              className="shadow-none"
-                            />
-                            {errors.name && (
-                              <p className="text-destructive text-sm mt-1">{errors.name.message}</p>
-                            )}
-                          </div>
-                          <div className="col-span-1 md:col-span-4">
-                            <Label className="mb-2 block">Slug</Label>
-                            <Input
-                              {...register('slug')}
-                              placeholder="my-shop"
-                              className="shadow-none"
-                            />
-                          </div>
+                        <div className="col-span-1">
+                          <Label className="mb-2 block">Business Name</Label>
+                          <Input
+                            {...register('name')}
+                            placeholder="My Awesome Shop"
+                            className="shadow-none"
+                          />
+                          {errors.name && (
+                            <p className="text-destructive text-sm mt-1">{errors.name.message}</p>
+                          )}
                         </div>
                         <div className="grid gap-4">
                           <div>
@@ -368,14 +342,13 @@ export function Form({
 
                       <Separator />
 
-                      {/* Group: Contact */}
                       <div className="space-y-4">
                         <div className="flex items-center gap-2 text-sm text-primary font-semibold uppercase tracking-wider">
                           <MapPin className="w-4 h-4" /> Contact & Location
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
-                            <Label className="mb-2 block flex items-center gap-2">
+                            <Label className="mb-2 flex items-center gap-2">
                               <Mail className="w-3 h-3" /> Email
                             </Label>
                             <Input
@@ -385,17 +358,17 @@ export function Form({
                             />
                           </div>
                           <div>
-                            <Label className="mb-2 block flex items-center gap-2">
-                              <Phone className="w-3 h-3" /> Phone
+                            <Label className="mb-2 flex items-center gap-2">
+                              <Phone className="w-3 h-3" /> Contact
                             </Label>
                             <Input
                               {...register('phone')}
-                              placeholder="+1 234..."
+                              placeholder="+639171234567"
                               className="shadow-none"
                             />
                           </div>
                           <div>
-                            <Label className="mb-2 block flex items-center gap-2">
+                            <Label className="mb-2 flex items-center gap-2">
                               <MapPin className="w-3 h-3" /> Address
                             </Label>
                             <Input
@@ -405,7 +378,7 @@ export function Form({
                             />
                           </div>
                           <div>
-                            <Label className="mb-2 block flex items-center gap-2">
+                            <Label className="mb-2 flex items-center gap-2">
                               <Globe className="w-3 h-3" /> Website
                             </Label>
                             <Input

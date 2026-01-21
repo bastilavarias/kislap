@@ -21,6 +21,8 @@ return new class extends Migration
             $table->enum('status', ['pending', 'paid', 'cancelled'])->default('pending');
             $table->string('payment_method')->nullable();
             $table->text('notes')->nullable();
+            $table->softDeletes();
+
             $table->timestamps();
         });
     }

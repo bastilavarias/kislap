@@ -36,9 +36,7 @@ func (controller Controller) Save(context *gin.Context) {
 		return
 	}
 
-	userID := context.GetInt64("user_id") // Assuming auth middleware sets this
-
-	biz, err := controller.Service.Save(request.ToServicePayload(userID))
+	biz, err := controller.Service.Save(request.ToServicePayload())
 	if err != nil {
 		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
 		context.Abort()

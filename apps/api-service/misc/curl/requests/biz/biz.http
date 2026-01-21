@@ -1,0 +1,121 @@
+@no-cookie-jar=false
+@host=http://api.kislap.test
+@access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImpvaG4uZG9lQGtpc2xhcC5jb20iLCJleHAiOjE3Njg4NzQ5NTAsInJvbGUiOiJkZWZhdWx0IiwidXNlcl9pZCI6M30.Wk1zzj1fbQFJ516KROasdwJl0dWLkqUfxD4BfPVA4wU
+
+### Create a new Biz
+POST {{host}}/api/biz
+Content-Type: application/json
+Authorization: Bearer {{ access_token }}
+
+{
+  "project_id": 1,
+  "user_id": 1,
+  "name": "Cookie Dokey",
+  "tagline": "Sweetest treats in town",
+  "description": "Premium cookies and pastries tailored for your sweet tooth.",
+  "email": "orders@cookiedokey.com",
+  "phone": "09972217704",
+  "address": "Pasig City, Metro Manila",
+  "website": "https://cookiedokey.com",
+  "services_enabled": false,
+  "products_enabled": true,
+  "booking_enabled": false,
+  "ordering_enabled": true,
+  "layout_name": "modern-grid",
+  "theme": {
+    "name": "warm-pastry",
+    "object": {
+      "primary_color": "#D2691E",
+      "secondary_color": "#FFF8DC"
+    }
+  },
+  "social_links": [
+    {
+      "platform": "facebook",
+      "url": "https://facebook.com/cookiedokey"
+    },
+    {
+      "platform": "instagram",
+      "url": "https://instagram.com/cookiedokey"
+    }
+  ],
+  "products": [
+    {
+      "name": "Choco Chip Overload",
+      "description": "Classic chocolate chip cookies with belgian chunks.",
+      "price": 150.00,
+      "stock": 50,
+      "is_active": true,
+      "image_url": "https://example.com/images/choco-chip.jpg"
+    },
+    {
+      "name": "Red Velvet Dream",
+      "description": "Soft red velvet cookies with cream cheese filling.",
+      "price": 180.00,
+      "stock": 30,
+      "is_active": true,
+      "image_url": "https://example.com/images/red-velvet.jpg"
+    }
+  ],
+  "services": [],
+  "testimonials": [
+    {
+      "author": "Juan Dela Cruz",
+      "rating": 5,
+      "content": "The best cookies I've ever tasted!",
+      "avatar_url": "https://example.com/avatars/juan.jpg"
+    }
+  ]
+}
+
+###
+
+### Get all Bizs
+GET {{host}}/api/bizs
+Authorization: Bearer {{ access_token }}
+
+###
+
+### Get a Biz by ID
+GET {{host}}/api/bizs/1
+Authorization: Bearer {{ access_token }}
+
+###
+
+### Update a Biz
+PUT {{host}}/api/bizs/1
+Content-Type: application/json
+Authorization: Bearer {{ access_token }}
+
+{
+  "biz_id": 1,
+  "project_id": 1,
+  "name": "Cookie Dokey - Updated",
+  "tagline": "New and improved recipes",
+  "description": "Premium cookies and pastries tailored for your sweet tooth.",
+  "email": "contact@cookiedokey.com",
+  "services_enabled": true,
+  "products_enabled": true,
+  "layout_name": "list-view",
+  "theme": {
+    "name": "dark-choco",
+    "object": {
+      "primary_color": "#3E2723"
+    }
+  },
+  "products": [
+     {
+      "name": "Choco Chip Overload",
+      "description": "Now with even more chocolate.",
+      "price": 160.00,
+      "stock": 45,
+      "is_active": true
+    }
+  ]
+}
+
+###
+
+### Delete a Biz
+DELETE {{host}}/api/bizs/1
+Authorization: Bearer {{ access_token }}

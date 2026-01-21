@@ -66,7 +66,7 @@ function mapToFormValues(source: APIResponseBiz): BizFormValues {
     phone: source.phone || '',
     address: source.address || '',
     map_link: source.map_link || '',
-    website: source.domain || source.website || '', // Priority to domain if exists
+    website: source.domain || source.website || '',
 
     logo: source.logo,
     hero_image: source.hero_image,
@@ -119,7 +119,6 @@ export function BizProvider({ children }: { children: ReactNode }) {
   const [isPublishing, setIsPublishing] = useState(false);
   const [user, setUser] = useState<AuthUser | null>(null);
 
-  // File states (Kept generic, removed specific Resume Parsing)
   const [files, setFiles] = useState<File[]>([]);
   const [isFileUploadDialogOpen, setIsFileUploadDialogOpen] = useState(false);
   const [isFileProcessing, setIsFileProcessing] = useState(false);
@@ -127,7 +126,7 @@ export function BizProvider({ children }: { children: ReactNode }) {
 
   const { authUser } = useAuthContext();
   const { getBySlug, publish: apiPublish } = useProject();
-  const { create } = useBiz(); // Assuming this hook exists and handles upsert
+  const { create } = useBiz();
 
   const formMethods = useForm<BizFormValues>({
     resolver: zodResolver(BizSchema),
@@ -169,6 +168,7 @@ export function BizProvider({ children }: { children: ReactNode }) {
       if (success && data) {
         setProject(data);
         if (data.biz) {
+          console.log('Loaded biz data:', data.biz);
           const mapped = mapToFormValues(data.biz);
 
           reset(mapped);
@@ -180,11 +180,13 @@ export function BizProvider({ children }: { children: ReactNode }) {
       setIsLoading(false);
     };
     loadProject();
-  }, [params.slug, authUser, getBySlug, reset]);
+  }, [params.slug, authUser]);
 
   const save = async () => {
     setIsSaving(true);
     await handleSubmit(async (data) => {
+      console.log('Saving biz data:', data);
+
       const res = await create({
         biz_id: project?.biz?.id,
         user_id: user?.id,
@@ -200,7 +202,6 @@ export function BizProvider({ children }: { children: ReactNode }) {
     setIsSaving(false);
   };
 
-  // Publish Data
   const publish = async (isPublished: boolean) => {
     if (!project?.id) return;
     setIsPublishing(true);
@@ -277,26 +278,21 @@ export function BizProvider({ children }: { children: ReactNode }) {
         layout,
         setLayout,
 
-        // Arrays
         socialLinksFieldArray,
         servicesFieldArray,
         productsFieldArray,
         testimonialsFieldArray,
 
-        // Status
         isLoading,
         isSaving,
         isPublishing,
 
-        // Theme
         localThemeSettings,
         setLocalThemeSettings,
 
-        // Actions
         save,
         publish,
 
-        // Files
         files,
         setFiles,
         isFileUploadDialogOpen,
@@ -304,7 +300,6 @@ export function BizProvider({ children }: { children: ReactNode }) {
         isFileProcessing,
         fileProcessingError,
 
-        // Checks
         hasContent,
         hasContentServices,
         hasContentProducts,
@@ -312,7 +307,6 @@ export function BizProvider({ children }: { children: ReactNode }) {
         hasLayout,
         hasTheme,
 
-        // Handlers
         onAddSocialLink,
         onAddService,
         onAddProduct,
