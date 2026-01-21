@@ -3,6 +3,7 @@ package routes
 import (
 	"flash/internal/appointment"
 	"flash/internal/auth"
+	"flash/internal/biz"
 	"flash/internal/document"
 	"flash/internal/page_activity"
 	"flash/internal/portfolio"
@@ -32,6 +33,7 @@ func RegisterRoutes(router *gin.Engine, db *gorm.DB, llm llm.Provider, objectSto
 		portfolioController := portfolio.NewController(db, objectStorage)
 		appointmentController := appointment.NewController(db)
 		pageActivityController := page_activity.NewController(db)
+		bizController := biz.NewController(db, objectStorage)
 
 		api.POST("/auth/login", authController.Login)
 		api.POST("/auth/github", authController.GithubLogin)
@@ -55,20 +57,22 @@ func RegisterRoutes(router *gin.Engine, db *gorm.DB, llm llm.Provider, objectSto
 
 		api.POST("/documents", middleware.AccessTokenValidatorMiddleware(db), documentController.Parse)
 
+		// Portfolio
 		api.GET("/portfolios/:id", middleware.AccessTokenValidatorMiddleware(db), portfolioController.Get)
 		api.POST("/portfolios", middleware.AccessTokenValidatorMiddleware(db), portfolioController.Save)
 		api.DELETE("/portfolios/:id", middleware.AccessTokenValidatorMiddleware(db), portfolioController.Delete)
-
 		api.POST("/appointments", appointmentController.Create)
 		api.GET("/appointments", middleware.AccessTokenValidatorMiddleware(db), appointmentController.List)
 		api.GET("/appointments/show/:id", middleware.AccessTokenValidatorMiddleware(db), appointmentController.Show)
 		api.PUT("/appointments/:id", middleware.AccessTokenValidatorMiddleware(db), appointmentController.Update)
 		api.DELETE("/appointments/:id", middleware.AccessTokenValidatorMiddleware(db), appointmentController.Delete)
-
 		api.POST("/page-activities", pageActivityController.Create)
 		api.GET("/page-activities/:id", middleware.AccessTokenValidatorMiddleware(db), pageActivityController.GetStats)
 		api.GET("/page-activities/:id/visits", middleware.AccessTokenValidatorMiddleware(db), pageActivityController.GetVisits)
 		api.GET("/page-activities/:id/recent-activities", middleware.AccessTokenValidatorMiddleware(db), pageActivityController.GetRecentActivities)
 
+		// Biz
+		api.GET("/biz/:id", middleware.AccessTokenValidatorMiddleware(db), bizController.Get)
+		api.POST("/biz", middleware.AccessTokenValidatorMiddleware(db), bizController.Save)
 	}
 }

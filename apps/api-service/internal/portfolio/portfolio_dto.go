@@ -1,28 +1,31 @@
 package portfolio
 
 type WorkExperienceRequest struct {
-	Company   string  `json:"company" binding:"required"`
-	Role      string  `json:"role" binding:"required"`
-	URL       *string `json:"url"`
-	Location  *string `json:"location"`
-	StartDate string  `json:"startDate" binding:"required"` // frontend sends string "2024"
-	EndDate   *string `json:"endDate"`                      // can be "Present" or "2022"
-	About     *string `json:"about"`
+	Company        string  `json:"company" binding:"required"`
+	Role           string  `json:"role" binding:"required"`
+	URL            *string `json:"url"`
+	Location       *string `json:"location"`
+	StartDate      string  `json:"startDate" binding:"required"` // frontend sends string "2024"
+	EndDate        *string `json:"endDate"`                      // can be "Present" or "2022"
+	About          *string `json:"about"`
+	PlacementOrder *int    `json:"placement_order"`
 }
 
 type EducationRequest struct {
-	School    string  `json:"school" binding:"required"`
-	Level     string  `json:"level" binding:"required"`
-	Degree    string  `json:"degree"`
-	Location  string  `json:"location"`
-	YearStart *string `json:"yearStart"` // can be null → pointer
-	YearEnd   *string `json:"yearEnd"`   // can be null → pointer
-	About     string  `json:"about"`
+	School         string  `json:"school" binding:"required"`
+	Level          string  `json:"level" binding:"required"`
+	Degree         string  `json:"degree"`
+	Location       string  `json:"location"`
+	YearStart      *string `json:"yearStart"`
+	YearEnd        *string `json:"yearEnd"`
+	About          string  `json:"about"`
+	PlacementOrder *int    `json:"placement_order"`
 }
 
 type SkillRequest struct {
-	Name string  `json:"name" binding:"required"`
-	URL  *string `json:"url,omitempty"`
+	Name           string  `json:"name" binding:"required"`
+	URL            *string `json:"url,omitempty"`
+	PlacementOrder *int    `json:"placement_order"`
 }
 
 type ShowcaseTechnologyRequest struct {
@@ -30,11 +33,12 @@ type ShowcaseTechnologyRequest struct {
 }
 
 type ShowcaseRequest struct {
-	Name         string                      `json:"name" binding:"required"`
-	Description  *string                     `json:"description"`
-	URL          *string                     `json:"url"`
-	Role         *string                     `json:"role"`
-	Technologies []ShowcaseTechnologyRequest `json:"technologies"`
+	Name           string                      `json:"name" binding:"required"`
+	Description    *string                     `json:"description"`
+	URL            *string                     `json:"url"`
+	Role           *string                     `json:"role"`
+	Technologies   []ShowcaseTechnologyRequest `json:"technologies"`
+	PlacementOrder *int                        `json:"placement_order"`
 }
 
 type ThemeStyle struct {

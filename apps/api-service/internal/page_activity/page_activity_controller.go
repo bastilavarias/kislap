@@ -2,7 +2,6 @@ package page_activity
 
 import (
 	"flash/utils"
-	"fmt"
 	"math"
 	"net/http"
 	"strconv"
@@ -98,7 +97,6 @@ func (controller Controller) GetVisits(context *gin.Context) {
 }
 
 func (controller Controller) GetRecentActivities(context *gin.Context) {
-	fmt.Println("im called!")
 
 	idStr := context.Param("id")
 	projectID, err := strconv.ParseUint(idStr, 10, 64)

@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
 import {
   Plus,
   X,
@@ -20,6 +21,19 @@ import {
   CloudFog,
   CheckCircle2,
   Palette,
+  Briefcase,
+  GraduationCap,
+  FolderGit2,
+  Edit2,
+  Trash2,
+  MapPin,
+  Mail,
+  Phone,
+  Globe,
+  User,
+  Linkedin,
+  Github,
+  Twitter,
 } from 'lucide-react';
 import ThemeControlPanel from '@/components/customizer/theme-control-panel';
 import { FileParserDialog } from '@/app/(private)/dashboard/builder/portfolio/[slug]/components/file-parser-dialog';
@@ -37,13 +51,21 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-  SheetFooter,
-  SheetClose,
   SheetDescription,
 } from '@/components/ui/sheet';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Settings } from '@/contexts/settings-context';
 import { cn } from '@/lib/utils';
+import { SortableList } from '@/components/sortable-list';
 
 const LAYOUT_OPTIONS = [
   { id: 'default', name: 'Default', icon: LayoutTemplate, description: 'Clean & Standard' },
@@ -55,6 +77,7 @@ const LAYOUT_OPTIONS = [
   { id: 'kinetic', name: 'Kinetic', icon: Zap, description: 'Interactive' },
   { id: 'vaporware', name: 'Vaporware', icon: CloudFog, description: 'Retro 80s' },
 ];
+
 interface Props {
   formMethods: UseFormReturn<PortfolioFormValues>;
   workFieldArray: UseFieldArrayReturn<PortfolioFormValues, 'work_experiences', 'id'>;
@@ -82,7 +105,7 @@ interface Props {
   onProcessResumeFile: () => Promise<void>;
 }
 
-function AddItemDrawer({
+function AddItemDialog({
   onAdd,
   title,
   placeholder,
@@ -91,32 +114,35 @@ function AddItemDrawer({
   title: string;
   placeholder: string;
 }) {
+  const [open, setOpen] = useState(false);
   const [value, setValue] = useState('');
 
   const handleSave = () => {
     if (value.trim() !== '') {
       onAdd(value.trim());
       setValue('');
+      setOpen(false);
     }
   };
 
   return (
-    <Sheet>
-      <SheetTrigger asChild>
-        <Button type="button" variant="outline" className="mt-6 shadow-none font-semibold">
-          <Plus className="w-4 h-4 mr-2" />
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button
+          type="button"
+          variant="outline"
+          className="mt-2 border-dashed shadow-none text-xs h-8"
+        >
+          <Plus className="w-3 h-3 mr-1.5" />
           {title}
         </Button>
-      </SheetTrigger>
-      <SheetContent side="bottom" className="rounded-t-2xl p-6 max-h-[40%] flex flex-col">
-        <SheetHeader>
-          <SheetTitle className="text-lg font-bold">✨ {title}</SheetTitle>
-          <p className="text-sm text-muted-foreground">
-            Type the name and press <kbd>Enter</kbd> or click save.
-          </p>
-        </SheetHeader>
-        <div className="mt-6">
-          <Label className="mb-2 block text-sm font-medium">Name</Label>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[400px]">
+        <DialogHeader>
+          <DialogTitle className="text-lg font-bold">Add {title}</DialogTitle>
+          <DialogDescription>Type the name and press Enter or click save.</DialogDescription>
+        </DialogHeader>
+        <div className="py-4">
           <Input
             placeholder={placeholder}
             value={value}
@@ -127,23 +153,20 @@ function AddItemDrawer({
                 handleSave();
               }
             }}
-            className="h-12 text-base rounded-xl"
+            className="shadow-none"
             autoFocus
           />
         </div>
-        <SheetFooter className="mt-auto flex justify-end gap-2">
-          <SheetClose asChild>
-            <Button onClick={handleSave} className="px-6 py-2 rounded-xl shadow-sm">
-              Save
-            </Button>
-          </SheetClose>
-        </SheetFooter>
-      </SheetContent>
-    </Sheet>
+        <DialogFooter>
+          <Button onClick={handleSave} className="shadow-none">
+            Save
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 
-// Extracted Design Panel for reuse in Sidebar (Desktop) and Sheet (Mobile)
 function DesignPanel({
   layout,
   setLayout,
@@ -163,20 +186,20 @@ function DesignPanel({
         <TabsList className="grid w-full grid-cols-2 h-12 mb-4 p-1 bg-muted/50 rounded-xl">
           <TabsTrigger
             value="layout"
-            className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm"
+            className="rounded-lg shadow-none data-[state=active]:bg-background"
           >
             Layout
           </TabsTrigger>
           <TabsTrigger
             value="theme"
-            className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm"
+            className="rounded-lg shadow-none data-[state=active]:bg-background"
           >
             Theme
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="layout" className="mt-0">
-          <Card>
+          <Card className="shadow-none border-border">
             <CardHeader className="pb-3">
               <CardTitle className="text-lg">Choose Layout</CardTitle>
               <CardDescription>Select a structure for your portfolio.</CardDescription>
@@ -191,7 +214,7 @@ function DesignPanel({
                     className={cn(
                       'cursor-pointer group relative flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all duration-200',
                       isSelected
-                        ? 'border-primary bg-primary/5 shadow-sm'
+                        ? 'border-primary bg-primary/5'
                         : 'border-muted hover:border-muted-foreground/30 hover:bg-muted/30'
                     )}
                   >
@@ -200,18 +223,16 @@ function DesignPanel({
                         <CheckCircle2 className="w-4 h-4" />
                       </div>
                     )}
-
                     <div
                       className={cn(
                         'p-3 rounded-full mb-3 transition-colors',
                         isSelected
-                          ? 'bg-background text-primary shadow-sm'
+                          ? 'bg-background text-primary'
                           : 'bg-muted text-muted-foreground group-hover:bg-background'
                       )}
                     >
                       <option.icon className="w-6 h-6" />
                     </div>
-
                     <div className="text-center">
                       <p className={cn('font-semibold text-sm', isSelected && 'text-primary')}>
                         {option.name}
@@ -228,7 +249,7 @@ function DesignPanel({
         </TabsContent>
 
         <TabsContent value="theme" className="mt-0">
-          <Card>
+          <Card className="shadow-none border-border">
             <CardHeader className="pb-2">
               <CardTitle className="text-lg">Choose Theme</CardTitle>
               <CardDescription>Customize colors, fonts, and radius.</CardDescription>
@@ -283,253 +304,250 @@ export function Form({
     formState: { errors },
   } = formMethods;
 
-  const { fields: workFields, remove: removeWork } = workFieldArray;
-  const { fields: educationFields, remove: removeEducation } = educationFieldArray;
-  const { fields: showcaseFields, remove: removeShowcase } = showcaseFieldArray;
+  const { fields: workFields, remove: removeWork, move: moveWork } = workFieldArray;
+  const {
+    fields: educationFields,
+    remove: removeEducation,
+    move: moveEducation,
+  } = educationFieldArray;
+  const { fields: showcaseFields, remove: removeShowcase, move: moveShowcase } = showcaseFieldArray;
   const { fields: skillFields, remove: removeSkill, append: appendSkill } = skillFieldArray;
+
+  const [editState, setEditState] = useState<{
+    type: 'work' | 'education' | 'project' | null;
+    index: number | null;
+  }>({ type: null, index: null });
+
+  const closeDialog = () => setEditState({ type: null, index: null });
 
   useEffect(() => {
     //@ts-ignore
     setValue('layout_name', layout);
   }, [layout, setValue]);
 
+  const accordionItemClass =
+    'border-b rounded-none px-0 shadow-none lg:border lg:rounded-lg lg:px-4 last:border-0 lg:last:border';
+
   return (
     <div className="w-full relative">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start pb-20 lg:pb-0">
-        {/* --- LEFT COLUMN: CONTENT (Always Visible) --- */}
         <div className="lg:col-span-8 space-y-6">
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex justify-between items-center mb-6">
+          <Card className="shadow-none lg:border-border lg:bg-card lg:border">
+            <CardContent className="p-3 lg:p-6">
+              <div className="flex justify-between items-center mb-6 px-1 lg:px-0">
                 <h1 className="text-2xl font-bold">Content</h1>
               </div>
 
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-medium">Resume Data</h3>
+              <div className="flex items-center justify-between mb-8 bg-muted/20 p-4 rounded-xl border">
+                <div>
+                  <h3 className="text-sm font-semibold">Resume Parser</h3>
+                  <p className="text-xs text-muted-foreground">
+                    Auto-fill your portfolio using AI.
+                  </p>
+                </div>
                 <Button
-                  className="shadow-none flex items-center min-w-32 justify-center 
+                  size="sm"
+                  className="shadow-none flex items-center gap-2
                   bg-gradient-to-r from-blue-500 to-purple-500 
                   hover:from-blue-600 hover:to-purple-600 
                   text-white border-0 transition-all"
                   onClick={() => setIsFileUploadDialogOpen(true)}
                 >
-                  🤖 Parse with AI
+                  🤖 Parse Resume
                 </Button>
               </div>
 
-              <div className="flex flex-col gap-4">
-                {/* Header Accordion */}
+              <div className="flex flex-col gap-6 lg:gap-10">
                 <Accordion type="single" defaultValue="details" collapsible>
-                  <AccordionItem value="details" className="rounded-lg border px-4">
+                  <AccordionItem value="details" className={accordionItemClass}>
                     <AccordionTrigger className="cursor-pointer py-3 text-base font-medium hover:no-underline">
                       Header & Bio
                     </AccordionTrigger>
-                    <AccordionContent className="space-y-4 pt-2 pb-4 xl:px-2">
-                      <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-                        <div className="col-span-1 md:col-span-8">
-                          <Label className="font-medium mb-2">Name</Label>
-                          <Input
-                            {...register('name')}
-                            className="w-full shadow-none"
-                            placeholder="John Doe"
-                          />
-                          {errors.name && (
-                            <p className="text-destructive text-sm mt-1">{errors.name.message}</p>
-                          )}
+                    <AccordionContent className="space-y-6 pt-2 pb-4 px-1 lg:px-2">
+                      {/* Identity Group */}
+                      <div className="space-y-4">
+                        <div className="flex items-center gap-2 text-sm text-primary font-semibold uppercase tracking-wider">
+                          <User className="w-4 h-4" /> Identity
                         </div>
-
-                        <div className="col-span-1 md:col-span-4">
-                          <Label className="font-medium mb-2">Job Title</Label>
-                          <Input
-                            {...register('job_title')}
-                            className="w-full shadow-none"
-                            placeholder="Software Engineer"
+                        <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                          <div className="col-span-1 md:col-span-8">
+                            <Label className="mb-2 block">Name</Label>
+                            <Input
+                              {...register('name')}
+                              placeholder="John Doe"
+                              className="shadow-none"
+                            />
+                            {errors.name && (
+                              <p className="text-destructive text-sm mt-1">{errors.name.message}</p>
+                            )}
+                          </div>
+                          <div className="col-span-1 md:col-span-4">
+                            <Label className="mb-2 block">Job Title</Label>
+                            <Input
+                              {...register('job_title')}
+                              placeholder="Software Engineer"
+                              className="shadow-none"
+                            />
+                          </div>
+                        </div>
+                        <div>
+                          <Label className="mb-2 block">Short Introduction</Label>
+                          <Textarea
+                            {...register('introduction')}
+                            className="h-20 resize-none shadow-none"
+                            placeholder="A brief tagline..."
+                          />
+                        </div>
+                        <div>
+                          <Label className="mb-2 block">About Me</Label>
+                          <Textarea
+                            {...register('about')}
+                            className="h-32 resize-none shadow-none"
+                            placeholder="Tell your story..."
                           />
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <Label className="font-medium mb-2">Location</Label>
-                          <Input
-                            {...register('location')}
-                            className="w-full shadow-none"
-                            placeholder="City, Country"
-                          />
+                      <Separator />
+
+                      {/* Contact Group */}
+                      <div className="space-y-4">
+                        <div className="flex items-center gap-2 text-sm text-primary font-semibold uppercase tracking-wider">
+                          <MapPin className="w-4 h-4" /> Contact
                         </div>
-                        <div>
-                          <Label className="font-medium mb-2">Email</Label>
-                          <Input
-                            {...register('email')}
-                            className="w-full shadow-none"
-                            placeholder="hello@example.com"
-                          />
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <Label className="mb-2 flex items-center gap-2">
+                              <MapPin className="w-3 h-3" /> Location
+                            </Label>
+                            <Input
+                              {...register('location')}
+                              placeholder="City, Country"
+                              className="shadow-none"
+                            />
+                          </div>
+                          <div>
+                            <Label className="mb-2 flex items-center gap-2">
+                              <Mail className="w-3 h-3" /> Email
+                            </Label>
+                            <Input
+                              {...register('email')}
+                              placeholder="hello@example.com"
+                              className="shadow-none"
+                            />
+                          </div>
+                          <div>
+                            <Label className="mb-2 flex items-center gap-2">
+                              <Globe className="w-3 h-3" /> Website
+                            </Label>
+                            <Input
+                              {...register('website')}
+                              placeholder="https://..."
+                              className="shadow-none"
+                            />
+                          </div>
                         </div>
                       </div>
 
-                      <div>
-                        <Label className="font-medium mb-2">Short Introduction</Label>
-                        <Textarea
-                          {...register('introduction')}
-                          className="w-full shadow-none h-20 resize-none"
-                          placeholder="A brief tagline..."
-                        />
-                      </div>
+                      <Separator />
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <Label className="font-medium mb-2">Website</Label>
-                          <Input
-                            {...register('website')}
-                            className="w-full shadow-none"
-                            placeholder="https://..."
-                          />
+                      {/* Socials Group */}
+                      <div className="space-y-4">
+                        <div className="flex items-center gap-2 text-sm text-primary font-semibold uppercase tracking-wider">
+                          <Globe className="w-4 h-4" /> Socials
                         </div>
-                        <div>
-                          <Label className="font-medium mb-2">GitHub</Label>
-                          <Input
-                            {...register('github')}
-                            className="w-full shadow-none"
-                            placeholder="https://github.com/..."
-                          />
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                          <div>
+                            <Label className="mb-2 flex items-center gap-2">
+                              <Github className="w-3 h-3" /> GitHub
+                            </Label>
+                            <Input
+                              {...register('github')}
+                              placeholder="username"
+                              className="shadow-none"
+                            />
+                          </div>
+                          <div>
+                            <Label className="mb-2 flex items-center gap-2">
+                              <Linkedin className="w-3 h-3" /> LinkedIn
+                            </Label>
+                            <Input
+                              {...register('linkedin')}
+                              placeholder="username"
+                              className="shadow-none"
+                            />
+                          </div>
+                          <div>
+                            <Label className="mb-2 flex items-center gap-2">
+                              <Twitter className="w-3 h-3" /> Twitter/X
+                            </Label>
+                            <Input
+                              {...register('twitter')}
+                              placeholder="username"
+                              className="shadow-none"
+                            />
+                          </div>
                         </div>
-                        <div>
-                          <Label className="font-medium mb-2">LinkedIn</Label>
-                          <Input
-                            {...register('linkedin')}
-                            className="w-full shadow-none"
-                            placeholder="https://linkedin.com/in/..."
-                          />
-                        </div>
-                        <div>
-                          <Label className="font-medium mb-2">Twitter / X</Label>
-                          <Input
-                            {...register('twitter')}
-                            className="w-full shadow-none"
-                            placeholder="https://twitter.com/..."
-                          />
-                        </div>
-                      </div>
-
-                      <div>
-                        <Label className="font-medium mb-2">About Me</Label>
-                        <Textarea
-                          {...register('about')}
-                          className="w-full shadow-none h-32 resize-none"
-                          placeholder="Tell your story..."
-                        />
                       </div>
                     </AccordionContent>
                   </AccordionItem>
                 </Accordion>
 
-                {/* Work Experiences Accordion */}
                 <Accordion type="single" defaultValue="work" collapsible>
-                  <AccordionItem value="work" className="rounded-lg border px-4">
+                  <AccordionItem value="work" className={accordionItemClass}>
                     <AccordionTrigger className="cursor-pointer py-3 text-base font-medium hover:no-underline">
                       Work Experience
                     </AccordionTrigger>
                     <AccordionContent className="space-y-4 pt-2 pb-4">
-                      {workFields.length === 0 && (
-                        <div className="flex flex-col items-center justify-center py-6 text-center">
-                          <div className="bg-muted p-3 rounded-full mb-3">
-                            <LayoutTemplate className="w-6 h-6 text-muted-foreground" />
-                          </div>
-                          <p className="text-muted-foreground text-sm">
-                            No work experience added yet.
-                          </p>
+                      {workFields.length === 0 ? (
+                        <div className="flex flex-col items-center justify-center py-6 text-center bg-muted/20 rounded-lg border-dashed border-2">
+                          <Briefcase className="w-8 h-8 text-muted-foreground mb-2 opacity-50" />
+                          <p className="text-muted-foreground text-sm">No work experience yet.</p>
                         </div>
+                      ) : (
+                        <SortableList
+                          items={workFields}
+                          onDragEnd={(oldIndex, newIndex) => moveWork(oldIndex, newIndex)}
+                          renderItem={(field, index) => {
+                            const role = watch(`work_experiences.${index}.role`);
+                            const company = watch(`work_experiences.${index}.company`);
+                            return (
+                              <div className="flex items-center justify-between p-3 border rounded-lg bg-card hover:bg-muted/50 transition-colors">
+                                <div className="flex flex-col">
+                                  <span className="font-medium text-sm">
+                                    {role || 'Untitled Role'}
+                                  </span>
+                                  <span className="text-xs text-muted-foreground">
+                                    {company || 'Unknown Company'}
+                                  </span>
+                                </div>
+                                <div className="flex gap-1">
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() => setEditState({ type: 'work', index })}
+                                    className="shadow-none"
+                                  >
+                                    <Edit2 className="w-4 h-4 text-muted-foreground" />
+                                  </Button>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() => removeWork(index)}
+                                    className="hover:text-destructive shadow-none"
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                  </Button>
+                                </div>
+                              </div>
+                            );
+                          }}
+                        />
                       )}
-
-                      <div className="space-y-4">
-                        {workFields.map((field, index) => (
-                          <div
-                            key={field.id}
-                            className="relative border rounded-lg p-5 bg-card hover:border-primary/20 transition-colors"
-                          >
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              className="absolute right-2 top-2 h-8 w-8 p-0 text-muted-foreground hover:text-destructive"
-                              onClick={() => removeWork(index)}
-                            >
-                              <X className="h-4 w-4" />
-                            </Button>
-
-                            <div className="grid gap-4">
-                              <div>
-                                <Label className="text-xs uppercase text-muted-foreground font-semibold">
-                                  Job Title
-                                </Label>
-                                <Input
-                                  {...register(`work_experiences.${index}.role` as const)}
-                                  className="mt-1.5"
-                                />
-                              </div>
-
-                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                  <Label className="text-xs uppercase text-muted-foreground font-semibold">
-                                    Company
-                                  </Label>
-                                  <Input
-                                    {...register(`work_experiences.${index}.company` as const)}
-                                    className="mt-1.5"
-                                  />
-                                </div>
-                                <div>
-                                  <Label className="text-xs uppercase text-muted-foreground font-semibold">
-                                    Location
-                                  </Label>
-                                  <Input
-                                    {...register(`work_experiences.${index}.location` as const)}
-                                    className="mt-1.5"
-                                  />
-                                </div>
-                              </div>
-
-                              <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                  <Label className="text-xs uppercase text-muted-foreground font-semibold">
-                                    Start
-                                  </Label>
-                                  <Input
-                                    {...register(`work_experiences.${index}.startDate` as const)}
-                                    className="mt-1.5"
-                                    placeholder="e.g. 2020"
-                                  />
-                                </div>
-                                <div>
-                                  <Label className="text-xs uppercase text-muted-foreground font-semibold">
-                                    End
-                                  </Label>
-                                  <Input
-                                    {...register(`work_experiences.${index}.endDate` as const)}
-                                    className="mt-1.5"
-                                    placeholder="Present"
-                                  />
-                                </div>
-                              </div>
-
-                              <div>
-                                <Label className="text-xs uppercase text-muted-foreground font-semibold">
-                                  Description
-                                </Label>
-                                <Textarea
-                                  {...register(`work_experiences.${index}.about` as const)}
-                                  className="mt-1.5 min-h-[100px]"
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-
                       <Button
-                        type="button"
-                        variant="outline"
-                        className="w-full mt-2 border-dashed"
                         onClick={onAddWorkExperience}
+                        variant="outline"
+                        className="w-full mt-2 border-dashed shadow-none"
                       >
                         <Plus className="w-4 h-4 mr-2" /> Add Position
                       </Button>
@@ -537,84 +555,62 @@ export function Form({
                   </AccordionItem>
                 </Accordion>
 
+                {/* 3. EDUCATION */}
                 <Accordion type="single" defaultValue="edu" collapsible>
-                  <AccordionItem value="edu" className="rounded-lg border px-4">
+                  <AccordionItem value="edu" className={accordionItemClass}>
                     <AccordionTrigger className="cursor-pointer py-3 text-base font-medium hover:no-underline">
                       Education
                     </AccordionTrigger>
                     <AccordionContent className="space-y-4 pt-2 pb-4">
-                      {educationFields.length === 0 && (
-                        <p className="text-sm text-muted-foreground text-center py-4">
-                          No education added.
-                        </p>
+                      {educationFields.length === 0 ? (
+                        <div className="flex flex-col items-center justify-center py-6 text-center bg-muted/20 rounded-lg border-dashed border-2">
+                          <GraduationCap className="w-8 h-8 text-muted-foreground mb-2 opacity-50" />
+                          <p className="text-muted-foreground text-sm">No education listed.</p>
+                        </div>
+                      ) : (
+                        <SortableList
+                          items={educationFields}
+                          onDragEnd={(oldIndex, newIndex) => moveEducation(oldIndex, newIndex)}
+                          renderItem={(field, index) => {
+                            const degree = watch(`education.${index}.degree`);
+                            const school = watch(`education.${index}.school`);
+                            return (
+                              <div className="flex items-center justify-between p-3 border rounded-lg bg-card hover:bg-muted/50 transition-colors">
+                                <div className="flex flex-col">
+                                  <span className="font-medium text-sm">
+                                    {degree || 'Untitled Degree'}
+                                  </span>
+                                  <span className="text-xs text-muted-foreground">
+                                    {school || 'Unknown School'}
+                                  </span>
+                                </div>
+                                <div className="flex gap-1">
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() => setEditState({ type: 'education', index })}
+                                    className="shadow-none"
+                                  >
+                                    <Edit2 className="w-4 h-4 text-muted-foreground" />
+                                  </Button>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() => removeEducation(index)}
+                                    className="hover:text-destructive shadow-none"
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                  </Button>
+                                </div>
+                              </div>
+                            );
+                          }}
+                        />
                       )}
-
-                      <div className="space-y-4">
-                        {educationFields.map((field, index) => (
-                          <div
-                            key={field.id}
-                            className="relative border rounded-lg p-5 bg-card hover:border-primary/20 transition-colors"
-                          >
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              className="absolute right-2 top-2 h-8 w-8 p-0 text-muted-foreground hover:text-destructive"
-                              onClick={() => removeEducation(index)}
-                            >
-                              <X className="h-4 w-4" />
-                            </Button>
-
-                            <div className="grid gap-4">
-                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                  <Label className="text-xs uppercase text-muted-foreground font-semibold">
-                                    Degree
-                                  </Label>
-                                  <Input
-                                    {...register(`education.${index}.degree` as const)}
-                                    className="mt-1.5"
-                                  />
-                                </div>
-                                <div>
-                                  <Label className="text-xs uppercase text-muted-foreground font-semibold">
-                                    School
-                                  </Label>
-                                  <Input
-                                    {...register(`education.${index}.school` as const)}
-                                    className="mt-1.5"
-                                  />
-                                </div>
-                              </div>
-                              <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                  <Label className="text-xs uppercase text-muted-foreground font-semibold">
-                                    Start Year
-                                  </Label>
-                                  <Input
-                                    {...register(`education.${index}.yearStart` as const)}
-                                    className="mt-1.5"
-                                  />
-                                </div>
-                                <div>
-                                  <Label className="text-xs uppercase text-muted-foreground font-semibold">
-                                    End Year
-                                  </Label>
-                                  <Input
-                                    {...register(`education.${index}.yearEnd` as const)}
-                                    className="mt-1.5"
-                                  />
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-
                       <Button
-                        type="button"
-                        variant="outline"
-                        className="w-full mt-2 border-dashed"
                         onClick={onAddEducation}
+                        variant="outline"
+                        className="w-full mt-2 border-dashed shadow-none"
                       >
                         <Plus className="w-4 h-4 mr-2" /> Add Education
                       </Button>
@@ -622,114 +618,58 @@ export function Form({
                   </AccordionItem>
                 </Accordion>
 
-                {/* Projects Accordion */}
+                {/* 4. PROJECTS */}
                 <Accordion type="single" defaultValue="projects" collapsible>
-                  <AccordionItem value="projects" className="rounded-lg border px-4">
+                  <AccordionItem value="projects" className={accordionItemClass}>
                     <AccordionTrigger className="cursor-pointer py-3 text-base font-medium hover:no-underline">
                       Projects
                     </AccordionTrigger>
                     <AccordionContent className="space-y-4 pt-2 pb-4">
-                      <div className="space-y-4">
-                        {showcaseFields.map((field, index) => (
-                          <div
-                            key={field.id}
-                            className="relative border rounded-lg p-5 bg-card hover:border-primary/20 transition-colors"
-                          >
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              className="absolute right-2 top-2 h-8 w-8 p-0 text-muted-foreground hover:text-destructive"
-                              onClick={() => removeShowcase(index)}
-                            >
-                              <X className="h-4 w-4" />
-                            </Button>
-
-                            <div className="grid gap-4">
-                              <div>
-                                <Label className="text-xs uppercase text-muted-foreground font-semibold">
-                                  Project Name
-                                </Label>
-                                <Input
-                                  {...register(`showcases.${index}.name` as const)}
-                                  className="mt-1.5"
-                                />
-                              </div>
-
-                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                  <Label className="text-xs uppercase text-muted-foreground font-semibold">
-                                    Role
-                                  </Label>
-                                  <Input
-                                    {...register(`showcases.${index}.role` as const)}
-                                    className="mt-1.5"
-                                    placeholder="Optional"
-                                  />
+                      {showcaseFields.length === 0 ? (
+                        <div className="flex flex-col items-center justify-center py-6 text-center bg-muted/20 rounded-lg border-dashed border-2">
+                          <FolderGit2 className="w-8 h-8 text-muted-foreground mb-2 opacity-50" />
+                          <p className="text-muted-foreground text-sm">No projects added.</p>
+                        </div>
+                      ) : (
+                        <SortableList
+                          items={showcaseFields}
+                          onDragEnd={(oldIndex, newIndex) => moveShowcase(oldIndex, newIndex)}
+                          renderItem={(field, index) => {
+                            const name = watch(`showcases.${index}.name`);
+                            return (
+                              <div className="flex items-center justify-between p-3 border rounded-lg bg-card hover:bg-muted/50 transition-colors">
+                                <div className="flex flex-col">
+                                  <span className="font-medium text-sm">
+                                    {name || 'Untitled Project'}
+                                  </span>
                                 </div>
-                                <div>
-                                  <Label className="text-xs uppercase text-muted-foreground font-semibold">
-                                    URL
-                                  </Label>
-                                  <Input
-                                    {...register(`showcases.${index}.url` as const)}
-                                    className="mt-1.5"
-                                    placeholder="Optional"
-                                  />
+                                <div className="flex gap-1">
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() => setEditState({ type: 'project', index })}
+                                    className="shadow-none"
+                                  >
+                                    <Edit2 className="w-4 h-4 text-muted-foreground" />
+                                  </Button>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() => removeShowcase(index)}
+                                    className="hover:text-destructive shadow-none"
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                  </Button>
                                 </div>
                               </div>
-
-                              <div>
-                                <Label className="text-xs uppercase text-muted-foreground font-semibold">
-                                  Description
-                                </Label>
-                                <Textarea
-                                  {...register(`showcases.${index}.description` as const)}
-                                  className="mt-1.5"
-                                />
-                              </div>
-
-                              <div>
-                                <Label className="text-xs uppercase text-muted-foreground font-semibold block mb-2">
-                                  Tech Stack
-                                </Label>
-                                <div className="flex flex-wrap gap-2 mb-2">
-                                  {(watch(`showcases.${index}.technologies`) ?? []).map(
-                                    (tech, techIndex) => (
-                                      <Badge
-                                        key={techIndex}
-                                        variant="secondary"
-                                        className="pl-2 pr-1 py-1"
-                                      >
-                                        {tech.name}
-                                        <button
-                                          type="button"
-                                          className="ml-2 hover:bg-muted-foreground/20 rounded-full p-0.5"
-                                          onClick={() =>
-                                            onRemoveTechnologyFromShowcase(index, techIndex)
-                                          }
-                                        >
-                                          <X className="w-3 h-3" />
-                                        </button>
-                                      </Badge>
-                                    )
-                                  )}
-                                </div>
-                                <AddItemDrawer
-                                  title="Add Tech"
-                                  placeholder="e.g. React"
-                                  onAdd={(tech) => onAddTechnologyToShowcase(index, tech)}
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-
+                            );
+                          }}
+                        />
+                      )}
                       <Button
-                        type="button"
-                        variant="outline"
-                        className="w-full mt-2 border-dashed"
                         onClick={onAddShowcase}
+                        variant="outline"
+                        className="w-full mt-2 border-dashed shadow-none"
                       >
                         <Plus className="w-4 h-4 mr-2" /> Add Project
                       </Button>
@@ -737,15 +677,16 @@ export function Form({
                   </AccordionItem>
                 </Accordion>
 
+                {/* 5. SKILLS */}
                 <Accordion type="single" defaultValue="skills" collapsible>
-                  <AccordionItem value="skills" className="rounded-lg border px-4">
+                  <AccordionItem value="skills" className={accordionItemClass}>
                     <AccordionTrigger className="cursor-pointer py-3 text-base font-medium hover:no-underline">
                       Skills
                     </AccordionTrigger>
                     <AccordionContent className="pt-4 pb-4">
-                      <div className="flex flex-wrap gap-2 mb-4">
+                      <div className="flex flex-wrap gap-2 mb-2">
                         {skillFields.map((field, index) => (
-                          <Badge key={field.id} className="text-sm py-1 px-3">
+                          <Badge key={field.id} className="text-sm py-1 px-3 shadow-none">
                             {watch(`skills.${index}.name`)}
                             <button
                               type="button"
@@ -762,8 +703,8 @@ export function Form({
                           </span>
                         )}
                       </div>
-                      <AddItemDrawer
-                        title="Add Skill"
+                      <AddItemDialog
+                        title="Skill"
                         placeholder="e.g. TypeScript"
                         onAdd={(skill) => appendSkill({ name: skill })}
                       />
@@ -775,6 +716,7 @@ export function Form({
           </Card>
         </div>
 
+        {/* --- RIGHT COLUMN: DESIGN PANEL --- */}
         <div className="hidden lg:col-span-4 lg:block relative">
           <div className="sticky top-6 space-y-4">
             <DesignPanel
@@ -787,6 +729,184 @@ export function Form({
         </div>
       </div>
 
+      <Dialog open={editState.type !== null} onOpenChange={(open) => !open && closeDialog()}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>
+              {editState.type === 'work' && 'Edit Experience'}
+              {editState.type === 'education' && 'Edit Education'}
+              {editState.type === 'project' && 'Edit Project'}
+            </DialogTitle>
+            <DialogDescription>Details will appear on your public portfolio.</DialogDescription>
+          </DialogHeader>
+          <div className="py-4 space-y-4 overflow-y-auto max-h-[70vh] pr-2 custom-scrollbar px-1">
+            {/* WORK FORM */}
+            {editState.type === 'work' && editState.index !== null && (
+              <>
+                <div>
+                  <Label className="mb-2 block">Role</Label>
+                  <Input
+                    {...register(`work_experiences.${editState.index}.role`)}
+                    className="shadow-none"
+                  />
+                </div>
+                <div>
+                  <Label className="mb-2 block">Company</Label>
+                  <Input
+                    {...register(`work_experiences.${editState.index}.company`)}
+                    className="shadow-none"
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="mb-2 block">Start</Label>
+                    <Input
+                      {...register(`work_experiences.${editState.index}.startDate`)}
+                      placeholder="2020"
+                      className="shadow-none"
+                    />
+                  </div>
+                  <div>
+                    <Label className="mb-2 block">End</Label>
+                    <Input
+                      {...register(`work_experiences.${editState.index}.endDate`)}
+                      placeholder="Present"
+                      className="shadow-none"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <Label className="mb-2 block">Location</Label>
+                  <Input
+                    {...register(`work_experiences.${editState.index}.location`)}
+                    className="shadow-none"
+                  />
+                </div>
+                <div>
+                  <Label className="mb-2 block">Description</Label>
+                  <Textarea
+                    {...register(`work_experiences.${editState.index}.about`)}
+                    className="min-h-[100px] shadow-none"
+                  />
+                </div>
+              </>
+            )}
+
+            {/* EDUCATION FORM */}
+            {editState.type === 'education' && editState.index !== null && (
+              <>
+                <div>
+                  <Label className="mb-2 block">Degree</Label>
+                  <Input
+                    {...register(`education.${editState.index}.degree`)}
+                    className="shadow-none"
+                  />
+                </div>
+                <div>
+                  <Label className="mb-2 block">School</Label>
+                  <Input
+                    {...register(`education.${editState.index}.school`)}
+                    className="shadow-none"
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="mb-2 block">Start Year</Label>
+                    <Input
+                      {...register(`education.${editState.index}.yearStart`)}
+                      className="shadow-none"
+                    />
+                  </div>
+                  <div>
+                    <Label className="mb-2 block">End Year</Label>
+                    <Input
+                      {...register(`education.${editState.index}.yearEnd`)}
+                      className="shadow-none"
+                    />
+                  </div>
+                </div>
+              </>
+            )}
+
+            {/* PROJECT FORM */}
+            {editState.type === 'project' && editState.index !== null && (
+              <>
+                <div>
+                  <Label className="mb-2 block">Project Name</Label>
+                  <Input
+                    {...register(`showcases.${editState.index}.name`)}
+                    className="shadow-none"
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="mb-2 block">Role</Label>
+                    <Input
+                      {...register(`showcases.${editState.index}.role`)}
+                      placeholder="e.g. Lead"
+                      className="shadow-none"
+                    />
+                  </div>
+                  <div>
+                    <Label className="mb-2 block">URL</Label>
+                    <Input
+                      {...register(`showcases.${editState.index}.url`)}
+                      placeholder="https://"
+                      className="shadow-none"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <Label className="mb-2 block">Description</Label>
+                  <Textarea
+                    {...register(`showcases.${editState.index}.description`)}
+                    className="min-h-[100px] shadow-none"
+                  />
+                </div>
+
+                {/* Tech Stack in Dialog */}
+                <div>
+                  <Label className="mb-2 block">Technologies</Label>
+                  <div className="flex flex-wrap gap-2 mb-2">
+                    {(watch(`showcases.${editState.index}.technologies`) ?? []).map(
+                      (tech, techIndex) => (
+                        <Badge
+                          key={techIndex}
+                          variant="secondary"
+                          className="pl-2 pr-1 py-1 shadow-none"
+                        >
+                          {tech.name}
+                          <button
+                            type="button"
+                            className="ml-2 hover:bg-muted-foreground/20 rounded-full p-0.5"
+                            onClick={() =>
+                              onRemoveTechnologyFromShowcase(editState.index!, techIndex)
+                            }
+                          >
+                            <X className="w-3 h-3" />
+                          </button>
+                        </Badge>
+                      )
+                    )}
+                  </div>
+                  <AddItemDialog
+                    title="Tech"
+                    placeholder="e.g. React"
+                    onAdd={(tech) => onAddTechnologyToShowcase(editState.index!, tech)}
+                  />
+                </div>
+              </>
+            )}
+          </div>
+          <DialogFooter>
+            <Button onClick={closeDialog} className="w-full shadow-none">
+              Done
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* MOBILE TRIGGER */}
       <div className="lg:hidden fixed bottom-6 right-6 z-50">
         <Sheet>
           <SheetTrigger asChild>

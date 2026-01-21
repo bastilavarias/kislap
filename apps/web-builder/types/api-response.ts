@@ -236,3 +236,94 @@ export interface APIResponseDashboardStats {
   total_clicks: number;
   unique_visitors: number;
 }
+
+export interface APIResponseBizSocialLink {
+  id: number;
+  biz_id: number;
+  platform: string;
+  url: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface APIResponseBizService {
+  id: number;
+  biz_id: number;
+  name: string;
+  description: string | null;
+  price: number;
+  duration_minutes: number | null;
+  image: string | null;
+  is_featured: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface APIResponseBizProductImage {
+  id: number;
+  product_id: number;
+  image: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface APIResponseBizProduct {
+  id: number;
+  biz_id: number;
+  name: string;
+  description: string | null;
+  price: number;
+  stock: number;
+  is_active: boolean;
+  // Assuming the API might return nested images
+  images?: APIResponseBizProductImage[];
+  created_at: string;
+  updated_at: string;
+}
+
+export interface APIResponseBizTestimonial {
+  id: number;
+  biz_id: number;
+  author: string;
+  content: string;
+  rating: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface APIResponseBiz {
+  id: number;
+  project_id: number;
+  user_id: number;
+  name: string;
+  slug: string;
+  tagline: string | null;
+  description: string | null;
+  logo: string | null;
+  hero_image: string | null;
+  type: string | null;
+  industry: string | null;
+  email: string | null;
+  phone: string | null;
+  address: string | null;
+  map_link: string | null;
+  domain: string | null;
+  subdomain: string | null;
+  website: string | null;
+  services_enabled: boolean;
+  products_enabled: boolean;
+  booking_enabled: boolean;
+  ordering_enabled: boolean;
+  theme_name: string | null;
+  theme_object: APIResponseThemeObject;
+  layout_name: string | null;
+  created_at: string;
+  updated_at: string;
+  deleted_at: string | null;
+  user?: APIResponseUser;
+  project?: APIResponseProject;
+  social_links: APIResponseBizSocialLink[];
+  services: APIResponseBizService[];
+  products: APIResponseBizProduct[];
+  testimonials: APIResponseBizTestimonial[];
+}

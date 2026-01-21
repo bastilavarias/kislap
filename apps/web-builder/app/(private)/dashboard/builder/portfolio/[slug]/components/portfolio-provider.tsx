@@ -15,7 +15,7 @@ import {
 import { useParams } from 'next/navigation';
 import { toast } from 'sonner';
 import { Settings } from '@/contexts/settings-context';
-import { AuthUser, useAuth } from '@/hooks/api/use-auth';
+import { AuthUser } from '@/hooks/api/use-auth';
 import { useAuthContext } from '@/contexts/auth-context';
 
 interface PortfolioContextType {
@@ -63,7 +63,6 @@ interface PortfolioContextType {
 
 const PortfolioContext = createContext<PortfolioContextType | undefined>(undefined);
 
-// Helper to map API data to Form
 function mapToFormValues(
   source: APIResponseDocumentResume | APIResponsePortfolio
 ): PortfolioFormValues {
@@ -79,31 +78,40 @@ function mapToFormValues(
     github: source.github || '',
     linkedin: source.linkedin || '',
     twitter: source.twitter || '',
-    work_experiences: (source.work_experiences || []).map((work: any) => ({
-      company: work.company || '',
-      role: work.role || '',
-      location: work.location || '',
-      startDate: work.start_date || null,
-      endDate: work.end_date || null,
-      about: work.about || '',
-      url: work.url || '',
-    })),
-    education: (source.education || []).map((education: any) => ({
-      school: education.school,
-      level: education.level || '',
-      degree: education.degree || '',
-      location: education.location || '',
-      yearStart: education.year_start || null,
-      yearEnd: education.year_end || null,
-      about: education.about || '',
-    })),
-    showcases: (source.showcases || []).map((showcase: any) => ({
-      name: showcase.name,
-      description: showcase.description || '',
-      role: showcase.role || '',
-      technologies: showcase.technologies || [],
-      url: showcase.url || '',
-    })),
+    work_experiences: (source.work_experiences || [])
+      .sort((prev: any, after: any) => (prev.placement_order ?? 0) - (after.placement_order ?? 0))
+      .map((work: any) => ({
+        company: work.company || '',
+        role: work.role || '',
+        location: work.location || '',
+        startDate: work.start_date || null,
+        endDate: work.end_date || null,
+        about: work.about || '',
+        url: work.url || '',
+        placement_order: work.placement_order || 0,
+      })),
+    education: (source.education || [])
+      .sort((prev: any, after: any) => (prev.placement_order ?? 0) - (after.placement_order ?? 0))
+      .map((education: any) => ({
+        school: education.school,
+        level: education.level || '',
+        degree: education.degree || '',
+        location: education.location || '',
+        yearStart: education.year_start || null,
+        yearEnd: education.year_end || null,
+        about: education.about || '',
+        placement_order: education.placement_order || 0,
+      })),
+    showcases: (source.showcases || [])
+      .sort((prev: any, after: any) => (prev.placement_order ?? 0) - (after.placement_order ?? 0))
+      .map((showcase: any) => ({
+        name: showcase.name,
+        description: showcase.description || '',
+        role: showcase.role || '',
+        technologies: showcase.technologies || [],
+        url: showcase.url || '',
+        placement_order: showcase.placement_order || 0,
+      })),
     skills: (source.skills || []).map((skill: { name: string }) => ({ name: skill.name })),
   };
 }
@@ -117,6 +125,7 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
   const [isSaving, setIsSaving] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
   const [user, setUser] = useState<AuthUser | null>(null);
+  const [portfolioID, setPortfolioID] = useState(null);
 
   const [files, setFiles] = useState<File[]>([]);
   const [isFileUploadDialogOpen, setIsFileUploadDialogOpen] = useState(false);
@@ -179,18 +188,48 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
 
   const save = async () => {
     setIsSaving(true);
-    await handleSubmit(async (data) => {
-      const res = await create({
-        portfolio_id: project?.portfolio?.id,
-        user_id: user?.id,
-        project_id: project?.id,
-        ...data,
-        theme: { ...localThemeSettings?.theme },
-        layout_name: layout,
-      });
-      if (res.success) toast.success('Saved successfully');
-      else toast.error(res.message || 'Error saving');
-    })();
+
+    await handleSubmit(
+      async (data) => {
+        const formattedData = Object.assign({
+          ...data,
+          work_experiences: data.work_experiences?.map((workExp, index) => ({
+            ...workExp,
+            placement_order: index,
+          })),
+          education: data.education?.map((education, index) => ({
+            ...education,
+            placement_order: index,
+          })),
+          showcases: data.showcases?.map((showcase, index) => ({
+            ...showcase,
+            placement_order: index,
+          })),
+        });
+
+        const response = await create({
+          project_id: project?.id,
+          portfolio_id: portfolioID || project?.portfolio?.id,
+          user_id: user?.id,
+          ...formattedData,
+          theme: { ...localThemeSettings?.theme },
+          layout_name: layout,
+        });
+
+        if (response.success) {
+          //@ts-ignore
+          setPortfolioID(response?.data?.portfolio?.id || null);
+          toast.success('Saved successfully');
+        } else {
+          toast.error(response.message || 'Error saving');
+        }
+      },
+      (errors) => {
+        console.error('Validation failed:', errors);
+        toast.error('Please check the form for errors.');
+      }
+    )();
+
     setIsSaving(false);
   };
 
@@ -200,7 +239,7 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
     const res = await apiPublish(project.id, isPublished);
     if (res.success) {
       setProject(res.data);
-      toast.success(res.data.published ? 'Published' : 'Unpublished');
+      toast.success(res?.data?.published ? 'Published' : 'Unpublished');
     }
     setIsPublishing(false);
   };
