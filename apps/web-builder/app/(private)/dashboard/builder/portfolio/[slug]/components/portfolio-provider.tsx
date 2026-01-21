@@ -78,31 +78,40 @@ function mapToFormValues(
     github: source.github || '',
     linkedin: source.linkedin || '',
     twitter: source.twitter || '',
-    work_experiences: (source.work_experiences || []).map((work: any) => ({
-      company: work.company || '',
-      role: work.role || '',
-      location: work.location || '',
-      startDate: work.start_date || null,
-      endDate: work.end_date || null,
-      about: work.about || '',
-      url: work.url || '',
-    })),
-    education: (source.education || []).map((education: any) => ({
-      school: education.school,
-      level: education.level || '',
-      degree: education.degree || '',
-      location: education.location || '',
-      yearStart: education.year_start || null,
-      yearEnd: education.year_end || null,
-      about: education.about || '',
-    })),
-    showcases: (source.showcases || []).map((showcase: any) => ({
-      name: showcase.name,
-      description: showcase.description || '',
-      role: showcase.role || '',
-      technologies: showcase.technologies || [],
-      url: showcase.url || '',
-    })),
+    work_experiences: (source.work_experiences || [])
+      .sort((prev: any, after: any) => (prev.placement_order ?? 0) - (after.placement_order ?? 0))
+      .map((work: any) => ({
+        company: work.company || '',
+        role: work.role || '',
+        location: work.location || '',
+        startDate: work.start_date || null,
+        endDate: work.end_date || null,
+        about: work.about || '',
+        url: work.url || '',
+        placement_order: work.placement_order || 0,
+      })),
+    education: (source.education || [])
+      .sort((prev: any, after: any) => (prev.placement_order ?? 0) - (after.placement_order ?? 0))
+      .map((education: any) => ({
+        school: education.school,
+        level: education.level || '',
+        degree: education.degree || '',
+        location: education.location || '',
+        yearStart: education.year_start || null,
+        yearEnd: education.year_end || null,
+        about: education.about || '',
+        placement_order: education.placement_order || 0,
+      })),
+    showcases: (source.showcases || [])
+      .sort((prev: any, after: any) => (prev.placement_order ?? 0) - (after.placement_order ?? 0))
+      .map((showcase: any) => ({
+        name: showcase.name,
+        description: showcase.description || '',
+        role: showcase.role || '',
+        technologies: showcase.technologies || [],
+        url: showcase.url || '',
+        placement_order: showcase.placement_order || 0,
+      })),
     skills: (source.skills || []).map((skill: { name: string }) => ({ name: skill.name })),
   };
 }
@@ -179,11 +188,27 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
   const save = async () => {
     setIsSaving(true);
     await handleSubmit(async (data) => {
+      const formattedData = Object.assign({
+        ...data,
+        work_experiences: data.work_experiences?.map((workExp, index) => ({
+          placement_order: index,
+          ...workExp,
+        })),
+        education: data.education?.map((education, index) => ({
+          placement_order: index,
+          ...education,
+        })),
+        showcases: data.showcases?.map((showcase, index) => ({
+          placement_order: index,
+          ...showcase,
+        })),
+      });
+
       const res = await create({
         portfolio_id: project?.portfolio?.id,
         user_id: user?.id,
         project_id: project?.id,
-        ...data,
+        ...formattedData,
         theme: { ...localThemeSettings?.theme },
         layout_name: layout,
       });

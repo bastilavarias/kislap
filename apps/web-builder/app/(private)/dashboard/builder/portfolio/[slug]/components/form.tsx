@@ -325,17 +325,20 @@ export function Form({
     setValue('layout_name', layout);
   }, [layout, setValue]);
 
+  const accordionItemClass =
+    'border-b rounded-none px-0 shadow-none lg:border lg:rounded-lg lg:px-4 last:border-0 lg:last:border';
+
   return (
     <div className="w-full relative">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start pb-20 lg:pb-0">
         <div className="lg:col-span-8 space-y-6">
-          <Card className="shadow-none border-border">
-            <CardContent className="p-6">
-              <div className="flex justify-between items-center mb-6">
+          <Card className="shadow-none lg:border-border lg:bg-card lg:border">
+            <CardContent className="p-3 lg:p-6">
+              <div className="flex justify-between items-center mb-6 px-1 lg:px-0">
                 <h1 className="text-2xl font-bold">Content</h1>
               </div>
 
-              <div className="flex items-center justify-between mb-6 bg-muted/20 p-4 rounded-xl border">
+              <div className="flex items-center justify-between mb-8 bg-muted/20 p-4 rounded-xl border">
                 <div>
                   <h3 className="text-sm font-semibold">Resume Parser</h3>
                   <p className="text-xs text-muted-foreground">
@@ -354,13 +357,13 @@ export function Form({
                 </Button>
               </div>
 
-              <div className="flex flex-col gap-10">
+              <div className="flex flex-col gap-6 lg:gap-10">
                 <Accordion type="single" defaultValue="details" collapsible>
-                  <AccordionItem value="details" className="rounded-lg border px-4 shadow-none">
+                  <AccordionItem value="details" className={accordionItemClass}>
                     <AccordionTrigger className="cursor-pointer py-3 text-base font-medium hover:no-underline">
                       Header & Bio
                     </AccordionTrigger>
-                    <AccordionContent className="space-y-6 pt-2 pb-4 xl:px-2">
+                    <AccordionContent className="space-y-6 pt-2 pb-4 px-1 lg:px-2">
                       {/* Identity Group */}
                       <div className="space-y-4">
                         <div className="flex items-center gap-2 text-sm text-primary font-semibold uppercase tracking-wider">
@@ -414,7 +417,7 @@ export function Form({
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
-                            <Label className="mb-2 block flex items-center gap-2">
+                            <Label className="mb-2 flex items-center gap-2">
                               <MapPin className="w-3 h-3" /> Location
                             </Label>
                             <Input
@@ -424,7 +427,7 @@ export function Form({
                             />
                           </div>
                           <div>
-                            <Label className="mb-2 block flex items-center gap-2">
+                            <Label className="mb-2 flex items-center gap-2">
                               <Mail className="w-3 h-3" /> Email
                             </Label>
                             <Input
@@ -434,7 +437,7 @@ export function Form({
                             />
                           </div>
                           <div>
-                            <Label className="mb-2 block flex items-center gap-2">
+                            <Label className="mb-2 flex items-center gap-2">
                               <Globe className="w-3 h-3" /> Website
                             </Label>
                             <Input
@@ -455,7 +458,7 @@ export function Form({
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                           <div>
-                            <Label className="mb-2 block flex items-center gap-2">
+                            <Label className="mb-2 flex items-center gap-2">
                               <Github className="w-3 h-3" /> GitHub
                             </Label>
                             <Input
@@ -465,7 +468,7 @@ export function Form({
                             />
                           </div>
                           <div>
-                            <Label className="mb-2 block flex items-center gap-2">
+                            <Label className="mb-2 flex items-center gap-2">
                               <Linkedin className="w-3 h-3" /> LinkedIn
                             </Label>
                             <Input
@@ -475,7 +478,7 @@ export function Form({
                             />
                           </div>
                           <div>
-                            <Label className="mb-2 block flex items-center gap-2">
+                            <Label className="mb-2 flex items-center gap-2">
                               <Twitter className="w-3 h-3" /> Twitter/X
                             </Label>
                             <Input
@@ -490,9 +493,8 @@ export function Form({
                   </AccordionItem>
                 </Accordion>
 
-                {/* 2. WORK EXPERIENCE (Using SortableList) */}
                 <Accordion type="single" defaultValue="work" collapsible>
-                  <AccordionItem value="work" className="rounded-lg border px-4 shadow-none">
+                  <AccordionItem value="work" className={accordionItemClass}>
                     <AccordionTrigger className="cursor-pointer py-3 text-base font-medium hover:no-underline">
                       Work Experience
                     </AccordionTrigger>
@@ -553,9 +555,9 @@ export function Form({
                   </AccordionItem>
                 </Accordion>
 
-                {/* 3. EDUCATION (Using SortableList) */}
+                {/* 3. EDUCATION */}
                 <Accordion type="single" defaultValue="edu" collapsible>
-                  <AccordionItem value="edu" className="rounded-lg border px-4 shadow-none">
+                  <AccordionItem value="edu" className={accordionItemClass}>
                     <AccordionTrigger className="cursor-pointer py-3 text-base font-medium hover:no-underline">
                       Education
                     </AccordionTrigger>
@@ -616,9 +618,9 @@ export function Form({
                   </AccordionItem>
                 </Accordion>
 
-                {/* 4. PROJECTS (Using SortableList) */}
+                {/* 4. PROJECTS */}
                 <Accordion type="single" defaultValue="projects" collapsible>
-                  <AccordionItem value="projects" className="rounded-lg border px-4 shadow-none">
+                  <AccordionItem value="projects" className={accordionItemClass}>
                     <AccordionTrigger className="cursor-pointer py-3 text-base font-medium hover:no-underline">
                       Projects
                     </AccordionTrigger>
@@ -675,9 +677,9 @@ export function Form({
                   </AccordionItem>
                 </Accordion>
 
-                {/* 5. SKILLS (Unchanged) */}
+                {/* 5. SKILLS */}
                 <Accordion type="single" defaultValue="skills" collapsible>
-                  <AccordionItem value="skills" className="rounded-lg border px-4 shadow-none">
+                  <AccordionItem value="skills" className={accordionItemClass}>
                     <AccordionTrigger className="cursor-pointer py-3 text-base font-medium hover:no-underline">
                       Skills
                     </AccordionTrigger>
@@ -727,7 +729,6 @@ export function Form({
         </div>
       </div>
 
-      {/* --- MASTER EDITING DIALOG (UNCHANGED) --- */}
       <Dialog open={editState.type !== null} onOpenChange={(open) => !open && closeDialog()}>
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
@@ -738,7 +739,7 @@ export function Form({
             </DialogTitle>
             <DialogDescription>Details will appear on your public portfolio.</DialogDescription>
           </DialogHeader>
-          <div className="py-4 space-y-4 overflow-y-auto max-h-[70vh] pr-2 custom-scrollbar">
+          <div className="py-4 space-y-4 overflow-y-auto max-h-[70vh] pr-2 custom-scrollbar px-1">
             {/* WORK FORM */}
             {editState.type === 'work' && editState.index !== null && (
               <>

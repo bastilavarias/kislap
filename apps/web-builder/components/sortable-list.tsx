@@ -37,7 +37,6 @@ export function SortableList<T extends BaseItem>({
 }: SortableListProps<T>) {
   const sensors = useSensors(
     useSensor(PointerSensor, {
-      // Require a slight movement to prevent accidental drags on clicks
       activationConstraint: { distance: 5 },
     }),
     useSensor(KeyboardSensor, {
@@ -70,7 +69,6 @@ export function SortableList<T extends BaseItem>({
   );
 }
 
-// Internal wrapper that provides the drag handle and styles
 function SortableItem({ children, id }: { children: React.ReactNode; id: string }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id,
@@ -85,16 +83,14 @@ function SortableItem({ children, id }: { children: React.ReactNode; id: string 
 
   return (
     <div ref={setNodeRef} style={style} className="relative flex items-center group touch-none">
-      {/* Drag Handle */}
       <div
         {...attributes}
         {...listeners}
-        className="absolute left-2 top-1/2 -translate-y-1/2 cursor-grab text-muted-foreground/40 hover:text-foreground z-10 p-1 transition-colors"
+        className="absolute left-0 top-1/2 -translate-y-1/2 cursor-grab text-muted-foreground/40 hover:text-foreground z-10 p-1 transition-colors"
       >
         <GripVertical className="w-5 h-5" />
       </div>
 
-      {/* Content Wrapper (Adds padding-left to make room for handle) */}
       <div className="w-full pl-9">{children}</div>
     </div>
   );

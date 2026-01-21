@@ -18,7 +18,6 @@ type Service struct {
 }
 
 func (service Service) Save(payload Payload) (*models.Biz, error) {
-	fmt.Println(payload)
 
 	var themeRaw []byte
 	if payload.Theme != nil {
@@ -191,9 +190,9 @@ func (s Service) buildProducts(reqs []ProductRequest, projectID int64) ([]models
 func (s Service) buildTestimonials(reqs []TestimonialRequest, projectID int64) ([]models.Testimonial, error) {
 	var testimonials []models.Testimonial
 	for _, req := range reqs {
-		avatarURL := req.ImageURL
-		if req.Image != nil {
-			url, err := s.uploadImage(req.Image, projectID, "testimonials")
+		avatarURL := req.AvatarURL
+		if req.Avatar != nil {
+			url, err := s.uploadImage(req.Avatar, projectID, "testimonials")
 			if err != nil {
 				return nil, err
 			}

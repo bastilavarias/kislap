@@ -139,13 +139,14 @@ func buildWorkExperiences(workPayloads []WorkExperienceRequest) []models.WorkExp
 	var workExperiences []models.WorkExperience
 	for _, workExperience := range workPayloads {
 		workExperiences = append(workExperiences, models.WorkExperience{
-			Company:   workExperience.Company,
-			Role:      workExperience.Role,
-			URL:       workExperience.URL,
-			Location:  workExperience.Location,
-			StartDate: workExperience.StartDate,
-			EndDate:   workExperience.EndDate,
-			About:     workExperience.About,
+			Company:        workExperience.Company,
+			Role:           workExperience.Role,
+			URL:            workExperience.URL,
+			Location:       workExperience.Location,
+			StartDate:      workExperience.StartDate,
+			EndDate:        workExperience.EndDate,
+			About:          workExperience.About,
+			PlacementOrder: workExperience.PlacementOrder,
 		})
 	}
 	return workExperiences
@@ -155,13 +156,14 @@ func buildEducation(eduPayloads []EducationRequest) []models.Education {
 	var education []models.Education
 	for _, edu := range eduPayloads {
 		education = append(education, models.Education{
-			School:    edu.School,
-			Level:     edu.Level,
-			Degree:    &edu.Degree,
-			Location:  &edu.Location,
-			YearStart: edu.YearStart,
-			YearEnd:   edu.YearEnd,
-			About:     &edu.About,
+			School:         edu.School,
+			Level:          edu.Level,
+			Degree:         &edu.Degree,
+			Location:       &edu.Location,
+			YearStart:      edu.YearStart,
+			YearEnd:        edu.YearEnd,
+			About:          &edu.About,
+			PlacementOrder: edu.PlacementOrder,
 		})
 	}
 	return education
@@ -194,6 +196,7 @@ func buildShowcases(showcasePayloads []ShowcaseRequest) []models.Showcase {
 			URL:                  showcase.URL,
 			Role:                 showcase.Role,
 			ShowcaseTechnologies: technologies,
+			PlacementOrder:       showcase.PlacementOrder,
 		})
 	}
 	return showcases

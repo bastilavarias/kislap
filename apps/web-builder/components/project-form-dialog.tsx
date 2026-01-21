@@ -36,7 +36,7 @@ const projectTypes = [
   {
     label: 'biz',
     emoji: '💼',
-    active: true,
+    active: false,
     description: 'Create a professional business website to attract clients and customers.',
     features: ['Company info pages', 'Service showcase', 'Contact forms'],
   },
