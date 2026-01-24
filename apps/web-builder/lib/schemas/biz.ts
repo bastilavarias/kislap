@@ -46,9 +46,9 @@ export const BizSchema = z.object({
         description: z.string().optional().nullable(),
         price: z.coerce.number().min(0).default(0),
         duration_minutes: z.coerce.number().min(0).default(0),
+        is_featured: z.boolean().default(false),
         image: z.file().optional().nullable(),
         image_url: z.string().optional().nullable(),
-        is_featured: z.boolean().default(false),
       })
     )
     .optional()
@@ -63,6 +63,8 @@ export const BizSchema = z.object({
         price: z.coerce.number().min(0).default(0),
         stock: z.coerce.number().int().min(0).default(0),
         is_active: z.boolean().default(true),
+        image: z.file().optional().nullable(),
+        image_url: z.string().optional().nullable(),
       })
     )
     .optional()

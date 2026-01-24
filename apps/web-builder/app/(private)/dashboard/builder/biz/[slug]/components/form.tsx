@@ -817,9 +817,9 @@ export function Form({
               </>
             )}
 
-            {/* PRODUCT FORM */}
             {editState.type === 'product' && editState.index !== null && (
               <>
+                <input type="hidden" {...register(`products.${editState.index}.id`)} />
                 <div>
                   <Label className="mb-2 block">Product Image</Label>
                   <ImageUploadField
@@ -871,9 +871,9 @@ export function Form({
               </>
             )}
 
-            {/* TESTIMONIAL FORM */}
             {editState.type === 'testimonial' && editState.index !== null && (
               <>
+                <input type="hidden" {...register(`testimonials.${editState.index}.id`)} />
                 <div>
                   <Label className="mb-2 block">Author Avatar</Label>
                   <ImageUploadField

@@ -188,6 +188,7 @@ func (service Service) ShowBySlug(slug string, level string) (*models.Project, e
 		if err := service.DB.
 			Preload("Biz").
 			Preload("Biz.Services").
+			Preload("Biz.Products").
 			First(&project, project.ID).Error; err != nil {
 			return nil, err
 		}

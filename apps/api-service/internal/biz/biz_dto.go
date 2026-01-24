@@ -24,7 +24,7 @@ type ProductRequest struct {
 	Stock       int                   `form:"stock" json:"stock"`
 	IsActive    bool                  `form:"is_active" json:"is_active"`
 	ImageURL    *string               `form:"image_url" json:"image_url"`
-	Image       *multipart.FileHeader `form:"image" json:"-"`
+	Image       *multipart.FileHeader `form:"image" json:"image"`
 }
 
 type TestimonialRequest struct {
@@ -33,7 +33,7 @@ type TestimonialRequest struct {
 	Rating    int                   `form:"rating" json:"rating"`
 	Content   *string               `form:"content" json:"content"`
 	AvatarURL *string               `form:"avatar_url" json:"avatar_url"`
-	Avatar    *multipart.FileHeader `form:"avatar" json:"-"`
+	Avatar    *multipart.FileHeader `form:"avatar" json:"image"`
 }
 
 type SocialLinkRequest struct {

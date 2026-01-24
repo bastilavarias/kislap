@@ -90,17 +90,21 @@ function mapToFormValues(source: APIResponseBiz): BizFormValues {
       image_url: service.image_url || null,
       is_featured: service.is_featured ?? false,
     })),
-    products: (source.products || []).map((prod: any) => ({
-      name: prod.name || '',
-      description: prod.description || '',
-      price: prod.price || 0,
-      stock: prod.stock || 0,
-      is_active: prod.is_active ?? true,
+    products: (source.products || []).map((product: any) => ({
+      id: product.id || null,
+      name: product.name || '',
+      description: product.description || '',
+      price: product.price || 0,
+      stock: product.stock || 0,
+      is_active: product.is_active ?? true,
+      image: product.image || null,
+      image_url: product.image_url || null,
     })),
-    testimonials: (source.testimonials || []).map((t: any) => ({
-      author: t.author || '',
-      content: t.content || '',
-      rating: t.rating || 5,
+    testimonials: (source.testimonials || []).map((testimonial: any) => ({
+      id: testimonial.id || null,
+      author: testimonial.author || '',
+      content: testimonial.content || '',
+      rating: testimonial.rating || 5,
     })),
 
     type: source.type || null,
