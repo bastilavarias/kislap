@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('bizs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('project_id')->nullable()->constrained('projects')->nullOnDelete();
-            $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->unsignedBigInteger('project_id');
+            $table->unsignedBigInteger('user_id');
             $table->string('name');
             $table->string('tagline')->nullable();
             $table->text('description')->nullable();
@@ -38,8 +38,10 @@ return new class extends Migration
             $table->json('theme_object')->nullable();
             $table->string('layout_name')->default('default');
             $table->softDeletes();
-
             $table->timestamps();
+
+            $table->foreign('project_id')->references('id')->on('projects')->cascadeOnDelete();
+            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
         });
     }
 

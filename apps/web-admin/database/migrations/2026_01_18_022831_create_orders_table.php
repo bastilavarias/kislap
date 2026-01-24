@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('biz_id')->constrained('bizs')->cascadeOnDelete();
+            $table->unsignedBigInteger('biz_id');
             $table->string('customer_name');
             $table->string('customer_email')->nullable();
             $table->string('customer_phone')->nullable();
@@ -22,8 +22,9 @@ return new class extends Migration
             $table->string('payment_method')->nullable();
             $table->text('notes')->nullable();
             $table->softDeletes();
-
             $table->timestamps();
+
+            $table->foreign('biz_id')->references('id')->on('bizs')->cascadeOnDelete();
         });
     }
 

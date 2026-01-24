@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('services', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('biz_id')->constrained('bizs')->cascadeOnDelete();
+            $table->unsignedBigInteger('biz_id');
             $table->integer('placement_order')->default(0);
             $table->string('name');
             $table->text('description')->nullable();
@@ -22,8 +22,9 @@ return new class extends Migration
             $table->string('image_url')->nullable();
             $table->boolean('is_featured')->default(false);
             $table->softDeletes();
-
             $table->timestamps();
+
+            $table->foreign('biz_id')->references('id')->on('bizs')->cascadeOnDelete();
         });
     }
 

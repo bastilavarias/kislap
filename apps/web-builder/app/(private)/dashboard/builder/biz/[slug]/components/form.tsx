@@ -424,7 +424,6 @@ export function Form({
                   </AccordionItem>
                 </Accordion>
 
-                {/* 2. Services */}
                 <Accordion type="single" defaultValue="services" collapsible>
                   <AccordionItem value="services" className="rounded-lg border px-4 shadow-none">
                     <AccordionTrigger className="cursor-pointer py-3 text-base font-medium hover:no-underline">
@@ -454,7 +453,6 @@ export function Form({
                             return (
                               <div className="flex items-center justify-between p-3 border rounded-lg bg-card hover:bg-muted/50 transition-colors">
                                 <div className="flex items-center gap-3">
-                                  {/* List Thumbnail */}
                                   <div className="h-10 w-10 rounded-md bg-muted overflow-hidden shrink-0 flex items-center justify-center border">
                                     {thumbnail ? (
                                       <img
@@ -507,7 +505,6 @@ export function Form({
                   </AccordionItem>
                 </Accordion>
 
-                {/* 3. Products */}
                 <Accordion type="single" defaultValue="products" collapsible>
                   <AccordionItem value="products" className="rounded-lg border px-4 shadow-none">
                     <AccordionTrigger className="cursor-pointer py-3 text-base font-medium hover:no-underline">
@@ -743,7 +740,6 @@ export function Form({
           </Card>
         </div>
 
-        {/* --- RIGHT COLUMN: DESIGN PANEL --- */}
         <div className="hidden lg:col-span-4 lg:block relative">
           <div className="sticky top-6 space-y-4">
             <DesignPanel
@@ -767,9 +763,9 @@ export function Form({
             <DialogDescription>Make changes to the selected item below.</DialogDescription>
           </DialogHeader>
           <div className="py-4 space-y-6">
-            {/* SERVICE FORM */}
             {editState.type === 'service' && editState.index !== null && (
               <>
+                <input type="hidden" {...register(`services.${editState.index}.id`)} />
                 <div>
                   <Label className="mb-2 block">Service Image</Label>
                   <ImageUploadField

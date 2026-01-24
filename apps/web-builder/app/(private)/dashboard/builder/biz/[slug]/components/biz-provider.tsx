@@ -58,7 +58,6 @@ const BizContext = createContext<BizContextType | undefined>(undefined);
 function mapToFormValues(source: APIResponseBiz): BizFormValues {
   return {
     name: source.name || '',
-    slug: source.slug || '',
     tagline: source.tagline || '',
     description: source.description || '',
 
@@ -81,13 +80,15 @@ function mapToFormValues(source: APIResponseBiz): BizFormValues {
       platform: link.platform || '',
       url: link.url || '',
     })),
-    services: (source.services || []).map((svc: any) => ({
-      name: svc.name || '',
-      description: svc.description || '',
-      price: svc.price || 0,
-      duration_minutes: svc.duration_minutes || 0,
-      image: svc.image || null,
-      is_featured: svc.is_featured ?? false,
+    services: (source.services || []).map((service: any) => ({
+      id: service.id || null,
+      name: service.name || '',
+      description: service.description || '',
+      price: service.price || 0,
+      duration_minutes: service.duration_minutes || 0,
+      image: service.image || null,
+      image_url: service.image_url || null,
+      is_featured: service.is_featured ?? false,
     })),
     products: (source.products || []).map((prod: any) => ({
       name: prod.name || '',
@@ -118,6 +119,7 @@ export function BizProvider({ children }: { children: ReactNode }) {
   const [isSaving, setIsSaving] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
   const [user, setUser] = useState<AuthUser | null>(null);
+  const [bizID, setBizID] = useState(null);
 
   const [files, setFiles] = useState<File[]>([]);
   const [isFileUploadDialogOpen, setIsFileUploadDialogOpen] = useState(false);
@@ -132,19 +134,28 @@ export function BizProvider({ children }: { children: ReactNode }) {
     resolver: zodResolver(BizSchema),
     defaultValues: {
       name: '',
-      slug: '',
       tagline: '',
       description: '',
+      type: '',
+      industry: '',
+      logo: '',
+      hero_image: '',
       email: '',
+      phone: '',
+      address: '',
+      map_link: '',
+      domain: '',
+      subdomain: '',
+      website: '',
       services_enabled: false,
       products_enabled: false,
       booking_enabled: false,
       ordering_enabled: false,
+      layout_name: 'default',
       social_links: [],
       services: [],
       products: [],
       testimonials: [],
-      layout_name: 'default',
     },
   });
 
@@ -162,13 +173,10 @@ export function BizProvider({ children }: { children: ReactNode }) {
     const loadProject = async () => {
       const slug = params.slug as string;
       if (!slug) return;
-
       const { success, data } = await getBySlug(slug, 'full');
-
       if (success && data) {
         setProject(data);
         if (data.biz) {
-          console.log('Loaded biz data:', data.biz);
           const mapped = mapToFormValues(data.biz);
 
           reset(mapped);
@@ -184,31 +192,73 @@ export function BizProvider({ children }: { children: ReactNode }) {
 
   const save = async () => {
     setIsSaving(true);
-    await handleSubmit(async (data) => {
-      console.log('Saving biz data:', data);
 
-      const res = await create({
-        biz_id: project?.biz?.id,
-        user_id: user?.id,
-        project_id: project?.id,
-        ...data,
-        theme: { ...localThemeSettings?.theme },
-        layout_name: layout,
-      });
+    await handleSubmit(
+      async (data) => {
+        const fullPayload = {
+          project_id: project?.id,
+          biz_id: bizID || project?.biz?.id,
+          user_id: user?.id,
+          ...data,
+          theme: { ...localThemeSettings?.theme },
+          layout_name: layout,
+        };
 
-      if (res.success) toast.success('Business saved successfully');
-      else toast.error(res.message || 'Error saving business');
-    })();
+        console.log(fullPayload);
+
+        const formData = new FormData();
+        const jsonPayload = JSON.parse(JSON.stringify(fullPayload));
+        const attachFiles = (
+          listName: 'services' | 'products' | 'testimonials',
+          fileKey: string
+        ) => {
+          const list = data[listName];
+          if (!list || !Array.isArray(list)) return;
+
+          list.forEach((item, index) => {
+            const file = (item as any)[fileKey];
+
+            if (file instanceof File) {
+              formData.append(`${listName}[${index}].${fileKey}`, file);
+
+              if (jsonPayload[listName] && jsonPayload[listName][index]) {
+                jsonPayload[listName][index][fileKey] = null;
+              }
+            }
+          });
+        };
+
+        attachFiles('services', 'image');
+        attachFiles('products', 'image');
+        attachFiles('testimonials', 'avatar');
+
+        formData.append('json_body', JSON.stringify(jsonPayload));
+
+        const response = await create(formData as any);
+
+        if (response.success) {
+          // @ts-ignore
+          setBizID(response?.data?.biz?.id || null);
+          toast.success('Saved successfully');
+        } else {
+          toast.error(response.message || 'Error saving business');
+        }
+      },
+      (errors) => {
+        console.error('Validation failed:', errors);
+        toast.error('Please check the form for errors.');
+      }
+    )();
+
     setIsSaving(false);
   };
-
   const publish = async (isPublished: boolean) => {
     if (!project?.id) return;
     setIsPublishing(true);
-    const res = await apiPublish(project.id, isPublished);
-    if (res.success) {
-      setProject(res.data);
-      toast.success(res.data.published ? 'Published' : 'Unpublished');
+    const response = await apiPublish(project.id, isPublished);
+    if (response.success) {
+      setProject(response.data);
+      toast.success(response?.data?.published ? 'Published' : 'Unpublished');
     }
     setIsPublishing(false);
   };
@@ -219,6 +269,7 @@ export function BizProvider({ children }: { children: ReactNode }) {
 
   const onAddService = () => {
     servicesFieldArray.append({
+      id: null,
       name: 'New Service',
       description: '',
       price: 0,

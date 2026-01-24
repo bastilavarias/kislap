@@ -184,6 +184,15 @@ func (service Service) ShowBySlug(slug string, level string) (*models.Project, e
 		}
 	}
 
+	if level == "full" && project.Type == "biz" {
+		if err := service.DB.
+			Preload("Biz").
+			Preload("Biz.Services").
+			First(&project, project.ID).Error; err != nil {
+			return nil, err
+		}
+	}
+
 	return &project, nil
 }
 

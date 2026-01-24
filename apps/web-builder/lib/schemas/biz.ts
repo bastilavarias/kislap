@@ -2,10 +2,6 @@ import { z } from 'zod';
 
 export const BizSchema = z.object({
   name: z.string().min(1, 'Business name is required'),
-  slug: z
-    .string()
-    .min(1, 'Slug is required')
-    .regex(/^[a-z0-9-]+$/, 'Slug must be lowercase, numbers, and hyphens only'),
   tagline: z.string().optional().nullable(),
   description: z.string().optional().nullable(),
 
@@ -34,6 +30,7 @@ export const BizSchema = z.object({
   social_links: z
     .array(
       z.object({
+        id: z.coerce.number().optional().nullable(),
         platform: z.string().min(1, 'Platform is required'),
         url: z.string().url('Must be a valid URL'),
       })
@@ -44,11 +41,13 @@ export const BizSchema = z.object({
   services: z
     .array(
       z.object({
+        id: z.coerce.number().optional().nullable(),
         name: z.string().min(1, 'Service name is required'),
         description: z.string().optional().nullable(),
         price: z.coerce.number().min(0).default(0),
         duration_minutes: z.coerce.number().min(0).default(0),
-        image: z.string().optional().nullable(),
+        image: z.file().optional().nullable(),
+        image_url: z.string().optional().nullable(),
         is_featured: z.boolean().default(false),
       })
     )
@@ -58,6 +57,7 @@ export const BizSchema = z.object({
   products: z
     .array(
       z.object({
+        id: z.coerce.number().optional().nullable(),
         name: z.string().min(1, 'Product name is required'),
         description: z.string().optional().nullable(),
         price: z.coerce.number().min(0).default(0),
@@ -71,6 +71,7 @@ export const BizSchema = z.object({
   testimonials: z
     .array(
       z.object({
+        id: z.coerce.number().optional().nullable(),
         author: z.string().min(1, 'Author name is required'),
         content: z.string().optional().nullable(),
         rating: z.coerce.number().min(1).max(5).default(5),

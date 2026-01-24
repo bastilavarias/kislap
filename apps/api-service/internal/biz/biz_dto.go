@@ -6,16 +6,18 @@ import (
 )
 
 type ServiceRequest struct {
+	ID              *int64                `form:"id" json:"id"`
 	Name            string                `form:"name" json:"name"`
 	Description     *string               `form:"description" json:"description"`
 	Price           float64               `form:"price" json:"price"`
 	DurationMinutes int                   `form:"duration_minutes" json:"duration_minutes"`
 	IsFeatured      bool                  `form:"is_featured" json:"is_featured"`
 	ImageURL        *string               `form:"image_url" json:"image_url"`
-	Image           *multipart.FileHeader `form:"image" json:"-"`
+	Image           *multipart.FileHeader `form:"image" json:"image"`
 }
 
 type ProductRequest struct {
+	ID          *int64                `form:"id" json:"id"`
 	Name        string                `form:"name" json:"name"`
 	Description *string               `form:"description" json:"description"`
 	Price       float64               `form:"price" json:"price"`
@@ -26,6 +28,7 @@ type ProductRequest struct {
 }
 
 type TestimonialRequest struct {
+	ID        *int64                `form:"id" json:"id"`
 	Author    string                `form:"author" json:"author"`
 	Rating    int                   `form:"rating" json:"rating"`
 	Content   *string               `form:"content" json:"content"`
@@ -34,6 +37,7 @@ type TestimonialRequest struct {
 }
 
 type SocialLinkRequest struct {
+	ID       *int64 `form:"id" json:"id"`
 	Platform string `form:"platform" json:"platform"`
 	URL      string `form:"url" json:"url"`
 }
