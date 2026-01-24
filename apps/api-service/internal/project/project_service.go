@@ -202,27 +202,43 @@ func (service Service) ShowBySlug(slug string, level string) (*models.Project, e
 func (service Service) ShowBySubDomain(subDomain string) (*models.Project, error) {
 	var project models.Project
 
-	query := service.DB
-
-	if err := query.First(&project, "sub_domain = ?", subDomain).Error; err != nil {
+	if err := service.DB.Where("sub_domain = ?", subDomain).First(&project).Error; err != nil {
 		return nil, err
 	}
 
-	if err := service.DB.
-		Preload("Portfolio").
-		Preload("Portfolio.User").
-		Preload("Portfolio.WorkExperiences", func(db *gorm.DB) *gorm.DB {
-			return db.Order("placement_order ASC")
-		}).
-		Preload("Portfolio.Education", func(db *gorm.DB) *gorm.DB {
-			return db.Order("placement_order ASC")
-		}).
-		Preload("Portfolio.Showcases", func(db *gorm.DB) *gorm.DB {
-			return db.Order("placement_order ASC")
-		}).
-		Preload("Portfolio.Showcases.ShowcaseTechnologies").
-		Preload("Portfolio.Skills").
-		First(&project, project.ID).Error; err != nil {
+	query := service.DB.Model(&models.Project{})
+
+	if project.Type == "biz" {
+		query = query.
+			Preload("Biz").
+			Preload("Biz.Services", func(db *gorm.DB) *gorm.DB {
+				return db.Order("placement_order ASC")
+			}).
+			Preload("Biz.Products", func(db *gorm.DB) *gorm.DB {
+				return db.Order("placement_order ASC")
+			}).
+			Preload("Biz.Testimonials", func(db *gorm.DB) *gorm.DB {
+				return db.Order("placement_order ASC")
+			}).
+			Preload("Biz.SocialLinks")
+	} else {
+		query = query.
+			Preload("Portfolio").
+			Preload("Portfolio.User").
+			Preload("Portfolio.WorkExperiences", func(db *gorm.DB) *gorm.DB {
+				return db.Order("placement_order ASC")
+			}).
+			Preload("Portfolio.Education", func(db *gorm.DB) *gorm.DB {
+				return db.Order("placement_order ASC")
+			}).
+			Preload("Portfolio.Showcases", func(db *gorm.DB) *gorm.DB {
+				return db.Order("placement_order ASC")
+			}).
+			Preload("Portfolio.Showcases.ShowcaseTechnologies").
+			Preload("Portfolio.Skills")
+	}
+
+	if err := query.First(&project, project.ID).Error; err != nil {
 		return nil, err
 	}
 

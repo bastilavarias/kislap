@@ -45,7 +45,13 @@ export function Builder({ initialProject, initialSubdomain }: BuilderProps) {
     );
   }
 
-  const themeObject = project.portfolio?.theme_object || {};
+  let themeObject = null;
+  if (project.type === 'portfolio') {
+    themeObject = project.portfolio?.theme_object || {};
+  } else if (project.type === 'biz') {
+    themeObject = project.biz?.theme_object || {};
+  }
+
   //@ts-ignore
   const themeStyles: ThemeStyles = themeObject?.styles || {};
 

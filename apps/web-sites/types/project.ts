@@ -13,4 +13,5 @@ export interface Project {
   deleted_at?: string;
 
   portfolio: Portfolio;
+  biz: any; // Create a type here
 }

@@ -12,10 +12,11 @@ interface TemplateProps {
   onSetThemeMode: React.Dispatch<React.SetStateAction<Mode>>;
 }
 
-import { PortfolioTemplates } from '@kislap/templates';
+import { BizTemplates, PortfolioTemplates } from '@kislap/templates';
 
 const { Default, Minimal, Bento, NeoBrutalist, Glass, Cyber, Newspaper, Kinetic, Vaporware } =
   PortfolioTemplates;
+const { DefaultBiz } = BizTemplates;
 
 type TemplateName = string;
 
@@ -29,6 +30,7 @@ const templates: Record<TemplateName, React.FC<TemplateProps>> = {
   newspaper: Newspaper,
   kinetic: Kinetic,
   vaporware: Vaporware,
+  'default-biz': DefaultBiz,
 };
 
 /**
@@ -45,13 +47,21 @@ export const renderTemplate = (
   themeStyles: ThemeStyles,
   onSetThemeMode: React.Dispatch<React.SetStateAction<Mode>>
 ): JSX.Element | null => {
-  const layoutName = project.portfolio.layout_name ?? 'default';
+  console.log(project);
+
+  let layoutName = 'default';
+  if (project.type === 'portfolio') {
+    layoutName = project.portfolio.layout_name || 'default';
+  } else if (project.type === 'biz') {
+    layoutName = project.biz.layout_name || 'default-biz';
+  }
   const Component = templates[layoutName as TemplateName];
 
   return Component ? (
     <Component
       project={project}
       portfolio={project.portfolio}
+      biz={project.biz}
       themeMode={themeMode}
       themeStyles={themeStyles}
       onSetThemeMode={onSetThemeMode}
