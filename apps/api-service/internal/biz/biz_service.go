@@ -139,12 +139,12 @@ func (service *Service) syncServices(db *gorm.DB, bizID uint64, projectID int64,
 	}
 	processedIDs := make(map[uint64]bool)
 
-	for _, req := range requests {
+	for _, request := range requests {
 		var model models.Service
 		var oldImage string
 
-		if req.ID != nil && *req.ID != 0 {
-			if match, ok := existingMap[uint64(*req.ID)]; ok {
+		if request.ID != nil && *request.ID != 0 {
+			if match, ok := existingMap[uint64(*request.ID)]; ok {
 				model = *match
 				processedIDs[model.ID] = true
 				if match.ImageURL != nil {
@@ -154,8 +154,8 @@ func (service *Service) syncServices(db *gorm.DB, bizID uint64, projectID int64,
 		}
 
 		newImgURL := model.ImageURL
-		if req.Image != nil {
-			url, err := service.uploadImage(req.Image, projectID, "services")
+		if request.Image != nil {
+			url, err := service.uploadImage(request.Image, projectID, "services")
 			if err != nil {
 				return err
 			}
@@ -163,16 +163,17 @@ func (service *Service) syncServices(db *gorm.DB, bizID uint64, projectID int64,
 			if oldImage != "" {
 				service.deleteImageInBackground(oldImage)
 			}
-		} else if req.ImageURL == nil && oldImage != "" {
+		} else if request.ImageURL == nil && oldImage != "" {
 		}
 
 		model.BizID = bizID
-		model.Name = req.Name
-		model.Description = req.Description
-		model.Price = req.Price
-		model.DurationMinutes = req.DurationMinutes
-		model.IsFeatured = req.IsFeatured
+		model.Name = request.Name
+		model.Description = request.Description
+		model.Price = request.Price
+		model.DurationMinutes = request.DurationMinutes
+		model.IsFeatured = request.IsFeatured
 		model.ImageURL = newImgURL
+		model.PlacementOrder = request.PlacementOrder
 
 		if model.ID != 0 {
 			if err := db.Save(&model).Error; err != nil {
@@ -210,14 +211,14 @@ func (service *Service) syncProducts(db *gorm.DB, bizID uint64, projectID int64,
 	}
 	processedIDs := make(map[uint64]bool)
 
-	for _, req := range requests {
+	for _, request := range requests {
 		var model models.Product
 		var oldImage string
 
-		fmt.Println(req)
+		fmt.Println(request)
 
-		if req.ID != nil && *req.ID != 0 {
-			if match, ok := existingMap[uint64(*req.ID)]; ok {
+		if request.ID != nil && *request.ID != 0 {
+			if match, ok := existingMap[uint64(*request.ID)]; ok {
 				model = *match
 				processedIDs[model.ID] = true
 				if match.ImageURL != nil {
@@ -227,8 +228,8 @@ func (service *Service) syncProducts(db *gorm.DB, bizID uint64, projectID int64,
 		}
 
 		newImgURL := model.ImageURL
-		if req.Image != nil {
-			url, err := service.uploadImage(req.Image, projectID, "products")
+		if request.Image != nil {
+			url, err := service.uploadImage(request.Image, projectID, "products")
 			if err != nil {
 				return err
 			}
@@ -239,12 +240,13 @@ func (service *Service) syncProducts(db *gorm.DB, bizID uint64, projectID int64,
 		}
 
 		model.BizID = bizID
-		model.Name = req.Name
-		model.Description = req.Description
-		model.Price = req.Price
-		model.Stock = req.Stock
-		model.IsActive = req.IsActive
+		model.Name = request.Name
+		model.Description = request.Description
+		model.Price = request.Price
+		model.Stock = request.Stock
+		model.IsActive = request.IsActive
 		model.ImageURL = newImgURL
+		model.PlacementOrder = request.PlacementOrder
 
 		if model.ID != 0 {
 			if err := db.Save(&model).Error; err != nil {
@@ -282,12 +284,12 @@ func (service *Service) syncTestimonials(db *gorm.DB, bizID uint64, projectID in
 	}
 	processedIDs := make(map[uint64]bool)
 
-	for _, req := range requests {
+	for _, request := range requests {
 		var model models.Testimonial
 		var oldAvatar string
 
-		if req.ID != nil && *req.ID != 0 {
-			if match, ok := existingMap[uint64(*req.ID)]; ok {
+		if request.ID != nil && *request.ID != 0 {
+			if match, ok := existingMap[uint64(*request.ID)]; ok {
 				model = *match
 				processedIDs[model.ID] = true
 				if match.AvatarURL != nil {
@@ -297,8 +299,8 @@ func (service *Service) syncTestimonials(db *gorm.DB, bizID uint64, projectID in
 		}
 
 		newAvatarURL := model.AvatarURL
-		if req.Avatar != nil {
-			url, err := service.uploadImage(req.Avatar, projectID, "testimonials")
+		if request.Avatar != nil {
+			url, err := service.uploadImage(request.Avatar, projectID, "testimonials")
 			if err != nil {
 				return err
 			}
@@ -309,10 +311,11 @@ func (service *Service) syncTestimonials(db *gorm.DB, bizID uint64, projectID in
 		}
 
 		model.BizID = bizID
-		model.Author = req.Author
-		model.Rating = req.Rating
-		model.Content = req.Content
+		model.Author = request.Author
+		model.Rating = request.Rating
+		model.Content = request.Content
 		model.AvatarURL = newAvatarURL
+		model.PlacementOrder = request.PlacementOrder
 
 		if model.ID != 0 {
 			if err := db.Save(&model).Error; err != nil {
@@ -350,19 +353,19 @@ func (service *Service) syncSocialLinks(db *gorm.DB, bizID uint64, requests []So
 	}
 	processedIDs := make(map[uint64]bool)
 
-	for _, req := range requests {
+	for _, request := range requests {
 		var model models.BizSocialLink
 
-		if req.ID != nil && *req.ID != 0 {
-			if match, ok := existingMap[uint64(*req.ID)]; ok {
+		if request.ID != nil && *request.ID != 0 {
+			if match, ok := existingMap[uint64(*request.ID)]; ok {
 				model = *match
 				processedIDs[model.ID] = true
 			}
 		}
 
 		model.BizID = bizID
-		model.Platform = req.Platform
-		model.URL = req.URL
+		model.Platform = request.Platform
+		model.URL = request.URL
 
 		if model.ID != 0 {
 			if err := db.Save(&model).Error; err != nil {

@@ -190,6 +190,7 @@ func (service Service) ShowBySlug(slug string, level string) (*models.Project, e
 			Preload("Biz.Services").
 			Preload("Biz.Products").
 			Preload("Biz.Testimonials").
+			Preload("Biz.SocialLinks").
 			First(&project, project.ID).Error; err != nil {
 			return nil, err
 		}

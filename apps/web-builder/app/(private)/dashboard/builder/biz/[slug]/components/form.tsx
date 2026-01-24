@@ -683,16 +683,19 @@ export function Form({
                   </AccordionItem>
                 </Accordion>
 
-                {/* 5. Social Links (Unchanged) */}
                 <Accordion type="single" defaultValue="socials" collapsible>
                   <AccordionItem value="socials" className="rounded-lg border px-4 shadow-none">
                     <AccordionTrigger className="cursor-pointer py-3 text-base font-medium hover:no-underline">
                       Social Links
                     </AccordionTrigger>
-                    <AccordionContent className="pt-2 pb-4">
+                    <AccordionContent className="pt-2 pb-4 px-1">
                       <div className="space-y-3">
                         {socialFields.map((field, index) => (
                           <div key={field.id} className="flex gap-3 items-end">
+                            <Input
+                              className="hidden"
+                              {...register(`social_links.${index}.id` as const)}
+                            />
                             <div className="w-1/3">
                               <Label className="text-xs text-muted-foreground mb-1 block">
                                 Platform

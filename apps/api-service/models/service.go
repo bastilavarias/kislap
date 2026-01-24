@@ -15,6 +15,7 @@ type Service struct {
 	DurationMinutes int     `json:"duration_minutes"`
 	IsFeatured      bool    `gorm:"default:false" json:"is_featured"`
 	ImageURL        *string `gorm:"type:text" json:"image_url"`
+	PlacementOrder  *int    `gorm:"type:int" json:"placement_order"`
 
 	CreatedAt time.Time      `gorm:"autoCreateTime" json:"created_at"`
 	UpdatedAt time.Time      `gorm:"autoUpdateTime" json:"updated_at"`

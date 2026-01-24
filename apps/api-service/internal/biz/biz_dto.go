@@ -14,32 +14,36 @@ type ServiceRequest struct {
 	IsFeatured      bool                  `form:"is_featured" json:"is_featured"`
 	ImageURL        *string               `form:"image_url" json:"image_url"`
 	Image           *multipart.FileHeader `form:"image" json:"image"`
+	PlacementOrder  *int                  `form:"placement_order" json:"placement_order"`
 }
 
 type ProductRequest struct {
-	ID          *int64                `form:"id" json:"id"`
-	Name        string                `form:"name" json:"name"`
-	Description *string               `form:"description" json:"description"`
-	Price       float64               `form:"price" json:"price"`
-	Stock       int                   `form:"stock" json:"stock"`
-	IsActive    bool                  `form:"is_active" json:"is_active"`
-	ImageURL    *string               `form:"image_url" json:"image_url"`
-	Image       *multipart.FileHeader `form:"image" json:"image"`
+	ID             *int64                `form:"id" json:"id"`
+	Name           string                `form:"name" json:"name"`
+	Description    *string               `form:"description" json:"description"`
+	Price          float64               `form:"price" json:"price"`
+	Stock          int                   `form:"stock" json:"stock"`
+	IsActive       bool                  `form:"is_active" json:"is_active"`
+	ImageURL       *string               `form:"image_url" json:"image_url"`
+	Image          *multipart.FileHeader `form:"image" json:"image"`
+	PlacementOrder *int                  `form:"placement_order" json:"placement_order"`
 }
 
 type TestimonialRequest struct {
-	ID        *int64                `form:"id" json:"id"`
-	Author    string                `form:"author" json:"author"`
-	Rating    int                   `form:"rating" json:"rating"`
-	Content   *string               `form:"content" json:"content"`
-	AvatarURL *string               `form:"avatar_url" json:"avatar_url"`
-	Avatar    *multipart.FileHeader `form:"avatar" json:"avatar"`
+	ID             *int64                `form:"id" json:"id"`
+	Author         string                `form:"author" json:"author"`
+	Rating         int                   `form:"rating" json:"rating"`
+	Content        *string               `form:"content" json:"content"`
+	AvatarURL      *string               `form:"avatar_url" json:"avatar_url"`
+	Avatar         *multipart.FileHeader `form:"avatar" json:"avatar"`
+	PlacementOrder *int                  `form:"placement_order" json:"placement_order"`
 }
 
 type SocialLinkRequest struct {
-	ID       *int64 `form:"id" json:"id"`
-	Platform string `form:"platform" json:"platform"`
-	URL      string `form:"url" json:"url"`
+	ID             *int64 `form:"id" json:"id"`
+	Platform       string `form:"platform" json:"platform"`
+	URL            string `form:"url" json:"url"`
+	PlacementOrder *int   `form:"placement_order" json:"placement_order"`
 }
 
 type ThemeRequest struct {

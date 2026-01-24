@@ -76,38 +76,50 @@ function mapToFormValues(source: APIResponseBiz): BizFormValues {
     ordering_enabled: source.ordering_enabled ?? false,
     layout_name: source.layout_name ?? 'default',
 
-    social_links: (source.social_links || []).map((link: any) => ({
-      platform: link.platform || '',
-      url: link.url || '',
-    })),
-    services: (source.services || []).map((service: any) => ({
-      id: service.id || null,
-      name: service.name || '',
-      description: service.description || '',
-      price: service.price || 0,
-      duration_minutes: service.duration_minutes || 0,
-      image: service.image || null,
-      image_url: service.image_url || null,
-      is_featured: service.is_featured ?? false,
-    })),
-    products: (source.products || []).map((product: any) => ({
-      id: product.id || null,
-      name: product.name || '',
-      description: product.description || '',
-      price: product.price || 0,
-      stock: product.stock || 0,
-      is_active: product.is_active ?? true,
-      image: product.image || null,
-      image_url: product.image_url || null,
-    })),
-    testimonials: (source.testimonials || []).map((testimonial: any) => ({
-      id: testimonial.id || null,
-      author: testimonial.author || '',
-      content: testimonial.content || '',
-      rating: testimonial.rating || 5,
-      avatar: testimonial.avatar || null,
-      avatar_url: testimonial.avatar_url || null,
-    })),
+    social_links: (source.social_links || [])
+      .sort((prev: any, after: any) => (prev.placement_order ?? 0) - (after.placement_order ?? 0))
+      .map((socialLink: any) => ({
+        id: socialLink.id || null,
+        platform: socialLink.platform || '',
+        url: socialLink.url || '',
+      })),
+
+    services: (source.services || [])
+      .sort((prev: any, after: any) => (prev.placement_order ?? 0) - (after.placement_order ?? 0))
+      .map((service: any) => ({
+        id: service.id || null,
+        name: service.name || '',
+        description: service.description || '',
+        price: service.price || 0,
+        duration_minutes: service.duration_minutes || 0,
+        image: service.image || null,
+        image_url: service.image_url || null,
+        is_featured: service.is_featured ?? false,
+      })),
+
+    products: (source.products || [])
+      .sort((prev: any, after: any) => (prev.placement_order ?? 0) - (after.placement_order ?? 0))
+      .map((product: any) => ({
+        id: product.id || null,
+        name: product.name || '',
+        description: product.description || '',
+        price: product.price || 0,
+        stock: product.stock || 0,
+        is_active: product.is_active ?? true,
+        image: product.image || null,
+        image_url: product.image_url || null,
+      })),
+
+    testimonials: (source.testimonials || [])
+      .sort((prev: any, after: any) => (prev.placement_order ?? 0) - (after.placement_order ?? 0))
+      .map((testimonial: any) => ({
+        id: testimonial.id || null,
+        author: testimonial.author || '',
+        content: testimonial.content || '',
+        rating: testimonial.rating || 5,
+        avatar: testimonial.avatar || null,
+        avatar_url: testimonial.avatar_url || null,
+      })),
 
     type: source.type || null,
     industry: source.industry || null,
@@ -201,11 +213,31 @@ export function BizProvider({ children }: { children: ReactNode }) {
 
     await handleSubmit(
       async (data) => {
+        const formattedData = Object.assign({
+          ...data,
+          services: data.services?.map((service: any, index: any) => ({
+            ...service,
+            placement_order: index,
+          })),
+          products: data.products?.map((product: any, index: any) => ({
+            ...product,
+            placement_order: index,
+          })),
+          testimonials: data.testimonials?.map((testimonial: any, index: any) => ({
+            ...testimonial,
+            placement_order: index,
+          })),
+          social_links: data.social_links?.map((socialLink: any, index: any) => ({
+            ...socialLink,
+            placement_order: index,
+          })),
+        });
+
         const fullPayload = {
           project_id: project?.id,
           biz_id: bizID || project?.biz?.id,
           user_id: user?.id,
-          ...data,
+          ...formattedData,
           theme: { ...localThemeSettings?.theme },
           layout_name: layout,
         };
@@ -273,7 +305,6 @@ export function BizProvider({ children }: { children: ReactNode }) {
 
   const onAddService = () => {
     servicesFieldArray.append({
-      id: null,
       name: 'New Service',
       description: '',
       price: 0,
