@@ -597,7 +597,6 @@ export function Form({
                   </AccordionItem>
                 </Accordion>
 
-                {/* 4. Testimonials */}
                 <Accordion type="single" defaultValue="testimonials" collapsible>
                   <AccordionItem
                     value="testimonials"
@@ -619,13 +618,13 @@ export function Form({
                           renderItem={(field, index) => {
                             const author = watch(`testimonials.${index}.author`);
                             const rating = watch(`testimonials.${index}.rating`);
-                            const imageUrl = watch(`testimonials.${index}.image_url`);
-                            const imageFile = watch(`testimonials.${index}.image`);
+                            const avatarURL = watch(`testimonials.${index}.avatar_url`);
+                            const avatarFile = watch(`testimonials.${index}.avatar`);
 
                             let thumbnail = null;
-                            if (imageFile instanceof File)
-                              thumbnail = URL.createObjectURL(imageFile);
-                            else if (imageUrl) thumbnail = imageUrl;
+                            if (avatarFile instanceof File)
+                              thumbnail = URL.createObjectURL(avatarFile);
+                            else if (avatarURL) thumbnail = avatarURL;
 
                             return (
                               <div className="flex items-center justify-between p-3 border rounded-lg bg-card hover:bg-muted/50 transition-colors">
@@ -877,9 +876,11 @@ export function Form({
                 <div>
                   <Label className="mb-2 block">Author Avatar</Label>
                   <ImageUploadField
-                    previewUrl={watch(`testimonials.${editState.index}.image_url`)}
-                    currentFile={watch(`testimonials.${editState.index}.image`) as File}
-                    onFileSelect={(file) => setValue(`testimonials.${editState.index}.image`, file)}
+                    previewUrl={watch(`testimonials.${editState.index}.avatar_url`)}
+                    currentFile={watch(`testimonials.${editState.index}.avatar`) as File}
+                    onFileSelect={(file) =>
+                      setValue(`testimonials.${editState.index}.avatar`, file)
+                    }
                   />
                 </div>
                 <div>

@@ -77,6 +77,8 @@ export const BizSchema = z.object({
         author: z.string().min(1, 'Author name is required'),
         content: z.string().optional().nullable(),
         rating: z.coerce.number().min(1).max(5).default(5),
+        avatar: z.file().optional().nullable(),
+        avatar_url: z.string().optional().nullable(),
       })
     )
     .optional()

@@ -33,7 +33,7 @@ type TestimonialRequest struct {
 	Rating    int                   `form:"rating" json:"rating"`
 	Content   *string               `form:"content" json:"content"`
 	AvatarURL *string               `form:"avatar_url" json:"avatar_url"`
-	Avatar    *multipart.FileHeader `form:"avatar" json:"image"`
+	Avatar    *multipart.FileHeader `form:"avatar" json:"avatar"`
 }
 
 type SocialLinkRequest struct {

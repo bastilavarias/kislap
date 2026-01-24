@@ -105,6 +105,8 @@ function mapToFormValues(source: APIResponseBiz): BizFormValues {
       author: testimonial.author || '',
       content: testimonial.content || '',
       rating: testimonial.rating || 5,
+      avatar: testimonial.avatar || null,
+      avatar_url: testimonial.avatar_url || null,
     })),
 
     type: source.type || null,
@@ -207,8 +209,6 @@ export function BizProvider({ children }: { children: ReactNode }) {
           theme: { ...localThemeSettings?.theme },
           layout_name: layout,
         };
-
-        console.log(fullPayload);
 
         const formData = new FormData();
         const jsonPayload = JSON.parse(JSON.stringify(fullPayload));
