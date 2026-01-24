@@ -24,12 +24,7 @@ return new class extends Migration
             $table->string('industry')->nullable();
             $table->string('email')->nullable();
             $table->string('phone')->nullable();
-            $table->string('website')->nullable();
             $table->string('address')->nullable();
-            $table->string('instagram')->nullable();
-            $table->string('map_link')->nullable();
-            $table->string('domain')->nullable();
-            $table->string('subdomain')->nullable();
             $table->boolean('services_enabled')->default(false);
             $table->boolean('products_enabled')->default(false);
             $table->boolean('booking_enabled')->default(false);

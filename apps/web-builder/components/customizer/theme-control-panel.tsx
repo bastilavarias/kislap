@@ -67,7 +67,7 @@ const ThemeControlPanel = ({
   const { setTheme } = useTheme();
   const { settings, updateSettings, applyThemePreset, resetToDefault } = useSettings();
 
-  const currentStyles = localSettings?.theme.styles?.[localSettings?.mode as Mode] || {};
+  const currentStyles = localSettings?.theme?.styles?.[localSettings?.mode as Mode] || {};
 
   const onLocalUpdateSettings = (newSettings: Partial<Settings>) => {
     if (stateless) {
@@ -123,8 +123,8 @@ const ThemeControlPanel = ({
 
   // Helper function to ensure both themes are updated together
   const updateBothThemes = (updates: Partial<ThemeStyleProps>) => {
-    const currentLight = localSettings?.theme.styles?.light || {};
-    const currentDark = localSettings?.theme.styles?.dark || {};
+    const currentLight = localSettings?.theme?.styles?.light || {};
+    const currentDark = localSettings?.theme?.styles?.dark || {};
 
     onLocalUpdateSettings({
       ...settings,
@@ -222,7 +222,7 @@ const ThemeControlPanel = ({
 
       <ThemePresetSelect
         presets={presets}
-        currentPreset={localSettings?.theme.preset || null}
+        currentPreset={localSettings?.theme?.preset || null}
         onPresetChange={onLocalApplyThemePreset}
         stateless={stateless}
         themeSettings={localSettings}
@@ -318,7 +318,7 @@ const ThemeControlPanel = ({
               fonts={sansSerifFonts}
               defaultValue={DEFAULT_FONT_SANS}
               currentFont={getAppliedThemeFont(
-                localSettings?.theme.styles?.[localSettings?.mode as Mode],
+                localSettings?.theme?.styles?.[localSettings?.mode as Mode],
                 'font-sans'
               )}
               onFontChange={(value) => handleFontChange('font-sans', value)}
@@ -333,7 +333,7 @@ const ThemeControlPanel = ({
               fonts={serifFonts}
               defaultValue={DEFAULT_FONT_SERIF}
               currentFont={getAppliedThemeFont(
-                localSettings?.theme.styles?.[localSettings?.mode as Mode],
+                localSettings?.theme?.styles?.[localSettings?.mode as Mode],
                 'font-serif'
               )}
               onFontChange={(value) => handleFontChange('font-serif', value)}
@@ -348,7 +348,7 @@ const ThemeControlPanel = ({
               fonts={monoFonts}
               defaultValue={DEFAULT_FONT_MONO}
               currentFont={getAppliedThemeFont(
-                localSettings?.theme.styles?.[localSettings?.mode as Mode],
+                localSettings?.theme?.styles?.[localSettings?.mode as Mode],
                 'font-mono'
               )}
               onFontChange={(value) => handleFontChange('font-mono', value)}
@@ -358,7 +358,7 @@ const ThemeControlPanel = ({
           <div className="mt-6">
             <SliderWithInput
               value={parseFloat(
-                localSettings?.theme.styles?.[localSettings.mode as Mode]?.[
+                localSettings?.theme?.styles?.[localSettings.mode as Mode]?.[
                   'letter-spacing'
                 ]?.replace('em', '') || '0'
               )}
@@ -404,7 +404,7 @@ const ThemeControlPanel = ({
           <div className="mt-6">
             <SliderWithInput
               value={parseFloat(
-                localSettings?.theme.styles?.[localSettings?.mode as Mode]?.spacing?.replace(
+                localSettings?.theme?.styles?.[localSettings?.mode as Mode]?.spacing?.replace(
                   'rem',
                   ''
                 ) || '0.25'

@@ -74,7 +74,7 @@ function mapToFormValues(source: APIResponseBiz): BizFormValues {
     products_enabled: source.products_enabled ?? false,
     booking_enabled: source.booking_enabled ?? false,
     ordering_enabled: source.ordering_enabled ?? false,
-    layout_name: source.layout_name ?? 'default',
+    layout_name: source.layout_name ?? 'default-biz',
 
     social_links: (source.social_links || [])
       .sort((prev: any, after: any) => (prev.placement_order ?? 0) - (after.placement_order ?? 0))
@@ -132,7 +132,7 @@ export function BizProvider({ children }: { children: ReactNode }) {
   const params = useParams();
   const [project, setProject] = useState<APIResponseProject | null>(null);
   const [localThemeSettings, setLocalThemeSettings] = useState<Settings | null>(null);
-  const [layout, setLayout] = useState<string>('default');
+  const [layout, setLayout] = useState<string>('default-biz');
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
@@ -169,7 +169,7 @@ export function BizProvider({ children }: { children: ReactNode }) {
       products_enabled: false,
       booking_enabled: false,
       ordering_enabled: false,
-      layout_name: 'default',
+      layout_name: 'default-biz',
       social_links: [],
       services: [],
       products: [],
@@ -200,7 +200,7 @@ export function BizProvider({ children }: { children: ReactNode }) {
           reset(mapped);
 
           setLocalThemeSettings({ mode: 'light', theme: data.biz.theme_object });
-          setLayout(data.biz.layout_name ?? 'default');
+          setLayout(data.biz.layout_name ?? 'default-biz');
         }
       }
       setIsLoading(false);

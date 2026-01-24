@@ -18,26 +18,17 @@ type Service struct {
 	ObjectStorage  objectStorage.Provider
 }
 
-func (service *Service) deleteImageInBackground(path string) {
-	if path == "" {
-		return
-	}
-	go func(p string) {
-		_, err := service.ObjectStorage.Delete(p)
-		if err != nil {
-			fmt.Printf("Failed to delete background image %s: %v\n", p, err)
-		}
-	}(path)
-}
-
 func (service *Service) Save(payload Payload) (*models.Biz, error) {
-	var themeRaw []byte
+	var themeRaw *json.RawMessage
+	var themeName *string
+
 	if payload.Theme != nil {
-		var err error
-		themeRaw, err = json.Marshal(payload.Theme)
+		tr, err := marshalTheme(*payload.Theme)
 		if err != nil {
 			return nil, fmt.Errorf("failed to marshal theme: %w", err)
 		}
+		themeRaw = tr
+		themeName = &payload.Theme.Preset
 	}
 
 	var biz models.Biz
@@ -52,16 +43,13 @@ func (service *Service) Save(payload Payload) (*models.Biz, error) {
 			Email:           &payload.Email,
 			Phone:           payload.Phone,
 			Address:         payload.Address,
-			Website:         &payload.Website,
 			ServicesEnabled: payload.ServicesEnabled,
 			ProductsEnabled: payload.ProductsEnabled,
 			BookingEnabled:  payload.BookingEnabled,
 			OrderingEnabled: payload.OrderingEnabled,
+			ThemeName:       themeName,
+			ThemeObject:     themeRaw,
 			LayoutName:      &payload.LayoutName,
-		}
-		if len(themeRaw) > 0 {
-			msg := json.RawMessage(themeRaw)
-			biz.ThemeObject = &msg
 		}
 
 		if err := service.DB.Create(&biz).Error; err != nil {
@@ -84,16 +72,19 @@ func (service *Service) Save(payload Payload) (*models.Biz, error) {
 			biz.Email = &payload.Email
 			biz.Phone = payload.Phone
 			biz.Address = payload.Address
-			biz.Website = &payload.Website
 			biz.ServicesEnabled = payload.ServicesEnabled
 			biz.ProductsEnabled = payload.ProductsEnabled
 			biz.BookingEnabled = payload.BookingEnabled
 			biz.OrderingEnabled = payload.OrderingEnabled
 			biz.LayoutName = &payload.LayoutName
 
-			if len(themeRaw) > 0 {
-				msg := json.RawMessage(themeRaw)
-				biz.ThemeObject = &msg
+			if payload.Theme != nil {
+				biz.ThemeName = themeName
+				biz.ThemeObject = themeRaw
+			}
+
+			if err := tx.Save(&biz).Error; err != nil {
+				return err
 			}
 
 			if err := tx.Save(&biz).Error; err != nil {
@@ -214,8 +205,6 @@ func (service *Service) syncProducts(db *gorm.DB, bizID uint64, projectID int64,
 	for _, request := range requests {
 		var model models.Product
 		var oldImage string
-
-		fmt.Println(request)
 
 		if request.ID != nil && *request.ID != 0 {
 			if match, ok := existingMap[uint64(*request.ID)]; ok {
@@ -413,4 +402,25 @@ func (service *Service) uploadImage(file *multipart.FileHeader, projectID int64,
 	}
 
 	return url, nil
+}
+
+func (service *Service) deleteImageInBackground(path string) {
+	if path == "" {
+		return
+	}
+	go func(url string) {
+		_, err := service.ObjectStorage.Delete(url)
+		if err != nil {
+			fmt.Printf("Failed to delete background image %s: %v\n", url, err)
+		}
+	}(path)
+}
+
+func marshalTheme(theme ThemeRequest) (*json.RawMessage, error) {
+	themeJSON, err := json.Marshal(theme)
+	if err != nil {
+		return nil, err
+	}
+	rawJSON := json.RawMessage(themeJSON)
+	return &rawJSON, nil
 }

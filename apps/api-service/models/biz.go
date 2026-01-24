@@ -16,11 +16,9 @@ type Biz struct {
 	Tagline     *string `gorm:"size:255" json:"tagline"`
 	Description *string `gorm:"type:text" json:"description"`
 
-	Email     *string `gorm:"size:255" json:"email"`
-	Phone     *string `gorm:"size:255" json:"phone"`
-	Address   *string `gorm:"size:255" json:"address"`
-	Website   *string `gorm:"size:255" json:"website"`
-	Instagram *string `gorm:"size:255" json:"instagram"`
+	Email   *string `gorm:"size:255" json:"email"`
+	Phone   *string `gorm:"size:255" json:"phone"`
+	Address *string `gorm:"size:255" json:"address"`
 
 	ServicesEnabled bool `gorm:"default:true" json:"services_enabled"`
 	ProductsEnabled bool `gorm:"default:true" json:"products_enabled"`

@@ -44,6 +44,7 @@ func (controller Controller) Save(context *gin.Context) {
 	}
 
 	var request CreateUpdateBizRequest
+
 	if err := json.Unmarshal([]byte(jsonBody), &request); err != nil {
 		utils.APIRespondError(context, http.StatusBadRequest, "Invalid JSON format: "+err.Error())
 		context.Abort()

@@ -1,7 +1,6 @@
 package biz
 
 import (
-	"encoding/json"
 	"mime/multipart"
 )
 
@@ -46,9 +45,55 @@ type SocialLinkRequest struct {
 	PlacementOrder *int   `form:"placement_order" json:"placement_order"`
 }
 
+type ThemeStyle struct {
+	Background               string `json:"background"`
+	Foreground               string `json:"foreground"`
+	Card                     string `json:"card"`
+	CardForeground           string `json:"card-foreground"`
+	Popover                  string `json:"popover"`
+	PopoverForeground        string `json:"popover-foreground"`
+	Primary                  string `json:"primary"`
+	PrimaryForeground        string `json:"primary-foreground"`
+	Secondary                string `json:"secondary"`
+	SecondaryForeground      string `json:"secondary-foreground"`
+	Muted                    string `json:"muted"`
+	MutedForeground          string `json:"muted-foreground"`
+	Accent                   string `json:"accent"`
+	AccentForeground         string `json:"accent-foreground"`
+	Destructive              string `json:"destructive"`
+	Border                   string `json:"border"`
+	Input                    string `json:"input"`
+	Ring                     string `json:"ring"`
+	Chart1                   string `json:"chart-1"`
+	Chart2                   string `json:"chart-2"`
+	Chart3                   string `json:"chart-3"`
+	Chart4                   string `json:"chart-4"`
+	Chart5                   string `json:"chart-5"`
+	Radius                   string `json:"radius"`
+	Sidebar                  string `json:"sidebar"`
+	SidebarForeground        string `json:"sidebar-foreground"`
+	SidebarPrimary           string `json:"sidebar-primary"`
+	SidebarPrimaryForeground string `json:"sidebar-primary-foreground"`
+	SidebarAccent            string `json:"sidebar-accent"`
+	SidebarAccentForeground  string `json:"sidebar-accent-foreground"`
+	SidebarBorder            string `json:"sidebar-border"`
+	SidebarRing              string `json:"sidebar-ring"`
+	FontSans                 string `json:"font-sans"`
+	FontSerif                string `json:"font-serif"`
+	FontMono                 string `json:"font-mono"`
+	ShadowColor              string `json:"shadow-color"`
+	ShadowOpacity            string `json:"shadow-opacity"`
+	ShadowBlur               string `json:"shadow-blur"`
+	ShadowSpread             string `json:"shadow-spread"`
+	ShadowOffsetX            string `json:"shadow-offset-x"`
+	ShadowOffsetY            string `json:"shadow-offset-y"`
+	LetterSpacing            string `json:"letter-spacing"`
+	Spacing                  string `json:"spacing"`
+}
+
 type ThemeRequest struct {
-	Name   string          `form:"name" json:"name"`
-	Object json.RawMessage `form:"object" json:"object"`
+	Preset string                `json:"preset"`
+	Styles map[string]ThemeStyle `json:"styles"`
 }
 
 type CreateUpdateBizRequest struct {
@@ -60,11 +105,9 @@ type CreateUpdateBizRequest struct {
 	Tagline     string `form:"tagline" json:"tagline"`
 	Description string `form:"description" json:"description"`
 
-	Email     string  `form:"email" json:"email"`
-	Phone     *string `form:"phone" json:"phone"`
-	Address   *string `form:"address" json:"address"`
-	Website   string  `form:"website" json:"website"`
-	Instagram string  `form:"instagram" json:"instagram"`
+	Email   string  `form:"email" json:"email"`
+	Phone   *string `form:"phone" json:"phone"`
+	Address *string `form:"address" json:"address"`
 
 	ServicesEnabled bool `form:"services_enabled" json:"services_enabled"`
 	ProductsEnabled bool `form:"products_enabled" json:"products_enabled"`
@@ -81,11 +124,32 @@ type CreateUpdateBizRequest struct {
 }
 
 type Payload struct {
-	CreateUpdateBizRequest
+	BizID     *int64
+	ProjectID int64
+	UserID    int64
+
+	Name        string
+	Tagline     string
+	Description string
+
+	Email   string
+	Phone   *string
+	Address *string
+
+	ServicesEnabled bool
+	ProductsEnabled bool
+	BookingEnabled  bool
+	OrderingEnabled bool
+
+	LayoutName string
+	Theme      *ThemeRequest
+
+	Services     []ServiceRequest
+	Products     []ProductRequest
+	Testimonials []TestimonialRequest
+	SocialLinks  []SocialLinkRequest
 }
 
 func (request CreateUpdateBizRequest) ToServicePayload() Payload {
-	return Payload{
-		CreateUpdateBizRequest: request,
-	}
+	return Payload(request)
 }

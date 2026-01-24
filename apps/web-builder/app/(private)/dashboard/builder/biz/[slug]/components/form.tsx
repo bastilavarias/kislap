@@ -59,7 +59,7 @@ import { BizFormValues } from '@/lib/schemas/biz';
 import { SortableList } from '@/components/sortable-list';
 
 const LAYOUT_OPTIONS = [
-  { id: 'default', name: 'Default', icon: LayoutTemplate, description: 'Clean & Standard' },
+  { id: 'default-biz', name: 'Default', icon: LayoutTemplate, description: 'Clean & Standard' },
 ];
 
 interface Props {
