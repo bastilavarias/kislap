@@ -1,39 +1,29 @@
 "use client";
 
-import { useMemo, useState, useEffect } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  MapPin,
-  Mail,
-  Phone,
-  Instagram,
-  Facebook,
-  Twitter,
-  Linkedin,
-  Globe,
-  Loader2,
-  ArrowRight,
-  Menu,
-  X,
-  ShoppingBag,
-  Star,
-  ChevronDown,
-} from "lucide-react";
-import { ThemeSwitchToggle } from "../theme-switch-toggle";
-import { Mode } from "@/contexts/settings-context";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
+import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  MapPin,
+  Phone,
+  Mail,
+  Clock,
+  ArrowRight,
+  Star,
+  Plus,
+  Minus,
+  Quote,
+} from "lucide-react";
+import { Mode } from "@/contexts/settings-context";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
+import { ThemeSwitchToggle } from "../theme-switch-toggle";
 
-// --- Types (Same as before) ---
+// --- Types ---
 interface BizService {
   id: number;
   name: string;
@@ -48,6 +38,7 @@ interface BizProduct {
   id: number;
   name: string;
   description: string | null;
+  category: string | null;
   price: number;
   stock: number;
   is_active: boolean;
@@ -62,6 +53,17 @@ interface BizTestimonial {
   avatar_url: string | null;
 }
 
+interface BizFAQ {
+  id: number;
+  question: string;
+  answer: string;
+}
+
+interface BizGalleryImage {
+  id: number;
+  image_url: string | null;
+}
+
 interface SocialLink {
   id: number;
   platform: string;
@@ -73,9 +75,17 @@ export interface BizData {
   name: string;
   tagline: string | null;
   description: string | null;
+  logo_url: string | null;
+  hero_title: string | null;
+  hero_description: string | null;
+  hero_image_url: string | null;
+  about_image_url: string | null;
   email: string | null;
   phone: string | null;
   address: string | null;
+  map_link: string | null;
+  schedule: string | null;
+  operation_hours: string | null;
   services_enabled: boolean;
   products_enabled: boolean;
   booking_enabled: boolean;
@@ -84,6 +94,8 @@ export interface BizData {
   products: BizProduct[];
   testimonials: BizTestimonial[];
   social_links: SocialLink[];
+  biz_faqs: BizFAQ[];
+  biz_gallery: BizGalleryImage[];
 }
 
 interface Props {
@@ -92,246 +104,149 @@ interface Props {
   onSetThemeMode: React.Dispatch<React.SetStateAction<Mode>>;
 }
 
-// --- High Quality Placeholders (Japanese Bakery Style) ---
-const IMAGES = {
-  hero: "https://images.unsplash.com/photo-1612203985729-70726954388c?q=80&w=2000&auto=format&fit=crop", // Soft japanese cheesecake style
-  texture: "https://www.transparenttextures.com/patterns/snow.png",
-  fallback_product:
-    "https://images.unsplash.com/photo-1608198093002-ad4e005484ec?q=80&w=800&auto=format&fit=crop",
-  fallback_avatar:
-    "https://images.unsplash.com/photo-1544717305-2782549b5136?q=80&w=200&auto=format&fit=crop",
-  story:
-    "https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=1000&auto=format&fit=crop", // Baker working
-};
-
-// --- Smooth Scroll Helper ---
-const scrollToSection = (id: string) => {
-  const element = document.getElementById(id);
-  if (element) {
-    element.scrollIntoView({ behavior: "smooth" });
-  }
-};
-
 // --- Components ---
-
-const Navbar = ({
-  biz,
-  themeMode,
-  onSetThemeMode,
-}: {
-  biz: BizData;
-  themeMode: Mode;
-  onSetThemeMode: any;
-}) => {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const isDarkMode = themeMode === "dark";
-
-  useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 50);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const NavLink = ({ to, label }: { to: string; label: string }) => (
-    <button
-      onClick={() => {
-        scrollToSection(to);
-        setMobileMenuOpen(false);
-      }}
-      className="text-sm font-medium tracking-wide hover:text-primary transition-colors uppercase"
-    >
-      {label}
-    </button>
-  );
-
-  return (
-    <nav
-      className={cn(
-        "fixed top-0 inset-x-0 z-50 transition-all duration-500 ease-in-out px-6 md:px-12",
-        isScrolled
-          ? "bg-background/95 backdrop-blur-md shadow-sm py-4"
-          : "bg-transparent py-8",
-      )}
-    >
-      <div className="max-w-screen-2xl mx-auto flex items-center justify-between">
-        {/* Brand */}
-        <button
-          onClick={() => scrollToSection("home")}
-          className="text-2xl font-bold tracking-tighter font-serif z-50 relative"
-        >
-          {biz.name}
-          <span className="text-primary text-4xl leading-none">.</span>
-        </button>
-
-        {/* Desktop Links */}
-        <div className="hidden md:flex items-center gap-10">
-          <NavLink to="products" label="Signatures" />
-          <NavLink to="about" label="Our Story" />
-          <NavLink to="reviews" label="Reviews" />
-          <NavLink to="contact" label="Visit Us" />
-          <ThemeSwitchToggle
-            isDarkMode={isDarkMode}
-            onSetThemeMode={onSetThemeMode}
-          />
-          {biz.ordering_enabled && (
-            <Button className="rounded-full px-8 bg-foreground text-background hover:bg-foreground/90 font-medium tracking-wide">
-              Order Online
-            </Button>
-          )}
-        </div>
-
-        {/* Mobile Toggle */}
-        <div className="md:hidden flex items-center gap-4 z-50">
-          <ThemeSwitchToggle
-            isDarkMode={isDarkMode}
-            onSetThemeMode={onSetThemeMode}
-          />
-          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-            {mobileMenuOpen ? <X /> : <Menu />}
-          </button>
-        </div>
-      </div>
-
-      {/* Mobile Menu Overlay */}
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="absolute inset-0 h-screen bg-background flex flex-col items-center justify-center gap-8 md:hidden z-40"
-          >
-            <NavLink to="products" label="Signatures" />
-            <NavLink to="about" label="Our Story" />
-            <NavLink to="reviews" label="Reviews" />
-            <NavLink to="contact" label="Visit Us" />
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </nav>
-  );
-};
 
 const Hero = ({ biz }: { biz: BizData }) => {
   return (
-    <section
-      id="home"
-      className="relative min-h-[100vh] flex items-center justify-center overflow-hidden"
-    >
-      {/* Background Image with Parallax-like feel */}
+    <section className="relative min-h-[85vh] flex flex-col items-center justify-center text-center px-6">
+      {/* Background */}
       <div className="absolute inset-0 z-0">
-        <img
-          src={IMAGES.hero}
-          alt="Hero"
-          className="w-full h-full object-cover opacity-90 brightness-[0.85] scale-105"
-        />
+        {biz.hero_image_url ? (
+          <img
+            src={biz.hero_image_url}
+            alt="Hero"
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <div className="w-full h-full bg-muted" />
+        )}
+        <div className="absolute inset-0 bg-black/40" />
       </div>
 
-      <div className="relative z-10 text-center text-white px-4 max-w-4xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-10 duration-1000">
-        <p className="text-sm md:text-base tracking-[0.3em] uppercase opacity-90 font-medium">
-          {biz.tagline || "Authentic Japanese Bakery"}
-        </p>
-        <h1 className="text-6xl md:text-8xl lg:text-9xl font-serif font-light tracking-tight leading-none">
-          {biz.name}
-        </h1>
-        <p className="text-lg md:text-xl font-light opacity-90 max-w-xl mx-auto leading-relaxed">
-          {biz.description || "Handcrafted daily with premium ingredients."}
-        </p>
+      {/* Content */}
+      <div className="relative z-10 max-w-4xl mx-auto space-y-8 text-white animate-in fade-in slide-in-from-bottom-8 duration-1000">
+        {/* Logo Centered */}
+        <div className="flex justify-center mb-8">
+          {biz.logo_url ? (
+            <img
+              src={biz.logo_url}
+              alt="Logo"
+              className="h-24 md:h-32 object-contain drop-shadow-xl"
+            />
+          ) : (
+            <div className="h-24 w-24 rounded-full bg-[#8c7355] flex items-center justify-center text-4xl font-serif font-bold shadow-xl border-4 border-white/20">
+              {biz.name.charAt(0)}
+            </div>
+          )}
+        </div>
 
-        <div className="pt-8 flex flex-col sm:flex-row gap-4 justify-center">
-          <Button
-            onClick={() => scrollToSection("products")}
-            size="lg"
-            className="h-14 px-10 bg-white text-black hover:bg-white/90 rounded-full text-base tracking-wide"
-          >
-            View Menu
-          </Button>
-          <Button
-            onClick={() => scrollToSection("contact")}
-            size="lg"
-            variant="outline"
-            className="h-14 px-10 border-white text-white hover:bg-white/10 rounded-full text-base tracking-wide bg-transparent"
-          >
-            Find a Store
+        <div className="space-y-4">
+          <p className="text-sm md:text-base tracking-[0.4em] uppercase font-medium text-white/90">
+            {biz.tagline || "Established 2020"}
+          </p>
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif font-medium leading-none tracking-tight">
+            {biz.hero_title || biz.name}
+          </h1>
+          <p className="text-lg md:text-xl font-light opacity-90 max-w-xl mx-auto leading-relaxed">
+            {biz.hero_description}
+          </p>
+        </div>
+
+        <div className="pt-8">
+          <Button className="bg-[#8c7355] hover:bg-[#7a6246] text-white rounded-none h-14 px-10 text-xs font-bold uppercase tracking-[0.2em] shadow-lg border border-white/20">
+            {biz.ordering_enabled ? "Order Online" : "View Details"}
           </Button>
         </div>
-      </div>
-
-      {/* Scroll Indicator */}
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 text-white animate-bounce">
-        <ChevronDown className="w-8 h-8 opacity-70" />
       </div>
     </section>
   );
 };
 
-const ProductGrid = ({ products }: { products: BizProduct[] }) => {
-  if (!products || products.length === 0) return null;
+const InfoStrip = ({ biz }: { biz: BizData }) => {
+  return (
+    <div className="bg-[#1a1a1a] text-white py-12 px-6">
+      <div className="max-w-screen-xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-center divide-y md:divide-y-0 md:divide-x divide-white/10">
+        <div className="flex flex-col items-center gap-3 px-4">
+          <Clock className="w-6 h-6 text-[#8c7355]" />
+          <h3 className="uppercase tracking-widest text-xs font-bold text-[#8c7355]">
+            Opening Hours
+          </h3>
+          <p className="text-sm opacity-80">
+            {biz.schedule} <br /> {biz.operation_hours}
+          </p>
+        </div>
+        <div className="flex flex-col items-center gap-3 px-4 pt-8 md:pt-0">
+          <MapPin className="w-6 h-6 text-[#8c7355]" />
+          <h3 className="uppercase tracking-widest text-xs font-bold text-[#8c7355]">
+            Location
+          </h3>
+          <p className="text-sm opacity-80">{biz.address}</p>
+        </div>
+        <div className="flex flex-col items-center gap-3 px-4 pt-8 md:pt-0">
+          <Phone className="w-6 h-6 text-[#8c7355]" />
+          <h3 className="uppercase tracking-widest text-xs font-bold text-[#8c7355]">
+            Contact
+          </h3>
+          <p className="text-sm opacity-80">
+            {biz.phone} <br /> {biz.email}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const ProductsGrid = ({ products }: { products: BizProduct[] }) => {
+  if (!products?.length) return null;
 
   return (
-    <section
-      id="products"
-      className="py-24 md:py-32 px-6 md:px-12 bg-background"
-    >
-      <div className="max-w-screen-2xl mx-auto space-y-16">
+    <section className="py-24 px-6 bg-background">
+      <div className="max-w-screen-xl mx-auto space-y-16">
         <div className="text-center space-y-4">
-          <h2 className="text-4xl md:text-5xl font-serif font-medium">
-            Signatures
+          <h2 className="text-4xl md:text-5xl font-serif text-[#8c7355]">
+            Our Menu
           </h2>
-          <div className="w-px h-16 bg-primary mx-auto opacity-50"></div>
-          <p className="text-muted-foreground tracking-wide uppercase text-sm">
-            Freshly Baked • Premium Ingredients
+          <p className="text-muted-foreground italic max-w-lg mx-auto">
+            Freshly prepared daily using traditional recipes.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
           {products.map((product) => (
-            <div key={product.id} className="group cursor-pointer space-y-6">
-              <div className="relative aspect-[4/5] overflow-hidden bg-muted/20">
-                <img
-                  src={product.image_url || IMAGES.fallback_product}
-                  alt={product.name}
-                  className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
-                />
-
-                {/* Minimal Overlay */}
-                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                  <Button
-                    variant="outline"
-                    className="text-white border-white hover:bg-white hover:text-black rounded-full"
-                  >
-                    View Details
-                  </Button>
-                </div>
-
+            <div key={product.id} className="group">
+              <div className="relative aspect-square overflow-hidden bg-muted mb-6">
+                {product.image_url ? (
+                  <img
+                    src={product.image_url}
+                    alt={product.name}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+                    No Image
+                  </div>
+                )}
                 {product.stock === 0 && (
-                  <div className="absolute top-4 right-4 bg-white/90 px-3 py-1 text-xs uppercase tracking-widest font-bold">
-                    Sold Out
+                  <div className="absolute inset-0 bg-white/60 flex items-center justify-center">
+                    <span className="bg-black text-white px-3 py-1 text-xs uppercase tracking-widest">
+                      Sold Out
+                    </span>
                   </div>
                 )}
               </div>
-
               <div className="text-center space-y-2">
-                <h3 className="text-xl font-medium font-serif group-hover:text-primary transition-colors">
+                <h3 className="font-serif text-xl font-medium">
                   {product.name}
                 </h3>
-                <p className="text-muted-foreground text-sm font-light line-clamp-2 px-4">
-                  {product.description || "A delightful treat made with care."}
+                <p className="text-sm text-muted-foreground line-clamp-2 px-4">
+                  {product.description}
                 </p>
-                <p className="text-lg font-medium pt-2">${product.price}</p>
+                <p className="text-[#8c7355] font-bold text-lg pt-2">
+                  ${product.price}
+                </p>
               </div>
             </div>
           ))}
-        </div>
-
-        <div className="text-center pt-8">
-          <Button
-            variant="link"
-            className="text-lg text-muted-foreground hover:text-primary tracking-widest uppercase"
-          >
-            View Full Menu <ArrowRight className="ml-2 w-4 h-4" />
-          </Button>
         </div>
       </div>
     </section>
@@ -340,49 +255,45 @@ const ProductGrid = ({ products }: { products: BizProduct[] }) => {
 
 const AboutSection = ({ biz }: { biz: BizData }) => {
   return (
-    <section id="about" className="py-24 bg-muted/30">
-      <div className="max-w-screen-2xl mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-        <div className="relative aspect-[3/4] lg:aspect-square overflow-hidden">
-          <img
-            src={IMAGES.story}
-            alt="Our Chef"
-            className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-1000"
-          />
-        </div>
-
-        <div className="space-y-8 lg:pl-12">
-          <span className="text-xs font-bold tracking-[0.2em] uppercase text-primary">
-            The Philosophy
-          </span>
-          <h2 className="text-5xl md:text-6xl lg:text-7xl font-serif font-light leading-[1.1]">
-            Simple.
-            <br />
-            Honest.
-            <br />
-            Delicious.
-          </h2>
-          <div className="space-y-6 text-lg text-muted-foreground font-light leading-relaxed max-w-lg">
-            <p>
-              At {biz.name}, we believe that baking is an act of love. We don't
-              take shortcuts. Every loaf, every pastry, and every cake is
-              crafted by hand using time-honored traditions.
-            </p>
-            <p>{biz.description}</p>
+    <section className="py-24 px-6 bg-[#f9f7f2] dark:bg-muted/10">
+      <div className="max-w-screen-xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        <div className="space-y-8 order-2 lg:order-1">
+          <div className="space-y-4">
+            <span className="text-[#8c7355] font-bold uppercase tracking-widest text-xs">
+              Our Heritage
+            </span>
+            <h2 className="text-4xl md:text-6xl font-serif leading-tight">
+              Crafting Tradition Since 2020.
+            </h2>
           </div>
-
-          {/* Signature or Stats */}
-          <div className="pt-8 grid grid-cols-2 gap-8 border-t border-primary/20">
-            <div>
-              <p className="text-4xl font-serif">24h</p>
-              <p className="text-xs uppercase tracking-wider mt-2 opacity-60">
-                Fermentation
-              </p>
-            </div>
-            <div>
-              <p className="text-4xl font-serif">100%</p>
-              <p className="text-xs uppercase tracking-wider mt-2 opacity-60">
-                Natural
-              </p>
+          <div className="prose prose-lg text-muted-foreground">
+            <p>
+              {biz.description ||
+                "We are dedicated to the art of creation. Every product that leaves our kitchen is a testament to our commitment to quality."}
+            </p>
+          </div>
+          <div className="pt-4">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Signature_sample.svg/1200px-Signature_sample.svg.png"
+              alt="Signature"
+              className="h-12 opacity-50"
+            />
+          </div>
+        </div>
+        <div className="order-1 lg:order-2 h-[500px] w-full relative">
+          <div className="absolute inset-0 p-4 border border-[#8c7355]/30">
+            <div className="w-full h-full relative overflow-hidden bg-white">
+              {biz.about_image_url ? (
+                <img
+                  src={biz.about_image_url}
+                  alt="About"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+                  About Image
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -391,44 +302,31 @@ const AboutSection = ({ biz }: { biz: BizData }) => {
   );
 };
 
-const ReviewsSection = ({
-  testimonials,
-}: {
-  testimonials: BizTestimonial[];
-}) => {
-  if (!testimonials || testimonials.length === 0) return null;
+const ServicesList = ({ services }: { services: BizService[] }) => {
+  if (!services?.length) return null;
 
   return (
-    <section id="reviews" className="py-32 px-6">
-      <div className="max-w-4xl mx-auto text-center space-y-16">
-        <h2 className="text-3xl font-serif italic text-muted-foreground">
-          "Words from our community"
+    <section className="py-24 px-6 bg-background border-t border-border">
+      <div className="max-w-screen-lg mx-auto text-center space-y-12">
+        <h2 className="text-3xl md:text-4xl font-serif text-[#8c7355]">
+          Our Services
         </h2>
-
-        <div className="grid gap-12">
-          {testimonials.slice(0, 3).map((t) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {services.map((service) => (
             <div
-              key={t.id}
-              className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700"
+              key={service.id}
+              className="border border-border p-8 hover:border-[#8c7355] transition-colors bg-card"
             >
-              <div className="flex justify-center gap-1 text-primary/60">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-4 h-4 fill-current" />
-                ))}
-              </div>
-              <p className="text-2xl md:text-4xl font-light leading-tight">
-                "{t.content}"
+              <h3 className="text-xl font-serif font-bold mb-3">
+                {service.name}
+              </h3>
+              <p className="text-muted-foreground text-sm mb-4 leading-relaxed">
+                {service.description}
               </p>
-              <div className="flex items-center justify-center gap-3">
-                <Avatar className="w-10 h-10">
-                  <AvatarImage src={t.avatar_url || IMAGES.fallback_avatar} />
-                  <AvatarFallback>{t.author[0]}</AvatarFallback>
-                </Avatar>
-                <div className="text-left">
-                  <p className="text-sm font-bold uppercase tracking-wide">
-                    {t.author}
-                  </p>
-                </div>
+              <div className="flex justify-center items-center gap-4 text-xs font-bold uppercase tracking-widest text-[#8c7355]">
+                <span>${service.price}</span>
+                <span>•</span>
+                <span>{service.duration_minutes} Mins</span>
               </div>
             </div>
           ))}
@@ -438,143 +336,297 @@ const ReviewsSection = ({
   );
 };
 
-const ContactForm = () => {
-  const [loading, setLoading] = useState(false);
+const GalleryGrid = ({ images }: { images: BizGalleryImage[] }) => {
+  if (!images?.length) return null;
+
+  return (
+    <section className="py-24 px-6 bg-background">
+      <div className="max-w-screen-2xl mx-auto space-y-12">
+        <div className="text-center">
+          <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+            Portfolio
+          </span>
+          <h2 className="text-4xl font-serif text-[#8c7355] mt-2">
+            A Glimpse Inside
+          </h2>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+          {images.map((img, i) => (
+            <div
+              key={i}
+              className={cn(
+                "relative aspect-square overflow-hidden bg-muted group",
+                i === 0 && "col-span-2 row-span-2",
+              )}
+            >
+              <img
+                src={img.image_url || ""}
+                alt="Gallery"
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const FAQAndTestimonials = ({ biz }: { biz: BizData }) => {
+  const [openFaq, setOpenFaq] = useState<number | null>(0);
+
+  if (!biz.biz_faqs?.length && !biz.testimonials?.length) return null;
+
+  return (
+    <section className="py-24 px-6 bg-[#f9f7f2] dark:bg-muted/10">
+      <div className="max-w-screen-xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24">
+        {/* Reviews */}
+        {biz.testimonials?.length > 0 && (
+          <div className="space-y-8">
+            <h3 className="text-2xl font-serif text-[#8c7355]">
+              Customer Reviews
+            </h3>
+            <div className="space-y-6">
+              {biz.testimonials.map((t) => (
+                <div
+                  key={t.id}
+                  className="bg-background p-8 border border-border shadow-sm"
+                >
+                  <div className="flex text-[#8c7355] mb-4 gap-1">
+                    {[...Array(5)].map((_, i) => (
+                      <Star
+                        key={i}
+                        className={cn(
+                          "w-3 h-3",
+                          i < t.rating ? "fill-current" : "opacity-30",
+                        )}
+                      />
+                    ))}
+                  </div>
+                  <p className="text-muted-foreground italic mb-6">
+                    "{t.content}"
+                  </p>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-muted rounded-full overflow-hidden">
+                      {t.avatar_url && (
+                        <img
+                          src={t.avatar_url}
+                          className="w-full h-full object-cover"
+                        />
+                      )}
+                    </div>
+                    <div>
+                      <p className="font-bold text-sm">{t.author}</p>
+                      <p className="text-xs text-muted-foreground uppercase">
+                        Verified
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* FAQs */}
+        {biz.biz_faqs?.length > 0 && (
+          <div className="space-y-8">
+            <h3 className="text-2xl font-serif text-[#8c7355]">
+              Common Questions
+            </h3>
+            <div className="space-y-2">
+              {biz.biz_faqs.map((faq, idx) => (
+                <div
+                  key={faq.id}
+                  className="bg-background border border-border"
+                >
+                  <button
+                    onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
+                    className="w-full flex justify-between items-center p-6 text-left hover:bg-muted/50 transition-colors"
+                  >
+                    <span className="font-serif font-medium pr-4">
+                      {faq.question}
+                    </span>
+                    {openFaq === idx ? (
+                      <Minus className="w-4 h-4 text-[#8c7355]" />
+                    ) : (
+                      <Plus className="w-4 h-4" />
+                    )}
+                  </button>
+                  <AnimatePresence>
+                    {openFaq === idx && (
+                      <motion.div
+                        initial={{ height: 0 }}
+                        animate={{ height: "auto" }}
+                        exit={{ height: 0 }}
+                        className="overflow-hidden"
+                      >
+                        <div className="p-6 pt-0 text-sm text-muted-foreground leading-relaxed border-t border-dashed">
+                          <div
+                            dangerouslySetInnerHTML={{ __html: faq.answer }}
+                          />
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+};
+
+const ContactAndMap = ({ biz }: { biz: BizData }) => {
   const { register, handleSubmit, reset } = useForm();
 
   const onSubmit = async () => {
-    setLoading(true);
-    await new Promise((r) => setTimeout(r, 1500));
-    toast.success("Message sent.");
-    setLoading(false);
+    await new Promise((r) => setTimeout(r, 1000));
+    toast.success("Message sent");
     reset();
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 max-w-md">
-      <div className="space-y-2">
-        <label className="text-xs uppercase tracking-wider font-bold">
-          Name
-        </label>
-        <Input
-          {...register("name")}
-          className="border-0 border-b border-primary/20 rounded-none bg-transparent px-0 focus-visible:ring-0 focus-visible:border-primary"
-          placeholder="Enter your name"
-        />
+    <section className="bg-background">
+      <div className="grid grid-cols-1 lg:grid-cols-2">
+        {/* Contact Form */}
+        <div className="p-8 md:p-16 lg:p-24 flex flex-col justify-center border-b lg:border-b-0 lg:border-r border-border">
+          <div className="max-w-md mx-auto w-full space-y-8">
+            <div>
+              <span className="text-[#8c7355] font-bold uppercase tracking-widest text-xs">
+                Get in Touch
+              </span>
+              <h2 className="text-4xl font-serif mt-2">Contact Us</h2>
+            </div>
+
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+              <div className="space-y-2">
+                <label className="text-xs uppercase font-bold tracking-wider">
+                  Name
+                </label>
+                <Input
+                  {...register("name")}
+                  className="rounded-none border-0 border-b border-input bg-transparent px-0 shadow-none focus-visible:ring-0 focus-visible:border-[#8c7355]"
+                  placeholder="Your name"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-xs uppercase font-bold tracking-wider">
+                  Email
+                </label>
+                <Input
+                  {...register("email")}
+                  className="rounded-none border-0 border-b border-input bg-transparent px-0 shadow-none focus-visible:ring-0 focus-visible:border-[#8c7355]"
+                  placeholder="Your email"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-xs uppercase font-bold tracking-wider">
+                  Message
+                </label>
+                <Textarea
+                  {...register("message")}
+                  className="min-h-[100px] resize-none rounded-none border-0 border-b border-input bg-transparent px-0 shadow-none focus-visible:ring-0 focus-visible:border-[#8c7355]"
+                  placeholder="How can we help?"
+                />
+              </div>
+              <Button className="w-full bg-[#8c7355] hover:bg-[#7a6246] text-white rounded-none h-12 uppercase text-xs font-bold tracking-widest">
+                Send Message
+              </Button>
+            </form>
+          </div>
+        </div>
+
+        {/* Map Embed */}
+        <div className="h-[500px] lg:h-auto bg-muted relative">
+          {biz.address ? (
+            <iframe
+              width="100%"
+              height="100%"
+              frameBorder="0"
+              scrolling="no"
+              marginHeight={0}
+              marginWidth={0}
+              src={`https://maps.google.com/maps?q=${encodeURIComponent(biz.address)}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
+              className="grayscale hover:grayscale-0 transition-all duration-700"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+              Map Unavailable
+            </div>
+          )}
+          {biz.map_link && (
+            <a
+              href={biz.map_link}
+              target="_blank"
+              className="absolute bottom-6 right-6 bg-white text-black px-6 py-3 shadow-xl text-xs font-bold uppercase tracking-widest hover:bg-[#8c7355] hover:text-white transition-colors"
+            >
+              Open in Google Maps
+            </a>
+          )}
+        </div>
       </div>
-      <div className="space-y-2">
-        <label className="text-xs uppercase tracking-wider font-bold">
-          Email
-        </label>
-        <Input
-          {...register("email")}
-          className="border-0 border-b border-primary/20 rounded-none bg-transparent px-0 focus-visible:ring-0 focus-visible:border-primary"
-          placeholder="Enter your email"
-        />
-      </div>
-      <div className="space-y-2">
-        <label className="text-xs uppercase tracking-wider font-bold">
-          Message
-        </label>
-        <Textarea
-          {...register("message")}
-          className="border-0 border-b border-primary/20 rounded-none bg-transparent px-0 focus-visible:ring-0 focus-visible:border-primary min-h-[100px] resize-none"
-          placeholder="How can we help?"
-        />
-      </div>
-      <Button
-        disabled={loading}
-        className="w-full rounded-none h-12 text-xs uppercase tracking-widest font-bold"
-      >
-        {loading ? <Loader2 className="animate-spin" /> : "Send Message"}
-      </Button>
-    </form>
+    </section>
   );
 };
 
-const Footer = ({ biz }: { biz: BizData }) => {
-  return (
-    <footer
-      id="contact"
-      className="bg-foreground text-background py-24 px-6 md:px-12"
-    >
-      <div className="max-w-screen-2xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16">
-        <div className="space-y-8">
-          <h3 className="text-3xl font-serif font-bold">{biz.name}.</h3>
-          <div className="space-y-4 text-sm opacity-80 font-light">
-            <p>{biz.address}</p>
-            <p>{biz.phone}</p>
-            <p>{biz.email}</p>
-          </div>
-          <div className="flex gap-4">
-            {biz.social_links.map((l) => (
-              <Link
-                key={l.id}
-                href={l.url}
-                className="hover:text-primary transition-colors"
-              >
-                {l.platform.toLowerCase().includes("instagram") ? (
-                  <Instagram className="w-5 h-5" />
-                ) : (
-                  <Globe className="w-5 h-5" />
-                )}
-              </Link>
-            ))}
-          </div>
-        </div>
-
-        <div className="space-y-8">
-          <h4 className="text-sm font-bold uppercase tracking-widest">Hours</h4>
-          <div className="space-y-2 text-sm opacity-80 font-light">
-            <div className="flex justify-between max-w-[200px] border-b border-white/10 pb-2">
-              <span>Mon - Fri</span>
-              <span>7am - 8pm</span>
-            </div>
-            <div className="flex justify-between max-w-[200px] border-b border-white/10 pb-2">
-              <span>Sat - Sun</span>
-              <span>8am - 9pm</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="lg:col-span-2 space-y-8">
-          <h4 className="text-sm font-bold uppercase tracking-widest">
-            Contact Us
-          </h4>
-          <ContactForm />
-        </div>
+const MinimalFooter = ({ biz }: { biz: BizData }) => (
+  <footer className="bg-[#1a1a1a] text-white py-6 px-6 text-center text-xs tracking-widest uppercase">
+    <div className="flex flex-col md:flex-row justify-between items-center max-w-screen-xl mx-auto gap-4">
+      <p>
+        © {new Date().getFullYear()} {biz.name}.
+      </p>
+      <div className="flex gap-6 opacity-60">
+        {biz.social_links?.map((l) => (
+          <a
+            key={l.id}
+            href={l.url}
+            className="hover:text-white hover:opacity-100 transition-all"
+          >
+            {l.platform}
+          </a>
+        ))}
       </div>
+    </div>
+  </footer>
+);
 
-      <div className="mt-24 pt-8 border-t border-white/10 text-center text-xs opacity-40 uppercase tracking-widest">
-        © {new Date().getFullYear()} {biz.name}. All rights reserved.
-      </div>
-    </footer>
-  );
-};
-
-// --- Main Layout ---
+// --- MAIN LAYOUT ---
 
 export function DefaultBiz({ biz, themeMode, onSetThemeMode }: Props) {
   if (!biz) return null;
 
   return (
-    <div className="min-h-screen bg-background text-foreground font-sans selection:bg-primary/20 selection:text-primary">
-      <style jsx global>{`
-        html {
-          scroll-behavior: smooth;
-        }
-      `}</style>
-
-      <Navbar biz={biz} themeMode={themeMode} onSetThemeMode={onSetThemeMode} />
+    <div className="min-h-screen bg-background text-foreground font-sans selection:bg-[#8c7355] selection:text-white">
+      {/* Floating Theme Toggle (Since no navbar) */}
+      <div className="fixed top-6 right-6 z-50 mix-blend-difference text-white">
+        <ThemeSwitchToggle
+          isDarkMode={themeMode === "dark"}
+          onSetThemeMode={onSetThemeMode}
+        />
+      </div>
 
       <main>
         <Hero biz={biz} />
-        <ProductGrid products={biz.products} />
+        <InfoStrip biz={biz} />
+
+        {biz.products_enabled && <ProductsGrid products={biz.products} />}
+
         <AboutSection biz={biz} />
-        <ReviewsSection testimonials={biz.testimonials} />
+
+        {biz.services_enabled && <ServicesList services={biz.services} />}
+
+        <GalleryGrid images={biz.biz_gallery} />
+
+        <FAQAndTestimonials biz={biz} />
+
+        <ContactAndMap biz={biz} />
       </main>
 
-      <Footer biz={biz} />
+      <MinimalFooter biz={biz} />
     </div>
   );
 }
