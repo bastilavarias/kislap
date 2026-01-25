@@ -53,14 +53,12 @@ interface BizContextType {
   onAddService: () => void;
   onAddProduct: () => void;
   onAddTestimonial: () => void;
-  onAddFaq: () => void; // NEW
+  onAddFaq: () => void;
 }
 
 const BizContext = createContext<BizContextType | undefined>(undefined);
 
 function mapToFormValues(source: APIResponseBiz): BizFormValues {
-  console.log(source);
-
   return {
     name: source.name || '',
     tagline: source.tagline || '',

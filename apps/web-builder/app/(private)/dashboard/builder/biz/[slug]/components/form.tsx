@@ -873,7 +873,6 @@ export function Form({
                   </AccordionItem>
                 </Accordion>
 
-                {/* 2. SERVICES SECTION */}
                 <Accordion type="single" defaultValue="services" collapsible>
                   <AccordionItem value="services" className="rounded-lg border px-4 shadow-none">
                     <AccordionTrigger className="cursor-pointer py-3 text-base font-medium hover:no-underline">
@@ -955,7 +954,6 @@ export function Form({
                   </AccordionItem>
                 </Accordion>
 
-                {/* 3. PRODUCTS SECTION */}
                 <Accordion type="single" defaultValue="products" collapsible>
                   <AccordionItem value="products" className="rounded-lg border px-4 shadow-none">
                     <AccordionTrigger className="cursor-pointer py-3 text-base font-medium hover:no-underline">
@@ -1057,7 +1055,6 @@ export function Form({
                   </AccordionItem>
                 </Accordion>
 
-                {/* 4. FAQs SECTION (UPDATED TO DIALOG STYLE) */}
                 <Accordion type="single" defaultValue="faqs" collapsible>
                   <AccordionItem value="faqs" className="rounded-lg border px-4 shadow-none">
                     <AccordionTrigger className="cursor-pointer py-3 text-base font-medium hover:no-underline">
@@ -1299,13 +1296,13 @@ export function Form({
             <DialogDescription>Make changes to the selected item below.</DialogDescription>
           </DialogHeader>
           <div className="py-4 space-y-6">
-            {/* SERVICE EDIT */}
             {editState.type === 'service' && editState.index !== null && (
               <>
                 <input type="hidden" {...register(`services.${editState.index}.id`)} />
                 <div>
                   <Label className="mb-2 block">Service Image</Label>
                   <ImageUploadField
+                    id="service-edit-image"
                     previewUrl={watch(`services.${editState.index}.image_url`)}
                     currentFile={watch(`services.${editState.index}.image`) as File}
                     onFileSelect={(file) => setValue(`services.${editState.index}.image`, file)}
@@ -1354,16 +1351,15 @@ export function Form({
               </>
             )}
 
-            {/* PRODUCT EDIT - RESTRUCTURED */}
             {editState.type === 'product' && editState.index !== null && (
               <>
                 <input type="hidden" {...register(`products.${editState.index}.id`)} />
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* Left Col */}
                   <div className="space-y-4">
                     <div>
                       <Label className="mb-2 block">Product Image</Label>
                       <ImageUploadField
+                        id="product-edit-image"
                         previewUrl={watch(`products.${editState.index}.image_url`)}
                         currentFile={watch(`products.${editState.index}.image`) as File}
                         onFileSelect={(file) => setValue(`products.${editState.index}.image`, file)}
@@ -1379,7 +1375,6 @@ export function Form({
                     </div>
                   </div>
 
-                  {/* Right Col */}
                   <div className="space-y-4">
                     <div>
                       <Label className="mb-2 block">Product Name</Label>
@@ -1434,6 +1429,7 @@ export function Form({
                 <div>
                   <Label className="mb-2 block">Author Avatar</Label>
                   <ImageUploadField
+                    id="testimonial-edit-avatar"
                     previewUrl={watch(`testimonials.${editState.index}.avatar_url`)}
                     currentFile={watch(`testimonials.${editState.index}.avatar`) as File}
                     onFileSelect={(file) =>
