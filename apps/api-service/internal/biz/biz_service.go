@@ -32,17 +32,12 @@ func (service *Service) Save(payload Payload) (*models.Biz, error) {
 	}
 
 	var biz models.Biz
+	isNew := payload.BizID == nil
 
-	if payload.BizID == nil {
+	if isNew {
 		biz = models.Biz{
 			UserID:          uint64(payload.UserID),
 			ProjectID:       uint64(payload.ProjectID),
-			Name:            payload.Name,
-			Tagline:         &payload.Tagline,
-			Description:     &payload.Description,
-			Email:           &payload.Email,
-			Phone:           payload.Phone,
-			Address:         payload.Address,
 			ServicesEnabled: payload.ServicesEnabled,
 			ProductsEnabled: payload.ProductsEnabled,
 			BookingEnabled:  payload.BookingEnabled,
@@ -51,54 +46,87 @@ func (service *Service) Save(payload Payload) (*models.Biz, error) {
 			ThemeObject:     themeRaw,
 			LayoutName:      &payload.LayoutName,
 		}
-
-		if err := service.DB.Create(&biz).Error; err != nil {
-			return nil, err
-		}
-
-		if err := service.runAllSyncs(service.DB, &biz, payload); err != nil {
-			return nil, err
-		}
-
 	} else {
-		err := service.DB.Transaction(func(tx *gorm.DB) error {
-			if err := tx.First(&biz, payload.BizID).Error; err != nil {
-				return err
-			}
-
-			biz.Name = payload.Name
-			biz.Tagline = &payload.Tagline
-			biz.Description = &payload.Description
-			biz.Email = &payload.Email
-			biz.Phone = payload.Phone
-			biz.Address = payload.Address
-			biz.ServicesEnabled = payload.ServicesEnabled
-			biz.ProductsEnabled = payload.ProductsEnabled
-			biz.BookingEnabled = payload.BookingEnabled
-			biz.OrderingEnabled = payload.OrderingEnabled
-			biz.LayoutName = &payload.LayoutName
-
-			if payload.Theme != nil {
-				biz.ThemeName = themeName
-				biz.ThemeObject = themeRaw
-			}
-
-			if err := tx.Save(&biz).Error; err != nil {
-				return err
-			}
-
-			if err := tx.Save(&biz).Error; err != nil {
-				return err
-			}
-
-			return service.runAllSyncs(tx, &biz, payload)
-		})
-		if err != nil {
+		if err := service.DB.First(&biz, payload.BizID).Error; err != nil {
 			return nil, err
 		}
 	}
 
-	service.DB.Preload("Services").Preload("Products").Preload("Testimonials").Preload("SocialLinks").First(&biz, biz.ID)
+	// --- 1. Map Top-Level Fields ---
+	biz.Name = payload.Name
+	biz.Tagline = &payload.Tagline
+	biz.Description = &payload.Description // About Us Text
+	biz.Email = &payload.Email
+	biz.Phone = payload.Phone
+	biz.Address = payload.Address
+	biz.MapLink = payload.MapLink
+	biz.Schedule = payload.Schedule
+	biz.OperationHours = payload.OperationHours
+	biz.ServicesEnabled = payload.ServicesEnabled
+	biz.ProductsEnabled = payload.ProductsEnabled
+	biz.BookingEnabled = payload.BookingEnabled
+	biz.OrderingEnabled = payload.OrderingEnabled
+	biz.LayoutName = &payload.LayoutName
+
+	if payload.Theme != nil {
+		biz.ThemeName = themeName
+		biz.ThemeObject = themeRaw
+	}
+
+	// --- 2. Handle Root Level File Uploads ---
+	// Logo
+	if payload.Logo != nil {
+		if biz.LogoURL != nil {
+			service.deleteImageInBackground(*biz.LogoURL)
+		}
+		url, _ := service.uploadImage(payload.Logo, int64(biz.ProjectID), "branding")
+		biz.LogoURL = &url
+	} else if payload.LogoURL == nil && biz.LogoURL != nil {
+		service.deleteImageInBackground(*biz.LogoURL)
+		biz.LogoURL = nil
+	}
+
+	// Hero Image
+	if payload.HeroImage != nil {
+		if biz.HeroImageURL != nil {
+			service.deleteImageInBackground(*biz.HeroImageURL)
+		}
+		url, _ := service.uploadImage(payload.HeroImage, int64(biz.ProjectID), "hero")
+		biz.HeroImageURL = &url
+	}
+
+	// About Image
+	if payload.AboutImage != nil {
+		if biz.AboutImageURL != nil {
+			service.deleteImageInBackground(*biz.AboutImageURL)
+		}
+		url, _ := service.uploadImage(payload.AboutImage, int64(biz.ProjectID), "about")
+		biz.AboutImageURL = &url
+	}
+
+	// New Fields for Hero
+	biz.HeroTitle = payload.HeroTitle
+	biz.HeroDescription = payload.HeroDescription
+
+	// --- 3. Save Biz & Sync Collections ---
+	err := service.DB.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Save(&biz).Error; err != nil {
+			return err
+		}
+		return service.runAllSyncs(tx, &biz, payload)
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	service.DB.Preload("Services").
+		Preload("Products").
+		Preload("Testimonials").
+		Preload("SocialLinks").
+		Preload("FAQs").
+		Preload("GalleryImages").
+		First(&biz, biz.ID)
 
 	return &biz, nil
 }
@@ -116,85 +144,19 @@ func (service *Service) runAllSyncs(db *gorm.DB, biz *models.Biz, payload Payloa
 	if err := service.syncSocialLinks(db, biz.ID, payload.SocialLinks); err != nil {
 		return err
 	}
-	return nil
-}
-
-func (service *Service) syncServices(db *gorm.DB, bizID uint64, projectID int64, requests []ServiceRequest) error {
-	var existing []models.Service
-	if err := db.Where("biz_id = ?", bizID).Find(&existing).Error; err != nil {
+	if err := service.syncFAQs(db, biz.ID, payload.FAQs); err != nil {
 		return err
 	}
-	existingMap := make(map[uint64]*models.Service)
-	for i := range existing {
-		existingMap[existing[i].ID] = &existing[i]
-	}
-	processedIDs := make(map[uint64]bool)
-
-	for _, request := range requests {
-		var model models.Service
-		var oldImage string
-
-		if request.ID != nil && *request.ID != 0 {
-			if match, ok := existingMap[uint64(*request.ID)]; ok {
-				model = *match
-				processedIDs[model.ID] = true
-				if match.ImageURL != nil {
-					oldImage = *match.ImageURL
-				}
-			}
-		}
-
-		newImgURL := model.ImageURL
-		if request.Image != nil {
-			url, err := service.uploadImage(request.Image, projectID, "services")
-			if err != nil {
-				return err
-			}
-			newImgURL = &url
-			if oldImage != "" {
-				service.deleteImageInBackground(oldImage)
-			}
-		} else if request.ImageURL == nil && oldImage != "" {
-		}
-
-		model.BizID = bizID
-		model.Name = request.Name
-		model.Description = request.Description
-		model.Price = request.Price
-		model.DurationMinutes = request.DurationMinutes
-		model.IsFeatured = request.IsFeatured
-		model.ImageURL = newImgURL
-		model.PlacementOrder = request.PlacementOrder
-
-		if model.ID != 0 {
-			if err := db.Save(&model).Error; err != nil {
-				return err
-			}
-		} else {
-			if err := db.Create(&model).Error; err != nil {
-				return err
-			}
-		}
-	}
-
-	for id, item := range existingMap {
-		if !processedIDs[id] {
-			if err := db.Delete(item).Error; err != nil {
-				return err
-			}
-			if item.ImageURL != nil {
-				service.deleteImageInBackground(*item.ImageURL)
-			}
-		}
+	if err := service.syncGalleryImages(db, biz.ID, int64(biz.ProjectID), payload.GalleryImages); err != nil {
+		return err
 	}
 	return nil
 }
 
+// Updated Sync Products to include Category
 func (service *Service) syncProducts(db *gorm.DB, bizID uint64, projectID int64, requests []ProductRequest) error {
 	var existing []models.Product
-	if err := db.Where("biz_id = ?", bizID).Find(&existing).Error; err != nil {
-		return err
-	}
+	db.Where("biz_id = ?", bizID).Find(&existing)
 
 	existingMap := make(map[uint64]*models.Product)
 	for i := range existing {
@@ -218,10 +180,7 @@ func (service *Service) syncProducts(db *gorm.DB, bizID uint64, projectID int64,
 
 		newImgURL := model.ImageURL
 		if request.Image != nil {
-			url, err := service.uploadImage(request.Image, projectID, "products")
-			if err != nil {
-				return err
-			}
+			url, _ := service.uploadImage(request.Image, projectID, "products")
 			newImgURL = &url
 			if oldImage != "" {
 				service.deleteImageInBackground(oldImage)
@@ -230,6 +189,7 @@ func (service *Service) syncProducts(db *gorm.DB, bizID uint64, projectID int64,
 
 		model.BizID = bizID
 		model.Name = request.Name
+		model.Category = request.Category // Added Category
 		model.Description = request.Description
 		model.Price = request.Price
 		model.Stock = request.Stock
@@ -237,22 +197,131 @@ func (service *Service) syncProducts(db *gorm.DB, bizID uint64, projectID int64,
 		model.ImageURL = newImgURL
 		model.PlacementOrder = request.PlacementOrder
 
-		if model.ID != 0 {
-			if err := db.Save(&model).Error; err != nil {
-				return err
-			}
-		} else {
-			if err := db.Create(&model).Error; err != nil {
-				return err
-			}
-		}
+		db.Save(&model)
 	}
 
 	for id, item := range existingMap {
 		if !processedIDs[id] {
-			if err := db.Delete(item).Error; err != nil {
-				return err
+			db.Delete(item)
+			if item.ImageURL != nil {
+				service.deleteImageInBackground(*item.ImageURL)
 			}
+		}
+	}
+	return nil
+}
+
+// New Sync FAQs
+func (service *Service) syncFAQs(db *gorm.DB, bizID uint64, requests []FAQRequest) error {
+	db.Where("biz_id = ?", bizID).Delete(&models.BizFAQ{})
+	for _, request := range requests {
+		model := models.BizFAQ{
+			BizID:          bizID,
+			Question:       request.Question,
+			Answer:         request.Answer,
+			PlacementOrder: request.PlacementOrder,
+		}
+		db.Create(&model)
+	}
+	return nil
+}
+
+// New Sync Gallery
+func (service *Service) syncGalleryImages(db *gorm.DB, bizID uint64, projectID int64, requests []GalleryImageRequest) error {
+	var existing []models.BizGallery
+	db.Where("biz_id = ?", bizID).Find(&existing)
+
+	existingMap := make(map[uint64]*models.BizGallery)
+	for i := range existing {
+		existingMap[existing[i].ID] = &existing[i]
+	}
+	processedIDs := make(map[uint64]bool)
+
+	for _, request := range requests {
+		var model models.BizGallery
+		var oldImage string
+
+		if request.ID != nil && *request.ID != 0 {
+			if match, ok := existingMap[uint64(*request.ID)]; ok {
+				model = *match
+				processedIDs[model.ID] = true
+				if match.ImageURL != nil {
+					oldImage = *match.ImageURL
+				}
+			}
+		}
+
+		newImgURL := model.ImageURL
+		if request.Image != nil {
+			url, _ := service.uploadImage(request.Image, projectID, "gallery")
+			newImgURL = &url
+			if oldImage != "" {
+				service.deleteImageInBackground(oldImage)
+			}
+		} else if request.ImageURL != nil {
+			newImgURL = request.ImageURL
+		}
+
+		model.BizID = bizID
+		model.ImageURL = newImgURL
+		model.PlacementOrder = request.PlacementOrder
+		db.Save(&model)
+	}
+
+	for id, item := range existingMap {
+		if !processedIDs[id] {
+			db.Delete(item)
+			if item.ImageURL != nil {
+				service.deleteImageInBackground(*item.ImageURL)
+			}
+		}
+	}
+	return nil
+}
+
+// ... syncServices, syncTestimonials, syncSocialLinks (Keep as is or adjust categories if needed)
+
+func (service *Service) syncServices(db *gorm.DB, bizID uint64, projectID int64, requests []ServiceRequest) error {
+	var existing []models.Service
+	db.Where("biz_id = ?", bizID).Find(&existing)
+	existingMap := make(map[uint64]*models.Service)
+	for i := range existing {
+		existingMap[existing[i].ID] = &existing[i]
+	}
+	processedIDs := make(map[uint64]bool)
+	for _, request := range requests {
+		var model models.Service
+		var oldImage string
+		if request.ID != nil && *request.ID != 0 {
+			if match, ok := existingMap[uint64(*request.ID)]; ok {
+				model = *match
+				processedIDs[model.ID] = true
+				if match.ImageURL != nil {
+					oldImage = *match.ImageURL
+				}
+			}
+		}
+		newImgURL := model.ImageURL
+		if request.Image != nil {
+			url, _ := service.uploadImage(request.Image, projectID, "services")
+			newImgURL = &url
+			if oldImage != "" {
+				service.deleteImageInBackground(oldImage)
+			}
+		}
+		model.BizID = bizID
+		model.Name = request.Name
+		model.Description = request.Description
+		model.Price = request.Price
+		model.DurationMinutes = request.DurationMinutes
+		model.IsFeatured = request.IsFeatured
+		model.ImageURL = newImgURL
+		model.PlacementOrder = request.PlacementOrder
+		db.Save(&model)
+	}
+	for id, item := range existingMap {
+		if !processedIDs[id] {
+			db.Delete(item)
 			if item.ImageURL != nil {
 				service.deleteImageInBackground(*item.ImageURL)
 			}
@@ -263,20 +332,15 @@ func (service *Service) syncProducts(db *gorm.DB, bizID uint64, projectID int64,
 
 func (service *Service) syncTestimonials(db *gorm.DB, bizID uint64, projectID int64, requests []TestimonialRequest) error {
 	var existing []models.Testimonial
-	if err := db.Where("biz_id = ?", bizID).Find(&existing).Error; err != nil {
-		return err
-	}
-
+	db.Where("biz_id = ?", bizID).Find(&existing)
 	existingMap := make(map[uint64]*models.Testimonial)
 	for i := range existing {
 		existingMap[existing[i].ID] = &existing[i]
 	}
 	processedIDs := make(map[uint64]bool)
-
 	for _, request := range requests {
 		var model models.Testimonial
 		var oldAvatar string
-
 		if request.ID != nil && *request.ID != 0 {
 			if match, ok := existingMap[uint64(*request.ID)]; ok {
 				model = *match
@@ -286,42 +350,25 @@ func (service *Service) syncTestimonials(db *gorm.DB, bizID uint64, projectID in
 				}
 			}
 		}
-
 		newAvatarURL := model.AvatarURL
 		if request.Avatar != nil {
-			url, err := service.uploadImage(request.Avatar, projectID, "testimonials")
-			if err != nil {
-				return err
-			}
+			url, _ := service.uploadImage(request.Avatar, projectID, "testimonials")
 			newAvatarURL = &url
 			if oldAvatar != "" {
 				service.deleteImageInBackground(oldAvatar)
 			}
 		}
-
 		model.BizID = bizID
 		model.Author = request.Author
 		model.Rating = request.Rating
 		model.Content = request.Content
 		model.AvatarURL = newAvatarURL
 		model.PlacementOrder = request.PlacementOrder
-
-		if model.ID != 0 {
-			if err := db.Save(&model).Error; err != nil {
-				return err
-			}
-		} else {
-			if err := db.Create(&model).Error; err != nil {
-				return err
-			}
-		}
+		db.Save(&model)
 	}
-
 	for id, item := range existingMap {
 		if !processedIDs[id] {
-			if err := db.Delete(item).Error; err != nil {
-				return err
-			}
+			db.Delete(item)
 			if item.AvatarURL != nil {
 				service.deleteImageInBackground(*item.AvatarURL)
 			}
@@ -332,46 +379,28 @@ func (service *Service) syncTestimonials(db *gorm.DB, bizID uint64, projectID in
 
 func (service *Service) syncSocialLinks(db *gorm.DB, bizID uint64, requests []SocialLinkRequest) error {
 	var existing []models.BizSocialLink
-	if err := db.Where("biz_id = ?", bizID).Find(&existing).Error; err != nil {
-		return err
-	}
-
+	db.Where("biz_id = ?", bizID).Find(&existing)
 	existingMap := make(map[uint64]*models.BizSocialLink)
 	for i := range existing {
 		existingMap[existing[i].ID] = &existing[i]
 	}
 	processedIDs := make(map[uint64]bool)
-
 	for _, request := range requests {
 		var model models.BizSocialLink
-
 		if request.ID != nil && *request.ID != 0 {
 			if match, ok := existingMap[uint64(*request.ID)]; ok {
 				model = *match
 				processedIDs[model.ID] = true
 			}
 		}
-
 		model.BizID = bizID
 		model.Platform = request.Platform
 		model.URL = request.URL
-
-		if model.ID != 0 {
-			if err := db.Save(&model).Error; err != nil {
-				return err
-			}
-		} else {
-			if err := db.Create(&model).Error; err != nil {
-				return err
-			}
-		}
+		db.Save(&model)
 	}
-
 	for id, item := range existingMap {
 		if !processedIDs[id] {
-			if err := db.Delete(item).Error; err != nil {
-				return err
-			}
+			db.Delete(item)
 		}
 	}
 	return nil
@@ -381,26 +410,21 @@ func (service *Service) uploadImage(file *multipart.FileHeader, projectID int64,
 	if file == nil {
 		return "", nil
 	}
-
 	src, err := file.Open()
 	if err != nil {
 		return "", fmt.Errorf("failed to open file: %w", err)
 	}
 	defer src.Close()
-
 	uniqueName := fmt.Sprintf("%d_%s", time.Now().UnixNano(), file.Filename)
 	path := fmt.Sprintf("projects/%d/biz/%s/%s", projectID, folder, uniqueName)
-
 	contentType := file.Header.Get("Content-Type")
 	if contentType == "" {
 		contentType = "application/octet-stream"
 	}
-
 	url, err := service.ObjectStorage.Upload(path, src, contentType)
 	if err != nil {
 		return "", fmt.Errorf("storage upload failed: %w", err)
 	}
-
 	return url, nil
 }
 

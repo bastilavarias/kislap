@@ -30,12 +30,14 @@ func NewController(db *gorm.DB, objectStorage objectStorage.Provider) *Controlle
 }
 
 func (controller Controller) Save(context *gin.Context) {
+	// Parse multipart form (allow up to 32MB)
 	if err := context.Request.ParseMultipartForm(32 << 20); err != nil {
 		utils.APIRespondError(context, http.StatusBadRequest, "File upload error: "+err.Error())
 		context.Abort()
 		return
 	}
 
+	// 1. Extract JSON Body
 	jsonBody := context.Request.FormValue("json_body")
 	if jsonBody == "" {
 		utils.APIRespondError(context, http.StatusBadRequest, "Missing 'json_body' in form data")
@@ -53,6 +55,20 @@ func (controller Controller) Save(context *gin.Context) {
 
 	form := context.Request.MultipartForm
 
+	// 2. Map Root Level Files (Logo, Hero, About)
+	if files, ok := form.File["logo"]; ok && len(files) > 0 {
+		request.Logo = files[0]
+	}
+	if files, ok := form.File["hero_image"]; ok && len(files) > 0 {
+		request.HeroImage = files[0]
+	}
+	if files, ok := form.File["about_image"]; ok && len(files) > 0 {
+		request.AboutImage = files[0]
+	}
+
+	// 3. Map Collection Files
+
+	// Services Images
 	for i := range request.Services {
 		key := fmt.Sprintf("services[%d].image", i)
 		if files, ok := form.File[key]; ok && len(files) > 0 {
@@ -60,6 +76,7 @@ func (controller Controller) Save(context *gin.Context) {
 		}
 	}
 
+	// Product Images
 	for i := range request.Products {
 		key := fmt.Sprintf("products[%d].image", i)
 		if files, ok := form.File[key]; ok && len(files) > 0 {
@@ -67,6 +84,7 @@ func (controller Controller) Save(context *gin.Context) {
 		}
 	}
 
+	// Testimonial Avatars
 	for i := range request.Testimonials {
 		key := fmt.Sprintf("testimonials[%d].avatar", i)
 		if files, ok := form.File[key]; ok && len(files) > 0 {
@@ -74,6 +92,15 @@ func (controller Controller) Save(context *gin.Context) {
 		}
 	}
 
+	// Gallery Images
+	for i := range request.GalleryImages {
+		key := fmt.Sprintf("gallery_images[%d].image", i)
+		if files, ok := form.File[key]; ok && len(files) > 0 {
+			request.GalleryImages[i].Image = files[0]
+		}
+	}
+
+	// 4. Save via Service
 	biz, err := controller.Service.Save(request.ToServicePayload())
 	if err != nil {
 		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
@@ -102,6 +129,8 @@ func (controller Controller) Get(context *gin.Context) {
 		Preload("Products").
 		Preload("Testimonials").
 		Preload("SocialLinks").
+		Preload("FAQs").
+		Preload("Gallery").
 		First(&biz, bizID).Error; err != nil {
 		context.JSON(http.StatusNotFound, gin.H{"error": "Biz not found"})
 		return

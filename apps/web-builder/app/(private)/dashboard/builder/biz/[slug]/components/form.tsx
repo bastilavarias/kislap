@@ -81,9 +81,6 @@ const LAYOUT_OPTIONS = [
   { id: 'default-biz', name: 'Default', icon: LayoutTemplate, description: 'Clean & Standard' },
 ];
 
-// --- HELPER COMPONENTS ---
-
-// 1. Simple Rich Text Editor (Updated with Link & Strikethrough)
 function SimpleRichTextEditor({
   value,
   onChange,
@@ -95,7 +92,6 @@ function SimpleRichTextEditor({
 }) {
   const insertFormat = (format: 'bold' | 'list' | 'link' | 'strike') => {
     let newText = value;
-    // Simple append logic. In a robust app, use refs to insert at cursor.
     if (format === 'bold') newText += ' **bold text** ';
     if (format === 'strike') newText += ' ~~strikethrough~~ ';
     if (format === 'link') newText += ' [link text](https://example.com) ';
@@ -167,7 +163,6 @@ function SimpleRichTextEditor({
   );
 }
 
-// 2. Category Autocomplete
 function CategoryAutocomplete({
   value,
   onChange,
@@ -225,7 +220,6 @@ function CategoryAutocomplete({
   );
 }
 
-// 3. Multi Image Upload (Gallery)
 function MultiImageUpload({
   files,
   urls,
@@ -295,12 +289,13 @@ function MultiImageUpload({
   );
 }
 
-// 4. Image Upload Field
 function ImageUploadField({
+  id,
   previewUrl,
   currentFile,
   onFileSelect,
 }: {
+  id: string;
   previewUrl?: string | null;
   currentFile?: File | null;
   onFileSelect: (file: File | null) => void;
@@ -331,14 +326,14 @@ function ImageUploadField({
 
       <div className="flex-1">
         <Label
-          htmlFor="image-upload"
+          htmlFor={id}
           className="cursor-pointer inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2 w-full"
         >
           <UploadCloud className="mr-2 h-4 w-4" />
           {displayImage ? 'Change Image' : 'Upload Image'}
         </Label>
         <Input
-          id="image-upload"
+          id={id}
           type="file"
           accept="image/*"
           className="hidden"
@@ -353,7 +348,6 @@ function ImageUploadField({
   );
 }
 
-// 5. Map Preview Component
 function LocationMapPreview({
   address,
   mapLink,
@@ -446,7 +440,6 @@ function LocationMapPreview({
   );
 }
 
-// 6. Design Panel
 function DesignPanel({
   layout,
   setLayout,
@@ -551,8 +544,6 @@ function DesignPanel({
   );
 }
 
-// --- MAIN FORM COMPONENT ---
-
 interface Props {
   formMethods: UseFormReturn<BizFormValues>;
   socialLinksFieldArray: UseFieldArrayReturn<BizFormValues, 'social_links', 'id'>;
@@ -636,12 +627,10 @@ export function Form({
     replaceGallery(formatted);
   };
 
-  // Get categories for autocomplete
   const allCategories = productFields
     .map((_, i) => watch(`products.${i}.category`))
     .filter(Boolean);
 
-  // Watch address for map preview
   const currentAddress = watch('address');
   const currentMapLink = watch('map_link');
 
@@ -658,14 +647,12 @@ export function Form({
               </div>
 
               <div className="flex flex-col gap-10">
-                {/* 1. IDENTITY & BRANDING SECTION */}
                 <Accordion type="single" defaultValue="details" collapsible>
                   <AccordionItem value="details" className="rounded-lg border px-4 shadow-none">
                     <AccordionTrigger className="cursor-pointer py-3 text-base font-medium hover:no-underline">
                       Identity & Branding
                     </AccordionTrigger>
                     <AccordionContent className="pt-4 pb-4 space-y-8 px-1">
-                      {/* Logo & Name */}
                       <div className="space-y-4">
                         <div className="flex items-center gap-2 text-sm text-primary font-semibold uppercase tracking-wider">
                           <Palette className="w-4 h-4" /> Branding
@@ -674,6 +661,7 @@ export function Form({
                           <div className="shrink-0">
                             <Label className="mb-2 block">Logo</Label>
                             <ImageUploadField
+                              id="logo-upload"
                               previewUrl={watch('logo_url')}
                               currentFile={watch('logo') as File}
                               onFileSelect={(f) => setValue('logo', f)}
@@ -707,7 +695,6 @@ export function Form({
 
                       <Separator />
 
-                      {/* Hero Section */}
                       <div className="space-y-4">
                         <div className="flex items-center gap-2 text-sm text-primary font-semibold uppercase tracking-wider">
                           <LayoutTemplate className="w-4 h-4" /> Hero Section
@@ -718,7 +705,7 @@ export function Form({
                             <Input
                               {...register('hero_title')}
                               placeholder="Welcome to..."
-                              className="shadow-none font-bold"
+                              className="shadow-none"
                             />
                           </div>
                           <div>
@@ -732,6 +719,7 @@ export function Form({
                           <div>
                             <Label className="mb-2 block">Hero Background Image</Label>
                             <ImageUploadField
+                              id="hero-image-upload"
                               previewUrl={watch('hero_image_url')}
                               currentFile={watch('hero_image') as File}
                               onFileSelect={(f) => setValue('hero_image', f)}
@@ -742,7 +730,6 @@ export function Form({
 
                       <Separator />
 
-                      {/* About Us */}
                       <div className="space-y-4">
                         <div className="flex items-center gap-2 text-sm text-primary font-semibold uppercase tracking-wider">
                           <Store className="w-4 h-4" /> About Us
@@ -751,6 +738,7 @@ export function Form({
                           <div>
                             <Label className="mb-2 block">About Image</Label>
                             <ImageUploadField
+                              id="about-image-upload"
                               previewUrl={watch('about_image_url')}
                               currentFile={watch('about_image') as File}
                               onFileSelect={(f) => setValue('about_image', f)}
@@ -769,13 +757,11 @@ export function Form({
 
                       <Separator />
 
-                      {/* Contact Info & Location */}
                       <div className="space-y-6">
                         <div className="flex items-center gap-2 text-sm text-primary font-semibold uppercase tracking-wider">
                           <MapPin className="w-4 h-4" /> Contact & Location
                         </div>
 
-                        {/* Map Preview */}
                         <div className="space-y-2">
                           <Label>Location Preview</Label>
                           <LocationMapPreview address={currentAddress} mapLink={currentMapLink} />

@@ -13,25 +13,38 @@ return new class extends Migration
     {
         Schema::create('bizs', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('project_id');
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('project_id')->index();
+            $table->unsignedBigInteger('user_id')->index();
+
             $table->string('name');
             $table->string('tagline')->nullable();
             $table->text('description')->nullable();
-            $table->string('logo_image_url')->nullable();
+
+            $table->string('logo_url')->nullable();
+            $table->string('hero_title')->nullable();
+            $table->text('hero_description')->nullable();
             $table->string('hero_image_url')->nullable();
-            $table->enum('type', ['service', 'product', 'both'])->default('service');
+            $table->string('about_image_url')->nullable();
+
+            $table->string('type')->nullable();
             $table->string('industry')->nullable();
+
             $table->string('email')->nullable();
             $table->string('phone')->nullable();
             $table->string('address')->nullable();
+            $table->text('map_link')->nullable();
+            $table->string('schedule')->nullable();
+            $table->string('operation_hours')->nullable();
+
             $table->boolean('services_enabled')->default(false);
             $table->boolean('products_enabled')->default(false);
             $table->boolean('booking_enabled')->default(false);
             $table->boolean('ordering_enabled')->default(false);
-            $table->string('theme_name')->nullable();
+
+            $table->string('theme_name')->nullable()->default('default');
             $table->json('theme_object')->nullable();
             $table->string('layout_name')->default('default');
+
             $table->softDeletes();
             $table->timestamps();
 

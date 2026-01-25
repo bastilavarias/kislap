@@ -59,40 +59,30 @@ interface BizContextType {
 const BizContext = createContext<BizContextType | undefined>(undefined);
 
 function mapToFormValues(source: APIResponseBiz): BizFormValues {
+  console.log(source);
+
   return {
     name: source.name || '',
     tagline: source.tagline || '',
     description: source.description || '',
-
     logo: null,
-    logo_url: source.logo || null,
-
+    logo_url: source.logo_url || null,
     hero_title: source.hero_title || '',
     hero_description: source.hero_description || '',
-    hero_image: null,
-    hero_image_url: source.hero_image || null,
-
-    about_image: null,
-    about_image_url: source.about_image || null,
-
-    // Contact & Location
+    hero_image_url: source.hero_image_url || null,
+    about_image_url: source.about_image_url || null,
     email: source.email || '',
     phone: source.phone || '',
     address: source.address || '',
     map_link: source.map_link || '',
-
-    // Operations
     schedule: source.schedule || '',
     operation_hours: source.operation_hours || '',
-
-    // Config
     services_enabled: source.services_enabled ?? false,
     products_enabled: source.products_enabled ?? false,
     booking_enabled: source.booking_enabled ?? false,
     ordering_enabled: source.ordering_enabled ?? false,
     layout_name: source.layout_name ?? 'default-biz',
 
-    // Arrays
     social_links: (source.social_links || [])
       .sort((prev: any, after: any) => (prev.placement_order ?? 0) - (after.placement_order ?? 0))
       .map((socialLink: any) => ({
@@ -139,7 +129,7 @@ function mapToFormValues(source: APIResponseBiz): BizFormValues {
         avatar_url: testimonial.avatar_url || null,
       })),
 
-    faqs: (source.faqs || [])
+    faqs: (source.biz_faqs || [])
       .sort((prev: any, after: any) => (prev.placement_order ?? 0) - (after.placement_order ?? 0))
       .map((faq: any) => ({
         id: faq.id || null,
@@ -147,18 +137,16 @@ function mapToFormValues(source: APIResponseBiz): BizFormValues {
         answer: faq.answer || '',
       })),
 
-    gallery_images: (source.gallery_images || [])
+    gallery_images: (source.biz_gallery || [])
       .sort((prev: any, after: any) => (prev.placement_order ?? 0) - (after.placement_order ?? 0))
-      .map((img: any) => ({
-        id: img.id || null,
+      .map((image: any) => ({
+        id: image.id || null,
         image: null,
-        image_url: img.image_url || null,
+        image_url: image.image_url || null,
       })),
 
     type: source.type || null,
     industry: source.industry || null,
-    domain: source.domain || null,
-    subdomain: source.subdomain || null,
   };
 }
 
@@ -206,10 +194,6 @@ export function BizProvider({ children }: { children: ReactNode }) {
       map_link: '',
       schedule: '',
       operation_hours: '',
-
-      domain: '',
-      subdomain: '',
-      website: '',
 
       services_enabled: false,
       products_enabled: false,
@@ -324,13 +308,11 @@ export function BizProvider({ children }: { children: ReactNode }) {
           });
         };
 
-        // --- 1. Attach Array Files ---
         attachFiles('services', 'image');
         attachFiles('products', 'image');
         attachFiles('testimonials', 'avatar');
         attachFiles('gallery_images', 'image');
 
-        // --- 2. Attach Root Level Files ---
         if (data.logo instanceof File) {
           formData.append('logo', data.logo);
           jsonPayload.logo = null;

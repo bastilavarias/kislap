@@ -5,35 +5,27 @@ const fileSchema = z.any().optional().nullable();
 export const BizSchema = z.object({
   name: z.string().min(1, 'Business name is required'),
   tagline: z.string().optional().nullable(),
-  description: z.string().optional().nullable(), // Used for "About Us" text
-
+  description: z.string().optional().nullable(),
   logo: fileSchema,
   logo_url: z.string().optional().nullable(),
-
   hero_title: z.string().optional().nullable(),
   hero_description: z.string().optional().nullable(),
   hero_image: fileSchema,
   hero_image_url: z.string().optional().nullable(),
-
   about_image: fileSchema,
   about_image_url: z.string().optional().nullable(),
-
   type: z.string().optional().nullable(),
   industry: z.string().optional().nullable(),
-
   email: z.string().email('Invalid email address').optional().nullable().or(z.literal('')),
   phone: z.string().optional().nullable(),
   address: z.string().optional().nullable(),
   map_link: z.string().optional().nullable(),
-
   schedule: z.string().optional().nullable(),
   operation_hours: z.string().optional().nullable(),
-
   services_enabled: z.boolean().default(false),
   products_enabled: z.boolean().default(false),
   booking_enabled: z.boolean().default(false),
   ordering_enabled: z.boolean().default(false),
-
   layout_name: z.string().optional().default('default'),
 
   gallery_images: z

@@ -191,6 +191,8 @@ func (service Service) ShowBySlug(slug string, level string) (*models.Project, e
 			Preload("Biz.Products").
 			Preload("Biz.Testimonials").
 			Preload("Biz.SocialLinks").
+			Preload("Biz.FAQs").
+			Preload("Biz.Gallery").
 			First(&project, project.ID).Error; err != nil {
 			return nil, err
 		}
@@ -220,7 +222,13 @@ func (service Service) ShowBySubDomain(subDomain string) (*models.Project, error
 			Preload("Biz.Testimonials", func(db *gorm.DB) *gorm.DB {
 				return db.Order("placement_order ASC")
 			}).
-			Preload("Biz.SocialLinks")
+			Preload("Biz.SocialLinks").
+			Preload("Biz.FAQs", func(db *gorm.DB) *gorm.DB {
+				return db.Order("placement_order ASC")
+			}).
+			Preload("Biz.Gallery", func(db *gorm.DB) *gorm.DB {
+				return db.Order("placement_order ASC")
+			})
 	} else {
 		query = query.
 			Preload("Portfolio").

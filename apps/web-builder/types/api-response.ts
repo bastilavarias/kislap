@@ -267,20 +267,38 @@ export interface APIResponseBizProductImage {
   updated_at: string;
 }
 
-export interface APIResponseBizProduct {
+export interface APIResponseBizGallery {
   id: number;
   biz_id: number;
-  name: string;
-  description: string | null;
-  price: number;
-  stock: number;
-  is_active: boolean;
-  // Assuming the API might return nested images
-  images?: APIResponseBizProductImage[];
+  image_url: string | null;
+  placement_order: number;
   created_at: string;
   updated_at: string;
 }
 
+export interface APIResponseBizFAQ {
+  id: number;
+  biz_id: number;
+  question: string;
+  answer: string;
+  placement_order: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface APIResponseBizProduct {
+  id: number;
+  name: string;
+  category: string | null;
+  description: string | null;
+  price: number;
+  stock: number;
+  is_active: boolean;
+  image_url: string | null;
+  placement_order: number;
+  created_at: string;
+  updated_at: string;
+}
 export interface APIResponseBizTestimonial {
   id: number;
   biz_id: number;
@@ -300,16 +318,20 @@ export interface APIResponseBiz {
   tagline: string | null;
   description: string | null;
   logo: string | null;
+  logo_url?: string | null;
   hero_image: string | null;
+  hero_image_url?: string | null;
+  hero_title: string | null;
+  hero_description: string | null;
+  about_image_url: string | null;
   type: string | null;
   industry: string | null;
   email: string | null;
   phone: string | null;
   address: string | null;
   map_link: string | null;
-  domain: string | null;
-  subdomain: string | null;
-  website: string | null;
+  schedule: string | null;
+  operation_hours: string | null;
   services_enabled: boolean;
   products_enabled: boolean;
   booking_enabled: boolean;
@@ -326,4 +348,6 @@ export interface APIResponseBiz {
   services: APIResponseBizService[];
   products: APIResponseBizProduct[];
   testimonials: APIResponseBizTestimonial[];
+  biz_gallery: APIResponseBizGallery[];
+  biz_faqs: APIResponseBizFAQ[];
 }
