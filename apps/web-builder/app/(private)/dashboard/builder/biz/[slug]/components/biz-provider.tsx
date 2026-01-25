@@ -23,6 +23,8 @@ interface BizContextType {
   servicesFieldArray: UseFieldArrayReturn<BizFormValues, 'services', 'id'>;
   productsFieldArray: UseFieldArrayReturn<BizFormValues, 'products', 'id'>;
   testimonialsFieldArray: UseFieldArrayReturn<BizFormValues, 'testimonials', 'id'>;
+  faqsFieldArray: UseFieldArrayReturn<BizFormValues, 'faqs', 'id'>; // NEW
+  galleryFieldArray: UseFieldArrayReturn<BizFormValues, 'gallery_images', 'id'>; // NEW
 
   isLoading: boolean;
   isSaving: boolean;
@@ -51,6 +53,7 @@ interface BizContextType {
   onAddService: () => void;
   onAddProduct: () => void;
   onAddTestimonial: () => void;
+  onAddFaq: () => void; // NEW
 }
 
 const BizContext = createContext<BizContextType | undefined>(undefined);
@@ -61,21 +64,35 @@ function mapToFormValues(source: APIResponseBiz): BizFormValues {
     tagline: source.tagline || '',
     description: source.description || '',
 
+    logo: null,
+    logo_url: source.logo || null,
+
+    hero_title: source.hero_title || '',
+    hero_description: source.hero_description || '',
+    hero_image: null,
+    hero_image_url: source.hero_image || null,
+
+    about_image: null,
+    about_image_url: source.about_image || null,
+
+    // Contact & Location
     email: source.email || '',
     phone: source.phone || '',
     address: source.address || '',
     map_link: source.map_link || '',
-    website: source.domain || source.website || '',
 
-    logo: source.logo,
-    hero_image: source.hero_image,
+    // Operations
+    schedule: source.schedule || '',
+    operation_hours: source.operation_hours || '',
 
+    // Config
     services_enabled: source.services_enabled ?? false,
     products_enabled: source.products_enabled ?? false,
     booking_enabled: source.booking_enabled ?? false,
     ordering_enabled: source.ordering_enabled ?? false,
     layout_name: source.layout_name ?? 'default-biz',
 
+    // Arrays
     social_links: (source.social_links || [])
       .sort((prev: any, after: any) => (prev.placement_order ?? 0) - (after.placement_order ?? 0))
       .map((socialLink: any) => ({
@@ -92,7 +109,7 @@ function mapToFormValues(source: APIResponseBiz): BizFormValues {
         description: service.description || '',
         price: service.price || 0,
         duration_minutes: service.duration_minutes || 0,
-        image: service.image || null,
+        image: null,
         image_url: service.image_url || null,
         is_featured: service.is_featured ?? false,
       })),
@@ -102,11 +119,12 @@ function mapToFormValues(source: APIResponseBiz): BizFormValues {
       .map((product: any) => ({
         id: product.id || null,
         name: product.name || '',
+        category: product.category || '',
         description: product.description || '',
         price: product.price || 0,
         stock: product.stock || 0,
         is_active: product.is_active ?? true,
-        image: product.image || null,
+        image: null,
         image_url: product.image_url || null,
       })),
 
@@ -117,8 +135,24 @@ function mapToFormValues(source: APIResponseBiz): BizFormValues {
         author: testimonial.author || '',
         content: testimonial.content || '',
         rating: testimonial.rating || 5,
-        avatar: testimonial.avatar || null,
+        avatar: null,
         avatar_url: testimonial.avatar_url || null,
+      })),
+
+    faqs: (source.faqs || [])
+      .sort((prev: any, after: any) => (prev.placement_order ?? 0) - (after.placement_order ?? 0))
+      .map((faq: any) => ({
+        id: faq.id || null,
+        question: faq.question || '',
+        answer: faq.answer || '',
+      })),
+
+    gallery_images: (source.gallery_images || [])
+      .sort((prev: any, after: any) => (prev.placement_order ?? 0) - (after.placement_order ?? 0))
+      .map((img: any) => ({
+        id: img.id || null,
+        image: null,
+        image_url: img.image_url || null,
       })),
 
     type: source.type || null,
@@ -156,24 +190,40 @@ export function BizProvider({ children }: { children: ReactNode }) {
       description: '',
       type: '',
       industry: '',
-      logo: '',
-      hero_image: '',
+
+      logo: null,
+      logo_url: '',
+      hero_image: null,
+      hero_image_url: '',
+      hero_title: '',
+      hero_description: '',
+      about_image: null,
+      about_image_url: '',
+
       email: '',
       phone: '',
       address: '',
       map_link: '',
+      schedule: '',
+      operation_hours: '',
+
       domain: '',
       subdomain: '',
       website: '',
+
       services_enabled: false,
       products_enabled: false,
       booking_enabled: false,
       ordering_enabled: false,
+
       layout_name: 'default-biz',
+
       social_links: [],
       services: [],
       products: [],
       testimonials: [],
+      faqs: [],
+      gallery_images: [],
     },
   });
 
@@ -183,6 +233,8 @@ export function BizProvider({ children }: { children: ReactNode }) {
   const servicesFieldArray = useFieldArray({ control, name: 'services' });
   const productsFieldArray = useFieldArray({ control, name: 'products' });
   const testimonialsFieldArray = useFieldArray({ control, name: 'testimonials' });
+  const faqsFieldArray = useFieldArray({ control, name: 'faqs' });
+  const galleryFieldArray = useFieldArray({ control, name: 'gallery_images' });
 
   const values = watch();
 
@@ -196,9 +248,7 @@ export function BizProvider({ children }: { children: ReactNode }) {
         setProject(data);
         if (data.biz) {
           const mapped = mapToFormValues(data.biz);
-
           reset(mapped);
-
           setLocalThemeSettings({ mode: 'light', theme: data.biz.theme_object });
           setLayout(data.biz.layout_name ?? 'default-biz');
         }
@@ -231,6 +281,14 @@ export function BizProvider({ children }: { children: ReactNode }) {
             ...socialLink,
             placement_order: index,
           })),
+          faqs: data.faqs?.map((faq: any, index: any) => ({
+            ...faq,
+            placement_order: index,
+          })),
+          gallery_images: data.gallery_images?.map((img: any, index: any) => ({
+            ...img,
+            placement_order: index,
+          })),
         });
 
         const fullPayload = {
@@ -244,8 +302,10 @@ export function BizProvider({ children }: { children: ReactNode }) {
 
         const formData = new FormData();
         const jsonPayload = JSON.parse(JSON.stringify(fullPayload));
+
+        // --- Helper to Attach Array Files ---
         const attachFiles = (
-          listName: 'services' | 'products' | 'testimonials',
+          listName: 'services' | 'products' | 'testimonials' | 'gallery_images',
           fileKey: string
         ) => {
           const list = data[listName];
@@ -258,15 +318,31 @@ export function BizProvider({ children }: { children: ReactNode }) {
               formData.append(`${listName}[${index}].${fileKey}`, file);
 
               if (jsonPayload[listName] && jsonPayload[listName][index]) {
-                jsonPayload[listName][index][fileKey] = null;
+                jsonPayload[listName][index][fileKey] = null; // Clear file obj from JSON to avoid errors
               }
             }
           });
         };
 
+        // --- 1. Attach Array Files ---
         attachFiles('services', 'image');
         attachFiles('products', 'image');
         attachFiles('testimonials', 'avatar');
+        attachFiles('gallery_images', 'image');
+
+        // --- 2. Attach Root Level Files ---
+        if (data.logo instanceof File) {
+          formData.append('logo', data.logo);
+          jsonPayload.logo = null;
+        }
+        if (data.hero_image instanceof File) {
+          formData.append('hero_image', data.hero_image);
+          jsonPayload.hero_image = null;
+        }
+        if (data.about_image instanceof File) {
+          formData.append('about_image', data.about_image);
+          jsonPayload.about_image = null;
+        }
 
         formData.append('json_body', JSON.stringify(jsonPayload));
 
@@ -288,6 +364,7 @@ export function BizProvider({ children }: { children: ReactNode }) {
 
     setIsSaving(false);
   };
+
   const publish = async (isPublished: boolean) => {
     if (!project?.id) return;
     setIsPublishing(true);
@@ -318,9 +395,11 @@ export function BizProvider({ children }: { children: ReactNode }) {
     productsFieldArray.append({
       name: 'New Product',
       description: '',
+      category: '',
       price: 0,
       stock: 1,
       is_active: true,
+      image: null,
     });
   };
 
@@ -329,12 +408,20 @@ export function BizProvider({ children }: { children: ReactNode }) {
       author: '',
       content: '',
       rating: 5,
+      avatar: null,
+    });
+  };
+
+  const onAddFaq = () => {
+    faqsFieldArray.append({
+      question: '',
+      answer: '',
     });
   };
 
   const hasContent = useMemo(() => {
-    return !!(values.name?.trim() && values.slug?.trim());
-  }, [values.name, values.slug]);
+    return !!values.name?.trim();
+  }, [values.name]);
 
   const hasContentServices = useMemo(() => {
     return (values.services?.length ?? 0) > 0;
@@ -368,6 +455,8 @@ export function BizProvider({ children }: { children: ReactNode }) {
         servicesFieldArray,
         productsFieldArray,
         testimonialsFieldArray,
+        faqsFieldArray,
+        galleryFieldArray,
 
         isLoading,
         isSaving,
@@ -397,6 +486,7 @@ export function BizProvider({ children }: { children: ReactNode }) {
         onAddService,
         onAddProduct,
         onAddTestimonial,
+        onAddFaq,
       }}
     >
       {children}

@@ -47,8 +47,6 @@ export const renderTemplate = (
   themeStyles: ThemeStyles,
   onSetThemeMode: React.Dispatch<React.SetStateAction<Mode>>
 ): JSX.Element | null => {
-  console.log(project);
-
   let layoutName = 'default';
   if (project.type === 'portfolio') {
     layoutName = project.portfolio.layout_name || 'default';

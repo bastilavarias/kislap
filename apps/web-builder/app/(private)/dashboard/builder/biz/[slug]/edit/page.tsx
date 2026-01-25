@@ -17,10 +17,13 @@ export default function BizEditPage() {
       servicesFieldArray={builder.servicesFieldArray}
       productsFieldArray={builder.productsFieldArray}
       testimonialsFieldArray={builder.testimonialsFieldArray}
+      faqsFieldArray={builder.faqsFieldArray}
+      galleryFieldArray={builder.galleryFieldArray}
       onAddSocialLink={builder.onAddSocialLink}
       onAddService={builder.onAddService}
       onAddProduct={builder.onAddProduct}
       onAddTestimonial={builder.onAddTestimonial}
+      onAddFaq={builder.onAddFaq}
       files={builder.files}
       setFiles={builder.setFiles}
     />

@@ -7,19 +7,7 @@ import { BackButton } from '@/components/back-button';
 import { Spinner } from '@/components/ui/shadcn-io/spinner';
 
 function BuilderLayoutContent({ children }: { children: ReactNode }) {
-  const {
-    project,
-    save,
-    publish,
-    isLoading,
-    hasContent,
-    hasContentWorkExperience,
-    hasContentEducation,
-    hasContentProjects,
-    hasContentSkills,
-    hasLayout,
-    hasTheme,
-  } = useBizBuilder();
+  const { project, save, publish, isLoading, hasContent, hasLayout, hasTheme } = useBizBuilder();
 
   if (isLoading) {
     return (
@@ -40,10 +28,10 @@ function BuilderLayoutContent({ children }: { children: ReactNode }) {
           onSave={save}
           onPublish={publish}
           hasContent={hasContent}
-          hasContentWorkExperience={hasContentWorkExperience}
-          hasContentEducation={hasContentEducation}
-          hasContentProjects={hasContentProjects}
-          hasContentSkills={hasContentSkills}
+          hasContentWorkExperience={false}
+          hasContentEducation={false}
+          hasContentProjects={false}
+          hasContentSkills={false}
           hasLayout={hasLayout}
           hasTheme={hasTheme}
         />
