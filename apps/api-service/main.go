@@ -83,6 +83,7 @@ func main() {
 	// 5. Start Server
 	log.Println("[INFO] 📡 Starting HTTP Server on :5000...")
 	router := gin.Default()
+	router.MaxMultipartMemory = 50 << 20 // 50 MiB
 	router.Use(middleware.CORSMiddleware())
 
 	// Pass the new storageProvider to your routes
