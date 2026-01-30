@@ -18,9 +18,9 @@ import {
   Facebook,
   Youtube,
   Globe,
+  X,
 } from "lucide-react";
 
-// --- LEAFLET IMPORTS ---
 import { MapContainer, TileLayer, CircleMarker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
@@ -36,21 +36,17 @@ interface Props {
   onSetThemeMode: React.Dispatch<React.SetStateAction<Mode>>;
 }
 
-// --- HELPER: EXTRACT COORDS FROM GOOGLE MAPS LINK ---
 const getCoordinatesFromLink = (url?: string): [number, number] | null => {
   if (!url) return null;
 
-  // Pattern 1: @lat,lng
   const atPattern = /@(-?\d+\.\d+),(-?\d+\.\d+)/;
   const atMatch = url.match(atPattern);
   if (atMatch) return [parseFloat(atMatch[1]), parseFloat(atMatch[2])];
 
-  // Pattern 2: q=lat,lng
   const qPattern = /q=(-?\d+\.\d+),(-?\d+\.\d+)/;
   const qMatch = url.match(qPattern);
   if (qMatch) return [parseFloat(qMatch[1]), parseFloat(qMatch[2])];
 
-  // Pattern 3: Embed style (!3d...!4d)
   const embedLat = /!3d(-?\d+\.\d+)/;
   const embedLng = /!4d(-?\d+\.\d+)/;
   const latMatch = url.match(embedLat);
@@ -90,47 +86,38 @@ const Marquee = ({
 export function DefaultBiz({ biz, themeMode, onSetThemeMode }: Props) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // --- MENU LOGIC STATE ---
   const [categoryFilter, setCategoryFilter] = useState("ALL");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc" | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [activeTestimonial, setActiveTestimonial] = useState(0);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
-  // --- MAP STATE ---
   const [isMounted, setIsMounted] = useState(false);
 
   const itemsPerPage = 4;
 
-  // --- EFFECTS ---
   useEffect(() => {
-    setIsMounted(true); // Ensures Leaflet only attempts to render on client
+    setIsMounted(true);
   }, []);
 
-  // --- DERIVED DATA ---
   const products = biz?.products || [];
 
-  // Extract Coordinates
   const mapCoordinates = useMemo(() => {
     return getCoordinatesFromLink(biz?.map_link);
   }, [biz?.map_link]);
 
-  // 1. Get Unique Categories
   const categories = useMemo(() => {
     const cats = new Set(products.map((p: any) => p.category).filter(Boolean));
     return ["ALL", ...Array.from(cats)];
   }, [products]);
 
-  // 2. Filter & Sort Logic
   const processedProducts = useMemo(() => {
     let result = [...products];
 
-    // Filter
     if (categoryFilter !== "ALL") {
       result = result.filter((p: any) => p.category === categoryFilter);
     }
 
-    // Sort
     if (sortOrder) {
       result.sort((a: any, b: any) => {
         return sortOrder === "asc" ? a.price - b.price : b.price - a.price;
@@ -140,14 +127,12 @@ export function DefaultBiz({ biz, themeMode, onSetThemeMode }: Props) {
     return result;
   }, [products, categoryFilter, sortOrder]);
 
-  // 3. Pagination Logic
   const totalPages = Math.ceil(processedProducts.length / itemsPerPage);
   const paginatedProducts = processedProducts.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage,
   );
 
-  // Handlers
   const handleCategoryChange = (cat: string) => {
     setCategoryFilter(cat);
     setCurrentPage(1);
@@ -236,18 +221,45 @@ export function DefaultBiz({ biz, themeMode, onSetThemeMode }: Props) {
       <div
         className={cn(
           "flex-grow flex flex-col border-x-[12px] md:border-x-[16px]",
-          "bg-background text-foreground border-primary",
+          "text-foreground border-primary ",
         )}
       >
         <header className="sticky top-0 z-50 border-b-4 border-primary flex justify-between items-stretch h-20 bg-background">
-          <div className="bg-primary text-primary-foreground px-6 flex items-center justify-center border-r-4 border-primary w-32 md:w-48 group cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors">
-            <h1 className="text-3xl md:text-5xl font-display tracking-tighter group-hover:scale-110 transition-transform">
-              KAF.
-            </h1>
+          {/* Logo Area */}
+          <div className="bg-primary text-primary-foreground px-4 flex items-center justify-center border-r-4 border-primary w-32 md:w-48 h-full group cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors relative overflow-hidden">
+            {biz?.logo_url ? (
+              <div className="relative w-full h-full p-2 flex items-center justify-center">
+                {/* Added object-contain to ensure it fits, removed the raw {biz?.logo_url} text that was here */}
+                <img
+                  src={biz.logo_url}
+                  alt={biz.name || "Logo"}
+                  className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300"
+                />
+              </div>
+            ) : (
+              <h1 className="text-3xl md:text-5xl font-display font-bold tracking-tighter uppercase text-center leading-none group-hover:scale-110 transition-transform duration-300">
+                {(biz?.name || "KAF").slice(0, 3).toUpperCase()}.
+              </h1>
+            )}
           </div>
 
+          {/* Marquee Nav with Dynamic Products */}
           <div className="flex-grow overflow-hidden hidden md:flex items-center bg-background border-r-4 border-primary">
-            <Marquee text="CAFFEINE INJECTION /// NO DECAF /// CASHLESS /// LOUD NOISES /// DO NOT LOITER" />
+            <Marquee
+              text={
+                // If we have products, join them. If not, fallback to default text.
+                // Assuming you have a list of products available. If using the static array from earlier:
+                [
+                  "Espresso",
+                  "Long Black",
+                  "Cold Brew",
+                  "Flat White",
+                  "Batch Brew",
+                ].join(" /// ") + " /// "
+                // OR if using dynamic data:
+                // (biz?.products?.map((p: any) => p.name).join(" /// ") || "CAFFEINE INJECTION /// NO DECAF /// CASHLESS")
+              }
+            />
           </div>
 
           <div className="flex items-center bg-background">
@@ -315,9 +327,9 @@ export function DefaultBiz({ biz, themeMode, onSetThemeMode }: Props) {
           </div>
         )}
 
-        <main className="flex-grow">
+        <main className="container mx-auto">
           <section className="grid md:grid-cols-2 min-h-[80vh] border-b-4 border-primary">
-            <div className="p-8 md:p-16 flex flex-col justify-between border-b-4 md:border-b-0 md:border-r-4 border-primary bg-background relative overflow-hidden">
+            <div className="p-8 md:p-16 flex flex-col justify-between border-b-4 border-r-0 md:border-r-4 border-primary bg-background relative overflow-hidden">
               <div className="absolute top-0 right-0 text-[15rem] md:text-[20rem] font-display leading-none text-muted/10 select-none pointer-events-none -mr-20 -mt-20">
                 01
               </div>
@@ -345,7 +357,7 @@ export function DefaultBiz({ biz, themeMode, onSetThemeMode }: Props) {
               <img
                 src={biz?.hero_image_url}
                 className="w-full h-full object-cover grayscale contrast-150 group-hover:grayscale-0 group-hover:contrast-100 transition-all duration-700 opacity-80"
-                alt="Dark Coffee"
+                alt={biz?.hero_title}
               />
               <div className="absolute bottom-0 left-0 bg-accent px-6 py-4 border-t-4 border-r-4 border-primary">
                 <p className="text-accent-foreground font-bold">
@@ -656,7 +668,7 @@ export function DefaultBiz({ biz, themeMode, onSetThemeMode }: Props) {
             className="grid md:grid-cols-2 bg-background border-primary min-h-[500px]"
           >
             {/* FAQs */}
-            <div className="p-8 md:p-16 border-b-4 md:border-b-0 md:border-r-4 border-primary flex flex-col justify-between">
+            <div className="p-8 md:p-16 border-b-4 md:border-b-0 md:border-x-4 border-primary flex flex-col justify-between">
               <div>
                 <h2 className="text-4xl font-display uppercase mb-8 text-foreground">
                   Protocol / FAQs
