@@ -16,7 +16,7 @@ import { BizTemplates, PortfolioTemplates } from '@kislap/templates';
 
 const { Default, Minimal, Bento, NeoBrutalist, Glass, Cyber, Newspaper, Kinetic, Vaporware } =
   PortfolioTemplates;
-const { DefaultBiz } = BizTemplates;
+const { BizDefault, BizCyber, BizRetro } = BizTemplates;
 
 type TemplateName = string;
 
@@ -30,7 +30,12 @@ const templates: Record<TemplateName, React.FC<TemplateProps>> = {
   newspaper: Newspaper,
   kinetic: Kinetic,
   vaporware: Vaporware,
-  'default-biz': DefaultBiz,
+};
+
+const bizTemplates: Record<TemplateName, React.FC<TemplateProps>> = {
+  'biz-default': BizDefault,
+  'biz-cyber': BizCyber,
+  'biz-retro': BizRetro,
 };
 
 /**
@@ -48,12 +53,15 @@ export const renderTemplate = (
   onSetThemeMode: React.Dispatch<React.SetStateAction<Mode>>
 ): JSX.Element | null => {
   let layoutName = 'default';
+  let Component = null;
+
   if (project.type === 'portfolio') {
     layoutName = project.portfolio.layout_name || 'default';
+    Component = templates[layoutName as TemplateName];
   } else if (project.type === 'biz') {
-    layoutName = project.biz.layout_name || 'default-biz';
+    layoutName = project.biz.layout_name || 'biz-default';
+    Component = bizTemplates[layoutName as TemplateName];
   }
-  const Component = templates[layoutName as TemplateName];
 
   return Component ? (
     <Component

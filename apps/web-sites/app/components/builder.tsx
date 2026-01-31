@@ -72,7 +72,6 @@ export function Builder({ initialProject, initialSubdomain }: BuilderProps) {
           }}
           className="relative bg-background min-h-screen animate-in fade-in duration-700"
         >
-          {/* <div className="container mx-auto max-w-5xl pt-10">{TemplateComponent}</div> */}
           <div className="">{TemplateComponent}</div>
         </div>
       </ComponentThemeProvider>
