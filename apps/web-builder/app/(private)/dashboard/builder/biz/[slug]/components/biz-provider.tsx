@@ -43,9 +43,15 @@ interface BizContextType {
   fileProcessingError: string;
 
   hasContent: boolean;
-  hasContentServices: boolean;
+  hasContentHero: boolean;
+  hasContentAbout: boolean;
+  hasContentContact: boolean;
+  hasContentGallery: boolean;
+  hasContentFeatures: boolean;
   hasContentProducts: boolean;
+  hasContentFAQs: boolean;
   hasContentTestimonials: boolean;
+  hasContentSocialLinks: boolean;
   hasLayout: boolean;
   hasTheme: boolean;
 
@@ -399,21 +405,46 @@ export function BizProvider({ children }: { children: ReactNode }) {
     });
   };
 
-  const hasContent = useMemo(() => {
-    return !!values.name?.trim();
-  }, [values.name]);
+  const hasContent = useMemo(
+    () => !!values.name?.trim() && !!values.tagline?.trim() && !!(values.logo || values.logo_url),
+    [values.name, values.tagline, values.logo, values.logo_url]
+  );
 
-  const hasContentServices = useMemo(() => {
-    return (values.services?.length ?? 0) > 0;
-  }, [values.services]);
+  const hasContentHero = useMemo(
+    () => true,
+    [values.hero_title, values.hero_image, values.hero_image_url]
+  );
 
-  const hasContentProducts = useMemo(() => {
-    return (values.products?.length ?? 0) > 0;
-  }, [values.products]);
+  const hasContentAbout = useMemo(
+    () => !!values.description?.trim() || !!values.about_image || !!values.about_image_url,
+    [values.description, values.about_image, values.about_image_url]
+  );
 
-  const hasContentTestimonials = useMemo(() => {
-    return (values.testimonials?.length ?? 0) > 0;
-  }, [values.testimonials]);
+  const hasContentContact = useMemo(
+    () => !!values.email || !!values.phone || !!values.address,
+    [values.email, values.phone, values.address]
+  );
+
+  const hasContentGallery = useMemo(
+    () => (values.gallery_images?.length ?? 0) > 0,
+    [values.gallery_images]
+  );
+
+  const hasContentFeatures = useMemo(() => values.products_enabled, [values.products_enabled]);
+
+  const hasContentProducts = useMemo(() => (values.products?.length ?? 0) > 0, [values.products]);
+
+  const hasContentFAQs = useMemo(() => (values.faqs?.length ?? 0) > 0, [values.faqs]);
+
+  const hasContentTestimonials = useMemo(
+    () => (values.testimonials?.length ?? 0) > 0,
+    [values.testimonials]
+  );
+
+  const hasContentSocialLinks = useMemo(
+    () => (values.social_links?.length ?? 0) > 0,
+    [values.social_links]
+  );
 
   const hasLayout = useMemo(() => {
     return !!layout;
@@ -456,9 +487,15 @@ export function BizProvider({ children }: { children: ReactNode }) {
         fileProcessingError,
 
         hasContent,
-        hasContentServices,
+        hasContentHero,
+        hasContentAbout,
+        hasContentContact,
+        hasContentGallery,
+        hasContentFeatures,
         hasContentProducts,
+        hasContentFAQs,
         hasContentTestimonials,
+        hasContentSocialLinks,
         hasLayout,
         hasTheme,
 
