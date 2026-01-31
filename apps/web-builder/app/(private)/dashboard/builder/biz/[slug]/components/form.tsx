@@ -19,9 +19,6 @@ import {
   CalendarDays,
   MessageSquare,
   MapPin,
-  Phone,
-  Mail,
-  Globe,
   Edit2,
   Trash2,
   Settings2,
@@ -38,6 +35,8 @@ import {
   Clock,
   Calendar,
   ExternalLink,
+  Cpu,
+  CloudFog,
 } from 'lucide-react';
 import ThemeControlPanel from '@/components/customizer/theme-control-panel';
 import { UseFormReturn, UseFieldArrayReturn } from 'react-hook-form';
@@ -78,7 +77,9 @@ import { BizFormValues } from '@/lib/schemas/biz';
 import { SortableList } from '@/components/sortable-list';
 
 const LAYOUT_OPTIONS = [
-  { id: 'default-biz', name: 'Default', icon: LayoutTemplate, description: 'Clean & Standard' },
+  { id: 'biz-default', name: 'Default', icon: LayoutTemplate, description: 'Clean & balanced.' },
+  { id: 'biz-retro', name: 'Retro', icon: CloudFog, description: 'Vintage & nostalgic.' },
+  { id: 'biz-cyber', name: 'Cyber', icon: Cpu, description: 'Dark & futuristic.' },
 ];
 
 function SimpleRichTextEditor({
@@ -617,7 +618,6 @@ export function Form({
     setValue('layout_name', layout);
   }, [layout, setValue]);
 
-  // Gallery Handler
   const handleGalleryChange = (newItems: (File | string)[]) => {
     const formatted = newItems.map((item) => ({
       image: item instanceof File ? item : undefined,
@@ -841,13 +841,12 @@ export function Form({
 
                       <Separator />
 
-                      {/* Features Config */}
                       <div className="space-y-4">
                         <div className="flex items-center gap-2 text-sm text-primary font-semibold uppercase tracking-wider">
                           <Settings2 className="w-4 h-4" /> Features
                         </div>
                         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                          {['services', 'products', 'booking', 'ordering'].map((feature) => (
+                          {['products'].map((feature) => (
                             <div
                               key={feature}
                               className="flex items-center space-x-2 border p-3 rounded-lg bg-muted/20"
@@ -874,7 +873,7 @@ export function Form({
                 </Accordion>
 
                 <Accordion type="single" defaultValue="services" collapsible>
-                  <AccordionItem value="services" className="rounded-lg border px-4 shadow-none">
+                  {/* <AccordionItem value="services" className="rounded-lg border px-4 shadow-none">
                     <AccordionTrigger className="cursor-pointer py-3 text-base font-medium hover:no-underline">
                       Services
                     </AccordionTrigger>
@@ -950,6 +949,38 @@ export function Form({
                       >
                         <Plus className="w-4 h-4 mr-2" /> Add Service
                       </Button>
+                    </AccordionContent>
+                  </AccordionItem> */}
+
+                  <AccordionItem value="services">
+                    <AccordionTrigger className="cursor-pointer py-3 text-base font-medium hover:no-underline">
+                      Services
+                    </AccordionTrigger>
+                    <AccordionContent className="p-4 relative min-h-[200px]">
+                      <div className="absolute inset-0 z-50 bg-background/80 backdrop-blur-[2px] flex flex-col items-center justify-center text-center p-6 border-2 border-dashed border-muted-foreground/25 rounded-md m-2">
+                        <div className="bg-primary/10 p-4 rounded-full mb-3 ring-4 ring-primary/5">
+                          <Settings2 className="w-8 h-8 text-primary animate-pulse" />
+                        </div>
+                        <h3 className="text-lg font-bold text-foreground">Work in Progress</h3>
+                        <p className="text-sm text-muted-foreground max-w-xs mt-1">
+                          The services module is currently under development. Please check back
+                          later.
+                        </p>
+                      </div>
+
+                      <div className="opacity-30 pointer-events-none filter blur-[1px]">
+                        <div className="space-y-4">
+                          <div className="flex justify-between items-center">
+                            <h3 className="text-sm font-medium">Service List</h3>
+                            <Button size="sm" variant="outline" disabled>
+                              <Plus className="w-4 h-4 mr-2" /> Add Service
+                            </Button>
+                          </div>
+                          <div className="border rounded-md p-8 text-center text-muted-foreground bg-muted/20">
+                            No services added.
+                          </div>
+                        </div>
+                      </div>
                     </AccordionContent>
                   </AccordionItem>
                 </Accordion>
