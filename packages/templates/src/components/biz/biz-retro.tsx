@@ -295,11 +295,11 @@ const BizMenu = ({ biz }: { biz?: BizData }) => {
 
   return (
     <section id="menu" className="py-24 bg-background">
-      <div className="container mx-auto max-w-4xl px-6">
+      <div className="container mx-auto max-w-5xl px-6">
         {/* Section Header */}
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-serif font-bold text-primary mb-2">
-            Daily Fare
+            Menu
           </h2>
           <div className="w-24 h-1 bg-primary/20 mx-auto rounded-full mb-4"></div>
           <p className="text-muted-foreground font-medium italic">
@@ -325,25 +325,42 @@ const BizMenu = ({ biz }: { biz?: BizData }) => {
           ))}
         </div>
 
-        {/* Menu List - Classic Diner Layout with Dots */}
-        <div className="grid gap-x-12 gap-y-10 md:grid-cols-2">
+        {/* Menu List - Classic Diner Layout with Images */}
+        <div className="grid gap-x-16 gap-y-12 md:grid-cols-2">
           {paginatedProducts.length > 0 ? (
             paginatedProducts.map((product: any, idx) => (
-              <div key={idx} className="group">
-                <div className="flex items-baseline mb-2">
-                  <h3 className="text-xl font-serif font-bold text-foreground group-hover:text-primary transition-colors">
-                    {product.name}
-                  </h3>
-                  {/* Dotted Leader */}
-                  <div className="flex-grow border-b-2 border-dotted border-primary/30 mx-3 relative -top-1"></div>
-                  <span className="text-xl font-bold text-primary">
-                    ₱{product.price}
-                  </span>
+              <div
+                key={idx}
+                className="group flex gap-5 items-start transition-all hover:translate-x-1"
+              >
+                {/* Product Image */}
+                {product.image_url && (
+                  <div className="shrink-0 w-24 h-24 rounded-lg overflow-hidden border-2 border-primary/10 shadow-sm relative bg-muted">
+                    <img
+                      src={product.image_url}
+                      alt={product.name}
+                      className="w-full h-full object-cover grayscale-[50%] contrast-110 group-hover:grayscale-0 transition-all duration-500"
+                    />
+                  </div>
+                )}
+
+                {/* Text Content */}
+                <div className="flex-grow min-w-0">
+                  <div className="flex items-baseline mb-2">
+                    <h3 className="text-xl font-serif font-bold text-foreground group-hover:text-primary transition-colors truncate">
+                      {product.name}
+                    </h3>
+                    {/* Dotted Leader */}
+                    <div className="flex-grow border-b-2 border-dotted border-primary/30 mx-3 relative -top-1"></div>
+                    <span className="text-xl font-bold text-primary">
+                      ₱{product.price}
+                    </span>
+                  </div>
+                  <p className="text-sm text-muted-foreground font-medium leading-relaxed italic line-clamp-2">
+                    {product.description ||
+                      "Served with our signature house sides."}
+                  </p>
                 </div>
-                <p className="text-sm text-muted-foreground font-medium leading-relaxed italic pr-8">
-                  {product.description ||
-                    "Served with our signature house sides."}
-                </p>
               </div>
             ))
           ) : (

@@ -203,6 +203,8 @@ export interface APIResponseProject {
   updated_at: string;
   deleted_at?: string;
   portfolio: APIResponsePortfolio;
+  linktree?: APIResponseLinktree;
+  biz?: APIResponseBiz;
 }
 export interface APIResponseAppoinment {
   id: number;
@@ -350,4 +352,38 @@ export interface APIResponseBiz {
   testimonials: APIResponseBizTestimonial[];
   biz_gallery: APIResponseBizGallery[];
   biz_faqs: APIResponseBizFAQ[];
+}
+
+export interface APIResponseLinktreeLink {
+  id: number;
+  linktree_id: number;
+  title: string;
+  url: string;
+  description?: string;
+  image_url?: string;
+  placement_order: number;
+}
+
+export interface APIResponseLinktreeSocialLink {
+  id: number;
+  linktree_id: number;
+  platform: string;
+  url: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface APIResponseLinktree {
+    id: number;
+    project_id: number;
+    user_id: number;
+    name: string;
+    tagline?: string;
+    logo_url?: string;
+    theme_object: APIResponseThemeObject;
+    layout_name?: string;
+    social_links: APIResponseLinktreeSocialLink[];
+    links: APIResponseLinktreeLink[];
+    user?: APIResponseUser;
+    project?: APIResponseProject;
 }
