@@ -37,7 +37,7 @@ func (c *Controller) Save(context *gin.Context) {
 		return
 	}
 
-	var req LinktreeDTO
+	var req CreateUpdateLinktreeRequest
 	if err := json.Unmarshal([]byte(jsonBody), &req); err != nil {
 		utils.APIRespondError(context, http.StatusBadRequest, "Invalid JSON: "+err.Error())
 		context.Abort()
@@ -50,10 +50,7 @@ func (c *Controller) Save(context *gin.Context) {
 		req.LogoURL = nil
 	}
 
-	projectID := int64(1)
-	userID := int64(1)
-
-	payload := req.ToServicePayload(projectID, userID, req.ID)
+	payload := req.ToServicePayload()
 
 	if files, ok := form.File["logo"]; ok && len(files) > 0 {
 		payload.Logo = files[0]

@@ -421,7 +421,6 @@ export function Form({
                   </AccordionItem>
                 </Accordion>
 
-                {/* 6. SOCIAL LINKS SECTION - UPDATED TO LIST & MODAL STYLE */}
                 <Accordion type="single" defaultValue="socials" collapsible>
                   <AccordionItem value="socials" className="rounded-lg border px-4 shadow-none">
                     <AccordionTrigger className="cursor-pointer py-3 text-base font-medium hover:no-underline">

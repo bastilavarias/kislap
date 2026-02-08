@@ -198,6 +198,15 @@ func (service Service) ShowBySlug(slug string, level string) (*models.Project, e
 		}
 	}
 
+	if level == "full" && project.Type == "linktree" {
+		if err := service.DB.
+			Preload("Linktree").
+			Preload("Linktree.Links").
+			First(&project, project.ID).Error; err != nil {
+			return nil, err
+		}
+	}
+
 	return &project, nil
 }
 

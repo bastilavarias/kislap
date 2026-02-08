@@ -43,7 +43,7 @@ const projectTypes = [
     route: 'biz',
   },
   {
-    label: 'links',
+    label: 'linktree',
     emoji: '🔗',
     active: true,
     description: 'Aggregate all your important links in a single, shareable page.',

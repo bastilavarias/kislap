@@ -37,8 +37,6 @@ func (s *Service) Save(payload Payload) (*models.Linktree, error) {
 	var themeName *string
 
 	if payload.Theme != nil {
-		// Create a JSON object combining preset and values if needed,
-		// or just store the values. Matches existing Biz logic.
 		combined, _ := json.Marshal(payload.Theme)
 		raw := json.RawMessage(combined)
 		themeRaw = &raw
@@ -59,7 +57,6 @@ func (s *Service) Save(payload Payload) (*models.Linktree, error) {
 		}
 	}
 
-	// 1. Update Basic Fields
 	linktree.Name = payload.Name
 	linktree.Tagline = &payload.Tagline
 	linktree.LayoutName = &payload.LayoutName
@@ -69,7 +66,6 @@ func (s *Service) Save(payload Payload) (*models.Linktree, error) {
 		linktree.ThemeObject = themeRaw
 	}
 
-	// 2. Handle Logo Upload
 	if payload.Logo != nil {
 		logoUrl, err := s.uploadFile(payload.Logo, payload.ProjectID, "logo")
 		if err != nil {
@@ -77,21 +73,17 @@ func (s *Service) Save(payload Payload) (*models.Linktree, error) {
 		}
 		linktree.LogoURL = &logoUrl
 	} else if payload.LogoURL == nil {
-		// If both file and URL are null, it means image was removed
 		linktree.LogoURL = nil
 	}
 
-	// 3. Save Parent
 	if err := s.DB.Save(&linktree).Error; err != nil {
 		return nil, err
 	}
 
-	// 4. Handle Links (Children)
 	if err := s.syncLinks(linktree.ID, payload.ProjectID, payload.Links); err != nil {
 		return nil, err
 	}
 
-	// Refresh to return full object
 	return s.Get(int64(linktree.ProjectID))
 }
 
@@ -120,11 +112,10 @@ func (s *Service) syncLinks(linktreeID uint64, projectID int64, requests []Linkt
 		link.Title = req.Title
 		link.URL = req.URL
 		link.Description = req.Description
-		link.PlacementOrder = i // Use array index for order
+		link.PlacementOrder = i
 
-		// Handle Link Image Upload
 		if req.Image != nil {
-			imgUrl, err := s.uploadFile(req.Image, projectID, "links")
+			imgUrl, err := s.uploadFile(req.Image, projectID, "linktrees")
 			if err != nil {
 				return err
 			}

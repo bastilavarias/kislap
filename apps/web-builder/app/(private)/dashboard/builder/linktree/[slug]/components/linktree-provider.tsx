@@ -148,6 +148,27 @@ export function LinktreeProvider({ children }: { children: ReactNode }) {
         const formData = new FormData();
         const jsonPayload = JSON.parse(JSON.stringify(fullPayload));
 
+        console.log(data['social_links']);
+
+        const attachFiles = (listName: 'social_links', fileKey: string) => {
+          const list = data[listName];
+          if (!list || !Array.isArray(list)) return;
+
+          list.forEach((item, index) => {
+            const file = (item as any)[fileKey];
+
+            if (file instanceof File) {
+              formData.append(`${listName}[${index}].${fileKey}`, file);
+
+              if (jsonPayload[listName] && jsonPayload[listName][index]) {
+                jsonPayload[listName][index][fileKey] = null;
+              }
+            }
+          });
+        };
+
+        attachFiles('links', 'image');
+
         if (data.logo instanceof File) {
           formData.append('logo', data.logo);
           jsonPayload.logo = null;

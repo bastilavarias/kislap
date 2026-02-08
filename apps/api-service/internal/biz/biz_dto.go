@@ -116,50 +116,42 @@ type CreateUpdateBizRequest struct {
 	ProjectID int64  `form:"project_id" json:"project_id" binding:"required"`
 	UserID    int64  `form:"user_id" json:"user_id" binding:"required"`
 
-	// Identity & Branding
 	Name        string                `form:"name" json:"name"`
 	Tagline     string                `form:"tagline" json:"tagline"`
-	Description string                `form:"description" json:"description"` // Used for About Us text
+	Description string                `form:"description" json:"description"`
 	LogoURL     *string               `form:"logo_url" json:"logo_url"`
 	Logo        *multipart.FileHeader `form:"logo" json:"logo"`
 
-	// Hero Section
 	HeroTitle       *string               `form:"hero_title" json:"hero_title"`
 	HeroDescription *string               `form:"hero_description" json:"hero_description"`
 	HeroImageURL    *string               `form:"hero_image_url" json:"hero_image_url"`
 	HeroImage       *multipart.FileHeader `form:"hero_image" json:"hero_image"`
 
-	// About Image
 	AboutImageURL *string               `form:"about_image_url" json:"about_image_url"`
 	AboutImage    *multipart.FileHeader `form:"about_image" json:"about_image"`
 
-	// Contact & Location
 	Email   string  `form:"email" json:"email"`
 	Phone   *string `form:"phone" json:"phone"`
 	Address *string `form:"address" json:"address"`
-	MapLink *string `form:"map_link" json:"map_link"` // New Field
+	MapLink *string `form:"map_link" json:"map_link"`
 
-	// Operations
-	Schedule       *string `form:"schedule" json:"schedule"`               // New Field
-	OperationHours *string `form:"operation_hours" json:"operation_hours"` // New Field
+	Schedule       *string `form:"schedule" json:"schedule"`
+	OperationHours *string `form:"operation_hours" json:"operation_hours"`
 
-	// Features Config
 	ServicesEnabled bool `form:"services_enabled" json:"services_enabled"`
 	ProductsEnabled bool `form:"products_enabled" json:"products_enabled"`
 	BookingEnabled  bool `form:"booking_enabled" json:"booking_enabled"`
 	OrderingEnabled bool `form:"ordering_enabled" json:"ordering_enabled"`
 
-	// Design
 	LayoutName string        `form:"layout_name" json:"layout_name"`
 	Theme      *ThemeRequest `form:"theme" json:"theme"`
 
-	// Collections
 	Services      []ServiceRequest      `form:"services" json:"services"`
 	Products      []ProductRequest      `form:"products" json:"products"`
 	Testimonials  []TestimonialRequest  `form:"testimonials" json:"testimonials"`
 	SocialLinks   []SocialLinkRequest   `form:"social_links" json:"social_links"`
-	FAQs          []FAQRequest          `form:"faqs" json:"faqs"`                     // New Collection
-	GalleryImages []GalleryImageRequest `form:"gallery_images" json:"gallery_images"` // New Collection
+	FAQs          []FAQRequest          `form:"faqs" json:"faqs"`
+	GalleryImages []GalleryImageRequest `form:"gallery_images" json:"gallery_images"`
 }
 
 type Payload struct {

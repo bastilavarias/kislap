@@ -31,31 +31,38 @@ type Payload struct {
 	Links []LinktreeLinkRequest
 }
 
+type CreateUpdateLinktreeRequest struct {
+	LinktreeID *int64 `form:"linktree_id" json:"linktree_id"`
+	ProjectID  int64  `form:"project_id" json:"project_id" binding:"required"`
+	UserID     int64  `form:"user_id" json:"user_id" binding:"required"`
+
+	Name    string                `form:"name" json:"name"`
+	Tagline string                `form:"tagline" json:"tagline"`
+	LogoURL *string               `form:"logo_url" json:"logo_url"`
+	Logo    *multipart.FileHeader `form:"logo" json:"logo"`
+
+	LayoutName string        `form:"layout_name" json:"layout_name"`
+	Theme      *ThemeRequest `form:"theme" json:"theme"`
+
+	Links []LinktreeLinkRequest `form:"links" json:"links"`
+}
+
 type ThemeRequest struct {
 	Preset string          `json:"preset"`
 	Values json.RawMessage `json:"values"`
 }
 
-func (r *LinktreeDTO) ToServicePayload(projectID, userID int64, linktreeID *int64) Payload {
+func (request *CreateUpdateLinktreeRequest) ToServicePayload() Payload {
 	return Payload{
-		LinktreeID: linktreeID,
-		ProjectID:  projectID,
-		UserID:     userID,
-		Name:       r.Name,
-		Tagline:    r.Tagline,
-		LogoURL:    r.LogoURL,
-		LayoutName: r.LayoutName,
-		Theme:      r.Theme,
-		Links:      r.SocialLinks,
+		LinktreeID: request.LinktreeID,
+		ProjectID:  request.ProjectID,
+		UserID:     request.UserID,
+		Name:       request.Name,
+		Tagline:    request.Tagline,
+		LogoURL:    request.LogoURL,
+		Logo:       request.Logo,
+		LayoutName: request.LayoutName,
+		Theme:      request.Theme,
+		Links:      request.Links,
 	}
-}
-
-type LinktreeDTO struct {
-	ID          *int64                `form:"id" json:"id"`
-	Name        string                `form:"name" json:"name"`
-	Tagline     string                `form:"tagline" json:"tagline"`
-	LogoURL     *string               `form:"logo_url" json:"logo_url"`
-	LayoutName  string                `form:"layout_name" json:"layout_name"`
-	Theme       *ThemeRequest         `form:"theme" json:"theme"`
-	SocialLinks []LinktreeLinkRequest `form:"social_links" json:"social_links"`
 }

@@ -23,6 +23,7 @@ type Project struct {
 	User      *User      `gorm:"foreignKey:UserID" json:"user,omitempty"`
 	Portfolio *Portfolio `gorm:"foreignKey:ProjectID" json:"portfolio,omitempty"`
 	Biz       *Biz       `gorm:"foreignKey:ProjectID" json:"biz,omitempty"`
+	Linktree  *Linktree  `gorm:"foreignKey:ProjectID" json:"linktree,omitempty"`
 }
 
 func (Project) TableName() string {

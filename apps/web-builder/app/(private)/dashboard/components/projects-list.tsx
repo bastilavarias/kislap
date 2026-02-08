@@ -57,7 +57,7 @@ const typeConfig: Record<string, { label: string; color: string; icon: any; proj
       icon: BarChart3,
       projectName: 'biz',
     },
-    links: {
+    linktree: {
       label: 'Link-in-Bio',
       color: 'text-pink-600 bg-pink-50 border-pink-200',
       icon: ExternalLink,
