@@ -52,6 +52,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Settings } from '@/contexts/settings-context';
 import { cn } from '@/lib/utils';
 import { LinktreeFormValues } from '@/lib/schemas/linktree';
+import { SortableList } from '@/components/sortable-list';
 
 const LAYOUT_OPTIONS = [
   {
@@ -63,8 +64,6 @@ const LAYOUT_OPTIONS = [
   { id: 'linktree-retro', name: 'Retro', icon: CloudFog, description: 'Vintage & nostalgic.' },
   { id: 'linktree-cyber', name: 'Cyber', icon: Cpu, description: 'Dark & futuristic.' },
 ];
-
-// --- Components from Biz Form ---
 
 function SimpleRichTextEditor({
   value,
@@ -337,7 +336,7 @@ export function Form({
     formState: { errors },
   } = formMethods;
 
-  const { fields: socialFields, remove: removeSocial } = socialLinksFieldArray;
+  const { fields: socialFields, remove: removeSocial, move: moveSocial } = socialLinksFieldArray;
   const [editSocialIndex, setEditSocialIndex] = useState<number | null>(null);
 
   useEffect(() => {
@@ -408,6 +407,13 @@ export function Form({
                                 className="shadow-none"
                               />
                             </div>
+                            <div>
+                              <Label className="mb-2 block">About (Optionial)</Label>
+                              <SimpleRichTextEditor
+                                value={''}
+                                onChange={() => console.log('wew')}
+                              />
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -429,69 +435,68 @@ export function Form({
                             <p>No links added yet.</p>
                           </div>
                         ) : (
-                          socialFields.map((field, index) => {
-                            // Watch values for display in the list
-                            const name = watch(`social_links.${index}.platform`);
-                            const url = watch(`social_links.${index}.url`);
-                            const imgUrl = watch(`social_links.${index}.image_url`);
-                            const imgFile = watch(`social_links.${index}.image`);
+                          <SortableList
+                            items={socialFields}
+                            onDragEnd={(oldIndex, newIndex) => moveSocial(oldIndex, newIndex)}
+                            renderItem={(field, index) => {
+                              // IMPORTANT: watch() must use the current index to ensure values update on drag
+                              const name = watch(`social_links.${index}.platform`);
+                              const url = watch(`social_links.${index}.url`);
+                              const imgUrl = watch(`social_links.${index}.image_url`);
+                              const imgFile = watch(`social_links.${index}.image`);
 
-                            // Determine preview image source
-                            let displayImg = imgUrl;
-                            if (imgFile instanceof File) {
-                              displayImg = URL.createObjectURL(imgFile);
-                            }
+                              let displayImg = imgUrl;
+                              if (imgFile instanceof File) {
+                                displayImg = URL.createObjectURL(imgFile);
+                              }
 
-                            return (
-                              <div
-                                key={field.id}
-                                className="flex items-center justify-between p-3 border rounded-lg bg-card hover:bg-muted/50 transition-colors group"
-                              >
-                                <div className="flex items-center gap-3 w-full overflow-hidden">
-                                  {/* Drag Handle or Icon Placeholder */}
-                                  <div className="h-12 w-12 rounded-md bg-muted shrink-0 flex items-center justify-center border overflow-hidden">
-                                    {displayImg ? (
-                                      <img
-                                        src={displayImg}
-                                        alt="Icon"
-                                        className="h-full w-full object-cover"
-                                      />
-                                    ) : (
-                                      <LinkIcon className="w-5 h-5 text-muted-foreground/50" />
-                                    )}
+                              return (
+                                <div className="flex items-center justify-between p-3 border rounded-lg bg-card hover:bg-muted/50 transition-colors group">
+                                  <div className="flex items-center gap-3 w-full overflow-hidden">
+                                    <div className="h-12 w-12 rounded-md bg-muted shrink-0 flex items-center justify-center border overflow-hidden">
+                                      {displayImg ? (
+                                        <img
+                                          src={displayImg}
+                                          alt="Icon"
+                                          className="h-full w-full object-cover"
+                                        />
+                                      ) : (
+                                        <LinkIcon className="w-5 h-5 text-muted-foreground/50" />
+                                      )}
+                                    </div>
+
+                                    <div className="space-y-1 min-w-0">
+                                      <p className="font-medium truncate">
+                                        {name || 'Untitled Link'}
+                                      </p>
+                                      <p className="text-xs text-muted-foreground truncate max-w-[200px] md:max-w-md">
+                                        {url || 'No URL set'}
+                                      </p>
+                                    </div>
                                   </div>
 
-                                  <div className="space-y-1 min-w-0">
-                                    <p className="font-medium truncate">
-                                      {name || 'Untitled Link'}
-                                    </p>
-                                    <p className="text-xs text-muted-foreground truncate max-w-[200px] md:max-w-md">
-                                      {url || 'No URL set'}
-                                    </p>
+                                  <div className="flex items-center gap-1 shrink-0">
+                                    <Button
+                                      size="icon"
+                                      variant="ghost"
+                                      className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                                      onClick={() => setEditSocialIndex(index)}
+                                    >
+                                      <Edit2 className="w-4 h-4" />
+                                    </Button>
+                                    <Button
+                                      size="icon"
+                                      variant="ghost"
+                                      className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                                      onClick={() => removeSocial(index)}
+                                    >
+                                      <Trash2 className="w-4 h-4" />
+                                    </Button>
                                   </div>
                                 </div>
-
-                                <div className="flex items-center gap-1 shrink-0">
-                                  <Button
-                                    size="icon"
-                                    variant="ghost"
-                                    className="h-8 w-8 text-muted-foreground hover:text-foreground"
-                                    onClick={() => setEditSocialIndex(index)}
-                                  >
-                                    <Edit2 className="w-4 h-4" />
-                                  </Button>
-                                  <Button
-                                    size="icon"
-                                    variant="ghost"
-                                    className="h-8 w-8 text-muted-foreground hover:text-destructive"
-                                    onClick={() => removeSocial(index)}
-                                  >
-                                    <Trash2 className="w-4 h-4" />
-                                  </Button>
-                                </div>
-                              </div>
-                            );
-                          })
+                              );
+                            }}
+                          />
                         )}
                       </div>
 
@@ -522,7 +527,6 @@ export function Form({
         </div>
       </div>
 
-      {/* EDIT MODAL DIALOG */}
       <Dialog
         open={editSocialIndex !== null}
         onOpenChange={(open) => !open && setEditSocialIndex(null)}

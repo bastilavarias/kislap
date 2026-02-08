@@ -91,9 +91,7 @@ export function FormHeader<T>({
   const isEditPage = pathname.endsWith('/edit');
   const ProjectIcon = getProjectIcon(project?.type);
 
-  const isContentReady =
-    hasContent &&
-    hasContentSocialLinks;
+  const isContentReady = hasContent && hasContentSocialLinks;
 
   const isReadyToPublish = isContentReady && hasLayout && hasTheme;
 
@@ -265,9 +263,7 @@ export function FormHeader<T>({
                     !isEditPage && 'bg-background shadow-sm font-semibold'
                   )}
                 >
-                  <Link
-                    href={`/dashboard/builder/${project?.type || 'portfolio'}/${project?.slug}`}
-                  >
+                  <Link href={`/dashboard/builder/linktree/${project?.slug}`}>
                     <LayoutDashboard className="w-3.5 h-3.5 mr-2 opacity-70" />
                     Dashboard
                   </Link>
@@ -282,9 +278,7 @@ export function FormHeader<T>({
                     isEditPage && 'bg-background shadow-sm font-semibold'
                   )}
                 >
-                  <Link
-                    href={`/dashboard/builder/${project?.type || 'portfolio'}/${project?.slug}/edit`}
-                  >
+                  <Link href={`/dashboard/builder/linktree/${project?.slug}/edit`}>
                     <PenTool className="w-3.5 h-3.5 mr-2 opacity-70" />
                     Editor
                   </Link>

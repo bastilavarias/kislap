@@ -43,28 +43,33 @@ import {
   ArrowUpRight,
 } from 'lucide-react';
 
-const typeConfig: Record<string, { label: string; color: string; icon: any }> = {
-  portfolio: {
-    label: 'Portfolio',
-    color: 'text-blue-600 bg-blue-50 border-blue-200',
-    icon: Layout,
-  },
-  biz: {
-    label: 'Business',
-    color: 'text-purple-600 bg-purple-50 border-purple-200',
-    icon: BarChart3,
-  },
-  links: {
-    label: 'Link-in-Bio',
-    color: 'text-pink-600 bg-pink-50 border-pink-200',
-    icon: ExternalLink,
-  },
-  waitlist: {
-    label: 'Waitlist',
-    color: 'text-orange-600 bg-orange-50 border-orange-200',
-    icon: Zap,
-  },
-};
+const typeConfig: Record<string, { label: string; color: string; icon: any; projectName: string }> =
+  {
+    portfolio: {
+      label: 'Portfolio',
+      color: 'text-blue-600 bg-blue-50 border-blue-200',
+      icon: Layout,
+      projectName: 'portfolio',
+    },
+    biz: {
+      label: 'Business',
+      color: 'text-purple-600 bg-purple-50 border-purple-200',
+      icon: BarChart3,
+      projectName: 'biz',
+    },
+    links: {
+      label: 'Link-in-Bio',
+      color: 'text-pink-600 bg-pink-50 border-pink-200',
+      icon: ExternalLink,
+      projectName: 'linktree',
+    },
+    waitlist: {
+      label: 'Waitlist',
+      color: 'text-orange-600 bg-orange-50 border-orange-200',
+      icon: Zap,
+      projectName: 'waitlist',
+    },
+  };
 
 interface ProjectCardProps {
   project: APIResponseProject;
@@ -78,6 +83,7 @@ function ProjectCard({ project, onEdit, onDelete }: ProjectCardProps) {
   const liveUrl = project?.sub_domain ? `${urlPrefix}${project.sub_domain}.${rootDomain}` : '#';
 
   const typeInfo = typeConfig[project.type] || typeConfig.portfolio;
+
   const createdDate = new Date(project.created_at).toLocaleDateString('en-US', {
     month: 'short',
     year: 'numeric',
@@ -117,7 +123,7 @@ function ProjectCard({ project, onEdit, onDelete }: ProjectCardProps) {
         <div className="flex justify-between items-start mb-3">
           <div className="space-y-1">
             <Link
-              href={`/dashboard/builder/${project.type}/${project.slug}`}
+              href={`/dashboard/builder/${typeInfo.projectName}/${project.slug}`}
               className="block font-semibold text-lg tracking-tight text-foreground group-hover:text-primary transition-colors"
             >
               {project.name}
