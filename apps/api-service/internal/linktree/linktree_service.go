@@ -80,6 +80,7 @@ func (s *Service) Save(payload Payload) (*models.Linktree, error) {
 		return nil, err
 	}
 
+	fmt.Println(payload.Links)
 	if err := s.syncLinks(linktree.ID, payload.ProjectID, payload.Links); err != nil {
 		return nil, err
 	}
@@ -132,7 +133,6 @@ func (s *Service) syncLinks(linktreeID uint64, projectID int64, requests []Linkt
 		}
 	}
 
-	// Delete removed items
 	for id, item := range existingMap {
 		if !processedIDs[id] {
 			s.DB.Delete(item)

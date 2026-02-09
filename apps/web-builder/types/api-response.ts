@@ -374,16 +374,15 @@ export interface APIResponseLinktreeSocialLink {
 }
 
 export interface APIResponseLinktree {
-    id: number;
-    project_id: number;
-    user_id: number;
-    name: string;
-    tagline?: string;
-    logo_url?: string;
-    theme_object: APIResponseThemeObject;
-    layout_name?: string;
-    social_links: APIResponseLinktreeSocialLink[];
-    links: APIResponseLinktreeLink[];
-    user?: APIResponseUser;
-    project?: APIResponseProject;
+  id: number;
+  project_id: number;
+  user_id: number;
+  name: string;
+  tagline?: string;
+  logo_url?: string;
+  theme_object: APIResponseThemeObject;
+  layout_name?: string;
+  links: APIResponseLinktreeLink[];
+  user?: APIResponseUser;
+  project?: APIResponseProject;
 }

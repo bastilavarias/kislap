@@ -19,7 +19,7 @@ interface LinktreeContextType {
   layout: string;
   setLayout: React.Dispatch<React.SetStateAction<string>>;
 
-  socialLinksFieldArray: UseFieldArrayReturn<LinktreeFormValues, 'social_links', 'id'>;
+  socialLinksFieldArray: UseFieldArrayReturn<LinktreeFormValues, 'links', 'id'>;
 
   isLoading: boolean;
   isSaving: boolean;
@@ -55,12 +55,13 @@ function mapToFormValues(source: APIResponseLinktree): LinktreeFormValues {
     logo_url: source.logo_url || null,
     layout_name: source.layout_name ?? 'default-linktree',
 
-    social_links: (source.social_links || [])
+    links: (source.links || [])
       .sort((prev: any, after: any) => (prev.placement_order ?? 0) - (after.placement_order ?? 0))
       .map((socialLink: any) => ({
         id: socialLink.id || null,
-        platform: socialLink.platform || '',
+        title: socialLink.title || '',
         url: socialLink.url || '',
+        image_url: socialLink.image_url || '',
       })),
   };
 }
@@ -93,13 +94,13 @@ export function LinktreeProvider({ children }: { children: ReactNode }) {
       logo: null,
       logo_url: '',
       layout_name: 'default-linktree',
-      social_links: [],
+      links: [],
     },
   });
 
   const { control, setValue, handleSubmit, watch, reset } = formMethods;
 
-  const socialLinksFieldArray = useFieldArray({ control, name: 'social_links' });
+  const socialLinksFieldArray = useFieldArray({ control, name: 'links' });
 
   const values = watch();
 
@@ -130,7 +131,7 @@ export function LinktreeProvider({ children }: { children: ReactNode }) {
       async (data) => {
         const formattedData = Object.assign({
           ...data,
-          social_links: data.social_links?.map((socialLink: any, index: any) => ({
+          links: data.links?.map((socialLink: any, index: any) => ({
             ...socialLink,
             placement_order: index,
           })),
@@ -148,9 +149,7 @@ export function LinktreeProvider({ children }: { children: ReactNode }) {
         const formData = new FormData();
         const jsonPayload = JSON.parse(JSON.stringify(fullPayload));
 
-        console.log(data['social_links']);
-
-        const attachFiles = (listName: 'social_links', fileKey: string) => {
+        const attachFiles = (listName: 'links', fileKey: string) => {
           const list = data[listName];
           if (!list || !Array.isArray(list)) return;
 
@@ -207,7 +206,7 @@ export function LinktreeProvider({ children }: { children: ReactNode }) {
   };
 
   const onAddSocialLink = () => {
-    socialLinksFieldArray.append({ platform: '', url: '' });
+    socialLinksFieldArray.append({ title: '', url: '' });
   };
 
   const hasContent = useMemo(
@@ -215,10 +214,7 @@ export function LinktreeProvider({ children }: { children: ReactNode }) {
     [values.name, values.tagline, values.logo, values.logo_url]
   );
 
-  const hasContentSocialLinks = useMemo(
-    () => (values.social_links?.length ?? 0) > 0,
-    [values.social_links]
-  );
+  const hasContentSocialLinks = useMemo(() => (values.links?.length ?? 0) > 0, [values.links]);
 
   const hasLayout = useMemo(() => {
     return !!layout;

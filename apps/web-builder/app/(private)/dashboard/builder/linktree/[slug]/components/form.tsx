@@ -312,7 +312,7 @@ function DesignPanel({
 
 interface Props {
   formMethods: UseFormReturn<LinktreeFormValues>;
-  socialLinksFieldArray: UseFieldArrayReturn<LinktreeFormValues, 'social_links', 'id'>;
+  socialLinksFieldArray: UseFieldArrayReturn<LinktreeFormValues, 'links', 'id'>;
   localThemeSettings: Settings | null;
   setLocalThemeSettings: React.Dispatch<React.SetStateAction<Settings | null>>;
   layout: string;
@@ -337,7 +337,7 @@ export function Form({
   } = formMethods;
 
   const { fields: socialFields, remove: removeSocial, move: moveSocial } = socialLinksFieldArray;
-  const [editSocialIndex, setEditSocialIndex] = useState<number | null>(null);
+  const [editLinkIndex, setEditLinkIndex] = useState<number | null>(null);
 
   useEffect(() => {
     //@ts-ignore
@@ -348,7 +348,7 @@ export function Form({
     onAddSocialLink();
     // The new item is at the end of the array
     setTimeout(() => {
-      setEditSocialIndex(socialFields.length);
+      setEditLinkIndex(socialFields.length);
     }, 0);
   };
 
@@ -424,7 +424,7 @@ export function Form({
                 <Accordion type="single" defaultValue="socials" collapsible>
                   <AccordionItem value="socials" className="rounded-lg border px-4 shadow-none">
                     <AccordionTrigger className="cursor-pointer py-3 text-base font-medium hover:no-underline">
-                      Social Links
+                      Links
                     </AccordionTrigger>
                     <AccordionContent className="pt-2 pb-4 px-1">
                       <div className="space-y-3">
@@ -438,16 +438,17 @@ export function Form({
                             items={socialFields}
                             onDragEnd={(oldIndex, newIndex) => moveSocial(oldIndex, newIndex)}
                             renderItem={(field, index) => {
-                              // IMPORTANT: watch() must use the current index to ensure values update on drag
-                              const name = watch(`social_links.${index}.platform`);
-                              const url = watch(`social_links.${index}.url`);
-                              const imgUrl = watch(`social_links.${index}.image_url`);
-                              const imgFile = watch(`social_links.${index}.image`);
+                              const title = watch(`links.${index}.title`);
+                              const url = watch(`links.${index}.url`);
+                              const imgUrl = watch(`links.${index}.image_url`);
+                              const imgFile = watch(`links.${index}.image`);
 
                               let displayImg = imgUrl;
                               if (imgFile instanceof File) {
                                 displayImg = URL.createObjectURL(imgFile);
                               }
+
+                              console.log(displayImg);
 
                               return (
                                 <div className="flex items-center justify-between p-3 border rounded-lg bg-card hover:bg-muted/50 transition-colors group">
@@ -466,7 +467,7 @@ export function Form({
 
                                     <div className="space-y-1 min-w-0">
                                       <p className="font-medium truncate">
-                                        {name || 'Untitled Link'}
+                                        {title || 'Untitled Link'}
                                       </p>
                                       <p className="text-xs text-muted-foreground truncate max-w-[200px] md:max-w-md">
                                         {url || 'No URL set'}
@@ -479,7 +480,7 @@ export function Form({
                                       size="icon"
                                       variant="ghost"
                                       className="h-8 w-8 text-muted-foreground hover:text-foreground"
-                                      onClick={() => setEditSocialIndex(index)}
+                                      onClick={() => setEditLinkIndex(index)}
                                     >
                                       <Edit2 className="w-4 h-4" />
                                     </Button>
@@ -504,7 +505,7 @@ export function Form({
                         variant="outline"
                         className="w-full mt-4 border-dashed shadow-none"
                       >
-                        <Plus className="w-4 h-4 mr-2" /> Add Social Link
+                        <Plus className="w-4 h-4 mr-2" /> Add Link
                       </Button>
                     </AccordionContent>
                   </AccordionItem>
@@ -527,35 +528,35 @@ export function Form({
       </div>
 
       <Dialog
-        open={editSocialIndex !== null}
-        onOpenChange={(open) => !open && setEditSocialIndex(null)}
+        open={editLinkIndex !== null}
+        onOpenChange={(open) => !open && setEditLinkIndex(null)}
       >
         <DialogContent className="sm:max-w-[600px] max-h-[85vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
-              {editSocialIndex !== null && watch(`social_links.${editSocialIndex}.platform`)
+              {editLinkIndex !== null && watch(`links.${editLinkIndex}.title`)
                 ? 'Edit Link'
                 : 'Add New Link'}
             </DialogTitle>
             <DialogDescription>Customize the details for this link.</DialogDescription>
           </DialogHeader>
 
-          {editSocialIndex !== null && (
+          {editLinkIndex !== null && (
             <div className="grid gap-6 py-4">
               <div className="space-y-3">
                 <Label>Icon / Image</Label>
                 <ImageUploadField
-                  id={`social-img-${editSocialIndex}`}
-                  previewUrl={watch(`social_links.${editSocialIndex}.image_url`)}
-                  currentFile={watch(`social_links.${editSocialIndex}.image`)}
-                  onFileSelect={(file) => setValue(`social_links.${editSocialIndex}.image`, file)}
+                  id={`link-img-${editLinkIndex}`}
+                  previewUrl={watch(`links.${editLinkIndex}.image_url`)}
+                  currentFile={watch(`links.${editLinkIndex}.image`)}
+                  onFileSelect={(file) => setValue(`links.${editLinkIndex}.image`, file)}
                 />
               </div>
 
               <div className="space-y-2">
                 <Label>Name / Title</Label>
                 <Input
-                  {...register(`social_links.${editSocialIndex}.platform`)}
+                  {...register(`links.${editLinkIndex}.title`)}
                   className="shadow-none"
                   placeholder="e.g. My Portfolio"
                 />
@@ -564,7 +565,7 @@ export function Form({
               <div className="space-y-2">
                 <Label>URL</Label>
                 <Input
-                  {...register(`social_links.${editSocialIndex}.url`)}
+                  {...register(`links.${editLinkIndex}.url`)}
                   className="shadow-none"
                   placeholder="https://..."
                 />
@@ -573,15 +574,15 @@ export function Form({
               <div className="space-y-2">
                 <Label>Description</Label>
                 <SimpleRichTextEditor
-                  value={watch(`social_links.${editSocialIndex}.description`) || ''}
-                  onChange={(val) => setValue(`social_links.${editSocialIndex}.description`, val)}
+                  value={watch(`links.${editLinkIndex}.description`) || ''}
+                  onChange={(val) => setValue(`links.${editLinkIndex}.description`, val)}
                 />
               </div>
             </div>
           )}
 
           <DialogFooter>
-            <Button onClick={() => setEditSocialIndex(null)} className="w-full sm:w-auto">
+            <Button onClick={() => setEditLinkIndex(null)} className="w-full sm:w-auto">
               Done
             </Button>
           </DialogFooter>

@@ -57,7 +57,7 @@ func (c *Controller) Save(context *gin.Context) {
 	}
 
 	for i := range payload.Links {
-		key := fmt.Sprintf("social_links[%d].image", i)
+		key := fmt.Sprintf("links[%d].image", i)
 		if files, ok := form.File[key]; ok && len(files) > 0 {
 			payload.Links[i].Image = files[0]
 		}

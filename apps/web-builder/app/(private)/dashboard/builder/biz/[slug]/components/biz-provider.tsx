@@ -305,7 +305,7 @@ export function BizProvider({ children }: { children: ReactNode }) {
               formData.append(`${listName}[${index}].${fileKey}`, file);
 
               if (jsonPayload[listName] && jsonPayload[listName][index]) {
-                jsonPayload[listName][index][fileKey] = null; // Clear file obj from JSON to avoid errors
+                jsonPayload[listName][index][fileKey] = null;
               }
             }
           });

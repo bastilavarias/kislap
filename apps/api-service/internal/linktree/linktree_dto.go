@@ -7,7 +7,7 @@ import (
 
 type LinktreeLinkRequest struct {
 	ID             *int64                `form:"id" json:"id"`
-	Title          string                `form:"platform" json:"platform"`
+	Title          string                `form:"title" json:"title"`
 	URL            string                `form:"url" json:"url"`
 	Description    *string               `form:"description" json:"description"`
 	ImageURL       *string               `form:"image_url" json:"image_url"`
