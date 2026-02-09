@@ -4,8 +4,9 @@ export const linktreeFormSchema = z.object({
   id: z.number().optional(),
   name: z.string().min(1, 'Display name is required.'),
   tagline: z.string().max(200, 'Tagline cannot exceed 200 characters.').optional(),
-  // logo: z.any().optional(),
-  // logo_url: z.string().optional(),
+  about: z.string().optional(),
+  logo: z.any().optional(),
+  logo_url: z.string().optional(),
   links: z
     .array(
       z.object({

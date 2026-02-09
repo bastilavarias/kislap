@@ -51,8 +51,8 @@ function mapToFormValues(source: APIResponseLinktree): LinktreeFormValues {
   return {
     name: source.name || '',
     tagline: source.tagline || '',
-    logo: null,
-    logo_url: source.logo_url || null,
+    about: source.about || '',
+    logo_url: source.logo_url || '',
     layout_name: source.layout_name ?? 'default-linktree',
 
     links: (source.links || [])
@@ -88,6 +88,7 @@ export function LinktreeProvider({ children }: { children: ReactNode }) {
 
   const formMethods = useForm<LinktreeFormValues>({
     resolver: zodResolver(linktreeFormSchema),
+
     defaultValues: {
       name: '',
       tagline: '',

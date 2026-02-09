@@ -22,6 +22,7 @@ type Payload struct {
 
 	Name    string
 	Tagline string
+	About   string
 	LogoURL *string
 	Logo    *multipart.FileHeader
 
@@ -38,6 +39,7 @@ type CreateUpdateLinktreeRequest struct {
 
 	Name    string                `form:"name" json:"name"`
 	Tagline string                `form:"tagline" json:"tagline"`
+	About   string                `form:"about" json:"about"`
 	LogoURL *string               `form:"logo_url" json:"logo_url"`
 	Logo    *multipart.FileHeader `form:"logo" json:"logo"`
 
@@ -59,6 +61,7 @@ func (request *CreateUpdateLinktreeRequest) ToServicePayload() Payload {
 		UserID:     request.UserID,
 		Name:       request.Name,
 		Tagline:    request.Tagline,
+		About:      request.About,
 		LogoURL:    request.LogoURL,
 		Logo:       request.Logo,
 		LayoutName: request.LayoutName,

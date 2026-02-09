@@ -53,6 +53,8 @@ import { Settings } from '@/contexts/settings-context';
 import { cn } from '@/lib/utils';
 import { LinktreeFormValues } from '@/lib/schemas/linktree';
 import { SortableList } from '@/components/sortable-list';
+import { Controller } from 'react-hook-form';
+import { SimpleRichTextEditor } from '@/components/simple-rich-text-editor';
 
 const LAYOUT_OPTIONS = [
   {
@@ -64,88 +66,6 @@ const LAYOUT_OPTIONS = [
   { id: 'linktree-retro', name: 'Retro', icon: CloudFog, description: 'Vintage & nostalgic.' },
   { id: 'linktree-cyber', name: 'Cyber', icon: Cpu, description: 'Dark & futuristic.' },
 ];
-
-function SimpleRichTextEditor({
-  value,
-  onChange,
-  className,
-}: {
-  value: string;
-  onChange: (val: string) => void;
-  className?: string;
-}) {
-  const insertFormat = (format: 'bold' | 'list' | 'link' | 'strike') => {
-    let newText = value || '';
-    if (format === 'bold') newText += ' **bold text** ';
-    if (format === 'strike') newText += ' ~~strikethrough~~ ';
-    if (format === 'link') newText += ' [link text](https://example.com) ';
-    if (format === 'list') newText += '\n- list item';
-
-    onChange(newText);
-  };
-
-  return (
-    <div
-      className={cn(
-        'border rounded-md overflow-hidden focus-within:ring-2 focus-within:ring-ring',
-        className
-      )}
-    >
-      <div className="bg-muted/50 border-b p-2 flex gap-1 flex-wrap">
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          className="h-8 w-8 p-0"
-          onClick={() => insertFormat('bold')}
-          title="Bold"
-        >
-          <BoldIcon className="w-4 h-4" />
-        </Button>
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          className="h-8 w-8 p-0"
-          onClick={() => insertFormat('strike')}
-          title="Strikethrough"
-        >
-          <StrikethroughIcon className="w-4 h-4" />
-        </Button>
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          className="h-8 w-8 p-0"
-          onClick={() => insertFormat('link')}
-          title="Link"
-        >
-          <LinkIcon className="w-4 h-4" />
-        </Button>
-        <div className="w-px h-6 bg-border mx-1" />
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          className="h-8 w-8 p-0"
-          onClick={() => insertFormat('list')}
-          title="List"
-        >
-          <ListIcon className="w-4 h-4" />
-        </Button>
-        <span className="text-[10px] text-muted-foreground self-center ml-auto px-2">
-          Markdown Supported
-        </span>
-      </div>
-      <Textarea
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="border-none shadow-none focus-visible:ring-0 rounded-none min-h-[100px] resize-none font-mono text-sm"
-        placeholder="Type content here..."
-      />
-    </div>
-  );
-}
 
 function ImageUploadField({
   id,
@@ -333,6 +253,7 @@ export function Form({
     register,
     watch,
     setValue,
+    control,
     formState: { errors },
   } = formMethods;
 
@@ -408,10 +329,18 @@ export function Form({
                               />
                             </div>
                             <div>
-                              <Label className="mb-2 block">About (Optionial)</Label>
-                              <SimpleRichTextEditor
-                                value={''}
-                                onChange={() => console.log('wew')}
+                              <Label className="mb-2 block">About (Optional)</Label>
+
+                              <Controller
+                                control={control}
+                                name="about"
+                                render={({ field }) => (
+                                  <SimpleRichTextEditor
+                                    value={field.value || ''}
+                                    onChange={field.onChange}
+                                    placeholder="Tell your story..."
+                                  />
+                                )}
                               />
                             </div>
                           </div>

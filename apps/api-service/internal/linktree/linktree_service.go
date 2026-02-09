@@ -59,6 +59,7 @@ func (s *Service) Save(payload Payload) (*models.Linktree, error) {
 
 	linktree.Name = payload.Name
 	linktree.Tagline = &payload.Tagline
+	linktree.About = &payload.About
 	linktree.LayoutName = &payload.LayoutName
 
 	if themeName != nil {
@@ -80,7 +81,6 @@ func (s *Service) Save(payload Payload) (*models.Linktree, error) {
 		return nil, err
 	}
 
-	fmt.Println(payload.Links)
 	if err := s.syncLinks(linktree.ID, payload.ProjectID, payload.Links); err != nil {
 		return nil, err
 	}

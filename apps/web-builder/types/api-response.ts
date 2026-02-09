@@ -379,6 +379,7 @@ export interface APIResponseLinktree {
   user_id: number;
   name: string;
   tagline?: string;
+  about?: string;
   logo_url?: string;
   theme_object: APIResponseThemeObject;
   layout_name?: string;

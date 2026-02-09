@@ -14,6 +14,8 @@ type Linktree struct {
 
 	Name    string  `gorm:"size:255" json:"name"`
 	Tagline *string `gorm:"size:255" json:"tagline"`
+	About   *string `gorm:"type:text" json:"about"`
+
 	LogoURL *string `gorm:"size:255" json:"logo_url"`
 
 	LayoutName  *string          `gorm:"size:255;default:linktree-default" json:"layout_name"`
