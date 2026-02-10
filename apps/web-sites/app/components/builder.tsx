@@ -50,6 +50,8 @@ export function Builder({ initialProject, initialSubdomain }: BuilderProps) {
     themeObject = project.portfolio?.theme_object || {};
   } else if (project.type === 'biz') {
     themeObject = project.biz?.theme_object || {};
+  } else if (project.type === 'linktree') {
+    themeObject = project.linktree?.theme_object || {};
   }
 
   //@ts-ignore
@@ -59,6 +61,8 @@ export function Builder({ initialProject, initialSubdomain }: BuilderProps) {
     theme: JSON.parse(JSON.stringify(themeObject)),
     mode: themeMode,
   };
+
+  console.log(settings);
 
   const TemplateComponent = renderTemplate(project, themeMode, settings.theme.styles, setThemeMode);
 

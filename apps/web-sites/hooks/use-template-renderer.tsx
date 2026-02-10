@@ -12,11 +12,12 @@ interface TemplateProps {
   onSetThemeMode: React.Dispatch<React.SetStateAction<Mode>>;
 }
 
-import { BizTemplates, PortfolioTemplates } from '@kislap/templates';
+import { BizTemplates, PortfolioTemplates, LinktreeTemplates } from '@kislap/templates';
 
 const { Default, Minimal, Bento, NeoBrutalist, Glass, Cyber, Newspaper, Kinetic, Vaporware } =
   PortfolioTemplates;
 const { BizDefault, BizCyber, BizRetro } = BizTemplates;
+const { LinktreeDefault } = LinktreeTemplates;
 
 type TemplateName = string;
 
@@ -36,6 +37,10 @@ const bizTemplates: Record<TemplateName, React.FC<TemplateProps>> = {
   'biz-default': BizDefault,
   'biz-cyber': BizCyber,
   'biz-retro': BizRetro,
+};
+
+const linktreeTemplates: Record<TemplateName, React.FC<TemplateProps>> = {
+  'linktree-default': LinktreeDefault,
 };
 
 /**
@@ -61,13 +66,19 @@ export const renderTemplate = (
   } else if (project.type === 'biz') {
     layoutName = project.biz.layout_name || 'biz-default';
     Component = bizTemplates[layoutName as TemplateName];
+  } else if (project.type === 'linktree') {
+    layoutName = project.linktree.layout_name || 'linktree-default';
+    Component = linktreeTemplates[layoutName as TemplateName];
   }
+
+  console.log(project.linktree);
 
   return Component ? (
     <Component
       project={project}
       portfolio={project.portfolio}
       biz={project.biz}
+      linktree={project.linktree}
       themeMode={themeMode}
       themeStyles={themeStyles}
       onSetThemeMode={onSetThemeMode}
