@@ -1,6 +1,6 @@
 'use client';
 
-import { CheckCircle2, CloudFog, Cpu, LayoutTemplate } from 'lucide-react';
+import { CheckCircle2, LayoutTemplate } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import ThemeControlPanel from '@/components/customizer/theme-control-panel';
@@ -20,8 +20,6 @@ const LAYOUT_OPTIONS = [
     icon: LayoutTemplate,
     description: 'Raw, bold, and high-contrast.',
   },
-  { id: 'linktree-retro', name: 'Retro', icon: CloudFog, description: 'Vintage & nostalgic.' },
-  { id: 'linktree-cyber', name: 'Cyber', icon: Cpu, description: 'Dark & futuristic.' },
 ];
 
 interface DesignPanelProps {

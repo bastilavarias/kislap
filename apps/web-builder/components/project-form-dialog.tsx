@@ -35,20 +35,20 @@ const projectTypes = [
     route: 'portfolio',
   },
   {
-    label: 'biz',
-    emoji: '💼',
-    active: true,
-    description: 'Create a professional business3 website to attract clients and customers.',
-    features: ['Company info pages', 'Service showcase', 'Contact forms'],
-    route: 'biz',
-  },
-  {
     label: 'linktree',
     emoji: '🔗',
     active: true,
     description: 'Aggregate all your important links in a single, shareable page.',
     features: ['Social links', 'Custom branding', 'Easy sharing'],
     route: 'linktree',
+  },
+  {
+    label: 'biz',
+    emoji: '💼',
+    active: false,
+    description: 'Create a professional business3 website to attract clients and customers.',
+    features: ['Company info pages', 'Service showcase', 'Contact forms'],
+    route: 'biz',
   },
   {
     label: 'waitlist',

@@ -196,6 +196,7 @@ export interface APIResponseProject {
   name: string;
   description?: string;
   slug: string;
+  og_image_url?: string | null;
   sub_domain?: string | null;
   type: "portfolio" | "biz" | "linktree" | "waitlist";
   published: number;
