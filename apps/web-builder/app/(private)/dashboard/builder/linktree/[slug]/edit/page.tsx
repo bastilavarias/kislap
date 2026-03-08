@@ -13,8 +13,8 @@ export default function BizEditPage() {
       setLayout={builder.setLayout}
       localThemeSettings={builder.localThemeSettings}
       setLocalThemeSettings={builder.setLocalThemeSettings}
-      socialLinksFieldArray={builder.socialLinksFieldArray}
-      onAddSocialLink={builder.onAddSocialLink}
+      sectionsFieldArray={builder.sectionsFieldArray}
+      onAddSection={builder.onAddSection}
     />
   );
 }

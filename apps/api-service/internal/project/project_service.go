@@ -201,10 +201,13 @@ func (service Service) ShowBySlug(slug string, level string) (*models.Project, e
 	if level == "full" && project.Type == "linktree" {
 		if err := service.DB.
 			Preload("Linktree").
-			Preload("Linktree.Links").
+			Preload("Linktree.Links", func(db *gorm.DB) *gorm.DB {
+				return db.Order("placement_order ASC")
+			}).
 			First(&project, project.ID).Error; err != nil {
 			return nil, err
 		}
+		normalizeLinktreeContent(&project)
 	}
 
 	return &project, nil
@@ -242,7 +245,9 @@ func (service Service) ShowBySubDomain(subDomain string) (*models.Project, error
 	case "linktree":
 		query = query.
 			Preload("Linktree").
-			Preload("Linktree.Links")
+			Preload("Linktree.Links", func(db *gorm.DB) *gorm.DB {
+				return db.Order("placement_order ASC")
+			})
 	default:
 		query = query.
 			Preload("Portfolio").
@@ -263,6 +268,7 @@ func (service Service) ShowBySubDomain(subDomain string) (*models.Project, error
 	if err := query.First(&project, project.ID).Error; err != nil {
 		return nil, err
 	}
+	normalizeLinktreeContent(&project)
 
 	return &project, nil
 }
@@ -324,4 +330,56 @@ func (service Service) SaveOGImage(projectID int64) (*models.Project, error) {
 	}
 
 	return &project, nil
+}
+
+func normalizeLinktreeContent(project *models.Project) {
+	if project == nil || project.Linktree == nil || len(project.Linktree.Links) == 0 {
+		return
+	}
+
+	links := make([]models.LinktreeLink, 0, len(project.Linktree.Links))
+	sections := make([]models.LinktreeSection, 0)
+
+	for _, item := range project.Linktree.Links {
+		if item.Type == "" || item.Type == "link" {
+			links = append(links, item)
+			continue
+		}
+
+		title := stringPtr(item.Title)
+		url := stringPtr(item.URL)
+		sections = append(sections, models.LinktreeSection{
+			ID:                item.ID,
+			LinktreeID:        item.LinktreeID,
+			PlacementOrder:    item.PlacementOrder,
+			Type:              item.Type,
+			Title:             title,
+			Description:       item.Description,
+			URL:               url,
+			AppURL:            item.AppURL,
+			ImageURL:          item.ImageURL,
+			IconKey:           item.IconKey,
+			AccentColor:       item.AccentColor,
+			QuoteText:         item.QuoteText,
+			QuoteAuthor:       item.QuoteAuthor,
+			BannerText:        item.BannerText,
+			SupportNote:       item.SupportNote,
+			SupportQRImageURL: item.SupportQRImageURL,
+			CTALabel:          item.CTALabel,
+			CreatedAt:         item.CreatedAt,
+			UpdatedAt:         item.UpdatedAt,
+			DeletedAt:         item.DeletedAt,
+		})
+	}
+
+	project.Linktree.Links = links
+	project.Linktree.Sections = sections
+}
+
+func stringPtr(value string) *string {
+	if value == "" {
+		return nil
+	}
+	v := value
+	return &v
 }

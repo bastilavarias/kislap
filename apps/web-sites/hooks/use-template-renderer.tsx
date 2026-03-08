@@ -17,7 +17,7 @@ import { BizTemplates, PortfolioTemplates, LinktreeTemplates } from '@kislap/tem
 const { Default, Minimal, Bento, NeoBrutalist, Glass, Cyber, Newspaper, Kinetic, Vaporware } =
   PortfolioTemplates;
 const { BizDefault, BizCyber, BizRetro } = BizTemplates;
-const { LinktreeDefault } = LinktreeTemplates;
+const { LinktreeDefault, LinktreeNeoBrutalist } = LinktreeTemplates;
 
 type TemplateName = string;
 
@@ -41,6 +41,7 @@ const bizTemplates: Record<TemplateName, React.FC<TemplateProps>> = {
 
 const linktreeTemplates: Record<TemplateName, React.FC<TemplateProps>> = {
   'linktree-default': LinktreeDefault,
+  'linktree-neo-brutalist': LinktreeNeoBrutalist,
 };
 
 /**
@@ -70,8 +71,6 @@ export const renderTemplate = (
     layoutName = project.linktree.layout_name || 'linktree-default';
     Component = linktreeTemplates[layoutName as TemplateName];
   }
-
-  console.log(project.linktree);
 
   return Component ? (
     <Component

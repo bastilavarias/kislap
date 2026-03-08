@@ -6,12 +6,14 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { LinktreeFormValues, linktreeFormSchema } from '@/lib/schemas/linktree';
 import { useProject } from '@/hooks/api/use-project';
 import { useLinktree } from '@/hooks/api/use-linktree';
-import { APIResponseLinktree, APIResponseProject } from '@/types/api-response';
+import { APIResponseProject } from '@/types/api-response';
 import { useParams } from 'next/navigation';
 import { toast } from 'sonner';
 import { Settings } from '@/contexts/settings-context';
 import { AuthUser } from '@/hooks/api/use-auth';
 import { useAuthContext } from '@/contexts/auth-context';
+import { mapToFormValues } from './linktree-form-mapper';
+import { buildLinktreeSaveFormData } from './linktree-save-payload';
 
 interface LinktreeContextType {
   project: APIResponseProject | null;
@@ -19,7 +21,7 @@ interface LinktreeContextType {
   layout: string;
   setLayout: React.Dispatch<React.SetStateAction<string>>;
 
-  socialLinksFieldArray: UseFieldArrayReturn<LinktreeFormValues, 'links', 'id'>;
+  sectionsFieldArray: UseFieldArrayReturn<LinktreeFormValues, 'sections', 'id'>;
 
   isLoading: boolean;
   isSaving: boolean;
@@ -42,29 +44,10 @@ interface LinktreeContextType {
   hasLayout: boolean;
   hasTheme: boolean;
 
-  onAddSocialLink: () => void;
+  onAddSection: () => void;
 }
 
 const LinktreeContext = createContext<LinktreeContextType | undefined>(undefined);
-
-function mapToFormValues(source: APIResponseLinktree): LinktreeFormValues {
-  return {
-    name: source.name || '',
-    tagline: source.tagline || '',
-    about: source.about || '',
-    logo_url: source.logo_url || '',
-    layout_name: source.layout_name ?? 'default-linktree',
-
-    links: (source.links || [])
-      .sort((prev: any, after: any) => (prev.placement_order ?? 0) - (after.placement_order ?? 0))
-      .map((socialLink: any) => ({
-        id: socialLink.id || null,
-        title: socialLink.title || '',
-        url: socialLink.url || '',
-        image_url: socialLink.image_url || '',
-      })),
-  };
-}
 
 export function LinktreeProvider({ children }: { children: ReactNode }) {
   const params = useParams();
@@ -92,16 +75,19 @@ export function LinktreeProvider({ children }: { children: ReactNode }) {
     defaultValues: {
       name: '',
       tagline: '',
+      phone: '',
+      email: '',
       logo: null,
       logo_url: '',
+      background_style: 'grid',
       layout_name: 'default-linktree',
-      links: [],
+      sections: [],
     },
   });
 
-  const { control, setValue, handleSubmit, watch, reset } = formMethods;
+  const { control, handleSubmit, watch, reset } = formMethods;
 
-  const socialLinksFieldArray = useFieldArray({ control, name: 'links' });
+  const sectionsFieldArray = useFieldArray({ control, name: 'sections' });
 
   const values = watch();
 
@@ -130,51 +116,13 @@ export function LinktreeProvider({ children }: { children: ReactNode }) {
 
     await handleSubmit(
       async (data) => {
-        const formattedData = Object.assign({
-          ...data,
-          links: data.links?.map((socialLink: any, index: any) => ({
-            ...socialLink,
-            placement_order: index,
-          })),
+        const formData = buildLinktreeSaveFormData(data, {
+          projectID: project?.id,
+          linktreeID: linktreeID || project?.linktree?.id,
+          userID: user?.id,
+          theme: { ...(localThemeSettings?.theme || {}) },
+          layout,
         });
-
-        const fullPayload = {
-          project_id: project?.id,
-          linktree_id: linktreeID || project?.linktree?.id,
-          user_id: user?.id,
-          ...formattedData,
-          theme: { ...localThemeSettings?.theme },
-          layout_name: layout,
-        };
-
-        const formData = new FormData();
-        const jsonPayload = JSON.parse(JSON.stringify(fullPayload));
-
-        const attachFiles = (listName: 'links', fileKey: string) => {
-          const list = data[listName];
-          if (!list || !Array.isArray(list)) return;
-
-          list.forEach((item, index) => {
-            const file = (item as any)[fileKey];
-
-            if (file instanceof File) {
-              formData.append(`${listName}[${index}].${fileKey}`, file);
-
-              if (jsonPayload[listName] && jsonPayload[listName][index]) {
-                jsonPayload[listName][index][fileKey] = null;
-              }
-            }
-          });
-        };
-
-        attachFiles('links', 'image');
-
-        if (data.logo instanceof File) {
-          formData.append('logo', data.logo);
-          jsonPayload.logo = null;
-        }
-
-        formData.append('json_body', JSON.stringify(jsonPayload));
 
         const response = await create(formData as any);
 
@@ -206,8 +154,12 @@ export function LinktreeProvider({ children }: { children: ReactNode }) {
     setIsPublishing(false);
   };
 
-  const onAddSocialLink = () => {
-    socialLinksFieldArray.append({ title: '', url: '' });
+  const onAddSection = () => {
+    sectionsFieldArray.append({
+      type: 'link',
+      title: '',
+      description: '',
+    });
   };
 
   const hasContent = useMemo(
@@ -215,7 +167,10 @@ export function LinktreeProvider({ children }: { children: ReactNode }) {
     [values.name, values.tagline, values.logo, values.logo_url]
   );
 
-  const hasContentSocialLinks = useMemo(() => (values.links?.length ?? 0) > 0, [values.links]);
+  const hasContentSocialLinks = useMemo(
+    () => (values.sections || []).some((item: any) => item?.type === 'link'),
+    [values.sections]
+  );
 
   const hasLayout = useMemo(() => {
     return !!layout;
@@ -232,7 +187,7 @@ export function LinktreeProvider({ children }: { children: ReactNode }) {
         formMethods,
         layout,
         setLayout,
-        socialLinksFieldArray,
+        sectionsFieldArray,
         isLoading,
         isSaving,
         isPublishing,
@@ -250,7 +205,7 @@ export function LinktreeProvider({ children }: { children: ReactNode }) {
         hasContentSocialLinks,
         hasLayout,
         hasTheme,
-        onAddSocialLink,
+        onAddSection,
       }}
     >
       {children}

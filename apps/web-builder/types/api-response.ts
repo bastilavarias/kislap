@@ -357,10 +357,20 @@ export interface APIResponseBiz {
 export interface APIResponseLinktreeLink {
   id: number;
   linktree_id: number;
+  type?: 'link' | 'promo' | 'support' | 'quote' | 'banner';
   title: string;
   url: string;
   description?: string;
+  app_url?: string;
   image_url?: string;
+  icon_key?: string;
+  accent_color?: string;
+  quote_text?: string;
+  quote_author?: string;
+  banner_text?: string;
+  support_note?: string;
+  support_qr_image_url?: string;
+  cta_label?: string;
   placement_order: number;
 }
 
@@ -373,6 +383,26 @@ export interface APIResponseLinktreeSocialLink {
   updated_at: string;
 }
 
+export interface APIResponseLinktreeSection {
+  id: number;
+  linktree_id: number;
+  type: 'promo' | 'support' | 'quote' | 'banner';
+  title?: string;
+  description?: string;
+  url?: string;
+  app_url?: string;
+  image_url?: string;
+  icon_key?: string;
+  accent_color?: string;
+  quote_text?: string;
+  quote_author?: string;
+  banner_text?: string;
+  support_note?: string;
+  support_qr_image_url?: string;
+  cta_label?: string;
+  placement_order: number;
+}
+
 export interface APIResponseLinktree {
   id: number;
   project_id: number;
@@ -380,10 +410,14 @@ export interface APIResponseLinktree {
   name: string;
   tagline?: string;
   about?: string;
+  phone?: string;
+  email?: string;
   logo_url?: string;
+  background_style?: 'plain' | 'grid';
   theme_object: APIResponseThemeObject;
   layout_name?: string;
   links: APIResponseLinktreeLink[];
+  sections: APIResponseLinktreeSection[];
   user?: APIResponseUser;
   project?: APIResponseProject;
 }

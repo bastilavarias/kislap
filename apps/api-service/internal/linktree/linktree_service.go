@@ -29,6 +29,7 @@ func (s *Service) Get(projectID int64) (*models.Linktree, error) {
 	if err != nil {
 		return nil, err
 	}
+	linktree.Links, linktree.Sections = splitLinksAndSections(linktree.Links)
 	return &linktree, nil
 }
 
@@ -60,7 +61,10 @@ func (s *Service) Save(payload Payload) (*models.Linktree, error) {
 	linktree.Name = payload.Name
 	linktree.Tagline = &payload.Tagline
 	linktree.About = &payload.About
+	linktree.Phone = &payload.Phone
+	linktree.Email = &payload.Email
 	linktree.LayoutName = &payload.LayoutName
+	linktree.BackgroundStyle = &payload.BackgroundStyle
 
 	if themeName != nil {
 		linktree.ThemeName = themeName
@@ -81,65 +85,11 @@ func (s *Service) Save(payload Payload) (*models.Linktree, error) {
 		return nil, err
 	}
 
-	if err := s.syncLinks(linktree.ID, payload.ProjectID, payload.Links); err != nil {
+	if err := s.syncContentItems(linktree.ID, payload.ProjectID, payload.Links, payload.Sections); err != nil {
 		return nil, err
 	}
 
 	return s.Get(int64(linktree.ProjectID))
-}
-
-func (s *Service) syncLinks(linktreeID uint64, projectID int64, requests []LinktreeLinkRequest) error {
-	var existingLinks []models.LinktreeLink
-	s.DB.Where("linktree_id = ?", linktreeID).Find(&existingLinks)
-
-	existingMap := make(map[uint64]*models.LinktreeLink)
-	for i := range existingLinks {
-		existingMap[existingLinks[i].ID] = &existingLinks[i]
-	}
-
-	processedIDs := make(map[uint64]bool)
-
-	for i, req := range requests {
-		var link models.LinktreeLink
-
-		if req.ID != nil && *req.ID > 0 {
-			if match, ok := existingMap[uint64(*req.ID)]; ok {
-				link = *match
-				processedIDs[link.ID] = true
-			}
-		}
-
-		link.LinktreeID = linktreeID
-		link.Title = req.Title
-		link.URL = req.URL
-		link.Description = req.Description
-		link.PlacementOrder = i
-
-		if req.Image != nil {
-			imgUrl, err := s.uploadFile(req.Image, projectID, "linktrees")
-			if err != nil {
-				return err
-			}
-			link.ImageURL = &imgUrl
-		} else if req.ImageURL == nil {
-			link.ImageURL = nil
-		} else {
-			// Keep existing URL
-			link.ImageURL = req.ImageURL
-		}
-
-		if err := s.DB.Save(&link).Error; err != nil {
-			return err
-		}
-	}
-
-	for id, item := range existingMap {
-		if !processedIDs[id] {
-			s.DB.Delete(item)
-		}
-	}
-
-	return nil
 }
 
 func (s *Service) uploadFile(file *multipart.FileHeader, projectID int64, folder string) (string, error) {

@@ -73,9 +73,7 @@ export function Builder({ initialProject, initialSubdomain }: BuilderProps) {
   const themeStyles: ThemeStyles =
     rawStyles && typeof rawStyles === 'object' ? (rawStyles as ThemeStyles) : defaultThemeState;
 
-  console.log(settings);
-
-  const TemplateComponent = renderTemplate(project, themeMode, settings.theme.styles, setThemeMode);
+  const TemplateComponent = renderTemplate(project, themeMode, themeStyles, setThemeMode);
 
   return (
     <div className="relative flex min-h-full w-full flex-auto flex-col gap-10">

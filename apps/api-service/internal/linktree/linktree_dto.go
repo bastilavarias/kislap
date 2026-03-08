@@ -5,13 +5,45 @@ import (
 )
 
 type LinktreeLinkRequest struct {
-	ID             *int64                `form:"id" json:"id"`
-	Title          string                `form:"title" json:"title"`
-	URL            string                `form:"url" json:"url"`
-	Description    *string               `form:"description" json:"description"`
-	ImageURL       *string               `form:"image_url" json:"image_url"`
-	Image          *multipart.FileHeader `form:"image" json:"image"`
-	PlacementOrder *int                  `form:"placement_order" json:"placement_order"`
+	ID                *int64                `form:"id" json:"id"`
+	Type              *string               `form:"type" json:"type"`
+	Title             string                `form:"title" json:"title"`
+	URL               string                `form:"url" json:"url"`
+	Description       *string               `form:"description" json:"description"`
+	AppURL            *string               `form:"app_url" json:"app_url"`
+	ImageURL          *string               `form:"image_url" json:"image_url"`
+	Image             *multipart.FileHeader `form:"image" json:"image"`
+	IconKey           *string               `form:"icon_key" json:"icon_key"`
+	AccentColor       *string               `form:"accent_color" json:"accent_color"`
+	QuoteText         *string               `form:"quote_text" json:"quote_text"`
+	QuoteAuthor       *string               `form:"quote_author" json:"quote_author"`
+	BannerText        *string               `form:"banner_text" json:"banner_text"`
+	SupportNote       *string               `form:"support_note" json:"support_note"`
+	SupportQRImageURL *string               `form:"support_qr_image_url" json:"support_qr_image_url"`
+	SupportQRImage    *multipart.FileHeader `form:"support_qr_image" json:"support_qr_image"`
+	CTALabel          *string               `form:"cta_label" json:"cta_label"`
+	PlacementOrder    *int                  `form:"placement_order" json:"placement_order"`
+}
+
+type LinktreeSectionRequest struct {
+	ID                *int64                `form:"id" json:"id"`
+	Type              string                `form:"type" json:"type"`
+	Title             *string               `form:"title" json:"title"`
+	Description       *string               `form:"description" json:"description"`
+	URL               *string               `form:"url" json:"url"`
+	AppURL            *string               `form:"app_url" json:"app_url"`
+	ImageURL          *string               `form:"image_url" json:"image_url"`
+	Image             *multipart.FileHeader `form:"image" json:"image"`
+	IconKey           *string               `form:"icon_key" json:"icon_key"`
+	AccentColor       *string               `form:"accent_color" json:"accent_color"`
+	QuoteText         *string               `form:"quote_text" json:"quote_text"`
+	QuoteAuthor       *string               `form:"quote_author" json:"quote_author"`
+	BannerText        *string               `form:"banner_text" json:"banner_text"`
+	SupportNote       *string               `form:"support_note" json:"support_note"`
+	SupportQRImageURL *string               `form:"support_qr_image_url" json:"support_qr_image_url"`
+	SupportQRImage    *multipart.FileHeader `form:"support_qr_image" json:"support_qr_image"`
+	CTALabel          *string               `form:"cta_label" json:"cta_label"`
+	PlacementOrder    *int                  `form:"placement_order" json:"placement_order"`
 }
 
 type Payload struct {
@@ -22,13 +54,17 @@ type Payload struct {
 	Name    string
 	Tagline string
 	About   string
+	Phone   string
+	Email   string
 	LogoURL *string
 	Logo    *multipart.FileHeader
 
-	LayoutName string
-	Theme      *ThemeRequest
+	LayoutName      string
+	BackgroundStyle string
+	Theme           *ThemeRequest
 
-	Links []LinktreeLinkRequest
+	Links    []LinktreeLinkRequest
+	Sections []LinktreeSectionRequest
 }
 
 type CreateUpdateLinktreeRequest struct {
@@ -39,13 +75,17 @@ type CreateUpdateLinktreeRequest struct {
 	Name    string                `form:"name" json:"name"`
 	Tagline string                `form:"tagline" json:"tagline"`
 	About   string                `form:"about" json:"about"`
+	Phone   string                `form:"phone" json:"phone"`
+	Email   string                `form:"email" json:"email"`
 	LogoURL *string               `form:"logo_url" json:"logo_url"`
 	Logo    *multipart.FileHeader `form:"logo" json:"logo"`
 
-	LayoutName string        `form:"layout_name" json:"layout_name"`
-	Theme      *ThemeRequest `form:"theme" json:"theme"`
+	LayoutName      string        `form:"layout_name" json:"layout_name"`
+	BackgroundStyle string        `form:"background_style" json:"background_style"`
+	Theme           *ThemeRequest `form:"theme" json:"theme"`
 
-	Links []LinktreeLinkRequest `form:"links" json:"links"`
+	Links    []LinktreeLinkRequest    `form:"links" json:"links"`
+	Sections []LinktreeSectionRequest `form:"sections" json:"sections"`
 }
 
 type ThemeStyle struct {
@@ -101,16 +141,20 @@ type ThemeRequest struct {
 
 func (request *CreateUpdateLinktreeRequest) ToServicePayload() Payload {
 	return Payload{
-		LinktreeID: request.LinktreeID,
-		ProjectID:  request.ProjectID,
-		UserID:     request.UserID,
-		Name:       request.Name,
-		Tagline:    request.Tagline,
-		About:      request.About,
-		LogoURL:    request.LogoURL,
-		Logo:       request.Logo,
-		LayoutName: request.LayoutName,
-		Theme:      request.Theme,
-		Links:      request.Links,
+		LinktreeID:      request.LinktreeID,
+		ProjectID:       request.ProjectID,
+		UserID:          request.UserID,
+		Name:            request.Name,
+		Tagline:         request.Tagline,
+		About:           request.About,
+		Phone:           request.Phone,
+		Email:           request.Email,
+		LogoURL:         request.LogoURL,
+		Logo:            request.Logo,
+		LayoutName:      request.LayoutName,
+		BackgroundStyle: request.BackgroundStyle,
+		Theme:           request.Theme,
+		Links:           request.Links,
+		Sections:        request.Sections,
 	}
 }

@@ -15,14 +15,18 @@ type Linktree struct {
 	Name    string  `gorm:"size:255" json:"name"`
 	Tagline *string `gorm:"size:255" json:"tagline"`
 	About   *string `gorm:"type:text" json:"about"`
+	Phone   *string `gorm:"size:50" json:"phone"`
+	Email   *string `gorm:"size:255" json:"email"`
 
 	LogoURL *string `gorm:"size:255" json:"logo_url"`
 
-	LayoutName  *string          `gorm:"size:255;default:linktree-default" json:"layout_name"`
-	ThemeName   *string          `gorm:"size:255;default:default" json:"theme_name"`
-	ThemeObject *json.RawMessage `gorm:"type:json" json:"theme_object"`
+	LayoutName      *string          `gorm:"size:255;default:linktree-default" json:"layout_name"`
+	BackgroundStyle *string          `gorm:"size:50;default:grid" json:"background_style"`
+	ThemeName       *string          `gorm:"size:255;default:default" json:"theme_name"`
+	ThemeObject     *json.RawMessage `gorm:"type:json" json:"theme_object"`
 
-	Links []LinktreeLink `gorm:"foreignKey:LinktreeID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"links"`
+	Links    []LinktreeLink    `gorm:"foreignKey:LinktreeID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"links"`
+	Sections []LinktreeSection `gorm:"-" json:"sections"`
 
 	CreatedAt time.Time      `gorm:"autoCreateTime" json:"created_at"`
 	UpdatedAt time.Time      `gorm:"autoUpdateTime" json:"updated_at"`

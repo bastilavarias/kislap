@@ -61,6 +61,23 @@ func (c *Controller) Save(context *gin.Context) {
 		if files, ok := form.File[key]; ok && len(files) > 0 {
 			payload.Links[i].Image = files[0]
 		}
+
+		supportQRKey := fmt.Sprintf("links[%d].support_qr_image", i)
+		if files, ok := form.File[supportQRKey]; ok && len(files) > 0 {
+			payload.Links[i].SupportQRImage = files[0]
+		}
+	}
+
+	for i := range payload.Sections {
+		imageKey := fmt.Sprintf("sections[%d].image", i)
+		if files, ok := form.File[imageKey]; ok && len(files) > 0 {
+			payload.Sections[i].Image = files[0]
+		}
+
+		supportQRKey := fmt.Sprintf("sections[%d].support_qr_image", i)
+		if files, ok := form.File[supportQRKey]; ok && len(files) > 0 {
+			payload.Sections[i].SupportQRImage = files[0]
+		}
 	}
 
 	linktree, err := c.Service.Save(payload)
