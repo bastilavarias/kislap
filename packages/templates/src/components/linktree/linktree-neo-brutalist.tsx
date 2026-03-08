@@ -7,7 +7,10 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { ArrowUpRight, Check, Mail, Phone, Share2 } from "lucide-react";
-import { LinktreeSection, NeoBrutalistSection } from "./linktree-neo-brutalist-sections";
+import {
+  LinktreeSection,
+  NeoBrutalistSection,
+} from "./linktree-neo-brutalist-sections";
 import {
   BrandGlyph,
   getPlatformKey,
@@ -47,8 +50,12 @@ interface Props {
   themeMode: Mode;
   onSetThemeMode: React.Dispatch<React.SetStateAction<Mode>>;
 }
-const BRUTAL_SHADOW = { boxShadow: "4px 4px 0 var(--shadow-color, var(--border))" };
-const BRUTAL_SHADOW_LG = { boxShadow: "6px 6px 0 var(--shadow-color, var(--border))" };
+const BRUTAL_SHADOW = {
+  boxShadow: "4px 4px 0 var(--shadow-color, var(--border))",
+};
+const BRUTAL_SHADOW_LG = {
+  boxShadow: "6px 6px 0 var(--shadow-color, var(--border))",
+};
 
 function LinkCard({ link, index }: { link: LinkItem; index: number }) {
   const platform = getPlatformKey(link.url, link.title);
@@ -68,14 +75,14 @@ function LinkCard({ link, index }: { link: LinkItem; index: number }) {
       whileTap={{ scale: 0.98 }}
       style={BRUTAL_SHADOW}
       className={cn(
-        "group relative block w-full border-2 border-border bg-card p-2 sm:p-3",
+        "group relative block w-full border-2 border-border bg-card p-3 sm:p-4",
         "transition-all duration-150 hover:bg-muted/30 hover:shadow-none",
       )}
     >
       <div className="flex items-center gap-3">
         <div
           className={cn(
-            "h-10 w-10 shrink-0 overflow-hidden grid place-items-center border-2 border-border text-xs font-black",
+            "h-12 w-12 shrink-0 overflow-hidden grid place-items-center border-2 border-border text-xs font-black",
             hasPresetIcon
               ? ICON_BADGE_STYLES[iconKey]
               : "bg-secondary text-secondary-foreground",
@@ -95,17 +102,17 @@ function LinkCard({ link, index }: { link: LinkItem; index: number }) {
         </div>
 
         <div className="min-w-0 flex-1">
-          <h3 className="truncate text-[12px] md:text-[13px] font-black uppercase tracking-wide leading-tight">
+          <h3 className="truncate text-[14px] md:text-[16px] font-black uppercase tracking-wide leading-tight">
             {link.title}
           </h3>
           {link.description ? (
-            <p className="truncate text-[10px] font-medium text-muted-foreground">
+            <p className="text-[12px] md:text-[14px] font-medium leading-relaxed text-muted-foreground">
               {link.description}
             </p>
           ) : null}
         </div>
 
-        <ArrowUpRight className="h-3.5 w-3.5 shrink-0" />
+        <ArrowUpRight className="h-4 w-4 shrink-0" />
       </div>
     </motion.a>
   );
@@ -118,9 +125,14 @@ export function LinktreeNeoBrutalist({
 }: Props) {
   const [copied, setCopied] = useState(false);
   const isGridBackground = linktree?.background_style !== "plain";
-  const gridLineColor = themeMode === "dark" ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.06)";
+  const gridLineColor =
+    themeMode === "dark" ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.06)";
   const pageBackgroundStyle = isGridBackground
-    ? { backgroundColor: "var(--background)", backgroundImage: `linear-gradient(${gridLineColor} 1px, transparent 1px), linear-gradient(90deg, ${gridLineColor} 1px, transparent 1px)`, backgroundSize: "22px 22px" }
+    ? {
+        backgroundColor: "var(--background)",
+        backgroundImage: `linear-gradient(${gridLineColor} 1px, transparent 1px), linear-gradient(90deg, ${gridLineColor} 1px, transparent 1px)`,
+        backgroundSize: "22px 22px",
+      }
     : { backgroundColor: "var(--background)" };
 
   const handleShare = () => {
@@ -181,10 +193,7 @@ export function LinktreeNeoBrutalist({
       >
         <div className="mb-5 flex items-center justify-end gap-2 sm:mb-7">
           <div className="flex items-center gap-2">
-            <div
-              style={BRUTAL_SHADOW}
-              className="border-2 border-border bg-primary px-2 py-1 text-primary-foreground"
-            >
+            <div className="border-2 border-border bg-primary px-2 py-1 text-primary-foreground">
               <ThemeSwitchToggle
                 isDarkMode={themeMode === "dark"}
                 onSetThemeMode={onSetThemeMode}
@@ -224,21 +233,16 @@ export function LinktreeNeoBrutalist({
             )}
           </div>
 
-          <h1 className="mt-4 text-[clamp(1.7rem,4.8vw,2.5rem)] font-extrabold uppercase tracking-tight">
+          <h1 className="mt-4 text-[clamp(1.55rem,4.3vw,2.3rem)] font-black uppercase tracking-tight leading-tight">
             {linktree?.name}
           </h1>
           {linktree?.tagline ? (
-            <p className="mx-auto mt-2 max-w-[42ch] text-base font-medium leading-snug text-muted-foreground">
+            <p className="mx-auto mt-2 max-w-[42ch] text-[clamp(0.95rem,1.5vw,1.15rem)] font-medium leading-snug text-muted-foreground">
               {linktree.tagline}
             </p>
           ) : null}
-          {linktree?.about ? (
-            <p className="mx-auto mt-1 max-w-[52ch] text-xs sm:text-sm leading-relaxed text-muted-foreground">
-              {linktree.about}
-            </p>
-          ) : null}
 
-          <div className="mt-3 flex flex-wrap items-center justify-center gap-2 text-xs sm:text-sm font-medium text-muted-foreground">
+          <div className="mt-3 flex flex-wrap items-center justify-center gap-2 text-sm sm:text-base font-semibold text-muted-foreground">
             {phoneValue ? (
               <a
                 href={`tel:${phoneValue}`}
@@ -259,6 +263,12 @@ export function LinktreeNeoBrutalist({
               </a>
             ) : null}
           </div>
+
+          {linktree?.about ? (
+            <p className="mx-auto mt-2 max-w-[54ch] text-xs sm:text-sm font-normal leading-snug text-muted-foreground/80">
+              {linktree.about}
+            </p>
+          ) : null}
         </div>
 
         {contentItems.length > 0 ? (
@@ -279,18 +289,6 @@ export function LinktreeNeoBrutalist({
             )}
           </div>
         ) : null}
-
-        <div className="pt-4 text-center">
-          <p className="text-[11px] font-black uppercase tracking-wider">
-            {new Date().getFullYear()} {linktree?.name}
-          </p>
-          <Link
-            href="/"
-            className="text-[10px] font-medium underline underline-offset-2"
-          >
-            Powered by Kislap
-          </Link>
-        </div>
       </section>
     </div>
   );

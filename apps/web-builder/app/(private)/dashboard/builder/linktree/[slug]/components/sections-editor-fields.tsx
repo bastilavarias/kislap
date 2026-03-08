@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { LinktreeFormValues } from '@/lib/schemas/linktree';
 import { UseFormReturn } from 'react-hook-form';
+import { AccentPicker } from './accent-picker';
 import {
   FaDiscord,
   FaGithub,
@@ -196,9 +197,18 @@ export function renderTypeFields({
           <Label>Quote Text</Label>
           <Textarea rows={4} {...register(`sections.${editIndex}.quote_text`)} />
         </div>
-        <div className="space-y-2">
-          <Label>Quote Author</Label>
-          <Input {...register(`sections.${editIndex}.quote_author`)} />
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label>Quote Author</Label>
+            <Input {...register(`sections.${editIndex}.quote_author`)} />
+          </div>
+          <AccentPicker
+            label="Quote Background"
+            value={watch(`sections.${editIndex}.accent_color`) || ''}
+            onChange={(value) =>
+              setValue(`sections.${editIndex}.accent_color`, value, { shouldDirty: true })
+            }
+          />
         </div>
       </div>
     );
@@ -211,10 +221,13 @@ export function renderTypeFields({
           <Label>Banner Text</Label>
           <Input {...register(`sections.${editIndex}.banner_text`)} />
         </div>
-        <div className="space-y-2">
-          <Label>Accent Color</Label>
-          <Input {...register(`sections.${editIndex}.accent_color`)} placeholder="#ef4444" />
-        </div>
+        <AccentPicker
+          label="Accent Color / Gradient"
+          value={watch(`sections.${editIndex}.accent_color`) || ''}
+          onChange={(value) =>
+            setValue(`sections.${editIndex}.accent_color`, value, { shouldDirty: true })
+          }
+        />
       </div>
     );
   }

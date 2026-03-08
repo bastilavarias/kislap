@@ -18,7 +18,7 @@ type LinktreeSection struct {
 	AppURL           *string `gorm:"type:text" json:"app_url"`
 	ImageURL         *string `gorm:"size:255" json:"image_url"`
 	IconKey          *string `gorm:"size:80" json:"icon_key"`
-	AccentColor      *string `gorm:"size:50" json:"accent_color"`
+	AccentColor      *string `gorm:"type:text" json:"accent_color"`
 	QuoteText        *string `gorm:"type:text" json:"quote_text"`
 	QuoteAuthor      *string `gorm:"size:255" json:"quote_author"`
 	BannerText       *string `gorm:"type:text" json:"banner_text"`
@@ -34,4 +34,3 @@ type LinktreeSection struct {
 func (LinktreeSection) TableName() string {
 	return "linktree_sections"
 }
-
