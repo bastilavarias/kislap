@@ -13,15 +13,16 @@ return new class extends Migration
     {
         Schema::create('leads', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('biz_id')->constrained('bizs')->cascadeOnDelete();
+            $table->unsignedBigInteger('biz_id');
             $table->string('name');
             $table->string('email')->nullable();
             $table->string('phone')->nullable();
             $table->text('message')->nullable();
             $table->string('source')->nullable();
             $table->softDeletes();
-
             $table->timestamps();
+
+            $table->foreign('biz_id')->references('id')->on('bizs')->cascadeOnDelete();
         });
     }
 

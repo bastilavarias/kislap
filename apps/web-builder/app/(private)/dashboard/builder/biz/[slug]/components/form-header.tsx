@@ -49,10 +49,15 @@ interface Props<T> {
   error?: string;
   project: APIResponseProject | null;
   hasContent: boolean;
-  hasContentWorkExperience: boolean;
-  hasContentEducation: boolean;
-  hasContentProjects: boolean;
-  hasContentSkills: boolean;
+  hasContentHero: boolean;
+  hasContentAbout: boolean;
+  hasContentContact: boolean;
+  hasContentGallery: boolean;
+  hasContentFeatures: boolean;
+  hasContentProducts: boolean;
+  hasContentFAQs: boolean;
+  hasContentTestimonials: boolean;
+  hasContentSocialLinks: boolean;
   hasLayout: boolean;
   hasTheme: boolean;
 
@@ -79,10 +84,15 @@ export function FormHeader<T>({
   error,
   onPublish,
   hasContent,
-  hasContentWorkExperience,
-  hasContentEducation,
-  hasContentProjects,
-  hasContentSkills,
+  hasContentHero,
+  hasContentAbout,
+  hasContentContact,
+  hasContentGallery,
+  hasContentFeatures,
+  hasContentProducts,
+  hasContentFAQs,
+  hasContentTestimonials,
+  hasContentSocialLinks,
   hasLayout,
   hasTheme,
 }: Props<T>) {
@@ -99,10 +109,15 @@ export function FormHeader<T>({
 
   const isContentReady =
     hasContent &&
-    hasContentWorkExperience &&
-    hasContentEducation &&
-    hasContentProjects &&
-    hasContentSkills;
+    hasContentHero &&
+    hasContentAbout &&
+    hasContentContact &&
+    hasContentGallery &&
+    hasContentFeatures &&
+    hasContentProducts &&
+    hasContentFAQs &&
+    hasContentTestimonials &&
+    hasContentSocialLinks;
 
   const isReadyToPublish = isContentReady && hasLayout && hasTheme;
 
@@ -393,15 +408,16 @@ export function FormHeader<T>({
                     <div className="bg-muted/30 rounded-md pb-2">
                       <RequirementItem label="Content Sections" met={isContentReady} />
                       <div className="flex flex-col gap-0.5 mt-1">
-                        <RequirementItem label="Basic Info" met={hasContent} nested />
-                        <RequirementItem
-                          label="Work Experience"
-                          met={hasContentWorkExperience}
-                          nested
-                        />
-                        <RequirementItem label="Education" met={hasContentEducation} nested />
-                        <RequirementItem label="Projects" met={hasContentProjects} nested />
-                        <RequirementItem label="Skills" met={hasContentSkills} nested />
+                        <RequirementItem label="Branding" met={hasContent} nested />
+                        <RequirementItem label="Hero Section" met={hasContentHero} nested />
+                        <RequirementItem label="About" met={hasContentAbout} nested />
+                        <RequirementItem label="Contact Info" met={hasContentContact} nested />
+                        <RequirementItem label="Gallery" met={hasContentGallery} nested />
+                        <RequirementItem label="Features" met={hasContentFeatures} nested />
+                        <RequirementItem label="Products" met={hasContentProducts} nested />
+                        <RequirementItem label="FAQs" met={hasContentFAQs} nested />
+                        <RequirementItem label="Testimonials" met={hasContentTestimonials} nested />
+                        <RequirementItem label="Social Links" met={hasContentSocialLinks} nested />
                       </div>
                     </div>
 

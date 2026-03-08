@@ -164,3 +164,34 @@ export function useApi() {
       apiRequest<T>(url, { ...opts, method: 'DELETE' }),
   };
 }
+
+export function objectToFormData(
+  object: Record<string, any>,
+  form: FormData = new FormData(),
+  namespace = ''
+): FormData {
+  for (const property in object) {
+    if (!object.hasOwnProperty(property)) continue;
+
+    const value = object[property];
+    const formKey = namespace ? `${namespace}[${property}]` : property;
+
+    if (value instanceof Date) {
+      form.append(formKey, value.toISOString());
+    } else if (value instanceof File || value instanceof Blob) {
+      form.append(formKey, value);
+    } else if (Array.isArray(value)) {
+      value.forEach((element, index) => {
+        objectToFormData({ [index]: element }, form, formKey);
+      });
+    } else if (typeof value === 'object' && value !== null) {
+      objectToFormData(value, form, formKey);
+    } else {
+      if (value !== null && value !== undefined) {
+        form.append(formKey, String(value));
+      }
+    }
+  }
+
+  return form;
+}

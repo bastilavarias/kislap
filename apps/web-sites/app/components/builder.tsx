@@ -5,6 +5,7 @@ import { ComponentThemeProvider } from '@/providers/ComponentThemesProvider';
 import { useState, useEffect } from 'react'; // useEffect kept only for page view tracking
 import { Project } from '@/types/project';
 import { ThemeStyles } from '@/types/theme';
+import { defaultThemeState } from '@/config/theme';
 
 import { renderTemplate } from '@/hooks/use-template-renderer';
 import { usePageActivity } from '@/hooks/api/use-page-activity';
@@ -45,16 +46,34 @@ export function Builder({ initialProject, initialSubdomain }: BuilderProps) {
     );
   }
 
-  const themeObject = project.portfolio?.theme_object || {};
-  //@ts-ignore
-  const themeStyles: ThemeStyles = themeObject?.styles || {};
+  let themeObject: unknown = null;
+  if (project.type === 'portfolio') {
+    themeObject = project.portfolio?.theme_object;
+  } else if (project.type === 'biz') {
+    themeObject = project.biz?.theme_object || {};
+  } else if (project.type === 'linktree') {
+    themeObject = project.linktree?.theme_object || {};
+  }
 
-  const settings = {
-    theme: JSON.parse(JSON.stringify(themeObject)),
-    mode: themeMode,
-  };
+  let normalizedThemeObject: Record<string, unknown> = {};
+  if (typeof themeObject === 'string') {
+    try {
+      const parsedThemeObject = JSON.parse(themeObject);
+      if (parsedThemeObject && typeof parsedThemeObject === 'object') {
+        normalizedThemeObject = parsedThemeObject as Record<string, unknown>;
+      }
+    } catch {
+      normalizedThemeObject = {};
+    }
+  } else if (themeObject && typeof themeObject === 'object') {
+    normalizedThemeObject = themeObject as Record<string, unknown>;
+  }
 
-  const TemplateComponent = renderTemplate(project, themeMode, settings.theme.styles, setThemeMode);
+  const rawStyles = normalizedThemeObject.styles;
+  const themeStyles: ThemeStyles =
+    rawStyles && typeof rawStyles === 'object' ? (rawStyles as ThemeStyles) : defaultThemeState;
+
+  const TemplateComponent = renderTemplate(project, themeMode, themeStyles, setThemeMode);
 
   return (
     <div className="relative flex min-h-full w-full flex-auto flex-col gap-10">
@@ -66,7 +85,7 @@ export function Builder({ initialProject, initialSubdomain }: BuilderProps) {
           }}
           className="relative bg-background min-h-screen animate-in fade-in duration-700"
         >
-          <div className="container mx-auto max-w-5xl pt-10">{TemplateComponent}</div>
+          <div className="">{TemplateComponent}</div>
         </div>
       </ComponentThemeProvider>
     </div>

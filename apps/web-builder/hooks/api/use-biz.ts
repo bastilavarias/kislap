@@ -6,7 +6,7 @@ export function useBiz() {
   const { apiPost } = useApi();
 
   const create = async (form: BizFormValues) => {
-    return await apiPost<APIResponseBiz>('api/bizs', form);
+    return await apiPost<APIResponseBiz>('api/biz', form);
   };
 
   return {

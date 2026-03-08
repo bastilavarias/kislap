@@ -6,11 +6,13 @@ export interface Project {
   description?: string;
   slug: string;
   sub_domain?: string | null;
-  type: 'portfolio' | 'biz' | 'links' | 'waitlist';
+  type: 'portfolio' | 'biz' | 'linktree' | 'waitlist';
   published: number;
   created_at: string;
   updated_at: string;
   deleted_at?: string;
 
   portfolio: Portfolio;
+  biz: any; // Create a type here
+  linktree: any; // Create a type here
 }

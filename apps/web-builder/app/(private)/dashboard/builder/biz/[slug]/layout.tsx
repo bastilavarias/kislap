@@ -13,10 +13,15 @@ function BuilderLayoutContent({ children }: { children: ReactNode }) {
     publish,
     isLoading,
     hasContent,
-    hasContentWorkExperience,
-    hasContentEducation,
-    hasContentProjects,
-    hasContentSkills,
+    hasContentHero,
+    hasContentAbout,
+    hasContentContact,
+    hasContentGallery,
+    hasContentFeatures,
+    hasContentProducts,
+    hasContentFAQs,
+    hasContentTestimonials,
+    hasContentSocialLinks,
     hasLayout,
     hasTheme,
   } = useBizBuilder();
@@ -40,10 +45,15 @@ function BuilderLayoutContent({ children }: { children: ReactNode }) {
           onSave={save}
           onPublish={publish}
           hasContent={hasContent}
-          hasContentWorkExperience={hasContentWorkExperience}
-          hasContentEducation={hasContentEducation}
-          hasContentProjects={hasContentProjects}
-          hasContentSkills={hasContentSkills}
+          hasContentHero={hasContentHero}
+          hasContentAbout={hasContentAbout}
+          hasContentContact={hasContentContact}
+          hasContentGallery={hasContentGallery}
+          hasContentFeatures={hasContentFeatures}
+          hasContentProducts={hasContentProducts}
+          hasContentFAQs={hasContentFAQs}
+          hasContentTestimonials={hasContentTestimonials}
+          hasContentSocialLinks={hasContentSocialLinks}
           hasLayout={hasLayout}
           hasTheme={hasTheme}
         />

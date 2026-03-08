@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('bookings', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('biz_id')->constrained('bizs')->cascadeOnDelete();
-            $table->foreignId('service_id')->nullable()->constrained()->nullOnDelete();
+            $table->unsignedBigInteger('biz_id');
+            $table->unsignedBigInteger('service_id');
             $table->string('customer_name');
             $table->string('customer_email')->nullable();
             $table->string('customer_phone')->nullable();
@@ -22,8 +22,10 @@ return new class extends Migration
             $table->enum('status', ['pending', 'confirmed', 'cancelled'])->default('pending');
             $table->text('notes')->nullable();
             $table->softDeletes();
-
             $table->timestamps();
+
+            $table->foreign('biz_id')->references('id')->on('bizs')->cascadeOnDelete();
+            $table->foreign('service_id')->references('id')->on('services')->cascadeOnDelete();
         });
     }
 

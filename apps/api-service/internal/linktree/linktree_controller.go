@@ -1,0 +1,131 @@
+package linktree
+
+import (
+	"encoding/json"
+	"flash/internal/project"
+	"flash/utils"
+	"fmt"
+	"net/http"
+	"strconv"
+
+	objectStorage "flash/sdk/object_storage"
+
+	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
+)
+
+type Controller struct {
+	Service        *Service
+	ProjectService *project.Service
+}
+
+func NewController(db *gorm.DB, objectStorage objectStorage.Provider) *Controller {
+	projectService := project.NewService(db, objectStorage)
+
+	return &Controller{
+		Service:        NewService(db, objectStorage),
+		ProjectService: projectService,
+	}
+}
+
+func (c *Controller) Save(context *gin.Context) {
+	if err := context.Request.ParseMultipartForm(32 << 20); err != nil {
+		utils.APIRespondError(context, http.StatusBadRequest, "File upload error: "+err.Error())
+		context.Abort()
+		return
+	}
+
+	jsonBody := context.Request.FormValue("json_body")
+	if jsonBody == "" {
+		utils.APIRespondError(context, http.StatusBadRequest, "Missing 'json_body'")
+		context.Abort()
+		return
+	}
+
+	var req CreateUpdateLinktreeRequest
+	if err := json.Unmarshal([]byte(jsonBody), &req); err != nil {
+		utils.APIRespondError(context, http.StatusBadRequest, "Invalid JSON: "+err.Error())
+		context.Abort()
+		return
+	}
+
+	form := context.Request.MultipartForm
+
+	if files, ok := form.File["logo"]; ok && len(files) > 0 {
+		req.LogoURL = nil
+	}
+
+	payload := req.ToServicePayload()
+
+	if files, ok := form.File["logo"]; ok && len(files) > 0 {
+		payload.Logo = files[0]
+	}
+
+	for i := range payload.Links {
+		key := fmt.Sprintf("links[%d].image", i)
+		if files, ok := form.File[key]; ok && len(files) > 0 {
+			payload.Links[i].Image = files[0]
+		}
+
+		supportQRKey := fmt.Sprintf("links[%d].support_qr_image", i)
+		if files, ok := form.File[supportQRKey]; ok && len(files) > 0 {
+			payload.Links[i].SupportQRImage = files[0]
+		}
+	}
+
+	for i := range payload.Sections {
+		imageKey := fmt.Sprintf("sections[%d].image", i)
+		if files, ok := form.File[imageKey]; ok && len(files) > 0 {
+			payload.Sections[i].Image = files[0]
+		}
+
+		supportQRKey := fmt.Sprintf("sections[%d].support_qr_image", i)
+		if files, ok := form.File[supportQRKey]; ok && len(files) > 0 {
+			payload.Sections[i].SupportQRImage = files[0]
+		}
+	}
+
+	linktree, err := c.Service.Save(payload)
+	if err != nil {
+		utils.APIRespondError(context, http.StatusInternalServerError, err.Error())
+		context.Abort()
+		return
+	}
+
+	utils.APIRespondSuccess(context, http.StatusOK, gin.H{
+		"linktree": linktree,
+	})
+
+	go func(projectID int64) {
+		defer func() {
+			if r := recover(); r != nil {
+				fmt.Printf("Recovered from panic in SaveOGImage: %v\n", r)
+			}
+		}()
+
+		_, err := c.ProjectService.SaveOGImage(projectID)
+
+		if err != nil {
+			fmt.Printf("Background OG Image generation failed for project %d: %v\n", projectID, err)
+		}
+	}(payload.ProjectID)
+}
+
+func (c *Controller) Get(context *gin.Context) {
+	projectIDStr := context.Param("project_id")
+	projectID, err := strconv.ParseInt(projectIDStr, 10, 64)
+	if err != nil {
+		utils.APIRespondError(context, http.StatusBadRequest, "Invalid project ID")
+		return
+	}
+
+	linktree, err := c.Service.Get(projectID)
+	if err != nil {
+		utils.APIRespondError(context, http.StatusNotFound, "Linktree not found")
+		return
+	}
+
+	utils.APIRespondSuccess(context, http.StatusOK, gin.H{
+		"linktree": linktree,
+	})
+}

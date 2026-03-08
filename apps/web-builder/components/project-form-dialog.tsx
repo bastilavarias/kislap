@@ -32,13 +32,23 @@ const projectTypes = [
     active: true,
     description: 'Showcase your personal or professional work in a clean, modern portfolio.',
     features: ['Customizable templates', 'Responsive design', 'Easy media upload'],
+    route: 'portfolio',
+  },
+  {
+    label: 'linktree',
+    emoji: '🔗',
+    active: true,
+    description: 'Aggregate all your important links in a single, shareable page.',
+    features: ['Social links', 'Custom branding', 'Easy sharing'],
+    route: 'linktree',
   },
   {
     label: 'biz',
     emoji: '💼',
     active: false,
-    description: 'Create a professional business website to attract clients and customers.',
+    description: 'Create a professional business3 website to attract clients and customers.',
     features: ['Company info pages', 'Service showcase', 'Contact forms'],
+    route: 'biz',
   },
   {
     label: 'waitlist',
@@ -46,13 +56,7 @@ const projectTypes = [
     active: false,
     description: 'Build hype and gather early users for your upcoming project or app.',
     features: ['Sign-up forms', 'Email notifications', 'Analytics dashboard'],
-  },
-  {
-    label: 'links',
-    emoji: '🔗',
-    active: false,
-    description: 'Aggregate all your important links in a single, shareable page.',
-    features: ['Social links', 'Custom branding', 'Easy sharing'],
+    route: 'waitlist',
   },
 ];
 

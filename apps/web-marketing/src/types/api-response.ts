@@ -196,8 +196,9 @@ export interface APIResponseProject {
   name: string;
   description?: string;
   slug: string;
+  og_image_url?: string | null;
   sub_domain?: string | null;
-  type: "portfolio" | "biz" | "links" | "waitlist";
+  type: "portfolio" | "biz" | "linktree" | "waitlist";
   published: number;
   created_at: string;
   updated_at: string;

@@ -1,46 +1,114 @@
 package biz
 
 import (
-	"encoding/json"
 	"mime/multipart"
 )
 
 type ServiceRequest struct {
+	ID              *int64                `form:"id" json:"id"`
 	Name            string                `form:"name" json:"name"`
 	Description     *string               `form:"description" json:"description"`
 	Price           float64               `form:"price" json:"price"`
 	DurationMinutes int                   `form:"duration_minutes" json:"duration_minutes"`
 	IsFeatured      bool                  `form:"is_featured" json:"is_featured"`
 	ImageURL        *string               `form:"image_url" json:"image_url"`
-	Image           *multipart.FileHeader `form:"image" json:"-"`
+	Image           *multipart.FileHeader `form:"image" json:"image"`
+	PlacementOrder  *int                  `form:"placement_order" json:"placement_order"`
 }
 
 type ProductRequest struct {
-	Name        string                `form:"name" json:"name"`
-	Description *string               `form:"description" json:"description"`
-	Price       float64               `form:"price" json:"price"`
-	Stock       int                   `form:"stock" json:"stock"`
-	IsActive    bool                  `form:"is_active" json:"is_active"`
-	ImageURL    *string               `form:"image_url" json:"image_url"`
-	Image       *multipart.FileHeader `form:"image" json:"-"`
+	ID             *int64                `form:"id" json:"id"`
+	Name           string                `form:"name" json:"name"`
+	Category       *string               `form:"category" json:"category"` // New Field
+	Description    *string               `form:"description" json:"description"`
+	Price          float64               `form:"price" json:"price"`
+	Stock          int                   `form:"stock" json:"stock"`
+	IsActive       bool                  `form:"is_active" json:"is_active"`
+	ImageURL       *string               `form:"image_url" json:"image_url"`
+	Image          *multipart.FileHeader `form:"image" json:"image"`
+	PlacementOrder *int                  `form:"placement_order" json:"placement_order"`
 }
 
 type TestimonialRequest struct {
-	Author    string                `form:"author" json:"author"`
-	Rating    int                   `form:"rating" json:"rating"`
-	Content   *string               `form:"content" json:"content"`
-	AvatarURL *string               `form:"avatar_url" json:"avatar_url"`
-	Avatar    *multipart.FileHeader `form:"avatar" json:"-"`
+	ID             *int64                `form:"id" json:"id"`
+	Author         string                `form:"author" json:"author"`
+	Rating         int                   `form:"rating" json:"rating"`
+	Content        *string               `form:"content" json:"content"`
+	AvatarURL      *string               `form:"avatar_url" json:"avatar_url"`
+	Avatar         *multipart.FileHeader `form:"avatar" json:"avatar"`
+	PlacementOrder *int                  `form:"placement_order" json:"placement_order"`
+}
+
+type FAQRequest struct {
+	ID             *int64 `form:"id" json:"id"`
+	Question       string `form:"question" json:"question"`
+	Answer         string `form:"answer" json:"answer"`
+	PlacementOrder *int   `form:"placement_order" json:"placement_order"`
+}
+
+type GalleryImageRequest struct {
+	ID             *int64                `form:"id" json:"id"`
+	ImageURL       *string               `form:"image_url" json:"image_url"`
+	Image          *multipart.FileHeader `form:"image" json:"image"`
+	PlacementOrder *int                  `form:"placement_order" json:"placement_order"`
 }
 
 type SocialLinkRequest struct {
-	Platform string `form:"platform" json:"platform"`
-	URL      string `form:"url" json:"url"`
+	ID             *int64 `form:"id" json:"id"`
+	Platform       string `form:"platform" json:"platform"`
+	URL            string `form:"url" json:"url"`
+	PlacementOrder *int   `form:"placement_order" json:"placement_order"`
+}
+
+type ThemeStyle struct {
+	Background               string `json:"background"`
+	Foreground               string `json:"foreground"`
+	Card                     string `json:"card"`
+	CardForeground           string `json:"card-foreground"`
+	Popover                  string `json:"popover"`
+	PopoverForeground        string `json:"popover-foreground"`
+	Primary                  string `json:"primary"`
+	PrimaryForeground        string `json:"primary-foreground"`
+	Secondary                string `json:"secondary"`
+	SecondaryForeground      string `json:"secondary-foreground"`
+	Muted                    string `json:"muted"`
+	MutedForeground          string `json:"muted-foreground"`
+	Accent                   string `json:"accent"`
+	AccentForeground         string `json:"accent-foreground"`
+	Destructive              string `json:"destructive"`
+	Border                   string `json:"border"`
+	Input                    string `json:"input"`
+	Ring                     string `json:"ring"`
+	Chart1                   string `json:"chart-1"`
+	Chart2                   string `json:"chart-2"`
+	Chart3                   string `json:"chart-3"`
+	Chart4                   string `json:"chart-4"`
+	Chart5                   string `json:"chart-5"`
+	Radius                   string `json:"radius"`
+	Sidebar                  string `json:"sidebar"`
+	SidebarForeground        string `json:"sidebar-foreground"`
+	SidebarPrimary           string `json:"sidebar-primary"`
+	SidebarPrimaryForeground string `json:"sidebar-primary-foreground"`
+	SidebarAccent            string `json:"sidebar-accent"`
+	SidebarAccentForeground  string `json:"sidebar-accent-foreground"`
+	SidebarBorder            string `json:"sidebar-border"`
+	SidebarRing              string `json:"sidebar-ring"`
+	FontSans                 string `json:"font-sans"`
+	FontSerif                string `json:"font-serif"`
+	FontMono                 string `json:"font-mono"`
+	ShadowColor              string `json:"shadow-color"`
+	ShadowOpacity            string `json:"shadow-opacity"`
+	ShadowBlur               string `json:"shadow-blur"`
+	ShadowSpread             string `json:"shadow-spread"`
+	ShadowOffsetX            string `json:"shadow-offset-x"`
+	ShadowOffsetY            string `json:"shadow-offset-y"`
+	LetterSpacing            string `json:"letter-spacing"`
+	Spacing                  string `json:"spacing"`
 }
 
 type ThemeRequest struct {
-	Name   string          `form:"name" json:"name"`
-	Object json.RawMessage `form:"object" json:"object"`
+	Preset string                `json:"preset"`
+	Styles map[string]ThemeStyle `json:"styles"`
 }
 
 type CreateUpdateBizRequest struct {
@@ -48,15 +116,27 @@ type CreateUpdateBizRequest struct {
 	ProjectID int64  `form:"project_id" json:"project_id" binding:"required"`
 	UserID    int64  `form:"user_id" json:"user_id" binding:"required"`
 
-	Name        string `form:"name" json:"name"`
-	Tagline     string `form:"tagline" json:"tagline"`
-	Description string `form:"description" json:"description"`
+	Name        string                `form:"name" json:"name"`
+	Tagline     string                `form:"tagline" json:"tagline"`
+	Description string                `form:"description" json:"description"`
+	LogoURL     *string               `form:"logo_url" json:"logo_url"`
+	Logo        *multipart.FileHeader `form:"logo" json:"logo"`
 
-	Email     string  `form:"email" json:"email"`
-	Phone     *string `form:"phone" json:"phone"`
-	Address   *string `form:"address" json:"address"`
-	Website   string  `form:"website" json:"website"`
-	Instagram string  `form:"instagram" json:"instagram"`
+	HeroTitle       *string               `form:"hero_title" json:"hero_title"`
+	HeroDescription *string               `form:"hero_description" json:"hero_description"`
+	HeroImageURL    *string               `form:"hero_image_url" json:"hero_image_url"`
+	HeroImage       *multipart.FileHeader `form:"hero_image" json:"hero_image"`
+
+	AboutImageURL *string               `form:"about_image_url" json:"about_image_url"`
+	AboutImage    *multipart.FileHeader `form:"about_image" json:"about_image"`
+
+	Email   string  `form:"email" json:"email"`
+	Phone   *string `form:"phone" json:"phone"`
+	Address *string `form:"address" json:"address"`
+	MapLink *string `form:"map_link" json:"map_link"`
+
+	Schedule       *string `form:"schedule" json:"schedule"`
+	OperationHours *string `form:"operation_hours" json:"operation_hours"`
 
 	ServicesEnabled bool `form:"services_enabled" json:"services_enabled"`
 	ProductsEnabled bool `form:"products_enabled" json:"products_enabled"`
@@ -66,18 +146,57 @@ type CreateUpdateBizRequest struct {
 	LayoutName string        `form:"layout_name" json:"layout_name"`
 	Theme      *ThemeRequest `form:"theme" json:"theme"`
 
-	Services     []ServiceRequest     `form:"services" json:"services"`
-	Products     []ProductRequest     `form:"products" json:"products"`
-	Testimonials []TestimonialRequest `form:"testimonials" json:"testimonials"`
-	SocialLinks  []SocialLinkRequest  `form:"social_links" json:"social_links"`
+	Services      []ServiceRequest      `form:"services" json:"services"`
+	Products      []ProductRequest      `form:"products" json:"products"`
+	Testimonials  []TestimonialRequest  `form:"testimonials" json:"testimonials"`
+	SocialLinks   []SocialLinkRequest   `form:"social_links" json:"social_links"`
+	FAQs          []FAQRequest          `form:"faqs" json:"faqs"`
+	GalleryImages []GalleryImageRequest `form:"gallery_images" json:"gallery_images"`
 }
 
 type Payload struct {
-	CreateUpdateBizRequest
+	BizID     *int64
+	ProjectID int64
+	UserID    int64
+
+	Name        string
+	Tagline     string
+	Description string
+	LogoURL     *string
+	Logo        *multipart.FileHeader
+
+	HeroTitle       *string
+	HeroDescription *string
+	HeroImageURL    *string
+	HeroImage       *multipart.FileHeader
+
+	AboutImageURL *string
+	AboutImage    *multipart.FileHeader
+
+	Email   string
+	Phone   *string
+	Address *string
+	MapLink *string
+
+	Schedule       *string
+	OperationHours *string
+
+	ServicesEnabled bool
+	ProductsEnabled bool
+	BookingEnabled  bool
+	OrderingEnabled bool
+
+	LayoutName string
+	Theme      *ThemeRequest
+
+	Services      []ServiceRequest
+	Products      []ProductRequest
+	Testimonials  []TestimonialRequest
+	SocialLinks   []SocialLinkRequest
+	FAQs          []FAQRequest
+	GalleryImages []GalleryImageRequest
 }
 
 func (request CreateUpdateBizRequest) ToServicePayload() Payload {
-	return Payload{
-		CreateUpdateBizRequest: request,
-	}
+	return Payload(request)
 }

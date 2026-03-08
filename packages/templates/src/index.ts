@@ -1,3 +1,5 @@
 import PortfolioTemplates from "./components/portfolio";
+import BizTemplates from "./components/biz";
+import LinktreeTemplates from "./components/linktree";
 
-export { PortfolioTemplates };
+export { PortfolioTemplates, BizTemplates, LinktreeTemplates };

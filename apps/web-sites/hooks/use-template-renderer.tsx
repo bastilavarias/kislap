@@ -12,10 +12,12 @@ interface TemplateProps {
   onSetThemeMode: React.Dispatch<React.SetStateAction<Mode>>;
 }
 
-import { PortfolioTemplates } from '@kislap/templates';
+import { BizTemplates, PortfolioTemplates, LinktreeTemplates } from '@kislap/templates';
 
 const { Default, Minimal, Bento, NeoBrutalist, Glass, Cyber, Newspaper, Kinetic, Vaporware } =
   PortfolioTemplates;
+const { BizDefault, BizCyber, BizRetro } = BizTemplates;
+const { LinktreeDefault, LinktreeNeoBrutalist } = LinktreeTemplates;
 
 type TemplateName = string;
 
@@ -29,6 +31,17 @@ const templates: Record<TemplateName, React.FC<TemplateProps>> = {
   newspaper: Newspaper,
   kinetic: Kinetic,
   vaporware: Vaporware,
+};
+
+const bizTemplates: Record<TemplateName, React.FC<TemplateProps>> = {
+  'biz-default': BizDefault,
+  'biz-cyber': BizCyber,
+  'biz-retro': BizRetro,
+};
+
+const linktreeTemplates: Record<TemplateName, React.FC<TemplateProps>> = {
+  'linktree-default': LinktreeDefault,
+  'linktree-neo-brutalist': LinktreeNeoBrutalist,
 };
 
 /**
@@ -45,13 +58,26 @@ export const renderTemplate = (
   themeStyles: ThemeStyles,
   onSetThemeMode: React.Dispatch<React.SetStateAction<Mode>>
 ): JSX.Element | null => {
-  const layoutName = project.portfolio.layout_name ?? 'default';
-  const Component = templates[layoutName as TemplateName];
+  let layoutName = 'default';
+  let Component = null;
+
+  if (project.type === 'portfolio') {
+    layoutName = project.portfolio.layout_name || 'default';
+    Component = templates[layoutName as TemplateName];
+  } else if (project.type === 'biz') {
+    layoutName = project.biz.layout_name || 'biz-default';
+    Component = bizTemplates[layoutName as TemplateName];
+  } else if (project.type === 'linktree') {
+    layoutName = project.linktree.layout_name || 'linktree-default';
+    Component = linktreeTemplates[layoutName as TemplateName];
+  }
 
   return Component ? (
     <Component
       project={project}
       portfolio={project.portfolio}
+      biz={project.biz}
+      linktree={project.linktree}
       themeMode={themeMode}
       themeStyles={themeStyles}
       onSetThemeMode={onSetThemeMode}
