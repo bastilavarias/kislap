@@ -2,6 +2,7 @@ package linktree
 
 import (
 	"encoding/json"
+	"flash/internal/project"
 	"flash/utils"
 	"fmt"
 	"net/http"
@@ -14,12 +15,16 @@ import (
 )
 
 type Controller struct {
-	Service *Service
+	Service        *Service
+	ProjectService *project.Service
 }
 
 func NewController(db *gorm.DB, objectStorage objectStorage.Provider) *Controller {
+	projectService := project.NewService(db, objectStorage)
+
 	return &Controller{
-		Service: NewService(db, objectStorage),
+		Service:        NewService(db, objectStorage),
+		ProjectService: projectService,
 	}
 }
 
@@ -90,6 +95,20 @@ func (c *Controller) Save(context *gin.Context) {
 	utils.APIRespondSuccess(context, http.StatusOK, gin.H{
 		"linktree": linktree,
 	})
+
+	go func(projectID int64) {
+		defer func() {
+			if r := recover(); r != nil {
+				fmt.Printf("Recovered from panic in SaveOGImage: %v\n", r)
+			}
+		}()
+
+		_, err := c.ProjectService.SaveOGImage(projectID)
+
+		if err != nil {
+			fmt.Printf("Background OG Image generation failed for project %d: %v\n", projectID, err)
+		}
+	}(payload.ProjectID)
 }
 
 func (c *Controller) Get(context *gin.Context) {

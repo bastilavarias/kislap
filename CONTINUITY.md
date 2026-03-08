@@ -3,18 +3,18 @@
 ## Snapshot
 - Goal: Add Linktree-level background selector (`plain`/`grid`) in form and render it in template. [2026-03-08][USER]
 - Success criteria: background choice persists to DB/API and toggles template backdrop style. [2026-03-08][USER]
-- Now: background selector persists via DB/API; Neo Brutalist background uses theme variables (`--background`, `--border`) and layout styling matches the reference index design language. [2026-03-08][CODE]
-- Next: Validate in browser that `background_style=grid/plain`, card shadows, and section blocks match expected output in both light and dark modes. [2026-03-08][ASSUMPTION]
+- Now: background selector persists via DB/API; Neo Brutalist background uses theme variables (`--background`, `--border`); Linktree save now also triggers async project OG image regeneration via `ProjectService.SaveOGImage`. [2026-03-08][CODE]
+- Next: Validate in browser that Linktree save updates OG image and that `background_style=grid/plain` plus section blocks render correctly in both light and dark modes. [2026-03-08][ASSUMPTION]
 - Open questions: None. [2026-03-08][ASSUMPTION]
 
 ## Done (recent)
+- Added async OG image regeneration after successful Linktree save, mirroring portfolio behavior. [2026-03-08][CODE]
 - Verified API returns `background_style` for Linktree. [2026-03-08][CODE]
 - Added migration `2026_03_08_130000_add_background_style_to_linktrees_table.php`. [2026-03-08][CODE]
 - Added `background_style` in Linktree model + DTO + service save mapping. [2026-03-08][CODE]
 - Added `background_style` to web-builder schema/types/default values/mapping. [2026-03-08][CODE]
 - Added background selector (plain/grid) in design panel and wired it via form state. [2026-03-08][CODE]
 - Updated Neo Brutalist template to apply grid via inline CSS and remove debug `bg-red-600`. [2026-03-08][CODE]
-- One-table Linktree content model work (typed `linktree_links`) remains active and integrated; payload compatibility maintained. [2026-03-08][CODE]
 
 ## Decisions
 - D001 ACTIVE: Canonical agent instructions live at `.agents/AGENTS.md`; do not duplicate in root. [2026-03-08][USER]
@@ -42,7 +42,6 @@
 - `apps/web-admin/database/migrations/2026_03_08_150000_expand_accent_color_columns_for_linktree_gradients.php`
 
 ## Receipts
-- 2026-03-08 [CODE] Added dynamic section renderer module `linktree-neo-brutalist-sections.tsx`.
 - 2026-03-08 [CODE] Updated Neo Brutalist template to render persisted sections instead of static hardcoded blocks.
 - 2026-03-08 [CODE] Added `packages/templates/src/components/linktree/linktree-neo-brutalist.tsx`.
 - 2026-03-08 [CODE] Patched `builder.tsx` to pass `themeStyles` to `renderTemplate` and removed `console.log(settings)`.
@@ -62,3 +61,4 @@
 - 2026-03-08 [CODE] Migrated Link-type social icon mapping to Font Awesome (`react-icons/fa6`) for builder + sites, keeping preset badge colors and icon-over-image priority (`FaGlobe` for portfolio).
 - 2026-03-08 [CODE] Removed extra brutal-shadow styling from Neo Brutalist toggle wrapper; kept logo border + hard offset logo shadow, restored intended hero typography (smaller/tighter name + smaller tagline), and kept `about` below phone/email with subtler styling.
 - 2026-03-08 [CODE] Increased Support and Promo card typography, added vertical padding in Promo content block, switched Quote text to `font-mono`, added Quote/Banner accent picker (solid+gradient), and aligned Quote text-color behavior with Banner when accent backgrounds are set.
+- 2026-03-08 [CODE] Mirrored portfolio OG behavior in Linktree: controller now triggers `ProjectService.SaveOGImage(projectID)` asynchronously after save with panic recovery and error logging.
