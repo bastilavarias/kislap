@@ -219,7 +219,8 @@ func (service Service) ShowBySubDomain(subDomain string) (*models.Project, error
 
 	query := service.DB.Model(&models.Project{})
 
-	if project.Type == "biz" {
+	switch project.Type {
+	case "biz":
 		query = query.
 			Preload("Biz").
 			Preload("Biz.Services", func(db *gorm.DB) *gorm.DB {
@@ -238,7 +239,11 @@ func (service Service) ShowBySubDomain(subDomain string) (*models.Project, error
 			Preload("Biz.Gallery", func(db *gorm.DB) *gorm.DB {
 				return db.Order("placement_order ASC")
 			})
-	} else {
+	case "linktree":
+		query = query.
+			Preload("Linktree").
+			Preload("Linktree.Links")
+	default:
 		query = query.
 			Preload("Portfolio").
 			Preload("Portfolio.User").

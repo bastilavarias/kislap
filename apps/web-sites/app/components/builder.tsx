@@ -50,7 +50,9 @@ export function Builder({ initialProject, initialSubdomain }: BuilderProps) {
   if (project.type === 'portfolio') {
     themeObject = project.portfolio?.theme_object;
   } else if (project.type === 'biz') {
-    themeObject = project.biz?.theme_object;
+    themeObject = project.biz?.theme_object || {};
+  } else if (project.type === 'linktree') {
+    themeObject = project.linktree?.theme_object || {};
   }
 
   let normalizedThemeObject: Record<string, unknown> = {};
@@ -71,7 +73,9 @@ export function Builder({ initialProject, initialSubdomain }: BuilderProps) {
   const themeStyles: ThemeStyles =
     rawStyles && typeof rawStyles === 'object' ? (rawStyles as ThemeStyles) : defaultThemeState;
 
-  const TemplateComponent = renderTemplate(project, themeMode, themeStyles, setThemeMode);
+  console.log(settings);
+
+  const TemplateComponent = renderTemplate(project, themeMode, settings.theme.styles, setThemeMode);
 
   return (
     <div className="relative flex min-h-full w-full flex-auto flex-col gap-10">
