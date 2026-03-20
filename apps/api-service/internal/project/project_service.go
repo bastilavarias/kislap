@@ -210,6 +210,20 @@ func (service Service) ShowBySlug(slug string, level string) (*models.Project, e
 		normalizeLinktreeContent(&project)
 	}
 
+	if level == "full" && project.Type == "menu" {
+		if err := service.DB.
+			Preload("Menu").
+			Preload("Menu.Categories", func(db *gorm.DB) *gorm.DB {
+				return db.Order("placement_order ASC")
+			}).
+			Preload("Menu.Items", func(db *gorm.DB) *gorm.DB {
+				return db.Order("placement_order ASC")
+			}).
+			First(&project, project.ID).Error; err != nil {
+			return nil, err
+		}
+	}
+
 	return &project, nil
 }
 
@@ -246,6 +260,15 @@ func (service Service) ShowBySubDomain(subDomain string) (*models.Project, error
 		query = query.
 			Preload("Linktree").
 			Preload("Linktree.Links", func(db *gorm.DB) *gorm.DB {
+				return db.Order("placement_order ASC")
+			})
+	case "menu":
+		query = query.
+			Preload("Menu").
+			Preload("Menu.Categories", func(db *gorm.DB) *gorm.DB {
+				return db.Order("placement_order ASC")
+			}).
+			Preload("Menu.Items", func(db *gorm.DB) *gorm.DB {
 				return db.Order("placement_order ASC")
 			})
 	default:
@@ -292,9 +315,13 @@ func (service Service) Publish(projectID int, payload PublishProjectPayload) (*m
 		return nil, err
 	}
 
-	service.DB.Model(&proj).Select("Published").Updates(models.Project{
-		Published: payload.Published,
-	})
+	if err := service.DB.Model(&proj).Update("published", payload.Published).Error; err != nil {
+		return nil, err
+	}
+
+	if err := service.DB.First(&proj, projectID).Error; err != nil {
+		return nil, err
+	}
 
 	return &proj, nil
 }

@@ -120,11 +120,6 @@ const ThemeColorPanel = ({
   const onLocalUpdateSettings = (newSettings: Settings) => {
     if (stateless) {
       setLocalSettings(newSettings);
-      setCurrentTheme(
-        newSettings?.theme?.styles?.[newSettings.mode === 'system' ? 'light' : newSettings.mode] as
-          | Partial<ThemeStyleProps>
-          | undefined
-      );
       return;
     }
 
@@ -139,17 +134,21 @@ const ThemeColorPanel = ({
         return;
       }
 
+      const activeMode = localSettings?.mode === 'dark' ? 'dark' : 'light';
+
       onLocalUpdateSettings({
-        mode: localSettings?.mode,
+        mode: localSettings?.mode || 'light',
         theme: {
           ...localSettings?.theme,
           styles: {
             ...localSettings?.theme?.styles,
-            light: { ...localSettings?.theme?.styles?.light, [key]: value },
-            dark: { ...localSettings?.theme?.styles?.dark, [key]: value },
+            [activeMode]: {
+              ...localSettings?.theme?.styles?.[activeMode],
+              [key]: value,
+            },
           },
         },
-      });
+      } as Settings);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [currentTheme, settings.theme.styles, localSettings?.theme?.styles]
@@ -157,7 +156,11 @@ const ThemeColorPanel = ({
 
   useEffect(() => {
     if (localSettings) {
-      onLocalUpdateSettings(localSettings);
+      setCurrentTheme(
+        localSettings?.theme?.styles?.[localSettings.mode === 'dark' ? 'dark' : 'light'] as
+          | Partial<ThemeStyleProps>
+          | undefined
+      );
     }
   }, [localSettings]);
 

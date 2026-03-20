@@ -53,6 +53,8 @@ export function Builder({ initialProject, initialSubdomain }: BuilderProps) {
     themeObject = project.biz?.theme_object || {};
   } else if (project.type === 'linktree') {
     themeObject = project.linktree?.theme_object || {};
+  } else if (project.type === 'menu') {
+    themeObject = project.menu?.theme_object || {};
   }
 
   let normalizedThemeObject: Record<string, unknown> = {};

@@ -14,7 +14,7 @@ type Project struct {
 	Slug        string         `gorm:"size:255;uniqueIndex;not null" json:"slug"`
 	SubDomain   *string        `gorm:"column:sub_domain;size:255" json:"sub_domain,omitempty"`
 	OGImageURL  *string        `gorm:"column:og_image_url;size:255" json:"og_image_url,omitempty"`
-	Type        string         `gorm:"type:enum('portfolio','biz','links','waitlist');default:portfolio" json:"type"`
+	Type        string         `gorm:"type:enum('portfolio','biz','links','waitlist','linktree','menu');default:portfolio" json:"type"`
 	Published   bool           `gorm:"type:int" json:"published"`
 	CreatedAt   time.Time      `gorm:"autoCreateTime" json:"created_at"`
 	UpdatedAt   time.Time      `gorm:"autoUpdateTime" json:"updated_at"`
@@ -24,6 +24,7 @@ type Project struct {
 	Portfolio *Portfolio `gorm:"foreignKey:ProjectID" json:"portfolio,omitempty"`
 	Biz       *Biz       `gorm:"foreignKey:ProjectID" json:"biz,omitempty"`
 	Linktree  *Linktree  `gorm:"foreignKey:ProjectID" json:"linktree,omitempty"`
+	Menu      *Menu      `gorm:"foreignKey:ProjectID" json:"menu,omitempty"`
 }
 
 func (Project) TableName() string {

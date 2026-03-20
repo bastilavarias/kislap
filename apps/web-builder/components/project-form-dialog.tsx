@@ -43,6 +43,14 @@ const projectTypes = [
     route: 'linktree',
   },
   {
+    label: 'menu',
+    emoji: '🍽️',
+    active: true,
+    description: 'Publish a branded digital menu with categories, items, QR, and responsive layouts.',
+    features: ['Categories & items', 'QR-ready', 'Mobile-first menu'],
+    route: 'menu',
+  },
+  {
     label: 'biz',
     emoji: '💼',
     active: false,

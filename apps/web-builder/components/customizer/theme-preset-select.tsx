@@ -49,10 +49,15 @@ const ThemePresetSelect = ({
   const onLocalUpdateSettings = (newSettings: Partial<Settings>) => {
     if (stateless) {
       setLocalSettings({
-        ...settings,
-        ...localSettings,
+        ...(localSettings || settings),
         ...newSettings,
-        mode: settings.mode,
+        mode: newSettings.mode ?? localSettings?.mode ?? settings.mode,
+        theme: {
+          ...(localSettings?.theme || settings.theme),
+          ...(newSettings.theme || {}),
+          styles:
+            newSettings.theme?.styles || localSettings?.theme?.styles || settings.theme.styles,
+        },
       });
 
       return;

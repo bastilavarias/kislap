@@ -6,6 +6,7 @@ import (
 	"flash/internal/biz"
 	"flash/internal/document"
 	"flash/internal/linktree"
+	"flash/internal/menu"
 	"flash/internal/page_activity"
 	"flash/internal/portfolio"
 	"flash/internal/project"
@@ -38,6 +39,7 @@ func RegisterRoutes(router *gin.Engine, db *gorm.DB, llm llm.Provider, objectSto
 		bizController := biz.NewController(db, objectStorage)
 
 		linktreeController := linktree.NewController(db, objectStorage)
+		menuController := menu.NewController(db, objectStorage)
 
 		api.POST("/auth/login", authController.Login)
 		api.POST("/auth/github", authController.GithubLogin)
@@ -83,5 +85,9 @@ func RegisterRoutes(router *gin.Engine, db *gorm.DB, llm llm.Provider, objectSto
 		// Linktree
 		api.GET("/linktree/:id", middleware.AccessTokenValidatorMiddleware(db), linktreeController.Get)
 		api.POST("/linktree", middleware.AccessTokenValidatorMiddleware(db), linktreeController.Save)
+
+		// Menu
+		api.GET("/menu/:id", middleware.AccessTokenValidatorMiddleware(db), menuController.Get)
+		api.POST("/menu", middleware.AccessTokenValidatorMiddleware(db), menuController.Save)
 	}
 }
