@@ -1,9 +1,7 @@
 "use client";
 
-import type React from "react";
 import { ArrowUpRight } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { trackThenNavigate } from "./linktree-track-navigation";
 
 export interface LinktreeSection {
   id: number;
@@ -38,22 +36,13 @@ function getAccentBackgroundStyle(accentColor?: string | null) {
   };
 }
 
-function PromoSection({
-  section,
-  onTrackClick,
-}: {
-  section: LinktreeSection;
-  onTrackClick?: (url: string) => Promise<unknown> | void;
-}) {
+function PromoSection({ section }: { section: LinktreeSection }) {
   if (!section.url) return null;
   return (
     <a
       href={section.url}
       target="_blank"
       rel="noopener noreferrer"
-      onClick={(event: React.MouseEvent<HTMLAnchorElement>) =>
-        trackThenNavigate(event, section.url as string, onTrackClick)
-      }
       style={BRUTAL_SHADOW}
       className="block border-2 border-border bg-card p-3 sm:p-4 transition-all duration-150 hover:-translate-y-0.5 hover:translate-x-0.5 hover:shadow-none"
     >
@@ -166,16 +155,8 @@ function BannerSection({ section }: { section: LinktreeSection }) {
   );
 }
 
-export function NeoBrutalistSection({
-  section,
-  onTrackClick,
-}: {
-  section: LinktreeSection;
-  onTrackClick?: (url: string) => Promise<unknown> | void;
-}) {
-  if (section.type === "promo") {
-    return <PromoSection section={section} onTrackClick={onTrackClick} />;
-  }
+export function NeoBrutalistSection({ section }: { section: LinktreeSection }) {
+  if (section.type === "promo") return <PromoSection section={section} />;
   if (section.type === "support") return <SupportSection section={section} />;
   if (section.type === "quote") return <QuoteSection section={section} />;
   if (section.type === "banner") return <BannerSection section={section} />;

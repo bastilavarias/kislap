@@ -128,22 +128,3 @@ func (controller Controller) GetRecentActivities(context *gin.Context) {
 
 	utils.APIRespondSuccess(context, http.StatusOK, response)
 }
-
-func (controller Controller) GetTopLinks(context *gin.Context) {
-	idStr := context.Param("id")
-	projectID, err := strconv.ParseUint(idStr, 10, 64)
-	if err != nil {
-		utils.APIRespondError(context, http.StatusBadRequest, "Invalid Project ID")
-		return
-	}
-
-	limit, _ := strconv.Atoi(context.DefaultQuery("limit", "5"))
-
-	topLinks, err := controller.Service.GetTopLinks(projectID, limit)
-	if err != nil {
-		utils.APIRespondError(context, http.StatusInternalServerError, err.Error())
-		return
-	}
-
-	utils.APIRespondSuccess(context, http.StatusOK, topLinks)
-}

@@ -40,7 +40,6 @@ import {
   useAppointment,
 } from "@/hooks/api/use-appointment";
 import { usePageActivity } from "@/hooks/api/use-page-activity";
-import { trackProjectThenNavigate } from "./portfolio-track-navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Label } from "@/components/ui/label";
@@ -270,8 +269,8 @@ const ProjectsSection = ({
 
   if (!portfolio?.showcases || portfolio.showcases.length === 0) return null;
 
-  const handleTrackClick = async (modelID: number) => {
-    await trackPageProjectClick(projectId, modelID);
+  const handleTrackClick = (modelID: number) => {
+    trackPageProjectClick(projectId, modelID);
   };
 
   return (
@@ -328,11 +327,7 @@ const ProjectsSection = ({
               href={showcase.url}
               target="_blank"
               className="absolute inset-0 z-10"
-              onClick={(event) =>
-                trackProjectThenNavigate(event, showcase.url, () =>
-                  handleTrackClick(showcase.id),
-                )
-              }
+              onClick={() => handleTrackClick(showcase.id)}
             />
           )}
         </Card>
