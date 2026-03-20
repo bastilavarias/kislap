@@ -28,6 +28,7 @@ import {
   useAppointment,
 } from "@/hooks/api/use-appointment";
 import { usePageActivity } from "@/hooks/api/use-page-activity"; // Imported for tracking
+import { trackProjectThenNavigate } from "./portfolio-track-navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Label } from "@/components/ui/label";
@@ -196,8 +197,8 @@ const ProjectsSection = ({
 
   if (!portfolio?.showcases || portfolio.showcases.length === 0) return null;
 
-  const handleTrackClick = (modelID: number) => {
-    trackPageProjectClick(projectId, modelID);
+  const handleTrackClick = async (modelID: number) => {
+    await trackPageProjectClick(projectId, modelID);
   };
 
   return (
@@ -211,7 +212,11 @@ const ProjectsSection = ({
             key={project.id}
             href={project.url || "#"}
             target={project.url ? "_blank" : undefined}
-            onClick={() => handleTrackClick(project.id)}
+            onClick={(event) =>
+              trackProjectThenNavigate(event, project.url, () =>
+                handleTrackClick(project.id),
+              )
+            }
             className={`group block h-full ${!project.url ? "pointer-events-none" : ""}`}
           >
             <div className="h-full rounded-lg border bg-card p-6 transition-all hover:shadow-md hover:border-primary/20 flex flex-col">
