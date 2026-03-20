@@ -72,7 +72,6 @@ func RegisterRoutes(router *gin.Engine, db *gorm.DB, llm llm.Provider, objectSto
 		api.DELETE("/appointments/:id", middleware.AccessTokenValidatorMiddleware(db), appointmentController.Delete)
 		api.POST("/page-activities", pageActivityController.Create)
 		api.GET("/page-activities/:id", middleware.AccessTokenValidatorMiddleware(db), pageActivityController.GetStats)
-		api.GET("/page-activities/:id/top-links", middleware.AccessTokenValidatorMiddleware(db), pageActivityController.GetTopLinks)
 		api.GET("/page-activities/:id/visits", middleware.AccessTokenValidatorMiddleware(db), pageActivityController.GetVisits)
 		api.GET("/page-activities/:id/recent-activities", middleware.AccessTokenValidatorMiddleware(db), pageActivityController.GetRecentActivities)
 

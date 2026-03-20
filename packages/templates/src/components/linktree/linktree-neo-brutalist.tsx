@@ -1,11 +1,10 @@
 "use client";
-import type React from "react";
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import { ThemeSwitchToggle } from "../theme-switch-toggle";
 import { Mode } from "@/contexts/settings-context";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { usePageActivity } from "@/hooks/api/use-page-activity";
 import { motion } from "framer-motion";
 import { ArrowUpRight, Check, Mail, Phone, Share2 } from "lucide-react";
 import {
@@ -18,7 +17,6 @@ import {
   ICON_BADGE_STYLES,
   PLATFORM_STYLES,
 } from "./linktree-neo-brutalist-icons";
-import { trackThenNavigate } from "./linktree-track-navigation";
 interface LinkItem {
   id: number;
   title: string;
@@ -37,7 +35,6 @@ interface ContentItem {
 }
 interface LinktreeData {
   id?: number;
-  project_id?: number;
   name?: string;
   tagline?: string;
   about?: string;
@@ -56,17 +53,11 @@ interface Props {
 const BRUTAL_SHADOW = {
   boxShadow: "4px 4px 0 var(--shadow-color, var(--border))",
 };
-const BRUTAL_SHADOW_LG = { boxShadow: "6px 6px 0 var(--shadow-color, var(--border))" };
+const BRUTAL_SHADOW_LG = {
+  boxShadow: "6px 6px 0 var(--shadow-color, var(--border))",
+};
 
-function LinkCard({
-  link,
-  index,
-  onTrackClick,
-}: {
-  link: LinkItem;
-  index: number;
-  onTrackClick?: (url: string) => Promise<unknown> | void;
-}) {
+function LinkCard({ link, index }: { link: LinkItem; index: number }) {
   const platform = getPlatformKey(link.url, link.title);
   const style = PLATFORM_STYLES[platform];
   const iconKey = (link.icon_key || "").toLowerCase();
@@ -77,7 +68,6 @@ function LinkCard({
       href={link.url}
       target="_blank"
       rel="noopener noreferrer"
-      onClick={(event) => trackThenNavigate(event, link.url, onTrackClick)}
       initial={{ opacity: 0, y: 18 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.15 + index * 0.06, duration: 0.25 }}
@@ -134,7 +124,6 @@ export function LinktreeNeoBrutalist({
   onSetThemeMode,
 }: Props) {
   const [copied, setCopied] = useState(false);
-  const { trackPageLinkClick } = usePageActivity();
   const isGridBackground = linktree?.background_style !== "plain";
   const gridLineColor =
     themeMode === "dark" ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.06)";
@@ -150,14 +139,6 @@ export function LinktreeNeoBrutalist({
     navigator.clipboard.writeText(window.location.href);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
-  };
-
-  const handleTrackClick = async (url: string) => {
-    if (!linktree?.project_id || !url) return;
-    await trackPageLinkClick(linktree.project_id, url);
-  };
-  const handleTrackedContactClick = (event: React.MouseEvent<HTMLAnchorElement>, url: string) => {
-    void trackThenNavigate(event, url, handleTrackClick);
   };
 
   const { emailValue, phoneValue, contentItems } = useMemo(() => {
@@ -263,14 +244,20 @@ export function LinktreeNeoBrutalist({
 
           <div className="mt-3 flex flex-wrap items-center justify-center gap-2 text-sm sm:text-base font-semibold text-muted-foreground">
             {phoneValue ? (
-              <a href={`tel:${phoneValue}`} className="inline-flex items-center gap-1 hover:text-foreground" onClick={(event) => handleTrackedContactClick(event, `tel:${phoneValue}`)}>
+              <a
+                href={`tel:${phoneValue}`}
+                className="inline-flex items-center gap-1 hover:text-foreground"
+              >
                 <Phone className="h-3.5 w-3.5" />
                 {phoneValue}
               </a>
             ) : null}
             {phoneValue && emailValue ? <span>|</span> : null}
             {emailValue ? (
-              <a href={`mailto:${emailValue}`} className="inline-flex items-center gap-1 hover:text-foreground" onClick={(event) => handleTrackedContactClick(event, `mailto:${emailValue}`)}>
+              <a
+                href={`mailto:${emailValue}`}
+                className="inline-flex items-center gap-1 hover:text-foreground"
+              >
                 <Mail className="h-3.5 w-3.5" />
                 {emailValue}
               </a>
@@ -288,9 +275,16 @@ export function LinktreeNeoBrutalist({
           <div className="mt-6 flex flex-col gap-3 sm:gap-4">
             {contentItems.map((item, index) =>
               item.kind === "link" && item.link ? (
-                <LinkCard key={`link-${item.id}`} link={item.link} index={index} onTrackClick={handleTrackClick} />
+                <LinkCard
+                  key={`link-${item.id}`}
+                  link={item.link}
+                  index={index}
+                />
               ) : item.kind === "section" && item.section ? (
-                <NeoBrutalistSection key={`section-${item.id}`} section={item.section} onTrackClick={handleTrackClick} />
+                <NeoBrutalistSection
+                  key={`section-${item.id}`}
+                  section={item.section}
+                />
               ) : null,
             )}
           </div>

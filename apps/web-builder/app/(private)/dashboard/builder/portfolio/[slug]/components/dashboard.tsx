@@ -28,6 +28,7 @@ import {
   Activity,
   ChevronLeft,
   ChevronRight,
+  Lock,
   Mail,
   Phone,
   MousePointerClick,
@@ -401,6 +402,47 @@ export function Dashboard({ projectID }: { projectID?: number }) {
           </CardContent>
         </Card>
       </div>
+
+      {/* 2. AI Teaser */}
+      <Card className="pb-2 relative overflow-hidden border-dashed border-2 border-violet-200 dark:border-violet-900 bg-violet-50/50 dark:bg-violet-950/20">
+        <CardHeader className="pb-2">
+          <div className="flex items-center gap-2">
+            <div className="p-1.5 bg-violet-100 dark:bg-violet-900/40 rounded-lg">
+              <Sparkles className="w-4 h-4 text-violet-600 dark:text-violet-400" />
+            </div>
+            <CardTitle className="text-lg text-violet-900 dark:text-violet-100">
+              AI Analyst Insights
+            </CardTitle>
+            <Badge
+              variant="secondary"
+              className="ml-auto bg-violet-100 text-violet-700 hover:bg-violet-200 border-violet-200"
+            >
+              Coming Soon
+            </Badge>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="relative">
+            <div className="filter blur-sm select-none opacity-50 space-y-4 pointer-events-none">
+              <div className="bg-white/60 dark:bg-black/20 p-4 rounded-xl border border-violet-100 dark:border-violet-900/50">
+                <p className="text-sm font-medium text-violet-800 dark:text-violet-200 leading-relaxed">
+                  Based on recent activity...
+                </p>
+              </div>
+            </div>
+            <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
+              <div className="bg-background/80 backdrop-blur-md p-4 rounded-full shadow-sm mb-3 ring-1 ring-border">
+                <Lock className="w-6 h-6 text-violet-600 dark:text-violet-400" />
+              </div>
+              <p className="text-sm font-medium text-muted-foreground text-center max-w-md bg-background/60 backdrop-blur-sm px-4 py-1 rounded-full">
+                We are fine-tuning our AI models.
+                <br />
+                <span className="font-bold text-foreground">Stay tuned!</span>
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       <Card className="shadow-sm">
         <CardHeader>

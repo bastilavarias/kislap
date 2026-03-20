@@ -108,7 +108,7 @@ export function ProjectFormDialog({
         description: project.description || '',
         sub_domain: project.sub_domain || '',
         type: project.type,
-        published: Boolean(project.published),
+        published: project.published,
       });
     } else {
       reset();
@@ -123,10 +123,7 @@ export function ProjectFormDialog({
 
     try {
       if (isEditMode && project) {
-        const { success, data, message } = await update(project.id, {
-          ...form,
-          published: Boolean(project.published),
-        });
+        const { success, data, message } = await update(project.id, form);
 
         if (success) {
           if (onOpenChange) onOpenChange(false);

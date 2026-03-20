@@ -29,12 +29,6 @@ type RecentActivity struct {
 	CreatedAt time.Time   `json:"created_at"`
 }
 
-type TopLink struct {
-	PageURL       string    `json:"page_url"`
-	ClickCount    int64     `json:"click_count"`
-	LastClickedAt time.Time `json:"last_clicked_at"`
-}
-
 func (service *Service) Track(payload Payload) error {
 	activity := models.PageActivity{
 		ProjectID: payload.ProjectID,
@@ -51,24 +45,17 @@ func (service *Service) Track(payload Payload) error {
 func (service *Service) GetStats(projectID uint64, page int, limit int) (*Stats, error) {
 	var stats Stats
 
-	baseQuery := service.DB.Model(&models.PageActivity{}).Where("project_id = ?", projectID)
+	db := service.DB.Model(&models.PageActivity{}).Where("project_id = ?", projectID)
 
-	if err := baseQuery.Session(&gorm.Session{}).
-		Where("type = ?", "view").
-		Count(&stats.TotalViews).Error; err != nil {
+	if err := db.Where("type = ?", "view").Count(&stats.TotalViews).Error; err != nil {
 		return nil, err
 	}
 
-	if err := baseQuery.Session(&gorm.Session{}).
-		Where("type = ?", "click").
-		Count(&stats.TotalClicks).Error; err != nil {
+	if err := db.Where("type = ?", "click").Count(&stats.TotalClicks).Error; err != nil {
 		return nil, err
 	}
 
-	if err := baseQuery.Session(&gorm.Session{}).
-		Where("type = ?", "view").
-		Distinct("ip_address").
-		Count(&stats.UniqueVisitors).Error; err != nil {
+	if err := db.Distinct("ip_address").Count(&stats.UniqueVisitors).Error; err != nil {
 		return nil, err
 	}
 
@@ -176,34 +163,4 @@ func (service *Service) GetRecentActivities(projectID uint64, page int, limit in
 	}
 
 	return activities, total, nil
-}
-
-func (service *Service) GetTopLinks(projectID uint64, limit int) ([]TopLink, error) {
-	var topLinks []TopLink
-
-	if limit <= 0 {
-		limit = 5
-	}
-
-	err := service.DB.
-		Model(&models.PageActivity{}).
-		Select(`
-			page_url,
-			COUNT(*) AS click_count,
-			MAX(created_at) AS last_clicked_at
-		`).
-		Where("project_id = ?", projectID).
-		Where("type = ?", "click").
-		Where("page_url <> ''").
-		Where("page_url <> '/'").
-		Group("page_url").
-		Order("click_count DESC, last_clicked_at DESC").
-		Limit(limit).
-		Scan(&topLinks).Error
-
-	if err != nil {
-		return nil, err
-	}
-
-	return topLinks, nil
 }

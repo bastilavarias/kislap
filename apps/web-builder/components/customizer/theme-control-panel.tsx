@@ -80,8 +80,10 @@ const ThemeControlPanel = ({
   const onLocalApplyThemePreset = (preset: string) => {
     if (stateless) {
       onLocalUpdateSettings({
+        ...settings,
         ...localSettings,
         theme: {
+          ...settings.theme,
           ...localSettings?.theme,
           preset,
           styles: {
@@ -99,13 +101,15 @@ const ThemeControlPanel = ({
       const newMode = value as Mode;
 
       const updatedSettings = {
+        ...settings,
         ...localSettings,
         mode: newMode,
         theme: {
+          ...settings.theme,
           ...localSettings?.theme,
           styles: {
-            light: localSettings?.theme?.styles?.light || {},
-            dark: localSettings?.theme?.styles?.dark || {},
+            light: settings.theme.styles?.light || {},
+            dark: settings.theme.styles?.dark || {},
           },
         },
       };
@@ -123,8 +127,10 @@ const ThemeControlPanel = ({
     const currentDark = localSettings?.theme?.styles?.dark || {};
 
     onLocalUpdateSettings({
+      ...settings,
       ...localSettings,
       theme: {
+        ...settings.theme,
         ...localSettings?.theme,
         styles: {
           light: { ...currentLight, ...updates },
@@ -172,20 +178,20 @@ const ThemeControlPanel = ({
   };
 
   useEffect(() => {
-    if (!localSettings?.theme?.styles?.light || !localSettings?.theme?.styles?.dark) {
+    if (!settings.theme.styles?.light || !settings.theme.styles?.dark) {
       const updatedSettings = {
-        ...localSettings,
+        ...settings,
         theme: {
-          ...localSettings?.theme,
+          ...settings.theme,
           styles: {
-            light: localSettings?.theme?.styles?.light || {},
-            dark: localSettings?.theme?.styles?.dark || {},
+            light: settings.theme.styles?.light || {},
+            dark: settings.theme.styles?.dark || {},
           },
         },
       };
       onLocalUpdateSettings(updatedSettings);
     }
-  }, [localSettings, onLocalUpdateSettings]);
+  }, []);
 
   const form = (
     <div className="flex flex-col gap-6">
@@ -230,7 +236,7 @@ const ThemeControlPanel = ({
           <h3 className="text-lg font-medium">Mode</h3>
           <ToggleGroup
             type="single"
-            value={localSettings?.mode || settings.mode}
+            value={settings.mode}
             onValueChange={handleModeChange}
             className="gap-4"
           >
