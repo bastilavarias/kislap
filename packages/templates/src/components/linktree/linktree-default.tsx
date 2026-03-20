@@ -1,15 +1,17 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Link from "next/link";
+import type React from "react";
 import { motion } from "framer-motion";
 import { ArrowUpRight, Check, Mail, Phone, Share2 } from "lucide-react";
 import { ThemeSwitchToggle } from "../theme-switch-toggle";
 import { Button } from "@/components/ui/button";
 import { Mode } from "@/contexts/settings-context";
 import { cn } from "@/lib/utils";
+import { usePageActivity } from "@/hooks/api/use-page-activity";
 import { BrandGlyph, ICON_BADGE_STYLES } from "./linktree-neo-brutalist-icons";
 import { DefaultSection, LinktreeSection } from "./linktree-default-sections";
+import { trackThenNavigate } from "./linktree-track-navigation";
 
 interface LinkItem {
   id: number;
@@ -31,6 +33,7 @@ interface ContentItem {
 
 interface LinktreeData {
   id?: number;
+  project_id?: number;
   name?: string;
   tagline?: string;
   about?: string;
@@ -48,7 +51,13 @@ interface Props {
   onSetThemeMode: React.Dispatch<React.SetStateAction<Mode>>;
 }
 
-function LinkCard({ link }: { link: LinkItem }) {
+function LinkCard({
+  link,
+  onTrackClick,
+}: {
+  link: LinkItem;
+  onTrackClick?: (url: string) => Promise<unknown> | void;
+}) {
   const iconKey = (link.icon_key || "").toLowerCase();
   const hasPresetIcon = !!ICON_BADGE_STYLES[iconKey];
 
@@ -57,6 +66,7 @@ function LinkCard({ link }: { link: LinkItem }) {
       href={link.url}
       target="_blank"
       rel="noopener noreferrer"
+      onClick={(event) => trackThenNavigate(event, link.url, onTrackClick)}
       className={cn(
         "group block rounded-2xl border border-border/70 bg-card p-3",
         "transition hover:bg-accent/30",
@@ -105,6 +115,7 @@ export function LinktreeDefault({
   onSetThemeMode,
 }: Props) {
   const [copied, setCopied] = useState(false);
+  const { trackPageLinkClick } = usePageActivity();
   const isGridBackground = linktree?.background_style !== "plain";
   const gridLineColor =
     themeMode === "dark" ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.06)";
@@ -121,6 +132,18 @@ export function LinktreeDefault({
     navigator.clipboard.writeText(window.location.href);
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
+  };
+
+  const handleTrackClick = async (url: string) => {
+    if (!linktree?.project_id || !url) return;
+    await trackPageLinkClick(linktree.project_id, url);
+  };
+
+  const handleTrackedContactClick = (
+    event: React.MouseEvent<HTMLAnchorElement>,
+    url: string,
+  ) => {
+    void trackThenNavigate(event, url, handleTrackClick);
   };
 
   const { emailValue, phoneValue, contentItems } = useMemo(() => {
@@ -218,6 +241,9 @@ export function LinktreeDefault({
               <a
                 href={`tel:${phoneValue}`}
                 className="inline-flex items-center gap-1 hover:text-foreground"
+                onClick={(event) =>
+                  handleTrackedContactClick(event, `tel:${phoneValue}`)
+                }
               >
                 <Phone className="h-3.5 w-3.5" />
                 {phoneValue}
@@ -228,6 +254,9 @@ export function LinktreeDefault({
               <a
                 href={`mailto:${emailValue}`}
                 className="inline-flex items-center gap-1 hover:text-foreground"
+                onClick={(event) =>
+                  handleTrackedContactClick(event, `mailto:${emailValue}`)
+                }
               >
                 <Mail className="h-3.5 w-3.5" />
                 {emailValue}
@@ -245,11 +274,16 @@ export function LinktreeDefault({
         <div className="mt-6 flex flex-col gap-3">
           {contentItems.map((item) =>
             item.kind === "link" && item.link ? (
-              <LinkCard key={`link-${item.id}`} link={item.link} />
+              <LinkCard
+                key={`link-${item.id}`}
+                link={item.link}
+                onTrackClick={handleTrackClick}
+              />
             ) : item.kind === "section" && item.section ? (
               <DefaultSection
                 key={`section-${item.id}`}
                 section={item.section}
+                onTrackClick={handleTrackClick}
               />
             ) : null,
           )}

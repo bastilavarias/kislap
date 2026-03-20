@@ -38,6 +38,7 @@ import {
   useAppointment,
 } from "@/hooks/api/use-appointment";
 import { usePageActivity } from "@/hooks/api/use-page-activity";
+import { trackProjectThenNavigate } from "./portfolio-track-navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Label } from "@/components/ui/label";
@@ -433,8 +434,8 @@ const ProjectsSection = ({
 
   if (!portfolio.showcases || portfolio.showcases.length === 0) return null;
 
-  const handleTrackClick = (modelId: number) => {
-    trackPageProjectClick(projectId, modelId);
+  const handleTrackClick = async (modelId: number) => {
+    await trackPageProjectClick(projectId, modelId);
   };
 
   return (
@@ -454,7 +455,11 @@ const ProjectsSection = ({
             key={project.id}
             href={project.url || "#"}
             target={project.url ? "_blank" : undefined}
-            onClick={() => handleTrackClick(project.id)}
+            onClick={(event) =>
+              trackProjectThenNavigate(event, project.url, () =>
+                handleTrackClick(project.id),
+              )
+            }
             className={`block group h-full ${!project.url ? "pointer-events-none" : ""}`}
           >
             <div

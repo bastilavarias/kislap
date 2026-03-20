@@ -28,6 +28,7 @@ import {
   useAppointment,
 } from "@/hooks/api/use-appointment";
 import { usePageActivity } from "@/hooks/api/use-page-activity";
+import { trackProjectThenNavigate } from "./portfolio-track-navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
@@ -330,8 +331,8 @@ const RightColumn = ({
     setIsLoading(false);
   };
 
-  const handleTrackClick = (modelId: number) => {
-    trackPageProjectClick(project.id, modelId);
+  const handleTrackClick = async (modelId: number) => {
+    await trackPageProjectClick(project.id, modelId);
   };
 
   return (
@@ -349,7 +350,11 @@ const RightColumn = ({
                   href={proj.url || "#"}
                   target="_blank"
                   className={`group block ${!proj.url ? "pointer-events-none" : ""}`}
-                  onClick={() => handleTrackClick(proj.id)}
+                  onClick={(event) =>
+                    trackProjectThenNavigate(event, proj.url, () =>
+                      handleTrackClick(proj.id),
+                    )
+                  }
                 >
                   <h4 className="font-bold text-base leading-tight group-hover:underline decoration-2 underline-offset-2">
                     {proj.name}

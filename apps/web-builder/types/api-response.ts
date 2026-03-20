@@ -239,6 +239,12 @@ export interface APIResponseDashboardStats {
   unique_visitors: number;
 }
 
+export interface APIResponseTopLink {
+  page_url: string;
+  click_count: number;
+  last_clicked_at: string;
+}
+
 export interface APIResponseBizSocialLink {
   id: number;
   biz_id: number;
