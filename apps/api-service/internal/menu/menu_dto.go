@@ -27,6 +27,11 @@ type SocialLinkRequest struct {
 	URL      string `json:"url"`
 }
 
+type GalleryImageRequest struct {
+	ImageURL *string               `json:"image_url"`
+	Image    *multipart.FileHeader `json:"image"`
+}
+
 type MenuCategoryRequest struct {
 	ID             *int64                `json:"id"`
 	ClientKey      string                `json:"client_key"`
@@ -79,6 +84,7 @@ type CreateUpdateMenuRequest struct {
 	HoursEnabled  bool                        `json:"hours_enabled"`
 	BusinessHours []BusinessHoursEntryRequest `json:"business_hours"`
 	SocialLinks   []SocialLinkRequest         `json:"social_links"`
+	GalleryImages []GalleryImageRequest       `json:"gallery_images"`
 	Categories    []MenuCategoryRequest       `json:"categories"`
 	Items         []MenuItemRequest           `json:"items"`
 }
@@ -109,6 +115,7 @@ type Payload struct {
 	HoursEnabled  bool
 	BusinessHours []BusinessHoursEntryRequest
 	SocialLinks   []SocialLinkRequest
+	GalleryImages []GalleryImageRequest
 	Categories    []MenuCategoryRequest
 	Items         []MenuItemRequest
 }
@@ -140,6 +147,7 @@ func (request *CreateUpdateMenuRequest) ToServicePayload() Payload {
 		HoursEnabled:  request.HoursEnabled,
 		BusinessHours: request.BusinessHours,
 		SocialLinks:   request.SocialLinks,
+		GalleryImages: request.GalleryImages,
 		Categories:    request.Categories,
 		Items:         request.Items,
 	}

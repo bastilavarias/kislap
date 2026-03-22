@@ -65,6 +65,11 @@ func (c *Controller) Save(context *gin.Context) {
 			payload.Items[i].Image = files[0]
 		}
 	}
+	for i := range payload.GalleryImages {
+		if files, ok := form.File[fmt.Sprintf("gallery_images[%d].image", i)]; ok && len(files) > 0 {
+			payload.GalleryImages[i].Image = files[0]
+		}
+	}
 
 	menu, err := c.Service.Save(payload)
 	if err != nil {

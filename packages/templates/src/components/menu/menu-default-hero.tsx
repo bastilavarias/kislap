@@ -12,7 +12,15 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ThemeSwitchToggle } from '../theme-switch-toggle';
-import { formatHoursLabel, formatPlatformLabel, MenuBusinessHour, MenuData, MenuSocialLink } from './menu-types';
+import {
+  formatHoursLabel,
+  formatMenuEyebrow,
+  formatMenuLocation,
+  formatPlatformLabel,
+  MenuBusinessHour,
+  MenuData,
+  MenuSocialLink,
+} from './menu-types';
 
 interface Props {
   copied: boolean;
@@ -39,6 +47,9 @@ export function MenuDefaultHero({
 }: Props) {
   const todayLabel = new Date().toLocaleDateString('en-US', { weekday: 'long' });
   const todayHours = businessHours.find((entry) => entry.day === todayLabel) || businessHours[0] || null;
+  const eyebrow = formatMenuEyebrow(menu, menu.categories || []);
+  const locationLabel = formatMenuLocation(menu);
+  const primarySocialLink = socialLinks[0] || null;
 
   return (
     <section className="overflow-hidden rounded-[32px] border border-border/70 bg-card">
@@ -66,7 +77,7 @@ export function MenuDefaultHero({
             </div>
             <div className="pt-1">
               <p className="text-xs font-semibold uppercase tracking-[0.24em] text-primary">
-                Wood-fired pizza and handmade pasta
+                {eyebrow}
               </p>
               <h1 className="mt-2 text-4xl font-black leading-none tracking-tight sm:text-6xl">
                 {menu.name}
@@ -98,13 +109,13 @@ export function MenuDefaultHero({
                 <span className="font-medium text-foreground">{menu.email}</span>
               </span>
             ) : null}
-            {menu.address ? (
+            {locationLabel ? (
               <span className="inline-flex items-center justify-between gap-3 rounded-[20px] border bg-background px-4 py-3 text-sm">
                 <span className="inline-flex items-center gap-2">
                   <MapPin className="h-4 w-4" />
                   Visit
                 </span>
-                <span className="font-medium text-foreground">{menu.address}</span>
+                <span className="font-medium text-foreground">{locationLabel}</span>
               </span>
             ) : null}
             {todayHours ? (
@@ -153,14 +164,14 @@ export function MenuDefaultHero({
               <ExternalLink className="h-4 w-4" />
             </a>
           ) : null}
-          {socialLinks[0]?.url ? (
+          {primarySocialLink?.url ? (
             <a
-              href={socialLinks[0].url}
+              href={primarySocialLink.url}
               target="_blank"
               rel="noreferrer"
               className="inline-flex items-center justify-between rounded-[20px] border bg-muted/15 px-4 py-3 text-sm font-medium transition-colors hover:bg-accent/30"
             >
-              Instagram
+              {formatPlatformLabel(primarySocialLink.platform)}
               <ExternalLink className="h-4 w-4" />
             </a>
           ) : null}

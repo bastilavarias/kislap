@@ -69,6 +69,10 @@ export function mapToFormValues(source: APIResponseMenu): MenuFormValues {
     hours_enabled: source.hours_enabled ?? false,
     business_hours: businessHours,
     social_links: socialLinks,
+    gallery_images: (source.gallery_images || []).map((imageURL) => ({
+      image: null,
+      image_url: imageURL || '',
+    })),
     layout_name: source.layout_name || 'menu-default',
     qr_settings: {
       foreground_color: source.qr_settings?.foreground_color || '#111111',

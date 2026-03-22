@@ -18,7 +18,6 @@ import { mapToFormValues } from './menu-form-mapper';
 interface MenuContextType {
   project: APIResponseProject | null;
   formMethods: UseFormReturn<MenuFormValues>;
-  previewValues: MenuFormValues;
   categoriesFieldArray: UseFieldArrayReturn<MenuFormValues, 'categories', 'id'>;
   itemsFieldArray: UseFieldArrayReturn<MenuFormValues, 'items', 'id'>;
   layout: string;
@@ -73,6 +72,7 @@ export function MenuProvider({ children }: { children: ReactNode }) {
       hours_enabled: false,
       business_hours: createDefaultBusinessHours(),
       social_links: createDefaultSocialLinks(),
+      gallery_images: [],
       layout_name: 'menu-default',
       qr_settings: {
         foreground_color: '#111111',
@@ -157,7 +157,6 @@ export function MenuProvider({ children }: { children: ReactNode }) {
       value={{
         project,
         formMethods,
-        previewValues: values,
         categoriesFieldArray,
         itemsFieldArray,
         layout,

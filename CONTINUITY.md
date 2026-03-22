@@ -19,6 +19,8 @@
 - Polished Menu Phase 1 editor UX: removed extra input shadows from business fields and converted menu category/item management to compact sortable lists with add/edit dialogs, matching the Linktree editor pattern more closely. [2026-03-20][CODE]
 - Implemented Menu Phase 2 slice: added opening-hours and social-link editing, upgraded `menu-default` with contact/location/actions + item dialog + category imagery + better empty states, and improved QR/dashboard presentation. [2026-03-20][CODE]
 - Reworked `menu-default` into a hardcoded pizzeria-style scaffold using sample content/image URLs first, and split the template into smaller presentational files so no code file exceeds the 300 LOC cap. [2026-03-20][CODE]
+- Added menu gallery support end-to-end: `gallery_images` persists as JSON on `menus`, the builder now has a multi-image gallery uploader, and `menu-default` renders a gallery section with real-data fallback to sample images. [2026-03-22][CODE]
+- Removed the menu live-preview experiment from the builder route entirely after stale-render drift between preview and public site; menu editor is back to a simpler stable baseline while a better preview design is deferred. [2026-03-22][USER]
 
 ## Decisions
 - D001 ACTIVE: Canonical agent instructions live at `.agents/AGENTS.md`; do not duplicate in root. [2026-03-08][USER]
@@ -46,6 +48,7 @@
 - `apps/web-builder/app/(private)/dashboard/builder/menu/[slug]/components/items-editor.tsx`
 - `apps/web-builder/app/(private)/dashboard/builder/menu/[slug]/components/business-hours-editor.tsx`
 - `apps/web-builder/app/(private)/dashboard/builder/menu/[slug]/components/social-links-editor.tsx`
+- `apps/web-builder/app/(private)/dashboard/builder/menu/[slug]/components/gallery-uploader.tsx`
 - `apps/web-builder/app/(private)/dashboard/builder/menu/[slug]/components/qr-panel.tsx`
 - `apps/web-builder/app/(private)/dashboard/builder/menu/[slug]/components/dashboard.tsx`
 - `apps/web-builder/lib/schemas/menu.ts`
@@ -54,6 +57,7 @@
 - `packages/templates/src/components/menu/menu-default-hero.tsx`
 - `packages/templates/src/components/menu/menu-default-featured-section.tsx`
 - `packages/templates/src/components/menu/menu-default-category-sections.tsx`
+- `packages/templates/src/components/menu/menu-default-gallery-section.tsx`
 - `packages/templates/src/components/menu/menu-default-item-dialog.tsx`
 - `packages/templates/src/components/menu/menu-default-business-panels.tsx`
 - `packages/templates/src/components/menu/menu-default-sample-data.ts`
@@ -79,4 +83,8 @@
 - 2026-03-20 [CODE] Menu design panel now renders two-column visual layout cards, the menu theme tab preserves active light/dark styles when applying presets or editing colors, and the editor renders an ala.menu-style live preview with desktop/tablet/mobile toggles from unsaved form state.
 - 2026-03-20 [TOOL] 
 ext build --turbopack in pps/web-builder is currently blocked by pre-existing unrelated portfolio template imports of @/lib/schemas/appointment, so the latest menu editor changes were verified by targeted inspection but not by a clean full build.
+- 2026-03-22 [CODE] Menu gallery images now use a lightweight JSON-backed persistence model on `menus.gallery_images`, mirroring existing menu JSON fields instead of introducing a new relation/table in Phase 2.
+- 2026-03-22 [TOOL] `go test ./internal/menu ./internal/project`, `npm run build` in `apps/web-builder`, and `npm run build` in `apps/web-sites` all passed after the menu gallery addition.
+- 2026-03-22 [CODE] Deleted `menu-live-preview.tsx` and `menu-preview-mapper.ts`, removed preview dialog/button wiring from menu `form-header.tsx`, and removed preview-related context/layout props from the menu builder.
+- 2026-03-22 [TOOL] `npm run build` passed in `apps/web-builder` after removing the menu live preview feature.
 

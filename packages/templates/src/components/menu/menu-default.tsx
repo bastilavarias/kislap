@@ -5,6 +5,7 @@ import { Mode } from "@/contexts/settings-context";
 import { usePageActivity } from "@/hooks/api/use-page-activity";
 import { MenuDefaultCategorySections } from "./menu-default-category-sections";
 import { MenuDefaultFeaturedSection } from "./menu-default-featured-section";
+import { MenuDefaultGallerySection } from "./menu-default-gallery-section";
 import { MenuDefaultHero } from "./menu-default-hero";
 import { MenuDefaultItemDialog } from "./menu-default-item-dialog";
 import { MENU_DEFAULT_SAMPLE_DATA } from "./menu-default-sample-data";
@@ -18,7 +19,45 @@ interface Props {
 
 export function MenuDefault({ menu, themeMode, onSetThemeMode }: Props) {
   const { trackPageLinkClick } = usePageActivity();
-  const displayMenu = MENU_DEFAULT_SAMPLE_DATA;
+  const sortedCategories = useMemo(
+    () =>
+      [...(menu?.categories || [])].sort(
+        (left, right) => (left.placement_order || 0) - (right.placement_order || 0)
+      ),
+    [menu?.categories]
+  );
+  const sortedItems = useMemo(
+    () =>
+      [...(menu?.items || [])].sort(
+        (left, right) => (left.placement_order || 0) - (right.placement_order || 0)
+      ),
+    [menu?.items]
+  );
+  const displayMenu = useMemo(
+    () => ({
+      ...MENU_DEFAULT_SAMPLE_DATA,
+      ...(menu || {}),
+      business_hours:
+        menu?.business_hours && menu.business_hours.length
+          ? menu.business_hours
+          : MENU_DEFAULT_SAMPLE_DATA.business_hours,
+      social_links:
+        menu?.social_links && menu.social_links.length
+          ? menu.social_links
+          : MENU_DEFAULT_SAMPLE_DATA.social_links,
+      gallery_images:
+        menu?.gallery_images && menu.gallery_images.length
+          ? menu.gallery_images
+          : MENU_DEFAULT_SAMPLE_DATA.gallery_images,
+      categories:
+        sortedCategories.length
+          ? sortedCategories
+          : MENU_DEFAULT_SAMPLE_DATA.categories,
+      items:
+        sortedItems.length ? sortedItems : MENU_DEFAULT_SAMPLE_DATA.items,
+    }),
+    [menu, sortedCategories, sortedItems]
+  );
   const [query, setQuery] = useState("");
   const [copied, setCopied] = useState(false);
   const [activeCategory, setActiveCategory] = useState<number | null>(
@@ -120,6 +159,8 @@ export function MenuDefault({ menu, themeMode, onSetThemeMode }: Props) {
           items={featuredItems}
           onItemClick={(item) => void handleItemClick(item)}
         />
+
+        <MenuDefaultGallerySection images={displayMenu.gallery_images || []} />
 
         <MenuDefaultCategorySections
           activeCategory={activeCategory}

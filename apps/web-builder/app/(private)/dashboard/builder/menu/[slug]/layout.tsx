@@ -9,9 +9,6 @@ import { MenuProvider, useMenuBuilder } from './components/menu-provider';
 function BuilderLayoutContent({ children }: { children: ReactNode }) {
   const {
     project,
-    previewValues,
-    layout,
-    localThemeSettings,
     save,
     publish,
     isLoading,
@@ -38,9 +35,6 @@ function BuilderLayoutContent({ children }: { children: ReactNode }) {
       <div className="flex flex-col gap-10">
         <FormHeader
           project={project}
-          previewValues={previewValues}
-          layout={layout}
-          themeSettings={localThemeSettings}
           onSave={save}
           onPublish={publish}
           hasContent={hasContent}

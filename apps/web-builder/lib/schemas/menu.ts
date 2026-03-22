@@ -63,6 +63,14 @@ export const menuFormSchema = z.object({
       })
     )
     .default(createDefaultSocialLinks()),
+  gallery_images: z
+    .array(
+      z.object({
+        image: z.any().optional().nullable(),
+        image_url: z.string().optional().nullable(),
+      })
+    )
+    .default([]),
   layout_name: z.string().default('menu-default'),
   qr_settings: z.object({
     foreground_color: z.string().default('#111111'),

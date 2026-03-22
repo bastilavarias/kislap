@@ -8,7 +8,6 @@ import {
   CheckCircle2,
   Edit,
   ExternalLink,
-  Eye,
   LayoutDashboard,
   MoreHorizontal,
   PenTool,
@@ -31,13 +30,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -50,16 +42,10 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Settings } from '@/contexts/settings-context';
-import { MenuFormValues } from '@/lib/schemas/menu';
-import { MenuLivePreview } from './menu-live-preview';
 
 interface Props {
   error?: string;
   project: APIResponseProject | null;
-  previewValues: MenuFormValues;
-  layout: string;
-  themeSettings: Settings | null;
   hasContent: boolean;
   hasCategories: boolean;
   hasItems: boolean;
@@ -86,9 +72,6 @@ function RequirementItem({ label, met }: { label: string; met: boolean }) {
 
 export function FormHeader({
   project,
-  previewValues,
-  layout,
-  themeSettings,
   onSave,
   error,
   onPublish,
@@ -102,7 +85,6 @@ export function FormHeader({
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isSaveConfirmOpen, setIsSaveConfirmOpen] = useState(false);
   const [isPublishConfirmOpen, setIsPublishConfirmOpen] = useState(false);
-  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const isPublished = useMemo(() => project?.published, [project?.published]);
   const isEditPage = pathname.endsWith('/edit');
   const isReadyToPublish = hasContent && hasCategories && hasItems && hasLayout && hasTheme;
@@ -177,12 +159,6 @@ export function FormHeader({
               </div>
 
               <div className="flex items-center gap-2 md:hidden">
-                {isEditPage ? (
-                  <Button size="sm" variant="outline" onClick={() => setIsPreviewOpen(true)}>
-                    <Eye className="mr-2 h-4 w-4" />
-                    Preview
-                  </Button>
-                ) : null}
                 <Button size="sm" variant="outline" onClick={() => setIsSaveConfirmOpen(true)}>
                   Save
                 </Button>
@@ -247,12 +223,6 @@ export function FormHeader({
             </div>
 
             <div className="hidden items-center gap-2 md:flex">
-              {isEditPage ? (
-                <Button variant="outline" size="sm" onClick={() => setIsPreviewOpen(true)}>
-                  <Eye className="mr-2 h-4 w-4" />
-                  Live Preview
-                </Button>
-              ) : null}
               <Button variant="outline" size="sm" onClick={() => setIsSaveConfirmOpen(true)}>
                 <Save className="mr-2 h-4 w-4" />
                 Save
@@ -292,24 +262,6 @@ export function FormHeader({
         onOpenChange={setIsDialogOpen}
         replaceURL={true}
       />
-
-      <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
-        <DialogContent className="max-h-[92vh] overflow-hidden p-0 sm:max-w-[95vw]">
-          <DialogHeader className="border-b px-6 py-5">
-            <DialogTitle className="text-xl font-bold">Live Preview</DialogTitle>
-            <DialogDescription>
-              Preview the current menu layout without leaving the editor.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="max-h-[calc(92vh-88px)] overflow-y-auto p-6">
-            <MenuLivePreview
-              project={project}
-              values={previewValues}
-              themeSettings={themeSettings}
-            />
-          </div>
-        </DialogContent>
-      </Dialog>
 
       <AlertDialog open={isSaveConfirmOpen} onOpenChange={setIsSaveConfirmOpen}>
         <AlertDialogContent>

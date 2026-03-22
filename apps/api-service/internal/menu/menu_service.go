@@ -46,6 +46,10 @@ func (s *Service) Save(payload Payload) (*models.Menu, error) {
 	qrRaw := marshalJSON(payload.QRSettings)
 	hoursRaw := marshalJSON(payload.BusinessHours)
 	socialRaw := marshalJSON(payload.SocialLinks)
+	galleryRaw, err := s.resolveGalleryImages(payload.GalleryImages, payload.ProjectID)
+	if err != nil {
+		return nil, err
+	}
 
 	menu.Name = payload.Name
 	menu.Description = payload.Description
@@ -66,6 +70,7 @@ func (s *Service) Save(payload Payload) (*models.Menu, error) {
 	menu.HoursEnabled = payload.HoursEnabled
 	menu.BusinessHours = hoursRaw
 	menu.SocialLinks = socialRaw
+	menu.GalleryImages = galleryRaw
 
 	if payload.Logo != nil {
 		logoURL, err := s.uploadFile(payload.Logo, payload.ProjectID, "logo")
@@ -138,4 +143,35 @@ func (s *Service) uploadFile(file *multipart.FileHeader, projectID int64, folder
 		return "", fmt.Errorf("storage upload failed: %w", err)
 	}
 	return url, nil
+}
+
+func (s *Service) resolveGalleryImages(
+	requests []GalleryImageRequest,
+	projectID int64,
+) (*json.RawMessage, error) {
+	if len(requests) == 0 {
+		return nil, nil
+	}
+
+	images := make([]string, 0, len(requests))
+	for _, request := range requests {
+		if request.Image != nil {
+			url, err := s.uploadFile(request.Image, projectID, "gallery")
+			if err != nil {
+				return nil, err
+			}
+			images = append(images, url)
+			continue
+		}
+
+		if request.ImageURL != nil && *request.ImageURL != "" {
+			images = append(images, *request.ImageURL)
+		}
+	}
+
+	if len(images) == 0 {
+		return nil, nil
+	}
+
+	return marshalJSON(images), nil
 }

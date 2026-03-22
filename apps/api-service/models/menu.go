@@ -33,6 +33,7 @@ type Menu struct {
 	HoursEnabled  bool             `gorm:"column:hours_enabled;default:false" json:"hours_enabled"`
 	BusinessHours *json.RawMessage `gorm:"column:business_hours;type:json" json:"business_hours"`
 	SocialLinks   *json.RawMessage `gorm:"column:social_links;type:json" json:"social_links"`
+	GalleryImages *json.RawMessage `gorm:"column:gallery_images;type:json" json:"gallery_images"`
 
 	Categories []MenuCategory `gorm:"foreignKey:MenuID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"categories"`
 	Items      []MenuItem     `gorm:"foreignKey:MenuID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"items"`

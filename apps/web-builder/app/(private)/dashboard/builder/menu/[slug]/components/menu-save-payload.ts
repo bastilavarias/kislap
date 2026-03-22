@@ -36,6 +36,9 @@ export function buildMenuSaveFormData(
     qr_settings: values.qr_settings,
     business_hours: values.business_hours,
     social_links: values.social_links.filter((link) => link.url?.trim()),
+    gallery_images: values.gallery_images.map((image) => ({
+      image_url: image.image ? null : image.image_url || null,
+    })),
     categories: values.categories.map((category, index) => ({
       id: category.id || null,
       client_key: category.client_key,
@@ -73,6 +76,12 @@ export function buildMenuSaveFormData(
   values.items.forEach((item, index) => {
     if (item.image instanceof File) {
       formData.append(`items[${index}].image`, item.image);
+    }
+  });
+
+  values.gallery_images.forEach((image, index) => {
+    if (image.image instanceof File) {
+      formData.append(`gallery_images[${index}].image`, image.image);
     }
   });
 

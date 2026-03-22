@@ -497,6 +497,7 @@ export interface APIResponseMenu {
   hours_enabled: boolean;
   business_hours?: APIResponseMenuBusinessHour[] | null;
   social_links?: APIResponseMenuSocialLink[] | null;
+  gallery_images?: string[] | null;
   categories: APIResponseMenuCategory[];
   items: APIResponseMenuItem[];
   user?: APIResponseUser;
