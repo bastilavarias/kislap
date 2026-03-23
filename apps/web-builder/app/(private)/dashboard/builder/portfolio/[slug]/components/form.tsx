@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
@@ -36,7 +36,7 @@ import {
   Twitter,
 } from 'lucide-react';
 import ThemeControlPanel from '@/components/customizer/theme-control-panel';
-import { FileParserDialog } from '@/app/(private)/dashboard/builder/portfolio/[slug]/components/file-parser-dialog';
+import { ParsedFileDialog } from '@/components/parsed-file-dialog';
 import { PortfolioFormValues } from '@/lib/schemas/portfolio';
 import { UseFormReturn, UseFieldArrayReturn } from 'react-hook-form';
 import {
@@ -84,12 +84,9 @@ interface Props {
   educationFieldArray: UseFieldArrayReturn<PortfolioFormValues, 'education', 'id'>;
   showcaseFieldArray: UseFieldArrayReturn<PortfolioFormValues, 'showcases', 'id'>;
   skillFieldArray: UseFieldArrayReturn<PortfolioFormValues, 'skills', 'id'>;
-  files: File[] | [];
-  setFiles: React.Dispatch<React.SetStateAction<File[] | []>>;
-  isFileUploadDialogOpen: boolean;
-  setIsFileUploadDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  isFileProcessing: boolean;
-  fileProcessingError: string;
+  isParserOpen: boolean;
+  setIsParserOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  applyParsedResume: (data: Record<string, any>) => void;
 
   localThemeSettings: Settings | null;
   setLocalThemeSettings: React.Dispatch<React.SetStateAction<Settings | null>>;
@@ -102,7 +99,6 @@ interface Props {
   onAddShowcase: () => void;
   onAddTechnologyToShowcase: (index: number, name: string) => void;
   onRemoveTechnologyFromShowcase: (showcaseIndex: number, technologyIndex: number) => void;
-  onProcessResumeFile: () => Promise<void>;
 }
 
 function AddItemDialog({
@@ -285,13 +281,9 @@ export function Form({
   onAddShowcase,
   onAddTechnologyToShowcase,
   onRemoveTechnologyFromShowcase,
-  files,
-  setFiles,
-  isFileUploadDialogOpen,
-  setIsFileUploadDialogOpen,
-  isFileProcessing,
-  fileProcessingError,
-  onProcessResumeFile,
+  isParserOpen,
+  setIsParserOpen,
+  applyParsedResume,
   localThemeSettings,
   setLocalThemeSettings,
   layout,
@@ -351,9 +343,9 @@ export function Form({
                   bg-gradient-to-r from-blue-500 to-purple-500 
                   hover:from-blue-600 hover:to-purple-600 
                   text-white border-0 transition-all"
-                  onClick={() => setIsFileUploadDialogOpen(true)}
+                  onClick={() => setIsParserOpen(true)}
                 >
-                  🤖 Parse Resume
+                  Parse Resume
                 </Button>
               </div>
 
@@ -935,15 +927,16 @@ export function Form({
         </Sheet>
       </div>
 
-      <FileParserDialog
-        onProcess={onProcessResumeFile}
-        files={files}
-        onChangeFiles={setFiles}
-        loading={isFileProcessing}
-        open={isFileUploadDialogOpen}
-        onOpenChange={setIsFileUploadDialogOpen}
-        error={fileProcessingError}
+      <ParsedFileDialog
+        open={isParserOpen}
+        onOpenChange={setIsParserOpen}
+        projectType="portfolio"
+        sourceType="resume"
+        title="Resume Parser"
+        description="Upload a resume and reuse parsed results anytime."
+        onApplyParsedData={applyParsedResume}
       />
     </div>
   );
 }
+

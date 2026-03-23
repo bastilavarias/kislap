@@ -6,10 +6,12 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
 import { Palette, Store, Tags, UtensilsCrossed } from 'lucide-react';
 import { Settings } from '@/contexts/settings-context';
 import { APIResponseProject } from '@/types/api-response';
 import { MenuFormValues } from '@/lib/schemas/menu';
+import { ParsedFileDialog } from '@/components/parsed-file-dialog';
 import { BusinessHoursEditor } from './business-hours-editor';
 import { CategoriesEditor } from './categories-editor';
 import { DesignPanel } from './design-panel';
@@ -27,6 +29,9 @@ interface Props {
   layout: string;
   setLayout: (layout: string) => void;
   project: APIResponseProject | null;
+  isParserOpen: boolean;
+  setIsParserOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  applyParsedMenu: (data: Record<string, any>) => void;
 }
 
 export function Form({
@@ -38,6 +43,9 @@ export function Form({
   layout,
   setLayout,
   project,
+  isParserOpen,
+  setIsParserOpen,
+  applyParsedMenu,
 }: Props) {
   const { register, watch, setValue } = formMethods;
 
@@ -62,6 +70,26 @@ export function Form({
             <div className="mb-6 flex items-center gap-2">
               <UtensilsCrossed className="h-6 w-6" />
               <h1 className="text-2xl font-bold">Menu Editor</h1>
+            </div>
+
+            <div className="flex items-center justify-between rounded-xl border bg-muted/20 p-4">
+              <div>
+                <h3 className="text-sm font-semibold">Menu Parser</h3>
+                <p className="text-xs text-muted-foreground">
+                  Upload a menu PDF to prefill your categories and items.
+                </p>
+              </div>
+              <Button
+                type="button"
+                onClick={() => setIsParserOpen(true)}
+                className="shadow-none flex items-center gap-2
+                bg-gradient-to-r from-amber-500 to-rose-500 
+                hover:from-amber-600 hover:to-rose-600 
+                text-white border-0 transition-all"
+                size="sm"
+              >
+                Parse Menus
+              </Button>
             </div>
 
             <div className="flex flex-col gap-8">
@@ -230,6 +258,17 @@ export function Form({
           />
         </div>
       </div>
+
+      <ParsedFileDialog
+        open={isParserOpen}
+        onOpenChange={setIsParserOpen}
+        projectType="menu"
+        sourceType="menu"
+        title="Menu Parser"
+        description="Upload menu PDFs and reuse parsed results anytime."
+        maxFiles={5}
+        onApplyParsedData={applyParsedMenu}
+      />
     </div>
   );
 }

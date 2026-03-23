@@ -16,6 +16,9 @@ export default function MenuEditPage() {
       localThemeSettings={builder.localThemeSettings}
       setLocalThemeSettings={builder.setLocalThemeSettings}
       project={builder.project}
+      isParserOpen={builder.isParserOpen}
+      setIsParserOpen={builder.setIsParserOpen}
+      applyParsedMenu={builder.applyParsedMenu}
     />
   );
 }

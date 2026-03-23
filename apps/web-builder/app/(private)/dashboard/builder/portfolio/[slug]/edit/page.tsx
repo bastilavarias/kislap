@@ -20,13 +20,9 @@ export default function PortfolioEditPage() {
       onAddShowcase={builder.onAddShowcase}
       onAddTechnologyToShowcase={builder.onAddTechnologyToShowcase}
       onRemoveTechnologyFromShowcase={builder.onRemoveTechnologyFromShowcase}
-      files={builder.files}
-      setFiles={builder.setFiles}
-      isFileUploadDialogOpen={builder.isFileUploadDialogOpen}
-      setIsFileUploadDialogOpen={builder.setIsFileUploadDialogOpen}
-      isFileProcessing={builder.isFileProcessing}
-      fileProcessingError={builder.fileProcessingError}
-      onProcessResumeFile={builder.processResumeFile}
+      isParserOpen={builder.isParserOpen}
+      setIsParserOpen={builder.setIsParserOpen}
+      applyParsedResume={builder.applyParsedResume}
       localThemeSettings={builder.localThemeSettings}
       setLocalThemeSettings={builder.setLocalThemeSettings}
     />

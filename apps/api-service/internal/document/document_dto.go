@@ -6,15 +6,25 @@ type ParseDocumentRequest struct {
 	Type string `form:"type" binding:"required"`
 }
 
-type Payload struct {
-	Type string
-	File io.Reader
+type FilePayload struct {
+	Name string
+	File io.ReadSeeker
 }
 
-func (request ParseDocumentRequest) ToServicePayload(file io.Reader) Payload {
+type Payload struct {
+	Type  string
+	Files []FilePayload
+}
+
+func (request ParseDocumentRequest) ToServicePayload(file io.ReadSeeker, fileName string) Payload {
 	return Payload{
 		Type: request.Type,
-		File: file,
+		Files: []FilePayload{
+			{
+				Name: fileName,
+				File: file,
+			},
+		},
 	}
 }
 
@@ -60,4 +70,28 @@ type PortfolioResponse struct {
 			Name string `json:"name"`
 		} `json:"technologies"`
 	} `json:"showcases"`
+}
+
+type MenuResponse struct {
+	Name          *string `json:"name"`
+	Description   *string `json:"description"`
+	Phone         *string `json:"phone"`
+	Email         *string `json:"email"`
+	WebsiteURL    *string `json:"website_url"`
+	WhatsApp      *string `json:"whatsapp"`
+	Address       *string `json:"address"`
+	City          *string `json:"city"`
+	Country       *string `json:"country"`
+	GoogleMapsURL *string `json:"google_maps_url"`
+	Currency      *string `json:"currency"`
+	Categories    []struct {
+		Name        string  `json:"name"`
+		Description *string `json:"description"`
+		Items       []struct {
+			Name        string  `json:"name"`
+			Description *string `json:"description"`
+			Price       *string `json:"price"`
+			Badge       *string `json:"badge"`
+		} `json:"items"`
+	} `json:"categories"`
 }

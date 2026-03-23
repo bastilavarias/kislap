@@ -7,6 +7,7 @@ import (
 	"flash/internal/document"
 	"flash/internal/linktree"
 	"flash/internal/menu"
+	"flash/internal/parsed_file"
 	"flash/internal/page_activity"
 	"flash/internal/portfolio"
 	"flash/internal/project"
@@ -32,6 +33,8 @@ func RegisterRoutes(router *gin.Engine, db *gorm.DB, llm llm.Provider, objectSto
 		userController := user.NewController(db)
 		projectController := project.NewController(db, objectStorage)
 		documentController := document.NewController(db, llm, objectStorage)
+		parsedFileService := parsed_file.NewService(db, documentController.Service)
+		parsedFileController := parsed_file.NewController(parsedFileService)
 		portfolioController := portfolio.NewController(db, objectStorage)
 		appointmentController := appointment.NewController(db)
 		pageActivityController := page_activity.NewController(db)
@@ -62,6 +65,8 @@ func RegisterRoutes(router *gin.Engine, db *gorm.DB, llm llm.Provider, objectSto
 		api.DELETE("/projects/:id", middleware.AccessTokenValidatorMiddleware(db), projectController.Delete)
 
 		api.POST("/documents", middleware.AccessTokenValidatorMiddleware(db), documentController.Parse)
+		api.GET("/parsed-files", middleware.AccessTokenValidatorMiddleware(db), parsedFileController.List)
+		api.POST("/parsed-files", middleware.AccessTokenValidatorMiddleware(db), parsedFileController.Create)
 
 		// Portfolio
 		api.GET("/portfolios/:id", middleware.AccessTokenValidatorMiddleware(db), portfolioController.Get)

@@ -96,3 +96,107 @@ export function mapToFormValues(source: APIResponseMenu): MenuFormValues {
     })),
   };
 }
+
+interface ParsedMenuCategory {
+  name: string;
+  description?: string | null;
+  items?: ParsedMenuItem[];
+}
+
+interface ParsedMenuItem {
+  name: string;
+  description?: string | null;
+  price?: string | null;
+  badge?: string | null;
+}
+
+interface ParsedMenuResponse {
+  name?: string | null;
+  description?: string | null;
+  phone?: string | null;
+  email?: string | null;
+  website_url?: string | null;
+  whatsapp?: string | null;
+  address?: string | null;
+  city?: string | null;
+  country?: string | null;
+  google_maps_url?: string | null;
+  currency?: string | null;
+  categories?: ParsedMenuCategory[];
+}
+
+export function mapParsedMenuToFormValues(
+  source: ParsedMenuResponse,
+  current?: MenuFormValues
+): MenuFormValues {
+  const baseHours = current?.business_hours ?? createDefaultBusinessHours();
+  const baseSocials = current?.social_links ?? createDefaultSocialLinks();
+  const baseGallery = current?.gallery_images ?? [];
+  const layoutName = current?.layout_name ?? 'menu-default';
+  const qrSettings = current?.qr_settings ?? {
+    foreground_color: '#111111',
+    background_color: '#ffffff',
+    show_logo: false,
+  };
+
+  const categories = (source.categories || []).map((category, index) => ({
+    id: undefined,
+    client_key: createKey(index),
+    name: category.name || '',
+    description: category.description || '',
+    image: null,
+    image_url: '',
+    placement_order: index,
+    is_visible: true,
+  }));
+
+  const categoryKeyByIndex = new Map<number, string>();
+  categories.forEach((category, index) => {
+    categoryKeyByIndex.set(index, category.client_key);
+  });
+
+  const items = (source.categories || []).flatMap((category, categoryIndex) => {
+    const itemsList = category.items || [];
+    return itemsList.map((item, index) => ({
+      id: undefined,
+      category_id: undefined,
+      category_key: categoryKeyByIndex.get(categoryIndex) || null,
+      name: item.name || '',
+      description: item.description || '',
+      image: null,
+      image_url: '',
+      badge: item.badge || '',
+      price: item.price || '',
+      placement_order: index,
+      is_available: true,
+      is_featured: false,
+    }));
+  });
+
+  return {
+    name: source.name || current?.name || '',
+    description: source.description || current?.description || '',
+    logo: current?.logo || null,
+    logo_url: current?.logo_url || '',
+    cover_image: current?.cover_image || null,
+    cover_image_url: current?.cover_image_url || '',
+    phone: source.phone || current?.phone || '',
+    email: source.email || current?.email || '',
+    website_url: source.website_url || current?.website_url || '',
+    whatsapp: source.whatsapp || current?.whatsapp || '',
+    address: source.address || current?.address || '',
+    city: source.city || current?.city || '',
+    country: source.country || current?.country || '',
+    google_maps_url: source.google_maps_url || current?.google_maps_url || '',
+    currency: source.currency || current?.currency || 'PHP',
+    search_enabled: current?.search_enabled ?? true,
+    hours_enabled: current?.hours_enabled ?? false,
+    business_hours: baseHours,
+    social_links: baseSocials,
+    gallery_images: baseGallery,
+    layout_name: layoutName,
+    qr_settings: qrSettings,
+    categories,
+    items,
+  };
+}

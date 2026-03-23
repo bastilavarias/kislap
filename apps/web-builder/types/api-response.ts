@@ -48,6 +48,23 @@ export interface APIResponseDocumentResume {
   }[];
 }
 
+export interface APIResponseParsedFile {
+  id: number;
+  user_id: number;
+  project_type: string;
+  source_type: string;
+  source_name: string;
+  status: string;
+  parsed_data: Record<string, any> | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface APIResponseParsedFilesList {
+  data: APIResponseParsedFile[];
+  meta: APIResponsePaginationMeta;
+}
+
 interface APIResponseThemeStyles {
   card: string;
   ring: string;

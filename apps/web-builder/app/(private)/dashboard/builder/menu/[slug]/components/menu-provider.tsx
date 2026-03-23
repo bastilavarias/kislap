@@ -13,7 +13,7 @@ import { createDefaultBusinessHours, createDefaultSocialLinks } from '@/lib/menu
 import { MenuFormValues, menuFormSchema } from '@/lib/schemas/menu';
 import { APIResponseProject } from '@/types/api-response';
 import { buildMenuSaveFormData } from './menu-save-payload';
-import { mapToFormValues } from './menu-form-mapper';
+import { mapParsedMenuToFormValues, mapToFormValues } from './menu-form-mapper';
 
 interface MenuContextType {
   project: APIResponseProject | null;
@@ -27,6 +27,9 @@ interface MenuContextType {
   setLocalThemeSettings: React.Dispatch<React.SetStateAction<Settings | null>>;
   save: () => Promise<void>;
   publish: (isPublished: boolean) => Promise<void>;
+  isParserOpen: boolean;
+  setIsParserOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  applyParsedMenu: (data: Record<string, any>) => void;
   hasContent: boolean;
   hasCategories: boolean;
   hasItems: boolean;
@@ -47,6 +50,7 @@ export function MenuProvider({ children }: { children: ReactNode }) {
   const [layout, setLayout] = useState('menu-default');
   const [menuID, setMenuID] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isParserOpen, setIsParserOpen] = useState(false);
   const loadedSlugRef = useRef<string | null>(null);
   const isLoadingSlugRef = useRef<string | null>(null);
 
@@ -146,6 +150,13 @@ export function MenuProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const applyParsedMenu = (data: Record<string, any>) => {
+    const current = formMethods.getValues();
+    const mapped = mapParsedMenuToFormValues(data, current);
+    reset(mapped);
+    toast.success('Menu parsed!');
+  };
+
   const hasContent = useMemo(() => !!values.name?.trim(), [values.name]);
   const hasCategories = useMemo(() => (values.categories?.length ?? 0) > 0, [values.categories]);
   const hasItems = useMemo(() => (values.items?.length ?? 0) > 0, [values.items]);
@@ -166,6 +177,9 @@ export function MenuProvider({ children }: { children: ReactNode }) {
         setLocalThemeSettings,
         save,
         publish,
+        isParserOpen,
+        setIsParserOpen,
+        applyParsedMenu,
         hasContent,
         hasCategories,
         hasItems,

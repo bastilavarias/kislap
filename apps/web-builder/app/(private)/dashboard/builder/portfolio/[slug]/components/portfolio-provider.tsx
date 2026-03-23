@@ -6,12 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { PortfolioFormValues, PortfolioSchema } from '@/lib/schemas/portfolio';
 import { useProject } from '@/hooks/api/use-project';
 import { usePortfolio } from '@/hooks/api/use-portfolio';
-import { useDocument } from '@/hooks/api/use-document';
-import {
-  APIResponseDocumentResume,
-  APIResponsePortfolio,
-  APIResponseProject,
-} from '@/types/api-response';
+import { APIResponseDocumentResume, APIResponsePortfolio, APIResponseProject } from '@/types/api-response';
 import { useParams } from 'next/navigation';
 import { toast } from 'sonner';
 import { Settings } from '@/contexts/settings-context';
@@ -38,12 +33,9 @@ interface PortfolioContextType {
   save: () => Promise<void>;
   publish: (isPublished: boolean) => Promise<void>;
 
-  files: File[];
-  setFiles: React.Dispatch<React.SetStateAction<File[]>>;
-  isFileUploadDialogOpen: boolean;
-  setIsFileUploadDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  isFileProcessing: boolean;
-  fileProcessingError: string;
+  isParserOpen: boolean;
+  setIsParserOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  applyParsedResume: (data: Record<string, any>) => void;
   hasContent: boolean;
   hasContentWorkExperience: boolean;
   hasContentEducation: boolean;
@@ -58,7 +50,6 @@ interface PortfolioContextType {
   onAddTechnologyToShowcase: (index: number, name: string) => void;
   onRemoveTechnologyFromShowcase: (showcaseIndex: number, technologyIndex: number) => void;
 
-  processResumeFile: () => Promise<void>;
 }
 
 const PortfolioContext = createContext<PortfolioContextType | undefined>(undefined);
@@ -127,15 +118,11 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [portfolioID, setPortfolioID] = useState(null);
 
-  const [files, setFiles] = useState<File[]>([]);
-  const [isFileUploadDialogOpen, setIsFileUploadDialogOpen] = useState(false);
-  const [isFileProcessing, setIsFileProcessing] = useState(false);
-  const [fileProcessingError, setFileProcessingError] = useState('');
+  const [isParserOpen, setIsParserOpen] = useState(false);
 
   const { authUser } = useAuthContext();
   const { getBySlug, publish: apiPublish } = useProject();
   const { create } = usePortfolio();
-  const { parse } = useDocument();
 
   const formMethods = useForm<PortfolioFormValues>({
     resolver: zodResolver(PortfolioSchema),
@@ -244,19 +231,10 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
     setIsPublishing(false);
   };
 
-  const processResumeFile = async () => {
-    setIsFileProcessing(true);
-    const { success, data, message } = await parse(files[0], 'resume');
-    if (success && data) {
-      const mapped = mapToFormValues(data);
-      Object.entries(mapped).forEach(([key, val]) => setValue(key as any, val));
-      toast.success('Resume parsed!');
-      setIsFileUploadDialogOpen(false);
-      setFiles([]);
-    } else {
-      setFileProcessingError(message);
-    }
-    setIsFileProcessing(false);
+  const applyParsedResume = (data: Record<string, any>) => {
+    const mapped = mapToFormValues(data as APIResponseDocumentResume);
+    Object.entries(mapped).forEach(([key, val]) => setValue(key as any, val));
+    toast.success('Resume parsed!');
   };
 
   const onAddWorkExperience = () =>
@@ -339,12 +317,9 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
         setLocalThemeSettings,
         save,
         publish,
-        files,
-        setFiles,
-        isFileUploadDialogOpen,
-        setIsFileUploadDialogOpen,
-        isFileProcessing,
-        fileProcessingError,
+        isParserOpen,
+        setIsParserOpen,
+        applyParsedResume,
         hasContent,
         hasContentWorkExperience,
         hasContentEducation,
@@ -357,7 +332,6 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
         onAddShowcase,
         onAddTechnologyToShowcase,
         onRemoveTechnologyFromShowcase,
-        processResumeFile,
       }}
     >
       {children}
