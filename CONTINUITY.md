@@ -4,8 +4,9 @@
 - Goal: Advance `menu` from a working Phase 1 into a stronger Phase 2 product without adding ordering yet. [2026-03-20][USER]
 - Success criteria: menu builder exposes richer business data, the public menu feels more polished and interactive, QR UX is cleaner, and analytics presentation improves while staying within Kislap's current project-type structure. [2026-03-20][USER]
 - Now: Menu Phase 2 slice is implemented: builder supports opening hours and social/review links, the public menu template has stronger business presentation plus an item detail dialog, QR has presets/copy feedback, and the menu dashboard includes lightweight activity charts. [2026-03-20][CODE]
-- Next: Visually QA the hardcoded pizzeria-style `menu-default` scaffold in `web-sites`, then map real menu data into that structure in a follow-up pass. [2026-03-20][ASSUMPTION]
+- Next: Continue menu polish with three follow-ups: unify the footer across templates, add more `menu` templates, and reorganize the menu builder form for clearer editing flow. [2026-03-28][USER]
 - Open questions: Variants/add-ons, advanced QR styling beyond presets, ordering, reviews collection, history restore, multilingual, and additional menu templates remain deferred. [2026-03-20][USER]
+- Open questions: Best shared footer pattern across portfolio/linktree/menu, which menu template variants should come first after `menu-default`, and how far the menu form reorg should go beyond section/order cleanup. [2026-03-28][USER]
 - Now: Menu design polish is underway: layout cards now support visual thumbnails, theme preset/light-dark handling was corrected in the stateless customizer path, and the menu editor now includes an in-page live preview with desktop/tablet/mobile toggles inspired by la.menu. [2026-03-20][CODE]
 
 ## Done (recent)

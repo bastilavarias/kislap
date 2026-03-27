@@ -3,8 +3,9 @@
 import React from "react";
 import { Mode } from "@/contexts/settings-context";
 import { FaFacebookF, FaInstagram, FaTiktok, FaWhatsapp } from "react-icons/fa6";
-import { Globe, Mail, MapPin, Phone } from "lucide-react";
+import { Globe, Mail, MapPin, Phone, Share2 } from "lucide-react";
 import { ThemeStyles } from "@/types/theme";
+import { ThemeSwitchToggle } from "../theme-switch-toggle";
 import {
   formatHoursLabel,
   formatMenuLocation,
@@ -395,7 +396,8 @@ function MenuSection({
   );
 }
 
-export function MenuDefault({ menu, themeMode, themeStyles }: Props) {
+export function MenuDefault({ menu, themeMode, themeStyles, onSetThemeMode }: Props) {
+  const [shareLabel, setShareLabel] = React.useState("Share");
   const source = menu && (menu.categories?.length || menu.items?.length) ? menu : FALLBACK_MENU;
   const categories = getVisibleCategories(source);
   const location = formatMenuLocation(source).replace(/,\s*,/g, ",");
@@ -417,9 +419,33 @@ export function MenuDefault({ menu, themeMode, themeStyles }: Props) {
   const headerLinks = getHeaderLinks(source);
   const headerDetails = getHeaderDetails(source);
   const headerMeta = [
-    showHeaderHours ? `Store Hours: ${headerHours}` : null,
-    source.currency?.trim() ? `Currency: ${source.currency.trim()}` : null,
-  ].filter(Boolean) as string[];
+    showHeaderHours
+      ? { key: "hours", label: "Store Hours", value: headerHours }
+      : null,
+    source.currency?.trim()
+      ? { key: "currency", label: "Currency", value: source.currency.trim() }
+      : null,
+  ].filter(Boolean) as { key: string; label: string; value: string }[];
+
+  const handleShare = React.useCallback(async () => {
+    if (typeof window === "undefined") return;
+
+    const url = window.location.href;
+    const title = source.name?.trim() || "Menu";
+
+    try {
+      if (navigator.share) {
+        await navigator.share({ title, url });
+        return;
+      }
+
+      await navigator.clipboard.writeText(url);
+      setShareLabel("Copied");
+      window.setTimeout(() => setShareLabel("Share"), 2000);
+    } catch {
+      setShareLabel("Share");
+    }
+  }, [source.name]);
 
   return (
     <>
@@ -486,6 +512,27 @@ export function MenuDefault({ menu, themeMode, themeStyles }: Props) {
               className="relative overflow-hidden rounded-2xl border"
               style={{ borderColor: "var(--ds-border)" }}
             >
+              <div className="absolute right-3 top-3 z-10 flex items-center gap-2">
+                <ThemeSwitchToggle
+                  isDarkMode={themeMode === "dark"}
+                  onSetThemeMode={onSetThemeMode}
+                />
+                <button
+                  type="button"
+                  onClick={handleShare}
+                  className="inline-flex h-10 items-center gap-2 rounded-full border px-3 text-sm transition-opacity hover:opacity-80"
+                  style={{
+                    borderColor: "var(--ds-border)",
+                    backgroundColor: "color-mix(in srgb, var(--ds-background) 72%, transparent)",
+                    color: "var(--ds-foreground)",
+                    backdropFilter: "blur(10px)",
+                  }}
+                  aria-label="Share menu"
+                >
+                  <Share2 className="h-4 w-4" />
+                  <span className="hidden sm:inline">{shareLabel}</span>
+                </button>
+              </div>
               {coverImage ? (
                 <img
                   src={coverImage}
@@ -553,40 +600,27 @@ export function MenuDefault({ menu, themeMode, themeStyles }: Props) {
                 ) : null}
               </div>
 
-              {headerMeta.length || socials.length ? (
-                <div
-                  className="mt-5 flex w-full max-w-3xl flex-wrap items-center justify-center gap-x-5 gap-y-3 text-sm"
-                  style={{ color: "var(--ds-muted)" }}
-                >
+              {headerMeta.length ? (
+                <div className="mt-5 flex w-full max-w-2xl flex-wrap items-center justify-center gap-x-8 gap-y-3">
                   {headerMeta.map((entry) => (
-                    <div key={entry} className="flex items-center justify-center gap-2">
-                      <span>{entry}</span>
-                    </div>
-                  ))}
-                  {socials.map((social) => {
-                    const meta = getSocialMeta(social.platform);
-                    return (
-                      <a
-                        key={`${social.platform}-${social.url}-header`}
-                        href={social.url || "#"}
-                        className="inline-flex items-center gap-2 transition-opacity hover:opacity-80"
-                        target="_blank"
-                        rel="noreferrer"
+                    <div key={entry.key} className="text-center">
+                      <div
+                        className="text-[11px] uppercase tracking-[0.18em]"
                         style={{ color: "var(--ds-muted)" }}
                       >
-                        <span className="inline-flex h-5 w-5 items-center justify-center">{meta.icon}</span>
-                        <span className="hidden text-xs tracking-wide md:inline">
-                          {meta.label}
-                        </span>
-                      </a>
-                    );
-                  })}
+                        {entry.label}
+                      </div>
+                      <div className="mt-1 text-sm font-semibold md:text-base">
+                        {entry.value}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               ) : null}
 
               {headerDetails.length ? (
                 <div
-                  className="mt-3 flex w-full max-w-3xl flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm"
+                  className="mt-4 flex w-full max-w-3xl flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm"
                   style={{ color: "var(--ds-muted)" }}
                 >
                   {headerDetails.map((detail) => (
@@ -598,24 +632,46 @@ export function MenuDefault({ menu, themeMode, themeStyles }: Props) {
                 </div>
               ) : null}
 
+              {socials.length ? (
+                <div
+                  className="mt-4 flex w-full max-w-3xl flex-wrap items-center justify-center gap-3"
+                  style={{ color: "var(--ds-muted)" }}
+                >
+                  {socials.map((social) => {
+                    const meta = getSocialMeta(social.platform);
+                    return (
+                      <a
+                        key={`${social.platform}-${social.url}-header`}
+                        href={social.url || "#"}
+                        className="inline-flex h-9 w-9 items-center justify-center rounded-full border transition-opacity hover:opacity-80"
+                        target="_blank"
+                        rel="noreferrer"
+                        style={{ color: "var(--ds-foreground)", borderColor: "var(--ds-border)" }}
+                        aria-label={meta.label}
+                        title={meta.label}
+                      >
+                        {meta.icon}
+                      </a>
+                    );
+                  })}
+                </div>
+              ) : null}
+
               {headerLinks.length ? (
-                <div className="mt-4 flex w-full max-w-3xl flex-wrap items-center justify-center gap-4 text-sm">
+                <div className="mt-5 flex w-full max-w-3xl flex-wrap items-center justify-center gap-3 text-sm">
                   {headerLinks.map((link) => (
                     <a
                       key={link.key}
                       href={link.href}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-flex items-center gap-2 transition-opacity hover:opacity-80"
+                      className="inline-flex items-center gap-2 rounded-full border px-3 py-2 transition-opacity hover:opacity-80"
                       style={{ color: "var(--ds-foreground)" }}
                     >
-                      <span
-                        className="inline-flex h-8 w-8 items-center justify-center rounded-full border"
-                        style={{ borderColor: "var(--ds-border)" }}
-                      >
+                      <span className="inline-flex h-4 w-4 items-center justify-center">
                         {link.icon}
                       </span>
-                      <span className="text-xs uppercase tracking-[0.18em]">
+                      <span className="text-xs font-medium uppercase tracking-[0.12em]">
                         {link.label}
                       </span>
                     </a>
