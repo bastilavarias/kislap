@@ -7,6 +7,7 @@ import { useParams } from 'next/navigation';
 import { toast } from 'sonner';
 import { Settings } from '@/contexts/settings-context';
 import { useAuthContext } from '@/contexts/auth-context';
+import { defaultThemeState } from '@/config/theme';
 import { useMenu } from '@/hooks/api/use-menu';
 import { useProject } from '@/hooks/api/use-project';
 import { createDefaultBusinessHours, createDefaultSocialLinks } from '@/lib/menu-defaults';
@@ -154,6 +155,44 @@ export function MenuProvider({ children }: { children: ReactNode }) {
     const current = formMethods.getValues();
     const mapped = mapParsedMenuToFormValues(data, current);
     reset(mapped);
+
+    const parsedTheme = data?.parsed_theme?.styles;
+    if (parsedTheme?.light || parsedTheme?.dark || parsedTheme?.css || parsedTheme?.meta) {
+      setLocalThemeSettings((prev) => {
+        const previousMode = prev?.mode || 'light';
+        const previousTheme = prev?.theme || {};
+        const previousStyles = previousTheme.styles || defaultThemeState;
+
+        return {
+          mode: previousMode,
+          theme: {
+            ...previousTheme,
+            preset: 'parsed-menu',
+            styles: {
+              light: {
+                ...defaultThemeState.light,
+                ...(previousStyles.light || {}),
+                ...(parsedTheme.light || {}),
+              },
+              dark: {
+                ...defaultThemeState.dark,
+                ...(previousStyles.dark || {}),
+                ...(parsedTheme.dark || {}),
+              },
+              css: {
+                ...(previousStyles.css || {}),
+                ...(parsedTheme.css || {}),
+              },
+              meta: {
+                ...(previousStyles.meta || {}),
+                ...(parsedTheme.meta || {}),
+              },
+            },
+          },
+        };
+      });
+    }
+
     toast.success('Menu parsed!');
   };
 

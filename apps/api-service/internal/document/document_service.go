@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"net/http"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -42,27 +44,9 @@ func (service Service) ParseForType(payload Payload) (any, error) {
 		return service.parseResume(payload.Files[0])
 	}
 
-	content, err := service.extractContent(payload)
-	if err != nil {
-		return nil, err
-	}
-
-	var generatedPrompt string
 	switch payload.Type {
 	case "menu":
-		generatedPrompt = prompt.MenuToJSON(content)
-	default:
-		return nil, fmt.Errorf("unsupported parser type: %s", payload.Type)
-	}
-
-	aiResp, err := service.LLM.Generate(generatedPrompt, nil)
-	if err != nil || aiResp == "" || aiResp == "null" {
-		return nil, err
-	}
-
-	switch payload.Type {
-	case "menu":
-		return utils.ParseLLMJSON[MenuResponse](aiResp)
+		return service.parseMenu(payload.Files)
 	default:
 		return nil, fmt.Errorf("unsupported parser type: %s", payload.Type)
 	}
@@ -104,6 +88,64 @@ func (service Service) extractContent(payload Payload) (string, error) {
 	}
 
 	return strings.Join(parts, "\n\n---\n\n"), nil
+}
+
+func (service Service) parseMenu(files []FilePayload) (*MenuResponse, error) {
+	content, media, err := service.prepareMenuInputs(files)
+	if err != nil {
+		return nil, err
+	}
+
+	if strings.TrimSpace(content) == "" {
+		content = "No extractable text was available from the uploaded menu. Infer the restaurant details, menu items, and theme from the attached menu visual."
+	}
+
+	generatedPrompt := prompt.MenuToJSON(content)
+	aiResp, err := service.LLM.Generate(generatedPrompt, media)
+	if err != nil || aiResp == "" || aiResp == "null" {
+		return nil, err
+	}
+
+	return utils.ParseLLMJSON[MenuResponse](aiResp)
+}
+
+func (service Service) prepareMenuInputs(files []FilePayload) (string, *llm.Media, error) {
+	if len(files) == 0 {
+		return "", nil, fmt.Errorf("no files provided")
+	}
+
+	parts := make([]string, 0, len(files))
+	var media *llm.Media
+
+	for _, inputFile := range files {
+		if isPDFFile(inputFile.Name) {
+			content, err := service.extractPDFText(inputFile)
+			if err == nil && strings.TrimSpace(content) != "" {
+				parts = append(parts, content)
+			}
+
+			if media == nil {
+				uploadedMedia, uploadErr := service.createMenuPDFPreviewMedia(inputFile)
+				if uploadErr == nil {
+					media = uploadedMedia
+				}
+			}
+			continue
+		}
+
+		if media == nil {
+			uploadedMedia, uploadErr := service.uploadMenuImageMedia(inputFile)
+			if uploadErr == nil {
+				media = uploadedMedia
+			}
+		}
+	}
+
+	if len(parts) == 0 && media == nil {
+		return "", nil, fmt.Errorf("failed to extract parser content")
+	}
+
+	return strings.Join(parts, "\n\n---\n\n"), media, nil
 }
 
 func (service Service) parseResume(inputFile FilePayload) (*PortfolioResponse, error) {
@@ -157,6 +199,54 @@ func (service Service) extractResumeContent(inputFile FilePayload) (string, *llm
 	return "", &llm.Media{URL: uploadedURL}, nil
 }
 
+func (service Service) createMenuPDFPreviewMedia(inputFile FilePayload) (*llm.Media, error) {
+	if err := resetReadSeeker(inputFile.File); err != nil {
+		return nil, err
+	}
+
+	imgReader, err := pdf.ConvertToImage(inputFile.File, 0)
+	if err != nil {
+		return nil, err
+	}
+
+	filename := fmt.Sprintf("menus/%d_preview.png", time.Now().UnixNano())
+	uploadedURL, err := service.ObjectStorage.Upload(filename, imgReader, "image/png")
+	if err != nil {
+		return nil, err
+	}
+
+	return &llm.Media{URL: uploadedURL, MimeType: "image/png"}, nil
+}
+
+func (service Service) uploadMenuImageMedia(inputFile FilePayload) (*llm.Media, error) {
+	if err := resetReadSeeker(inputFile.File); err != nil {
+		return nil, err
+	}
+
+	header := make([]byte, 512)
+	n, err := inputFile.File.Read(header)
+	if err != nil && err != io.EOF {
+		return nil, err
+	}
+	mimeType := http.DetectContentType(header[:n])
+
+	if err := resetReadSeeker(inputFile.File); err != nil {
+		return nil, err
+	}
+
+	extension := filepath.Ext(inputFile.Name)
+	if extension == "" {
+		extension = mimeExtensionFromContentType(mimeType)
+	}
+	filename := fmt.Sprintf("menus/%d%s", time.Now().UnixNano(), extension)
+	uploadedURL, err := service.ObjectStorage.Upload(filename, inputFile.File, mimeType)
+	if err != nil {
+		return nil, err
+	}
+
+	return &llm.Media{URL: uploadedURL, MimeType: mimeType}, nil
+}
+
 func (service Service) extractPDFText(inputFile FilePayload) (string, error) {
 	if err := resetReadSeeker(inputFile.File); err != nil {
 		return "", err
@@ -179,6 +269,23 @@ func resetReadSeeker(seeker io.ReadSeeker) error {
 		return fmt.Errorf("failed to seek file: %w", err)
 	}
 	return nil
+}
+
+func isPDFFile(name string) bool {
+	return strings.EqualFold(filepath.Ext(name), ".pdf")
+}
+
+func mimeExtensionFromContentType(contentType string) string {
+	switch contentType {
+	case "image/png":
+		return ".png"
+	case "image/jpeg":
+		return ".jpg"
+	case "image/webp":
+		return ".webp"
+	default:
+		return ""
+	}
 }
 
 func cloneMultipartFile(file io.Reader) (io.ReadSeeker, error) {

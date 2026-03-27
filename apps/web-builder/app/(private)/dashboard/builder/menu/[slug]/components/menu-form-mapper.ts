@@ -122,6 +122,14 @@ interface ParsedMenuResponse {
   country?: string | null;
   google_maps_url?: string | null;
   currency?: string | null;
+  parsed_theme?: {
+    styles?: {
+      light?: Record<string, string>;
+      dark?: Record<string, string>;
+      css?: Record<string, Record<string, string>>;
+      meta?: Record<string, string>;
+    };
+  } | null;
   categories?: ParsedMenuCategory[];
 }
 

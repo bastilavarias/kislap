@@ -83,7 +83,7 @@ func (controller Controller) Create(context *gin.Context) {
 		return
 	}
 
-	if err := ValidateFilesAsPDFs(files); err != nil {
+	if err := ValidateFilesForSourceType(request.SourceType, files); err != nil {
 		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
 		context.Abort()
 		return

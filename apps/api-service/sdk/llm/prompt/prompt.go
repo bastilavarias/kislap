@@ -159,6 +159,7 @@ func ObjectStorageFileToContent(content string) string {
 const menuToJSONPrompt = `
 You are a parser that converts restaurant or cafe menu text into structured JSON.
 The input may contain one or more menu pages merged together.
+If an image is attached, also analyze the menu's visual style and infer a theme object.
 Return ONLY a single valid JSON object, without explanations, markdown, or comments.
 
 Follow this schema:
@@ -175,6 +176,109 @@ Follow this schema:
   "country": "string",
   "google_maps_url": "string",
   "currency": "string",
+  "parsed_theme": {
+    "source_summary": {
+      "style": "string",
+      "primary_colors": ["string"],
+      "notes": "string"
+    },
+    "styles": {
+      "light": {
+        "background": "string",
+        "foreground": "string",
+        "card": "string",
+        "card-foreground": "string",
+        "popover": "string",
+        "popover-foreground": "string",
+        "primary": "string",
+        "primary-foreground": "string",
+        "secondary": "string",
+        "secondary-foreground": "string",
+        "muted": "string",
+        "muted-foreground": "string",
+        "accent": "string",
+        "accent-foreground": "string",
+        "destructive": "string",
+        "border": "string",
+        "input": "string",
+        "ring": "string",
+        "chart-1": "string",
+        "chart-2": "string",
+        "chart-3": "string",
+        "chart-4": "string",
+        "chart-5": "string",
+        "sidebar": "string",
+        "sidebar-foreground": "string",
+        "sidebar-primary": "string",
+        "sidebar-primary-foreground": "string",
+        "sidebar-accent": "string",
+        "sidebar-accent-foreground": "string",
+        "sidebar-border": "string",
+        "sidebar-ring": "string",
+        "font-sans": "string",
+        "font-serif": "string",
+        "font-mono": "string",
+        "radius": "string",
+        "shadow-color": "string",
+        "shadow-opacity": "string",
+        "shadow-blur": "string",
+        "shadow-spread": "string",
+        "shadow-offset-x": "string",
+        "shadow-offset-y": "string",
+        "letter-spacing": "string",
+        "spacing": "string"
+      },
+      "dark": {
+        "background": "string",
+        "foreground": "string",
+        "card": "string",
+        "card-foreground": "string",
+        "popover": "string",
+        "popover-foreground": "string",
+        "primary": "string",
+        "primary-foreground": "string",
+        "secondary": "string",
+        "secondary-foreground": "string",
+        "muted": "string",
+        "muted-foreground": "string",
+        "accent": "string",
+        "accent-foreground": "string",
+        "destructive": "string",
+        "border": "string",
+        "input": "string",
+        "ring": "string",
+        "chart-1": "string",
+        "chart-2": "string",
+        "chart-3": "string",
+        "chart-4": "string",
+        "chart-5": "string",
+        "sidebar": "string",
+        "sidebar-foreground": "string",
+        "sidebar-primary": "string",
+        "sidebar-primary-foreground": "string",
+        "sidebar-accent": "string",
+        "sidebar-accent-foreground": "string",
+        "sidebar-border": "string",
+        "sidebar-ring": "string",
+        "font-sans": "string",
+        "font-serif": "string",
+        "font-mono": "string",
+        "radius": "string",
+        "shadow-color": "string",
+        "shadow-opacity": "string",
+        "shadow-blur": "string",
+        "shadow-spread": "string",
+        "shadow-offset-x": "string",
+        "shadow-offset-y": "string",
+        "letter-spacing": "string",
+        "spacing": "string"
+      },
+      "css": {},
+      "meta": {
+        "badge": "string"
+      }
+    }
+  },
   "categories": [
     {
       "name": "string",
@@ -196,7 +300,12 @@ Rules:
 - If the business name is obvious, use it.
 - If some fields are not present, return null.
 - Keep prices as strings exactly as they appear when possible.
-- Do not invent social links, opening hours, gallery, or theme data.
+- Do not invent social links, opening hours, or gallery data.
+- For parsed_theme, infer the visual brand direction from the attached menu image if available. If no image is available, infer conservatively from cuisine, wording, and menu structure.
+- Prefer valid CSS color values, ideally oklch(...) for color tokens.
+- Return a complete light theme and a usable dark theme variation.
+- Fonts should be realistic CSS font-family strings, not made-up font names.
+- Radius, spacing, shadow, and letter-spacing should be practical CSS values.
 
 Input:
 """%s"""

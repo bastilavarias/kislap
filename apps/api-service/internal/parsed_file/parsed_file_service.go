@@ -120,15 +120,15 @@ func (service *Service) ToResponse(record models.ParsedFile) (map[string]any, er
 	}
 
 	return map[string]any{
-		"id": record.ID,
-		"user_id": record.UserID,
+		"id":           record.ID,
+		"user_id":      record.UserID,
 		"project_type": record.ProjectType,
-		"source_type": record.SourceType,
-		"source_name": record.SourceName,
-		"status": record.Status,
-		"parsed_data": parsed,
-		"created_at": record.CreatedAt,
-		"updated_at": record.UpdatedAt,
+		"source_type":  record.SourceType,
+		"source_name":  record.SourceName,
+		"status":       record.Status,
+		"parsed_data":  parsed,
+		"created_at":   record.CreatedAt,
+		"updated_at":   record.UpdatedAt,
 	}, nil
 }
 
@@ -145,16 +145,27 @@ func (service *Service) ToResponses(records []models.ParsedFile) ([]map[string]a
 	return responses, nil
 }
 
-func ValidateFilesAsPDFs(files []*multipart.FileHeader) error {
+func ValidateFilesForSourceType(sourceType string, files []*multipart.FileHeader) error {
 	for _, file := range files {
 		opened, err := file.Open()
 		if err != nil {
 			return err
 		}
 
-		if err := utils.ValidateRequestPDF(opened, file.Filename, 5<<20); err != nil {
+		switch sourceType {
+		case "resume":
+			if err := utils.ValidateRequestPDF(opened, file.Filename, 5<<20); err != nil {
+				opened.Close()
+				return err
+			}
+		case "menu":
+			if err := utils.ValidateRequestImageOrPDF(opened, file.Filename, 10<<20); err != nil {
+				opened.Close()
+				return err
+			}
+		default:
 			opened.Close()
-			return err
+			return fmt.Errorf("unsupported source type: %s", sourceType)
 		}
 		opened.Close()
 	}
