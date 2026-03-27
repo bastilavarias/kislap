@@ -84,19 +84,6 @@ type MenuResponse struct {
 	Country       *string `json:"country"`
 	GoogleMapsURL *string `json:"google_maps_url"`
 	Currency      *string `json:"currency"`
-	ParsedTheme   *struct {
-		SourceSummary *struct {
-			Style         *string  `json:"style"`
-			PrimaryColors []string `json:"primary_colors"`
-			Notes         *string  `json:"notes"`
-		} `json:"source_summary"`
-		Styles *struct {
-			Light map[string]string            `json:"light"`
-			Dark  map[string]string            `json:"dark"`
-			CSS   map[string]map[string]string `json:"css"`
-			Meta  map[string]string            `json:"meta"`
-		} `json:"styles"`
-	} `json:"parsed_theme"`
 	Categories []struct {
 		Name        string  `json:"name"`
 		Description *string `json:"description"`

@@ -97,7 +97,7 @@ func (service Service) parseMenu(files []FilePayload) (*MenuResponse, error) {
 	}
 
 	if strings.TrimSpace(content) == "" {
-		content = "No extractable text was available from the uploaded menu. Infer the restaurant details, menu items, and theme from the attached menu visual."
+		content = "No extractable text was available from the uploaded menu. Infer the restaurant details and menu items from the attached menu visual."
 	}
 
 	generatedPrompt := prompt.MenuToJSON(content)

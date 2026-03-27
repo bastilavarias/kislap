@@ -16,6 +16,109 @@ import { APIResponseProject } from '@/types/api-response';
 import { buildMenuSaveFormData } from './menu-save-payload';
 import { mapParsedMenuToFormValues, mapToFormValues } from './menu-form-mapper';
 
+const defaultMenuThemeSettings: Settings = {
+  mode: 'light',
+  theme: {
+    preset: 'menu-board',
+    styles: {
+      light: {
+        ...defaultThemeState.light,
+        background: 'oklch(0.17 0 0)',
+        foreground: 'oklch(0.95 0.01 85)',
+        card: 'oklch(0.17 0 0)',
+        'card-foreground': 'oklch(0.95 0.01 85)',
+        popover: 'oklch(0.17 0 0)',
+        'popover-foreground': 'oklch(0.95 0.01 85)',
+        primary: 'oklch(0.95 0.01 85)',
+        'primary-foreground': 'oklch(0.17 0 0)',
+        secondary: 'oklch(0.28 0.01 85)',
+        'secondary-foreground': 'oklch(0.95 0.01 85)',
+        muted: 'oklch(0.23 0.01 85)',
+        'muted-foreground': 'oklch(0.78 0.01 85)',
+        accent: 'oklch(0.70 0.04 60)',
+        'accent-foreground': 'oklch(0.17 0 0)',
+        border: 'oklch(0.87 0.01 85 / 0.22)',
+        input: 'oklch(0.87 0.01 85 / 0.22)',
+        ring: 'oklch(0.95 0.01 85)',
+        'chart-1': 'oklch(0.95 0.01 85)',
+        'chart-2': 'oklch(0.70 0.04 60)',
+        'chart-3': 'oklch(0.78 0.01 85)',
+        'chart-4': 'oklch(0.56 0.04 45)',
+        'chart-5': 'oklch(0.44 0.03 55)',
+        sidebar: 'oklch(0.15 0 0)',
+        'sidebar-foreground': 'oklch(0.95 0.01 85)',
+        'sidebar-primary': 'oklch(0.95 0.01 85)',
+        'sidebar-primary-foreground': 'oklch(0.17 0 0)',
+        'sidebar-accent': 'oklch(0.28 0.01 85)',
+        'sidebar-accent-foreground': 'oklch(0.95 0.01 85)',
+        'sidebar-border': 'oklch(0.87 0.01 85 / 0.22)',
+        'sidebar-ring': 'oklch(0.95 0.01 85)',
+        'font-sans': 'DM Sans, sans-serif',
+        'font-serif': 'ui-serif, Georgia, Cambria, "Times New Roman", Times, serif',
+        'font-mono': 'Space Mono, monospace',
+        radius: '1rem',
+        'shadow-color': 'hsl(0 0% 0%)',
+        'shadow-opacity': '0.25',
+        'shadow-blur': '0px',
+        'shadow-spread': '0px',
+        'shadow-offset-x': '0px',
+        'shadow-offset-y': '0px',
+        'letter-spacing': '0.02em',
+        spacing: '0.25rem',
+      },
+      dark: {
+        ...defaultThemeState.dark,
+        background: 'oklch(0.12 0 0)',
+        foreground: 'oklch(0.95 0.01 85)',
+        card: 'oklch(0.14 0 0)',
+        'card-foreground': 'oklch(0.95 0.01 85)',
+        popover: 'oklch(0.14 0 0)',
+        'popover-foreground': 'oklch(0.95 0.01 85)',
+        primary: 'oklch(0.95 0.01 85)',
+        'primary-foreground': 'oklch(0.12 0 0)',
+        secondary: 'oklch(0.24 0.01 85)',
+        'secondary-foreground': 'oklch(0.95 0.01 85)',
+        muted: 'oklch(0.19 0.01 85)',
+        'muted-foreground': 'oklch(0.78 0.01 85)',
+        accent: 'oklch(0.70 0.04 60)',
+        'accent-foreground': 'oklch(0.12 0 0)',
+        border: 'oklch(0.87 0.01 85 / 0.18)',
+        input: 'oklch(0.87 0.01 85 / 0.18)',
+        ring: 'oklch(0.95 0.01 85)',
+        'chart-1': 'oklch(0.95 0.01 85)',
+        'chart-2': 'oklch(0.70 0.04 60)',
+        'chart-3': 'oklch(0.78 0.01 85)',
+        'chart-4': 'oklch(0.56 0.04 45)',
+        'chart-5': 'oklch(0.44 0.03 55)',
+        sidebar: 'oklch(0.10 0 0)',
+        'sidebar-foreground': 'oklch(0.95 0.01 85)',
+        'sidebar-primary': 'oklch(0.95 0.01 85)',
+        'sidebar-primary-foreground': 'oklch(0.12 0 0)',
+        'sidebar-accent': 'oklch(0.24 0.01 85)',
+        'sidebar-accent-foreground': 'oklch(0.95 0.01 85)',
+        'sidebar-border': 'oklch(0.87 0.01 85 / 0.18)',
+        'sidebar-ring': 'oklch(0.95 0.01 85)',
+        'font-sans': 'DM Sans, sans-serif',
+        'font-serif': 'ui-serif, Georgia, Cambria, "Times New Roman", Times, serif',
+        'font-mono': 'Space Mono, monospace',
+        radius: '1rem',
+        'shadow-color': 'hsl(0 0% 0%)',
+        'shadow-opacity': '0.35',
+        'shadow-blur': '0px',
+        'shadow-spread': '0px',
+        'shadow-offset-x': '0px',
+        'shadow-offset-y': '0px',
+        'letter-spacing': '0.02em',
+        spacing: '0.25rem',
+      },
+      css: {},
+      meta: {
+        badge: 'Cafe Board',
+      },
+    },
+  },
+};
+
 interface MenuContextType {
   project: APIResponseProject | null;
   formMethods: UseFormReturn<MenuFormValues>;
@@ -47,7 +150,7 @@ export function MenuProvider({ children }: { children: ReactNode }) {
   const { getBySlug, publish: apiPublish } = useProject();
   const { create } = useMenu();
   const [project, setProject] = useState<APIResponseProject | null>(null);
-  const [localThemeSettings, setLocalThemeSettings] = useState<Settings | null>(null);
+  const [localThemeSettings, setLocalThemeSettings] = useState<Settings | null>(defaultMenuThemeSettings);
   const [layout, setLayout] = useState('menu-default');
   const [menuID, setMenuID] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -108,7 +211,10 @@ export function MenuProvider({ children }: { children: ReactNode }) {
           reset(mapToFormValues(data.menu));
           setMenuID(data.menu.id);
           setLayout(data.menu.layout_name || 'menu-default');
-          setLocalThemeSettings({ mode: 'light', theme: data.menu.theme_object });
+          setLocalThemeSettings({
+            mode: 'light',
+            theme: data.menu.theme_object || defaultMenuThemeSettings.theme,
+          });
         }
         loadedSlugRef.current = slug;
       } else {
@@ -134,7 +240,21 @@ export function MenuProvider({ children }: { children: ReactNode }) {
       );
 
       if (response.success && response.data) {
-        setMenuID(response.data.id);
+        const savedMenuID = response.data.menu?.id ?? response.data.id ?? null;
+        if (savedMenuID) {
+          setMenuID(savedMenuID);
+        }
+        if (response.data.menu) {
+          setProject((prev) =>
+            prev
+              ? {
+                  ...prev,
+                  menu: response.data.menu,
+                  published: prev.published,
+                }
+              : prev
+          );
+        }
         toast.success('Menu saved successfully');
       } else {
         toast.error(response.message || 'Error saving menu');
@@ -155,43 +275,6 @@ export function MenuProvider({ children }: { children: ReactNode }) {
     const current = formMethods.getValues();
     const mapped = mapParsedMenuToFormValues(data, current);
     reset(mapped);
-
-    const parsedTheme = data?.parsed_theme?.styles;
-    if (parsedTheme?.light || parsedTheme?.dark || parsedTheme?.css || parsedTheme?.meta) {
-      setLocalThemeSettings((prev) => {
-        const previousMode = prev?.mode || 'light';
-        const previousTheme = prev?.theme || {};
-        const previousStyles = previousTheme.styles || defaultThemeState;
-
-        return {
-          mode: previousMode,
-          theme: {
-            ...previousTheme,
-            preset: 'parsed-menu',
-            styles: {
-              light: {
-                ...defaultThemeState.light,
-                ...(previousStyles.light || {}),
-                ...(parsedTheme.light || {}),
-              },
-              dark: {
-                ...defaultThemeState.dark,
-                ...(previousStyles.dark || {}),
-                ...(parsedTheme.dark || {}),
-              },
-              css: {
-                ...(previousStyles.css || {}),
-                ...(parsedTheme.css || {}),
-              },
-              meta: {
-                ...(previousStyles.meta || {}),
-                ...(parsedTheme.meta || {}),
-              },
-            },
-          },
-        };
-      });
-    }
 
     toast.success('Menu parsed!');
   };

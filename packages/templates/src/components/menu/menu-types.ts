@@ -42,6 +42,8 @@ export interface MenuData {
   phone?: string | null;
   email?: string | null;
   address?: string | null;
+  city?: string | null;
+  country?: string | null;
   website_url?: string | null;
   google_maps_url?: string | null;
   whatsapp?: string | null;
@@ -81,7 +83,10 @@ export function formatMenuLocation(menu: Pick<MenuData, 'address' | 'city' | 'co
   return parts.join(', ');
 }
 
-export function formatMenuEyebrow(menu: Pick<MenuData, 'city' | 'country'>, categories: MenuCategory[] = []) {
+export function formatMenuEyebrow(
+  menu: Pick<MenuData, 'city' | 'country'>,
+  categories: MenuCategory[] = []
+) {
   const visibleCategoryNames = categories
     .filter((category) => category.is_visible !== false)
     .map((category) => category.name?.trim())
@@ -89,7 +94,7 @@ export function formatMenuEyebrow(menu: Pick<MenuData, 'city' | 'country'>, cate
     .slice(0, 2) as string[];
 
   if (visibleCategoryNames.length) {
-    return visibleCategoryNames.join(' • ');
+    return visibleCategoryNames.join(' / ');
   }
 
   const location = [menu.city?.trim(), menu.country?.trim()].filter(Boolean).join(', ');
