@@ -22,6 +22,7 @@ type Portfolio struct {
 	Github       *string `gorm:"size:255" json:"github"`
 	Linkedin     *string `gorm:"size:255" json:"linkedin"`
 	Twitter      *string `gorm:"size:255" json:"twitter"`
+	AvatarURL    *string `gorm:"size:255" json:"avatar_url"`
 
 	ThemeName   *string          `gorm:"size:255;default:default" json:"theme_name"`
 	ThemeObject *json.RawMessage `gorm:"type:json" json:"theme_object"`

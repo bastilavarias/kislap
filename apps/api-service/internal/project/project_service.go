@@ -174,6 +174,7 @@ func (service Service) ShowBySlug(slug string, level string) (*models.Project, e
 	if level == "full" && project.Type == "portfolio" {
 		if err := service.DB.
 			Preload("Portfolio").
+			Preload("Portfolio.User").
 			Preload("Portfolio.WorkExperiences").
 			Preload("Portfolio.Education").
 			Preload("Portfolio.Showcases").

@@ -48,6 +48,7 @@ import { Alert, AlertTitle } from "@/components/ui/alert";
 import { toast } from "sonner";
 import { Project } from "@/types/project";
 import { Portfolio } from "@/types/portfolio";
+import { getPortfolioAvatarUrl } from "./avatar";
 
 // --- Types ---
 interface Props {
@@ -92,6 +93,8 @@ const HeroSection = ({
   onSetThemeMode: React.Dispatch<React.SetStateAction<Mode>>;
   isDarkMode: boolean;
 }) => {
+  const avatarUrl = getPortfolioAvatarUrl(portfolio);
+
   const socialLinks = useMemo(() => {
     return [
       { type: "github", url: portfolio.github, icon: Github },
@@ -161,6 +164,8 @@ const HeroSection = ({
 };
 
 const IdCardSection = ({ portfolio }: { portfolio: Portfolio }) => {
+  const avatarUrl = getPortfolioAvatarUrl(portfolio);
+
   const expYears = useMemo(() => {
     if (!portfolio.work_experiences || portfolio.work_experiences.length === 0)
       return "N/A";
@@ -182,10 +187,7 @@ const IdCardSection = ({ portfolio }: { portfolio: Portfolio }) => {
       <div className="relative mb-6 group">
         <div className="absolute inset-0 rounded-full border border-dashed border-primary animate-[spin_10s_linear_infinite]" />
         <Avatar className="w-40 h-40 border-4 border-background relative z-10">
-          <AvatarImage
-            src={portfolio.user.image_url}
-            className="object-cover"
-          />
+          <AvatarImage src={avatarUrl ?? undefined} className="object-cover" />
           <AvatarFallback className="text-4xl bg-muted font-black">
             {portfolio.name?.charAt(0) ?? "U"}
           </AvatarFallback>

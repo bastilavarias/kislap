@@ -47,6 +47,7 @@ import { toast } from "sonner";
 import { Project } from "@/types/project";
 import { Portfolio } from "@/types/portfolio";
 import { cn } from "@/lib/utils";
+import { getPortfolioAvatarUrl } from "./avatar";
 
 // --- Types ---
 interface Props {
@@ -80,6 +81,8 @@ const HeroSection = ({
   onSetThemeMode: React.Dispatch<React.SetStateAction<Mode>>;
   isDarkMode: boolean;
 }) => {
+  const avatarUrl = getPortfolioAvatarUrl(portfolio);
+
   const socialLinks = useMemo(() => {
     return [
       { type: "github", url: portfolio.github, icon: Github },
@@ -92,12 +95,12 @@ const HeroSection = ({
   return (
     <header className="flex flex-col md:flex-row gap-8 items-start justify-between border-b-4 border-foreground pb-8">
       <div className="flex gap-6 items-center w-full md:w-auto">
-        {portfolio.user?.image_url && (
+        {avatarUrl && (
           <div className="relative shrink-0">
             <div className="absolute inset-0 bg-foreground translate-x-2 translate-y-2" />
             <Avatar className="w-20 h-20 md:w-32 md:h-32 border-4 border-foreground relative z-10 rounded-none">
               <AvatarImage
-                src={portfolio.user?.image_url}
+                src={avatarUrl}
                 alt={portfolio.user?.first_name}
                 className="object-cover"
               />

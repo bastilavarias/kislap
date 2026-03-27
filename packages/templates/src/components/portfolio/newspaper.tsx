@@ -37,6 +37,7 @@ import { toast } from "sonner";
 import { Project } from "@/types/project";
 import { Portfolio } from "@/types/portfolio";
 import { cn } from "@/lib/utils";
+import { getPortfolioAvatarUrl } from "./avatar";
 
 // --- Types ---
 interface Props {
@@ -99,6 +100,8 @@ const Masthead = ({
 };
 
 const Sidebar = ({ portfolio }: { portfolio: Portfolio }) => {
+  const avatarUrl = getPortfolioAvatarUrl(portfolio);
+
   const socialLinks = useMemo(() => {
     return [
       { type: "github", url: portfolio.github, icon: Github },
@@ -114,10 +117,7 @@ const Sidebar = ({ portfolio }: { portfolio: Portfolio }) => {
       <div className={cn("border-2 p-1", borderClass)}>
         <div className="relative aspect-square w-full grayscale contrast-125 hover:grayscale-0 transition-all duration-500">
           <Avatar className="w-full h-full rounded-none">
-            <AvatarImage
-              src={portfolio.user.image_url}
-              className="object-cover"
-            />
+            <AvatarImage src={avatarUrl ?? undefined} className="object-cover" />
             <AvatarFallback className="text-4xl font-black rounded-none">
               {portfolio.name?.charAt(0) ?? "U"}
             </AvatarFallback>

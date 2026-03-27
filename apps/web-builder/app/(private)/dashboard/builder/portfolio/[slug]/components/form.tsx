@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
+import { ImageUploadField } from '@/components/image-upload-field';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -87,6 +88,7 @@ interface Props {
   isParserOpen: boolean;
   setIsParserOpen: React.Dispatch<React.SetStateAction<boolean>>;
   applyParsedResume: (data: Record<string, any>) => void;
+  fallbackAvatarUrl: string | null;
 
   localThemeSettings: Settings | null;
   setLocalThemeSettings: React.Dispatch<React.SetStateAction<Settings | null>>;
@@ -284,6 +286,7 @@ export function Form({
   isParserOpen,
   setIsParserOpen,
   applyParsedResume,
+  fallbackAvatarUrl,
   localThemeSettings,
   setLocalThemeSettings,
   layout,
@@ -361,25 +364,36 @@ export function Form({
                         <div className="flex items-center gap-2 text-sm text-primary font-semibold uppercase tracking-wider">
                           <User className="w-4 h-4" /> Identity
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-                          <div className="col-span-1 md:col-span-8">
-                            <Label className="mb-2 block">Name</Label>
-                            <Input
-                              {...register('name')}
-                              placeholder="John Doe"
-                              className="shadow-none"
+                        <div className="flex flex-col gap-6 md:flex-row">
+                          <div className="shrink-0 md:w-64">
+                            <Label className="mb-2 block">Avatar</Label>
+                            <ImageUploadField
+                              id="portfolio-avatar-upload"
+                              previewUrl={watch('avatar_url') || fallbackAvatarUrl}
+                              currentFile={watch('avatar') as File}
+                              onFileSelect={(file) => setValue('avatar', file)}
                             />
-                            {errors.name && (
-                              <p className="text-destructive text-sm mt-1">{errors.name.message}</p>
-                            )}
                           </div>
-                          <div className="col-span-1 md:col-span-4">
-                            <Label className="mb-2 block">Job Title</Label>
-                            <Input
-                              {...register('job_title')}
-                              placeholder="Software Engineer"
-                              className="shadow-none"
-                            />
+                          <div className="grid flex-1 grid-cols-1 gap-4 md:grid-cols-12">
+                            <div className="col-span-1 md:col-span-8">
+                              <Label className="mb-2 block">Name</Label>
+                              <Input
+                                {...register('name')}
+                                placeholder="John Doe"
+                                className="shadow-none"
+                              />
+                              {errors.name && (
+                                <p className="text-destructive text-sm mt-1">{errors.name.message}</p>
+                              )}
+                            </div>
+                            <div className="col-span-1 md:col-span-4">
+                              <Label className="mb-2 block">Job Title</Label>
+                              <Input
+                                {...register('job_title')}
+                                placeholder="Software Engineer"
+                                className="shadow-none"
+                              />
+                            </div>
                           </div>
                         </div>
                         <div>

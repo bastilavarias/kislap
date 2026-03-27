@@ -3,6 +3,8 @@ import { z } from 'zod';
 export const PortfolioSchema = z.object({
   name: z.string().optional().nullable(),
   job_title: z.string().optional().nullable(),
+  avatar: z.any().optional().nullable(),
+  avatar_url: z.string().optional().nullable(),
   location: z.string().optional().nullable(),
   introduction: z.string().optional().nullable(),
   about: z.string().optional().nullable(),

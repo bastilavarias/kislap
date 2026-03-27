@@ -12,6 +12,7 @@ import { toast } from 'sonner';
 import { Settings } from '@/contexts/settings-context';
 import { AuthUser } from '@/hooks/api/use-auth';
 import { useAuthContext } from '@/contexts/auth-context';
+import { buildPortfolioSaveFormData } from './portfolio-save-payload';
 
 interface PortfolioContextType {
   project: APIResponseProject | null;
@@ -36,6 +37,7 @@ interface PortfolioContextType {
   isParserOpen: boolean;
   setIsParserOpen: React.Dispatch<React.SetStateAction<boolean>>;
   applyParsedResume: (data: Record<string, any>) => void;
+  fallbackAvatarUrl: string | null;
   hasContent: boolean;
   hasContentWorkExperience: boolean;
   hasContentEducation: boolean;
@@ -60,6 +62,8 @@ function mapToFormValues(
   return {
     name: source.name || '',
     job_title: source.job_title || '',
+    avatar: null,
+    avatar_url: 'avatar_url' in source ? (source.avatar_url as string) || '' : '',
     location: source.location || '',
     introduction: source.introduction || '',
     about: source.about || '',
@@ -129,6 +133,8 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
     defaultValues: {
       name: '',
       job_title: '',
+      avatar: null,
+      avatar_url: '',
       introduction: '',
       about: '',
       email: '',
@@ -178,30 +184,15 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
 
     await handleSubmit(
       async (data) => {
-        const formattedData = Object.assign({
-          ...data,
-          work_experiences: data.work_experiences?.map((workExp, index) => ({
-            ...workExp,
-            placement_order: index,
-          })),
-          education: data.education?.map((education, index) => ({
-            ...education,
-            placement_order: index,
-          })),
-          showcases: data.showcases?.map((showcase, index) => ({
-            ...showcase,
-            placement_order: index,
-          })),
-        });
-
-        const response = await create({
-          project_id: project?.id,
-          portfolio_id: portfolioID || project?.portfolio?.id,
-          user_id: user?.id,
-          ...formattedData,
-          theme: { ...localThemeSettings?.theme },
-          layout_name: layout,
-        });
+        const response = await create(
+          buildPortfolioSaveFormData(data, {
+            projectID: project?.id,
+            portfolioID: portfolioID || project?.portfolio?.id,
+            userID: user?.id,
+            theme: { ...localThemeSettings?.theme },
+            layout,
+          })
+        );
 
         if (response.success) {
           //@ts-ignore
@@ -233,6 +224,8 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
 
   const applyParsedResume = (data: Record<string, any>) => {
     const mapped = mapToFormValues(data as APIResponseDocumentResume);
+    mapped.avatar = formMethods.getValues('avatar');
+    mapped.avatar_url = formMethods.getValues('avatar_url');
     Object.entries(mapped).forEach(([key, val]) => setValue(key as any, val));
     toast.success('Resume parsed!');
   };
@@ -299,6 +292,10 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
     return !!localThemeSettings;
   }, [localThemeSettings]);
 
+  const fallbackAvatarUrl = useMemo(() => {
+    return project?.portfolio?.user?.image_url || authUser?.image_url || null;
+  }, [project?.portfolio?.user?.image_url, authUser?.image_url]);
+
   return (
     <PortfolioContext.Provider
       value={{
@@ -320,6 +317,7 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
         isParserOpen,
         setIsParserOpen,
         applyParsedResume,
+        fallbackAvatarUrl,
         hasContent,
         hasContentWorkExperience,
         hasContentEducation,

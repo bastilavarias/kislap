@@ -47,6 +47,7 @@ import { toast } from "sonner";
 import { Project } from "@/types/project";
 import { Portfolio } from "@/types/portfolio";
 import { cn } from "@/lib/utils";
+import { getPortfolioAvatarUrl } from "./avatar";
 
 interface Props {
   project: Project;
@@ -274,6 +275,8 @@ const HeaderSection = ({
 );
 
 const HeroSection = ({ portfolio }: { portfolio: Portfolio }) => {
+  const avatarUrl = getPortfolioAvatarUrl(portfolio);
+
   const socialLinks = useMemo(() => {
     return [
       { type: "github", url: portfolio.github, icon: Github },
@@ -289,10 +292,7 @@ const HeroSection = ({ portfolio }: { portfolio: Portfolio }) => {
         <div className="relative group">
           <div className="absolute -inset-1 bg-gradient-to-r from-primary to-secondary rounded-full blur opacity-70 group-hover:opacity-100 transition duration-500 animate-spin-slow" />
           <Avatar className="w-32 h-32 md:w-48 md:h-48 border-4 border-background relative">
-            <AvatarImage
-              src={portfolio.user.image_url}
-              className="object-cover"
-            />
+            <AvatarImage src={avatarUrl ?? undefined} className="object-cover" />
             <AvatarFallback className="bg-muted text-4xl font-black text-primary">
               {portfolio.name?.charAt(0) ?? "U"}
             </AvatarFallback>

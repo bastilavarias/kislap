@@ -101,7 +101,7 @@ interface APIResponseUser {
   last_name: string;
   email: string;
   role: string;
-  avatar: string | null;
+  image_url: string | null;
   created_at: string;
   updated_at: string;
   deleted_at: string | null;
@@ -160,6 +160,7 @@ export interface APIResponsePortfolio {
   project_id: number;
   user_id: number;
   name: string;
+  avatar_url: string | null;
   location: string | null;
   job_title: string | null;
   introduction: string;

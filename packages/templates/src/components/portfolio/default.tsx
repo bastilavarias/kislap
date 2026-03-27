@@ -38,6 +38,7 @@ import { Alert, AlertTitle } from "@/components/ui/alert";
 import { toast } from "sonner";
 import { Project } from "@/types/project";
 import { Portfolio } from "@/types/portfolio";
+import { getPortfolioAvatarUrl } from "./avatar";
 
 interface Props {
   project: Project;
@@ -57,6 +58,7 @@ const HeroSection = ({
   onSetThemeMode: React.Dispatch<React.SetStateAction<Mode>>;
 }) => {
   const isDarkMode = useMemo(() => themeMode === "dark", [themeMode]);
+  const avatarUrl = getPortfolioAvatarUrl(portfolio);
 
   const socialLinks = useMemo(() => {
     return [
@@ -123,12 +125,9 @@ const HeroSection = ({
         </div>
 
         <div className="flex flex-row justify-center md:flex-col md:items-center md:items-end md:justify-between w-full md:w-auto gap-4">
-          {portfolio?.user?.image_url && (
+          {avatarUrl && (
             <Avatar className="w-24 h-24 md:w-32 md:h-32 border bg-muted">
-              <AvatarImage
-                src={portfolio.user.image_url}
-                className="object-cover"
-              />
+              <AvatarImage src={avatarUrl} className="object-cover" />
               <AvatarFallback className="text-2xl text-muted-foreground">
                 {portfolio.name?.charAt(0) ?? "U"}
               </AvatarFallback>

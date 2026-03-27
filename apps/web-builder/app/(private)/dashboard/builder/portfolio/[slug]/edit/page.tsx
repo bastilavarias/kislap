@@ -23,6 +23,7 @@ export default function PortfolioEditPage() {
       isParserOpen={builder.isParserOpen}
       setIsParserOpen={builder.setIsParserOpen}
       applyParsedResume={builder.applyParsedResume}
+      fallbackAvatarUrl={builder.fallbackAvatarUrl}
       localThemeSettings={builder.localThemeSettings}
       setLocalThemeSettings={builder.setLocalThemeSettings}
     />

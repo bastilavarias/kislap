@@ -5,7 +5,10 @@ import (
 	"errors"
 	Project "flash/internal/project"
 	"flash/models"
+	objectStorage "flash/sdk/object_storage"
 	"fmt"
+	"mime/multipart"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -13,6 +16,7 @@ import (
 type Service struct {
 	DB             *gorm.DB
 	ProjectService *Project.Service
+	ObjectStorage  objectStorage.Provider
 }
 
 func (service Service) Save(payload Payload) (*models.Portfolio, error) {
@@ -43,6 +47,7 @@ func (service Service) Save(payload Payload) (*models.Portfolio, error) {
 			Github:          &payload.Github,
 			Linkedin:        &payload.Linkedin,
 			Twitter:         &payload.Twitter,
+			AvatarURL:       payload.AvatarURL,
 			ThemeName:       &payload.Theme.Preset,
 			ThemeObject:     themeRaw,
 			LayoutName:      &payload.LayoutName,
@@ -50,6 +55,14 @@ func (service Service) Save(payload Payload) (*models.Portfolio, error) {
 			Education:       newEducation,
 			Skills:          newSkills,
 			Showcases:       newShowcases,
+		}
+
+		if payload.Avatar != nil {
+			avatarURL, err := service.uploadFile(payload.Avatar, payload.ProjectID, "avatar")
+			if err != nil {
+				return nil, err
+			}
+			portfolio.AvatarURL = &avatarURL
 		}
 
 		if err := service.DB.Create(&portfolio).Error; err != nil {
@@ -74,9 +87,20 @@ func (service Service) Save(payload Payload) (*models.Portfolio, error) {
 		portfolio.Github = &payload.Github
 		portfolio.Linkedin = &payload.Linkedin
 		portfolio.Twitter = &payload.Twitter
+		portfolio.AvatarURL = payload.AvatarURL
 		portfolio.ThemeName = &payload.Theme.Preset
 		portfolio.ThemeObject = themeRaw
 		portfolio.LayoutName = &payload.LayoutName
+
+		if payload.Avatar != nil {
+			avatarURL, err := service.uploadFile(payload.Avatar, payload.ProjectID, "avatar")
+			if err != nil {
+				return nil, err
+			}
+			portfolio.AvatarURL = &avatarURL
+		} else if payload.AvatarURL == nil {
+			portfolio.AvatarURL = nil
+		}
 
 		if err := service.DB.Transaction(func(tx *gorm.DB) error {
 			if err := tx.Model(&portfolio).Association("WorkExperiences").Clear(); err != nil {
@@ -109,6 +133,7 @@ func (service Service) Save(payload Payload) (*models.Portfolio, error) {
 func (service Service) GetByIDWithPreloads(id uint64) (*models.Portfolio, error) {
 	var portfolio models.Portfolio
 	if err := service.DB.
+		Preload("User").
 		Preload("WorkExperiences").
 		Preload("Education").
 		Preload("Skills").
@@ -209,4 +234,25 @@ func marshalTheme(theme ThemeRequest) (*json.RawMessage, error) {
 	}
 	rawJSON := json.RawMessage(themeJSON)
 	return &rawJSON, nil
+}
+
+func (service Service) uploadFile(file *multipart.FileHeader, projectID int64, folder string) (string, error) {
+	src, err := file.Open()
+	if err != nil {
+		return "", fmt.Errorf("failed to open file: %w", err)
+	}
+	defer src.Close()
+
+	uniqueName := fmt.Sprintf("%d_%s", time.Now().UnixNano(), file.Filename)
+	path := fmt.Sprintf("projects/%d/portfolio/%s/%s", projectID, folder, uniqueName)
+	contentType := file.Header.Get("Content-Type")
+	if contentType == "" {
+		contentType = "application/octet-stream"
+	}
+
+	url, err := service.ObjectStorage.Upload(path, src, contentType)
+	if err != nil {
+		return "", fmt.Errorf("storage upload failed: %w", err)
+	}
+	return url, nil
 }
