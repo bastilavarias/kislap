@@ -19,6 +19,8 @@ import { APIResponseParsedFile } from '@/types/api-response';
 import { AlertCircle, FileSearch, Loader2, UploadCloud } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
+type ParsedFileKind = 'image' | 'pdf';
+
 interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -27,6 +29,7 @@ interface Props {
   title: string;
   description: string;
   maxFiles?: number;
+  acceptedKinds?: ParsedFileKind[];
   onApplyParsedData: (data: Record<string, any>) => void;
 }
 
@@ -38,6 +41,7 @@ export function ParsedFileDialog({
   title,
   description,
   maxFiles = 1,
+  acceptedKinds = ['pdf'],
   onApplyParsedData,
 }: Props) {
   const { list, create } = useParsedFiles();
@@ -49,6 +53,16 @@ export function ParsedFileDialog({
   const [lastPage, setLastPage] = useState(1);
   const [items, setItems] = useState<APIResponseParsedFile[]>([]);
   const [isLoadingList, setIsLoadingList] = useState(false);
+
+  const accept = {
+    ...(acceptedKinds.includes('pdf') ? { 'application/pdf': [] } : {}),
+    ...(acceptedKinds.includes('image')
+      ? { 'image/png': [], 'image/jpeg': [], 'image/jpg': [], 'image/webp': [] }
+      : {}),
+  };
+  const supportText = acceptedKinds.includes('image')
+    ? 'PNG, JPG, WEBP, or PDF. Max 10MB each.'
+    : 'PDF only. Max 10MB each.';
 
   const loadHistory = async (targetPage = 1) => {
     setIsLoadingList(true);
@@ -127,7 +141,7 @@ export function ParsedFileDialog({
                 'min-h-[220px] border-2 border-dashed border-muted-foreground/30 rounded-xl',
                 'bg-muted/10 hover:bg-muted/20 transition-colors'
               )}
-              accept={{ 'application/pdf': [] }}
+              accept={accept}
               maxFiles={maxFiles}
               maxSize={1024 * 1024 * 10}
               onDrop={setFiles}
@@ -140,7 +154,7 @@ export function ParsedFileDialog({
                   </div>
                   <div>
                     <p className="text-sm font-semibold">Drop your file here</p>
-                    <p className="text-xs text-muted-foreground">PDF only. Max 10MB each.</p>
+                    <p className="text-xs text-muted-foreground">{supportText}</p>
                   </div>
                 </div>
               </DropzoneEmptyState>

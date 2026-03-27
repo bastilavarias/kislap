@@ -265,8 +265,9 @@ export function Form({
         projectType="menu"
         sourceType="menu"
         title="Menu Parser"
-        description="Upload menu PDFs and reuse parsed results anytime."
+        description="Upload menu images or PDFs and reuse parsed results anytime."
         maxFiles={5}
+        acceptedKinds={['image', 'pdf']}
         onApplyParsedData={applyParsedMenu}
       />
     </div>
