@@ -155,18 +155,8 @@ export function Form({
                           <Input {...register('website_url')} placeholder="https://restaurant.com" className="shadow-none" />
                         </div>
                         <div>
-                          <Label className="mb-2 block">WhatsApp</Label>
-                          <Input {...register('whatsapp')} placeholder="+639172217704" className="shadow-none" />
-                        </div>
-                      </div>
-                      <div className="grid gap-4 md:grid-cols-2">
-                        <div>
                           <Label className="mb-2 block">City</Label>
                           <Input {...register('city')} placeholder="Manila" className="shadow-none" />
-                        </div>
-                        <div>
-                          <Label className="mb-2 block">Country</Label>
-                          <Input {...register('country')} placeholder="Philippines" className="shadow-none" />
                         </div>
                       </div>
                       <div>

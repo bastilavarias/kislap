@@ -12,8 +12,6 @@ export const MENU_SOCIAL_PLATFORMS = [
   'instagram',
   'facebook',
   'tiktok',
-  'tripadvisor',
-  'google-reviews',
   'website',
 ] as const;
 

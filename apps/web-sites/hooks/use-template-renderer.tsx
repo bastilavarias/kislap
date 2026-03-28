@@ -17,6 +17,11 @@ interface TemplateProps {
 
 import { BizTemplates, PortfolioTemplates, LinktreeTemplates } from '@kislap/templates';
 import { MenuDefault } from '@kislap/templates/src/components/menu/menu-default';
+import { MenuEditorial } from '@kislap/templates/src/components/menu/menu-editorial';
+import { MenuShowcase } from '@kislap/templates/src/components/menu/menu-showcase';
+import { MenuBistro } from '@kislap/templates/src/components/menu/menu-bistro';
+import { MenuRunway } from '@kislap/templates/src/components/menu/menu-runway';
+import { MenuMosaic } from '@kislap/templates/src/components/menu/menu-mosaic';
 
 const { Default, Minimal, Bento, NeoBrutalist, Glass, Cyber, Newspaper, Kinetic, Vaporware } =
   PortfolioTemplates;
@@ -50,6 +55,11 @@ const linktreeTemplates: Record<TemplateName, React.FC<TemplateProps>> = {
 
 const menuTemplates: Record<TemplateName, React.FC<TemplateProps>> = {
   'menu-default': MenuDefault,
+  'menu-editorial': MenuEditorial,
+  'menu-showcase': MenuShowcase,
+  'menu-bistro': MenuBistro,
+  'menu-runway': MenuRunway,
+  'menu-mosaic': MenuMosaic,
 };
 
 /**

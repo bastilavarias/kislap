@@ -59,10 +59,8 @@ export function mapToFormValues(source: APIResponseMenu): MenuFormValues {
     phone: source.phone || '',
     email: source.email || '',
     website_url: source.website_url || '',
-    whatsapp: source.whatsapp || '',
     address: source.address || '',
     city: source.city || '',
-    country: source.country || '',
     google_maps_url: source.google_maps_url || '',
     search_enabled: source.search_enabled ?? true,
     hours_enabled: source.hours_enabled ?? false,
@@ -126,10 +124,8 @@ interface ParsedMenuResponse {
   phone?: string | null;
   email?: string | null;
   website_url?: string | null;
-  whatsapp?: string | null;
   address?: string | null;
   city?: string | null;
-  country?: string | null;
   google_maps_url?: string | null;
   categories?: ParsedMenuCategory[];
 }
@@ -198,10 +194,8 @@ export function mapParsedMenuToFormValues(
     phone: source.phone || current?.phone || '',
     email: source.email || current?.email || '',
     website_url: source.website_url || current?.website_url || '',
-    whatsapp: source.whatsapp || current?.whatsapp || '',
     address: source.address || current?.address || '',
     city: source.city || current?.city || '',
-    country: source.country || current?.country || '',
     google_maps_url: source.google_maps_url || current?.google_maps_url || '',
     search_enabled: current?.search_enabled ?? true,
     hours_enabled: current?.hours_enabled ?? false,

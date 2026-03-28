@@ -55,10 +55,8 @@ export interface MenuData {
   email?: string | null;
   address?: string | null;
   city?: string | null;
-  country?: string | null;
   website_url?: string | null;
   google_maps_url?: string | null;
-  whatsapp?: string | null;
   qr_settings?: MenuQRSettings | null;
   search_enabled?: boolean;
   hours_enabled?: boolean;
@@ -69,17 +67,10 @@ export interface MenuData {
 }
 
 export function formatPlatformLabel(platform: string) {
-  switch (platform) {
-    case 'google-reviews':
-      return 'Google Reviews';
-    case 'tripadvisor':
-      return 'TripAdvisor';
-    default:
-      return platform
-        .split('-')
-        .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-        .join(' ');
-  }
+  return platform
+    .split('-')
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ');
 }
 
 export function formatHoursLabel(entry: MenuBusinessHour) {
@@ -107,18 +98,15 @@ export function formatHoursLabel(entry: MenuBusinessHour) {
   return `${toTwelveHour(entry.open)} - ${toTwelveHour(entry.close)}`;
 }
 
-export function formatMenuLocation(menu: Pick<MenuData, 'address' | 'city' | 'country'>) {
-  const parts = [menu.address, menu.city, menu.country]
+export function formatMenuLocation(menu: Pick<MenuData, 'address' | 'city'>) {
+  const parts = [menu.address, menu.city]
     .map((value) => value?.trim())
     .filter(Boolean);
 
   return parts.join(', ');
 }
 
-export function formatMenuEyebrow(
-  menu: Pick<MenuData, 'city' | 'country'>,
-  categories: MenuCategory[] = []
-) {
+export function formatMenuEyebrow(menu: Pick<MenuData, 'city'>, categories: MenuCategory[] = []) {
   const visibleCategoryNames = categories
     .filter((category) => category.is_visible !== false)
     .map((category) => category.name?.trim())
@@ -129,6 +117,6 @@ export function formatMenuEyebrow(
     return visibleCategoryNames.join(' / ');
   }
 
-  const location = [menu.city?.trim(), menu.country?.trim()].filter(Boolean).join(', ');
+  const location = [menu.city?.trim()].filter(Boolean).join(', ');
   return location || 'Restaurant Menu';
 }

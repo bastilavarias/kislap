@@ -19,10 +19,8 @@ type Menu struct {
 	Phone         *string          `gorm:"column:phone;size:50" json:"phone"`
 	Email         *string          `gorm:"column:email;size:255" json:"email"`
 	WebsiteURL    *string          `gorm:"column:website_url;type:text" json:"website_url"`
-	WhatsApp      *string          `gorm:"column:whatsapp;size:80" json:"whatsapp"`
 	Address       *string          `gorm:"column:address;type:text" json:"address"`
 	City          *string          `gorm:"column:city;size:120" json:"city"`
-	Country       *string          `gorm:"column:country;size:120" json:"country"`
 	GoogleMapsURL *string          `gorm:"column:google_maps_url;type:text" json:"google_maps_url"`
 	LayoutName    *string          `gorm:"column:layout_name;size:255;default:menu-default" json:"layout_name"`
 	ThemeName     *string          `gorm:"column:theme_name;size:255;default:default" json:"theme_name"`

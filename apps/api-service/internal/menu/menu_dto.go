@@ -79,10 +79,8 @@ type CreateUpdateMenuRequest struct {
 	Phone         *string                     `json:"phone"`
 	Email         *string                     `json:"email"`
 	WebsiteURL    *string                     `json:"website_url"`
-	WhatsApp      *string                     `json:"whatsapp"`
 	Address       *string                     `json:"address"`
 	City          *string                     `json:"city"`
-	Country       *string                     `json:"country"`
 	GoogleMapsURL *string                     `json:"google_maps_url"`
 	LayoutName    string                      `json:"layout_name"`
 	Theme         *ThemeRequest               `json:"theme"`
@@ -109,10 +107,8 @@ type Payload struct {
 	Phone         *string
 	Email         *string
 	WebsiteURL    *string
-	WhatsApp      *string
 	Address       *string
 	City          *string
-	Country       *string
 	GoogleMapsURL *string
 	LayoutName    string
 	Theme         *ThemeRequest
@@ -140,10 +136,8 @@ func (request *CreateUpdateMenuRequest) ToServicePayload() Payload {
 		Phone:         request.Phone,
 		Email:         request.Email,
 		WebsiteURL:    request.WebsiteURL,
-		WhatsApp:      request.WhatsApp,
 		Address:       request.Address,
 		City:          request.City,
-		Country:       request.Country,
 		GoogleMapsURL: request.GoogleMapsURL,
 		LayoutName:    request.LayoutName,
 		Theme:         request.Theme,

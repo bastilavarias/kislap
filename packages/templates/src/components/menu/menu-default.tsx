@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React from "react";
 import { Mode } from "@/contexts/settings-context";
@@ -6,7 +6,6 @@ import {
   FaFacebookF,
   FaInstagram,
   FaTiktok,
-  FaWhatsapp,
 } from "react-icons/fa6";
 import { Github, Globe, Mail, MapPin, Phone, Share2 } from "lucide-react";
 import { ThemeStyles } from "@/types/theme";
@@ -15,7 +14,6 @@ import { KISLAP_LINKS } from "../shared/kislap-links";
 import {
   formatHoursLabel,
   formatMenuLocation,
-  formatPlatformLabel,
   MenuCategory,
   MenuData,
   MenuItem as MenuItemData,
@@ -36,6 +34,18 @@ type MenuItem = {
   badge?: string;
   image_url?: string | null;
   variants?: MenuItemData["variants"];
+};
+
+type MenuThemeTokens = {
+  backgroundColor: string;
+  foregroundColor: string;
+  mutedColor: string;
+  borderColor: string;
+  badgeBackgroundColor: string;
+  badgeForegroundColor: string;
+  bodyFont: string;
+  headingFont: string;
+  metaFont: string;
 };
 
 const ICED_LEFT: MenuItem[] = [
@@ -150,7 +160,6 @@ const FALLBACK_MENU: MenuData = {
   name: "DON'T STIR CAFE",
   address: "1182 ALC Bldg. S.H Loyola St. Sampaloc Manila",
   city: "",
-  country: "",
   business_hours: [{ day: "monday", open: "5PM", close: "3AM", closed: false }],
   social_links: [
     { platform: "facebook", url: "#" },
@@ -205,8 +214,25 @@ const FALLBACK_MENU: MenuData = {
   ],
 };
 
-function PriceBadge({ price }: { price: string }) {
-  return <span className="menu-price-badge">{price}</span>;
+function PriceBadge({
+  price,
+  tokens,
+}: {
+  price: string;
+  tokens: MenuThemeTokens;
+}) {
+  return (
+    <span
+      className="ml-3 inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-sm font-bold"
+      style={{
+        backgroundColor: tokens.badgeBackgroundColor,
+        color: tokens.badgeForegroundColor,
+        fontFamily: tokens.bodyFont,
+      }}
+    >
+      {price}
+    </span>
+  );
 }
 
 function formatPesoPrice(value?: string | null) {
@@ -237,7 +263,8 @@ function MenuItemBlock({
   badge,
   image_url,
   variants,
-}: MenuItem) {
+  tokens,
+}: MenuItem & { tokens: MenuThemeTokens }) {
   const sortedVariants = getSortedVariants(variants);
   const displayPrice = getDisplayPrice(price, sortedVariants);
 
@@ -246,7 +273,7 @@ function MenuItemBlock({
       {image_url ? (
         <div
           className="hidden h-20 w-20 flex-shrink-0 overflow-hidden rounded border md:block"
-          style={{ borderColor: "var(--ds-border)" }}
+          style={{ borderColor: tokens.borderColor }}
         >
           <img
             src={image_url}
@@ -259,39 +286,45 @@ function MenuItemBlock({
         <div className="flex items-start gap-3">
           <div className="min-w-0 flex-1">
             <div className="flex items-start gap-3">
-              <h3 className="menu-heading min-w-0 flex-1 text-2xl tracking-wide md:text-3xl">
+              <h3
+                className="min-w-0 flex-1 text-2xl font-semibold tracking-wide md:text-3xl"
+                style={{ fontFamily: tokens.headingFont }}
+              >
                 {name}
               </h3>
-              <PriceBadge price={displayPrice} />
+              <PriceBadge price={displayPrice} tokens={tokens} />
             </div>
           </div>
           {badge ? (
-            <span className="menu-heading shrink-0 text-xl tracking-wider">
+            <span
+              className="shrink-0 text-xl font-semibold tracking-wider"
+              style={{ fontFamily: tokens.headingFont }}
+            >
               {badge}
             </span>
           ) : null}
         </div>
         <p
           className="mt-1 whitespace-pre-line text-sm"
-          style={{ color: "var(--ds-muted)" }}
+          style={{ color: tokens.mutedColor, fontFamily: tokens.bodyFont }}
         >
           {description}
         </p>
         {sortedVariants.length ? (
           <div
             className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm"
-            style={{ color: "var(--ds-foreground)" }}
+            style={{ color: tokens.foregroundColor, fontFamily: tokens.bodyFont }}
           >
             {sortedVariants.map((variant) => (
               <span
                 key={`${name}-${variant.name}-${variant.placement_order ?? 0}`}
                 className="inline-flex items-center gap-2 rounded-full border px-3 py-1"
-                style={{ borderColor: "var(--ds-border)" }}
+                style={{ borderColor: tokens.borderColor }}
               >
                 <span className="font-semibold uppercase tracking-[0.08em]">
                   {variant.name}
                 </span>
-                <span style={{ color: "var(--ds-muted)" }}>
+                <span style={{ color: tokens.mutedColor }}>
                   {formatPesoPrice(variant.price)}
                 </span>
               </span>
@@ -347,13 +380,10 @@ function getSocialMeta(platform: string) {
       return { icon: <FaInstagram className="h-5 w-5" />, label: "Instagram" };
     case "tiktok":
       return { icon: <FaTiktok className="h-5 w-5" />, label: "TikTok" };
-    case "whatsapp":
-      return { icon: <FaWhatsapp className="h-5 w-5" />, label: "WhatsApp" };
+    case "website":
+      return { icon: <Globe className="h-4 w-4" />, label: "Website" };
     default:
-      return {
-        icon: <Globe className="h-4 w-4" />,
-        label: formatPlatformLabel(platform),
-      };
+      return null;
   }
 }
 
@@ -389,14 +419,6 @@ function getHeaderLinks(menu: MenuData) {
           href: `mailto:${menu.email.trim()}`,
           icon: <Mail className="h-4 w-4" />,
           label: "Email",
-        }
-      : null,
-    menu.whatsapp?.trim()
-      ? {
-          key: "whatsapp",
-          href: `https://wa.me/${menu.whatsapp.trim().replace(/[^\d]/g, "")}`,
-          icon: <FaWhatsapp className="h-4 w-4" />,
-          label: "WhatsApp",
         }
       : null,
   ].filter(Boolean) as {
@@ -463,16 +485,21 @@ function MenuSection({
   imageUrl,
   leftItems,
   rightItems,
+  tokens,
 }: {
   title: React.ReactNode;
   description?: string | null;
   imageUrl?: string | null;
   leftItems: MenuItem[];
   rightItems: MenuItem[];
+  tokens: MenuThemeTokens;
 }) {
   return (
     <section className="mb-12">
-      <h2 className="menu-heading mb-10 text-center text-4xl tracking-wide md:text-5xl">
+      <h2
+        className="mb-10 text-center text-4xl font-semibold tracking-wide md:text-5xl"
+        style={{ fontFamily: tokens.headingFont }}
+      >
         {title}
       </h2>
       {imageUrl || description ? (
@@ -480,7 +507,7 @@ function MenuSection({
           {imageUrl ? (
             <div
               className="h-28 w-28 flex-shrink-0 overflow-hidden rounded border"
-              style={{ borderColor: "var(--ds-border)" }}
+              style={{ borderColor: tokens.borderColor }}
             >
               <img
                 src={imageUrl}
@@ -492,7 +519,7 @@ function MenuSection({
           {description ? (
             <p
               className="max-w-2xl text-sm leading-relaxed"
-              style={{ color: "var(--ds-muted)" }}
+              style={{ color: tokens.mutedColor, fontFamily: tokens.bodyFont }}
             >
               {description}
             </p>
@@ -502,12 +529,12 @@ function MenuSection({
       <div className="grid grid-cols-1 gap-x-16 gap-y-8 md:grid-cols-2">
         <div className="space-y-8">
           {leftItems.map((item) => (
-            <MenuItemBlock key={item.name} {...item} />
+            <MenuItemBlock key={item.name} {...item} tokens={tokens} />
           ))}
         </div>
         <div className="space-y-8">
           {rightItems.map((item) => (
-            <MenuItemBlock key={item.name} {...item} />
+            <MenuItemBlock key={item.name} {...item} tokens={tokens} />
           ))}
         </div>
       </div>
@@ -545,16 +572,33 @@ export function MenuDefault({
     themeMode === "dark"
       ? { ...themeStyles.light, ...themeStyles.dark }
       : themeStyles.light;
+  const tokens: MenuThemeTokens = {
+    backgroundColor: activeTheme.background || "#050505",
+    foregroundColor: activeTheme.foreground || "#ffffff",
+    mutedColor: activeTheme["muted-foreground"] || "#cccccc",
+    borderColor: activeTheme.border || "rgba(255,255,255,0.3)",
+    badgeBackgroundColor: activeTheme.card || "#ffffff",
+    badgeForegroundColor: activeTheme["card-foreground"] || "#111111",
+    bodyFont:
+      activeTheme["font-serif"] ||
+      activeTheme["font-sans"] ||
+      "system-ui, sans-serif",
+    headingFont: activeTheme["font-sans"] || "system-ui, sans-serif",
+    metaFont:
+      activeTheme["font-mono"] ||
+      activeTheme["font-sans"] ||
+      "ui-monospace, monospace",
+  };
   const description = source.description?.trim() || "";
   const galleryImages = getGalleryImages(source);
   const coverImage = source.cover_image_url?.trim() || null;
   const qrForeground = sanitizeQrColor(
     source.qr_settings?.foreground_color,
-    sanitizeQrColor(activeTheme.foreground, "111111"),
+    sanitizeQrColor(tokens.foregroundColor, "111111"),
   );
   const qrBackground = sanitizeQrColor(
     source.qr_settings?.background_color,
-    sanitizeQrColor(activeTheme.background, "ffffff"),
+    sanitizeQrColor(tokens.backgroundColor, "ffffff"),
   );
   const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=0&color=${qrForeground}&bgcolor=${qrBackground}&data=${encodeURIComponent(
     currentUrl,
@@ -594,70 +638,22 @@ export function MenuDefault({
 
   return (
     <>
-      <style jsx global>{`
-        .menu-root {
-          background-color: var(--ds-background);
-          color: var(--ds-foreground);
-          min-height: 100vh;
-          font-family: var(--ds-font-body);
-        }
-
-        .menu-root * {
-          box-sizing: border-box;
-        }
-
-        .menu-heading {
-          font-family: var(--ds-font-display);
-        }
-
-        .menu-price-badge {
-          background-color: var(--ds-badge-background);
-          color: var(--ds-badge-foreground);
-          border-radius: 9999px;
-          width: 32px;
-          height: 32px;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          font-family: var(--ds-font-body);
-          font-weight: 700;
-          font-size: 0.875rem;
-          margin-left: 0.75rem;
-          flex-shrink: 0;
-        }
-      `}</style>
-
       <div
-        className="menu-root px-4 py-10 antialiased md:px-8"
-        style={
-          {
-            "--ds-background": activeTheme.background,
-            "--ds-foreground": activeTheme.foreground,
-            "--ds-muted": activeTheme["muted-foreground"],
-            "--ds-border": activeTheme.border,
-            "--ds-badge-background": activeTheme.card,
-            "--ds-badge-foreground": activeTheme["card-foreground"],
-            "--ds-font-body":
-              activeTheme["font-serif"] ||
-              activeTheme["font-sans"] ||
-              "system-ui, sans-serif",
-            "--ds-font-display":
-              activeTheme["font-sans"] || "system-ui, sans-serif",
-            "--ds-font-meta":
-              activeTheme["font-mono"] ||
-              activeTheme["font-sans"] ||
-              "ui-monospace, monospace",
-          } as React.CSSProperties
-        }
+        className="min-h-screen px-4 py-10 antialiased md:px-8"
+        style={{
+          backgroundColor: tokens.backgroundColor,
+          color: tokens.foregroundColor,
+          fontFamily: tokens.bodyFont,
+        }}
       >
-        <div className="mx-auto max-w-4xl">
+        <div className="mx-auto max-w-4xl [&_*]:box-border">
           <header
             className="mb-8 pb-6"
-            style={{ borderBottom: "1px solid var(--ds-border)" }}
+            style={{ borderBottom: `1px solid ${tokens.borderColor}` }}
           >
             <div
               className="relative overflow-hidden rounded-2xl border"
-              style={{ borderColor: "var(--ds-border)" }}
+              style={{ borderColor: tokens.borderColor }}
             >
               <div className="absolute right-3 top-3 z-10 flex items-center gap-2">
                 <ThemeSwitchToggle
@@ -669,10 +665,10 @@ export function MenuDefault({
                   onClick={handleShare}
                   className="inline-flex h-10 items-center gap-2 rounded-full border px-3 text-sm transition-opacity hover:opacity-80"
                   style={{
-                    borderColor: "var(--ds-border)",
+                    borderColor: tokens.borderColor,
                     backgroundColor:
-                      "color-mix(in srgb, var(--ds-background) 72%, transparent)",
-                    color: "var(--ds-foreground)",
+                      `color-mix(in srgb, ${tokens.backgroundColor} 72%, transparent)`,
+                    color: tokens.foregroundColor,
                     backdropFilter: "blur(10px)",
                   }}
                   aria-label="Share menu"
@@ -692,7 +688,7 @@ export function MenuDefault({
                   className="h-32 w-full md:h-40"
                   style={{
                     background:
-                      "linear-gradient(135deg, color-mix(in srgb, var(--ds-foreground) 10%, transparent), transparent 60%)",
+                      `linear-gradient(135deg, color-mix(in srgb, ${tokens.foregroundColor} 10%, transparent), transparent 60%)`,
                   }}
                 />
               )}
@@ -700,17 +696,17 @@ export function MenuDefault({
                 className="absolute inset-0"
                 style={{
                   background:
-                    "linear-gradient(to top, color-mix(in srgb, var(--ds-background) 88%, transparent), transparent 55%)",
+                    `linear-gradient(to top, color-mix(in srgb, ${tokens.backgroundColor} 88%, transparent), transparent 55%)`,
                 }}
               />
             </div>
 
             <div className="relative mx-auto -mt-12 flex max-w-3xl flex-col items-center px-4 text-center md:-mt-14">
               <div
-                className="relative flex h-24 w-24 flex-shrink-0 items-center justify-center rounded-full border-4 shadow-sm md:h-28 md:w-28"
+                className="relative flex h-28 w-28 flex-shrink-0 items-center justify-center rounded-full border-4 shadow-sm md:h-32 md:w-32"
                 style={{
-                  borderColor: "var(--ds-foreground)",
-                  backgroundColor: "var(--ds-background)",
+                  borderColor: tokens.foregroundColor,
+                  backgroundColor: tokens.backgroundColor,
                 }}
               >
                 {source.logo_url ? (
@@ -724,24 +720,27 @@ export function MenuDefault({
                 )}
                 <div
                   className="absolute h-1 w-full -rotate-45 transform"
-                  style={{ backgroundColor: "var(--ds-foreground)" }}
+                  style={{ backgroundColor: tokens.foregroundColor }}
                 />
               </div>
 
               <div className="mt-4">
-                <h1 className="menu-heading mb-2 text-5xl tracking-wider md:text-6xl">
+                <h1
+                  className="mb-2 text-5xl font-semibold tracking-wider md:text-6xl"
+                  style={{ fontFamily: tokens.headingFont }}
+                >
                   {source.name?.trim() || "DON'T STIR CAFE"}
                 </h1>
                 <p
                   className="text-sm tracking-wide md:text-base"
-                  style={{ color: "var(--ds-muted)" }}
+                  style={{ color: tokens.mutedColor }}
                 >
                   {headerLocation}
                 </p>
                 {description ? (
                   <p
                     className="mx-auto mt-3 max-w-xl text-sm leading-relaxed"
-                    style={{ color: "var(--ds-muted)" }}
+                    style={{ color: tokens.mutedColor }}
                   >
                     {description}
                   </p>
@@ -754,7 +753,7 @@ export function MenuDefault({
                     <div key={entry.key} className="text-center">
                       <div
                         className="text-[11px] uppercase tracking-[0.18em]"
-                        style={{ color: "var(--ds-muted)" }}
+                        style={{ color: tokens.mutedColor, fontFamily: tokens.metaFont }}
                       >
                         {entry.label}
                       </div>
@@ -769,7 +768,7 @@ export function MenuDefault({
               {headerDetails.length ? (
                 <div
                   className="mt-4 flex w-full max-w-3xl flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm"
-                  style={{ color: "var(--ds-muted)" }}
+                  style={{ color: tokens.mutedColor }}
                 >
                   {headerDetails.map((detail) => (
                     <div key={detail.key} className="flex items-center gap-2">
@@ -783,10 +782,11 @@ export function MenuDefault({
               {socials.length ? (
                 <div
                   className="mt-4 flex w-full max-w-3xl flex-wrap items-center justify-center gap-3"
-                  style={{ color: "var(--ds-muted)" }}
+                  style={{ color: tokens.mutedColor }}
                 >
                   {socials.map((social) => {
                     const meta = getSocialMeta(social.platform);
+                    if (!meta) return null;
                     return (
                       <a
                         key={`${social.platform}-${social.url}-header`}
@@ -795,8 +795,8 @@ export function MenuDefault({
                         target="_blank"
                         rel="noreferrer"
                         style={{
-                          color: "var(--ds-foreground)",
-                          borderColor: "var(--ds-border)",
+                          color: tokens.foregroundColor,
+                          borderColor: tokens.borderColor,
                         }}
                         aria-label={meta.label}
                         title={meta.label}
@@ -817,7 +817,10 @@ export function MenuDefault({
                       target="_blank"
                       rel="noreferrer"
                       className="inline-flex items-center gap-2 rounded-full border px-3 py-2 transition-opacity hover:opacity-80"
-                      style={{ color: "var(--ds-foreground)" }}
+                      style={{
+                        color: tokens.foregroundColor,
+                        borderColor: tokens.borderColor,
+                      }}
                     >
                       <span className="inline-flex h-4 w-4 items-center justify-center">
                         {link.icon}
@@ -845,7 +848,7 @@ export function MenuDefault({
                 {index > 0 ? (
                   <div
                     className="my-12 w-full"
-                    style={{ borderTop: "1px solid var(--ds-border)" }}
+                    style={{ borderTop: `1px solid ${tokens.borderColor}` }}
                   />
                 ) : null}
                 <MenuSection
@@ -854,6 +857,7 @@ export function MenuDefault({
                   imageUrl={category.image_url}
                   leftItems={leftItems}
                   rightItems={rightItems}
+                  tokens={tokens}
                 />
               </React.Fragment>
             );
@@ -863,18 +867,18 @@ export function MenuDefault({
             <div
               className="mt-8"
               style={{
-                borderTop: "1px solid var(--ds-border)",
+                borderTop: `1px solid ${tokens.borderColor}`,
                 paddingTop: "1.5rem",
               }}
             >
               <div className="mb-5">
-                <h2 className="menu-heading text-3xl tracking-wide md:text-4xl">
+                <h2
+                  className="text-3xl font-semibold tracking-wide md:text-4xl"
+                  style={{ fontFamily: tokens.headingFont }}
+                >
                   Gallery
                 </h2>
-                <p
-                  className="mt-1 text-sm"
-                  style={{ color: "var(--ds-muted)" }}
-                >
+                <p className="mt-1 text-sm" style={{ color: tokens.mutedColor }}>
                   A closer look at the space, drinks, and atmosphere.
                 </p>
               </div>
@@ -883,7 +887,7 @@ export function MenuDefault({
                   <div
                     key={`${image}-${index}`}
                     className="mb-4 break-inside-avoid overflow-hidden rounded border"
-                    style={{ borderColor: "var(--ds-border)" }}
+                    style={{ borderColor: tokens.borderColor }}
                   >
                     <img
                       src={image}
@@ -898,26 +902,26 @@ export function MenuDefault({
 
           <section
             className="mt-12 border-t px-2 pt-8"
-            style={{ borderColor: "var(--ds-border)" }}
+            style={{ borderColor: tokens.borderColor }}
           >
             <div className="grid items-center gap-6 md:grid-cols-[220px_1fr]">
-              <div
-                className="mx-auto overflow-hidden rounded-2xl border p-3"
-                style={{ borderColor: "var(--ds-border)" }}
-              >
+              <div className="mx-auto">
                 <img
                   src={qrImageUrl}
                   alt={`QR code for ${source.name || "menu"}`}
-                  className="h-[190px] w-[190px] rounded-xl object-cover"
+                  className="h-[190px] w-[190px] object-cover"
                 />
               </div>
               <div className="text-center md:text-left">
-                <h2 className="menu-heading text-3xl tracking-wide md:text-4xl">
+                <h2
+                  className="text-3xl font-semibold tracking-wide md:text-4xl"
+                  style={{ fontFamily: tokens.headingFont }}
+                >
                   Share This Menu
                 </h2>
                 <p
                   className="mt-2 max-w-xl text-sm leading-relaxed"
-                  style={{ color: "var(--ds-muted)" }}
+                  style={{ color: tokens.mutedColor }}
                 >
                   Scan the QR code to open this menu instantly on any phone, or
                   copy the link and share it with your customers.
@@ -925,8 +929,8 @@ export function MenuDefault({
                 <div
                   className="mt-4 inline-flex max-w-full items-center gap-2 rounded-full border px-4 py-2 text-sm"
                   style={{
-                    borderColor: "var(--ds-border)",
-                    color: "var(--ds-foreground)",
+                    borderColor: tokens.borderColor,
+                    color: tokens.foregroundColor,
                   }}
                 >
                   <Globe className="h-4 w-4 flex-shrink-0" />
@@ -938,21 +942,21 @@ export function MenuDefault({
 
           <footer
             className="mt-12 border-t-4 pt-10 pb-10 text-center"
-            style={{ borderColor: "var(--ds-border)" }}
+            style={{ borderColor: tokens.borderColor }}
           >
             <div className="flex flex-col items-center justify-center gap-6 px-4">
               <div className="space-y-1">
                 <p
                   className="text-sm font-bold uppercase"
-                  style={{ color: "var(--ds-foreground)" }}
+                  style={{ color: tokens.foregroundColor, fontFamily: tokens.headingFont }}
                 >
                   © {new Date().getFullYear()} {source.name?.trim() || "Menu"}.
                 </p>
                 <p
                   className="text-xs"
                   style={{
-                    color: "var(--ds-muted)",
-                    fontFamily: "var(--ds-font-meta)",
+                    color: tokens.mutedColor,
+                    fontFamily: tokens.metaFont,
                   }}
                 >
                   All rights reserved. Made with{" "}
@@ -962,22 +966,22 @@ export function MenuDefault({
 
               <div
                 className="h-1 w-12"
-                style={{ backgroundColor: "var(--ds-foreground)" }}
+                style={{ backgroundColor: tokens.foregroundColor }}
               />
 
               <div className="flex flex-col items-center gap-3">
                 <div className="flex flex-col items-center gap-1">
                   <span
                     className="flex items-center gap-1.5 text-xs font-black uppercase tracking-widest"
-                    style={{ color: "var(--ds-foreground)" }}
+                    style={{ color: tokens.foregroundColor, fontFamily: tokens.headingFont }}
                   >
                     <span className="text-amber-400">✨</span> Powered by Kislap
                   </span>
                   <p
                     className="text-[10px] uppercase tracking-widest"
                     style={{
-                      color: "var(--ds-muted)",
-                      fontFamily: "var(--ds-font-meta)",
+                      color: tokens.mutedColor,
+                      fontFamily: tokens.metaFont,
                     }}
                   >
                     Transform your forms into beautiful websites
@@ -990,7 +994,7 @@ export function MenuDefault({
                     target="_blank"
                     rel="noreferrer"
                     className="border-2 border-transparent p-1 transition-colors hover:border-current hover:opacity-80"
-                    style={{ color: "var(--ds-foreground)" }}
+                    style={{ color: tokens.foregroundColor, fontFamily: tokens.headingFont }}
                     title="Kislap Github"
                   >
                     <Github className="h-4 w-4" />
@@ -1000,7 +1004,7 @@ export function MenuDefault({
                     target="_blank"
                     rel="noreferrer"
                     className="border-2 border-transparent p-1 transition-colors hover:border-current hover:opacity-80"
-                    style={{ color: "var(--ds-foreground)" }}
+                    style={{ color: tokens.foregroundColor, fontFamily: tokens.headingFont }}
                     title="Kislap Website"
                   >
                     <Globe className="h-4 w-4" />
@@ -1010,7 +1014,7 @@ export function MenuDefault({
                     target="_blank"
                     rel="noreferrer"
                     className="border-2 border-transparent p-1 transition-colors hover:border-current hover:opacity-80"
-                    style={{ color: "var(--ds-foreground)" }}
+                    style={{ color: tokens.foregroundColor, fontFamily: tokens.headingFont }}
                     title="Kislap Facebook"
                   >
                     <FaFacebookF className="h-4 w-4" />
@@ -1024,3 +1028,4 @@ export function MenuDefault({
     </>
   );
 }
+

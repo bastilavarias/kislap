@@ -78,10 +78,8 @@ type MenuResponse struct {
 	Phone         *string `json:"phone"`
 	Email         *string `json:"email"`
 	WebsiteURL    *string `json:"website_url"`
-	WhatsApp      *string `json:"whatsapp"`
 	Address       *string `json:"address"`
 	City          *string `json:"city"`
-	Country       *string `json:"country"`
 	GoogleMapsURL *string `json:"google_maps_url"`
 	Categories []struct {
 		Name        string  `json:"name"`

@@ -89,3 +89,9 @@ ext build --turbopack in pps/web-builder is currently blocked by pre-existing u
 - 2026-03-22 [CODE] Deleted `menu-live-preview.tsx` and `menu-preview-mapper.ts`, removed preview dialog/button wiring from menu `form-header.tsx`, and removed preview-related context/layout props from the menu builder.
 - 2026-03-22 [TOOL] `npm run build` passed in `apps/web-builder` after removing the menu live preview feature.
 
+- 2026-03-28 [CODE] Menu cleanup pass removed `whatsapp`, `country`, `tripadvisor`, `google-reviews`, and legacy `currency` from menu builder/API/parser/template paths; menu dashboard was simplified; and new one-file templates `menu-editorial` + `menu-showcase` were added and wired through builder/web-sites.
+- 2026-03-28 [TOOL] `npm run build` passed in `apps/web-sites` and `apps/web-builder` using `C:\laragon\bin\nodejs\node-v22\npm.cmd` after the menu cleanup and extra template pass.
+
+- 2026-03-28 [CODE] Menu layout selector now mirrors portfolio/linktree with icon-first cards and no fake previews; added three new menu templates: menu-bistro, menu-runway, and menu-mosaic, all wired through web-builder selection and web-sites rendering.
+- 2026-03-28 [TOOL] Verified both app builds after selector/template expansion: apps/web-sites and apps/web-builder passed.
+

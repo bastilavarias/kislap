@@ -169,10 +169,8 @@ Follow this schema:
   "phone": "string",
   "email": "string",
   "website_url": "string",
-  "whatsapp": "string",
   "address": "string",
   "city": "string",
-  "country": "string",
   "google_maps_url": "string",
   "categories": [
     {

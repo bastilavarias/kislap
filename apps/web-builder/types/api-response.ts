@@ -507,10 +507,8 @@ export interface APIResponseMenu {
   phone?: string | null;
   email?: string | null;
   website_url?: string | null;
-  whatsapp?: string | null;
   address?: string | null;
   city?: string | null;
-  country?: string | null;
   google_maps_url?: string | null;
   layout_name?: string | null;
   theme_name?: string | null;

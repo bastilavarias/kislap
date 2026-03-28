@@ -1,12 +1,11 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { Activity, ChevronLeft, ChevronRight, Eye, MousePointerClick, Shapes, TrendingUp, Users } from 'lucide-react';
+import { Activity, ChevronLeft, ChevronRight, Eye, MousePointerClick, TrendingUp, Users } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { usePageActivity } from '@/hooks/api/use-page-activity';
-import { APIResponseDashboardStats, APIResponsePageActivity, APIResponsePageVisit, APIResponseTopLink } from '@/types/api-response';
-import { ActivityBarChart } from './activity-bar-chart';
+import { APIResponseDashboardStats, APIResponsePageActivity, APIResponsePageVisit } from '@/types/api-response';
 
 const VISITS_PER_PAGE = 8;
 const ACTIVITIES_PER_PAGE = 6;
@@ -36,9 +35,8 @@ function Pagination({ page, totalPages, onChange }: { page: number; totalPages: 
 }
 
 export function Dashboard({ projectID }: { projectID?: number }) {
-  const { getOverview, getTopLinks, getVisits, getRecentActivities } = usePageActivity();
+  const { getOverview, getVisits, getRecentActivities } = usePageActivity();
   const [stats, setStats] = useState<APIResponseDashboardStats>({ total_views: 0, total_clicks: 0, unique_visitors: 0 });
-  const [topLinks, setTopLinks] = useState<APIResponseTopLink[]>([]);
   const [visits, setVisits] = useState<APIResponsePageVisit[]>([]);
   const [activities, setActivities] = useState<APIResponsePageActivity[]>([]);
   const [visitsPage, setVisitsPage] = useState(1);
@@ -52,12 +50,6 @@ export function Dashboard({ projectID }: { projectID?: number }) {
     if (!projectID) return;
     const { success, data } = await getOverview(projectID);
     if (success && data) setStats(data);
-  };
-
-  const loadTopLinks = async () => {
-    if (!projectID) return;
-    const { success, data } = await getTopLinks(projectID, 10);
-    if (success && data) setTopLinks(data);
   };
 
   const loadVisits = async (page: number) => {
@@ -78,31 +70,12 @@ export function Dashboard({ projectID }: { projectID?: number }) {
     }
   };
 
-  const topItems = useMemo(() => topLinks.filter((item) => item.page_url.startsWith('menu-item:')).slice(0, 5), [topLinks]);
-  const topCategories = useMemo(() => topLinks.filter((item) => item.page_url.startsWith('menu-category:')).slice(0, 5), [topLinks]);
   const ctr = useMemo(() => (stats.total_views ? Number(((stats.total_clicks / stats.total_views) * 100).toFixed(1)) : 0), [stats.total_clicks, stats.total_views]);
-  const activityPoints = useMemo(() => {
-    const grouped = activities.reduce<Record<string, number>>((acc, activity) => {
-      const label = new Date(activity.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-      acc[label] = (acc[label] || 0) + 1;
-      return acc;
-    }, {});
-
-    return Object.entries(grouped).map(([label, value]) => ({ label, value })).slice(-6);
-  }, [activities]);
-  const clickSplitPoints = useMemo(
-    () => [
-      { label: 'Items', value: topItems.reduce((sum, item) => sum + item.click_count, 0) },
-      { label: 'Categories', value: topCategories.reduce((sum, item) => sum + item.click_count, 0) },
-    ],
-    [topCategories, topItems]
-  );
 
   useEffect(() => {
     if (!projectID) return;
     void Promise.all([
       loadOverview(),
-      loadTopLinks(),
       loadVisits(1),
       loadRecentActivities(1),
     ]);
@@ -129,56 +102,6 @@ export function Dashboard({ projectID }: { projectID?: number }) {
             </CardContent>
           </Card>
         ))}
-      </div>
-
-      <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
-        <Card className="shadow-sm">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-base">
-              <MousePointerClick className="h-4 w-4" />
-              Top Clicked Items
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {topItems.length ? topItems.map((item) => (
-              <div key={item.page_url} className="flex items-center justify-between rounded-lg border bg-muted/20 px-4 py-3">
-                <div>
-                  <p className="text-sm font-medium">{formatTrackedLabel(item.page_url)}</p>
-                  <p className="text-xs text-muted-foreground">Last clicked {new Date(item.last_clicked_at).toLocaleString()}</p>
-                </div>
-                <p className="text-lg font-bold">{item.click_count}</p>
-              </div>
-            )) : <div className="rounded-lg border border-dashed p-6 text-sm text-muted-foreground">No item-click data yet.</div>}
-          </CardContent>
-        </Card>
-
-        <Card className="shadow-sm">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-base">
-              <Shapes className="h-4 w-4" />
-              Top Clicked Categories
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {topCategories.length ? topCategories.map((item) => (
-              <div key={item.page_url} className="flex items-center justify-between rounded-lg border bg-muted/20 px-4 py-3">
-                <div>
-                  <p className="text-sm font-medium">{formatTrackedLabel(item.page_url)}</p>
-                  <p className="text-xs text-muted-foreground">Last clicked {new Date(item.last_clicked_at).toLocaleString()}</p>
-                </div>
-                <p className="text-lg font-bold">{item.click_count}</p>
-              </div>
-            )) : <div className="rounded-lg border border-dashed p-6 text-sm text-muted-foreground">No category-click data yet.</div>}
-          </CardContent>
-        </Card>
-      </div>
-
-      <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
-        <ActivityBarChart
-          title="Recent Activity Volume"
-          points={activityPoints.length ? activityPoints : [{ label: 'No data', value: 0 }]}
-        />
-        <ActivityBarChart title="Click Split" points={clickSplitPoints} />
       </div>
 
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1fr_0.9fr]">

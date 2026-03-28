@@ -11,14 +11,7 @@ interface Props {
 }
 
 function toLabel(platform: string) {
-  switch (platform) {
-    case 'google-reviews':
-      return 'Google Reviews';
-    case 'tripadvisor':
-      return 'TripAdvisor';
-    default:
-      return platform.charAt(0).toUpperCase() + platform.slice(1);
-  }
+  return platform.charAt(0).toUpperCase() + platform.slice(1);
 }
 
 export function SocialLinksEditor({ formMethods }: Props) {
@@ -30,7 +23,7 @@ export function SocialLinksEditor({ formMethods }: Props) {
       <div>
         <div className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-primary">
           <Globe2 className="h-4 w-4" />
-          Social & Reviews
+          Social Links
         </div>
         <p className="mt-1 text-sm text-muted-foreground">
           Add the links customers are most likely to open from your menu.

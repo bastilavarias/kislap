@@ -56,10 +56,8 @@ func (s *Service) Save(payload Payload) (*models.Menu, error) {
 	menu.Phone = payload.Phone
 	menu.Email = payload.Email
 	menu.WebsiteURL = payload.WebsiteURL
-	menu.WhatsApp = payload.WhatsApp
 	menu.Address = payload.Address
 	menu.City = payload.City
-	menu.Country = payload.Country
 	menu.GoogleMapsURL = payload.GoogleMapsURL
 	menu.LayoutName = &payload.LayoutName
 	menu.ThemeName = themeName
