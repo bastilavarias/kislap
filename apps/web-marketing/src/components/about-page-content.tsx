@@ -50,10 +50,11 @@ export function AboutPageContent() {
               variants={itemVariants}
               className="text-xl text-muted-foreground leading-relaxed max-w-2xl"
             >
-              Kislap isn't just a website builder. It's a canvas for your
-              career. We believe every developer, designer, and founder deserves
-              a world class portfolio without the headache of coding it from
-              scratch.
+              Kislap is a focused publishing tool for people who want to launch
+              a strong public page without wrestling with a full website stack.
+              Whether you are building a portfolio, a link-in-bio page, or a
+              digital menu, the goal stays the same: publish something polished
+              fast.
             </motion.p>
           </motion.div>
         </div>
@@ -142,8 +143,8 @@ export function AboutPageContent() {
                   </div>
                   <h3 className="text-2xl font-bold">Design First</h3>
                   <p className="text-muted-foreground">
-                    We sweat the details—typography, spacing, and animations—so
-                    you don't have to.
+                    We sweat the details: typography, spacing, and motion, so
+                    you do not have to.
                   </p>
                 </div>
               </div>
@@ -202,7 +203,7 @@ export function AboutPageContent() {
               <div className="relative w-64 h-64 md:w-80 md:h-80 rounded-2xl overflow-hidden bg-gradient-to-br from-primary/20 to-purple-500/20 shadow-2xl rotate-3 hover:rotate-0 transition-transform duration-500 ring-1 ring-white/10">
                 <img
                   src="https://avatars.githubusercontent.com/u/24890911?v=4"
-                  alt="Sebastian Curtis Lavarias"
+                  alt="Juan Delacruz"
                   className="object-cover w-full h-full"
                   loading="lazy"
                 />
@@ -216,17 +217,17 @@ export function AboutPageContent() {
               transition={{ duration: 0.6 }}
               className="w-full md:w-2/3 space-y-6 text-center md:text-left"
             >
-              <h2 className="text-3xl md:text-4xl font-bold">Built with ❤️</h2>
+              <h2 className="text-3xl md:text-4xl font-bold">Built with heart</h2>
               <p className="text-lg text-muted-foreground leading-relaxed">
                 "I started Kislap because I was tired of spending weekends
-                fighting with CSS just to update my portfolio. I wanted a tool
-                that felt like magic—something that respected my time as a
-                builder but delivered the polish of a professional designer.
-                Soon, Kislap will also serve business owners who want an online
-                presence and founders to kickstart their product!"
+                fighting with CSS just to update what I wanted people to see. I
+                wanted a tool that respected my time, gave me a strong starting
+                point, and still felt polished when it went live. That is the
+                standard we are building around for portfolios, link pages, and
+                digital menus."
               </p>
               <div>
-                <h4 className="font-bold text-xl">Sebastian Curtis Lavarias</h4>
+                <h4 className="font-bold text-xl">Juan Delacruz</h4>
                 <p className="text-muted-foreground">~ Pasimuno</p>
               </div>
             </motion.div>
@@ -280,3 +281,6 @@ export function AboutPageContent() {
     </div>
   );
 }
+
+
+

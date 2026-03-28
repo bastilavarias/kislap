@@ -52,8 +52,8 @@ export function LandingPageContent() {
             variants={fadeIn}
             className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-8 bg-clip-text text-transparent bg-gradient-to-b from-foreground to-foreground/70"
           >
-            Turn simple forms into <br />
-            <span className="text-primary">stunning websites.</span>
+            Build your portfolio, <br />
+            <span className="text-primary">link page, or menu fast.</span>
           </motion.h1>
 
           <motion.p
@@ -64,8 +64,8 @@ export function LandingPageContent() {
           >
             No drag and drop chaos. No design skills needed.{" "}
             <br className="hidden md:block" />
-            Just fill in the blanks, and Kislap generates a high performance
-            site instantly.
+            Pick the right builder, fill the form, and publish a polished page
+            that is ready to share.
           </motion.p>
 
           <motion.div
@@ -149,7 +149,7 @@ export function LandingPageContent() {
                           Full Name
                         </label>
                         <div className="h-9 w-full rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-3 flex items-center text-sm font-medium text-foreground shadow-sm">
-                          Sebastian Curtis Lavarias
+                          Juan Delacruz
                         </div>
                       </div>
 
@@ -208,7 +208,7 @@ export function LandingPageContent() {
                     <div className="w-2.5 h-2.5 rounded-full bg-zinc-300" />
                   </div>
                   <div className="bg-zinc-100 dark:bg-zinc-800 rounded-md px-3 py-1 text-[10px] text-zinc-500 font-mono flex items-center gap-1.5">
-                    <Globe className="w-3 h-3" /> sebastech.kislap.app
+                    <Globe className="w-3 h-3" /> juandelacruz.kislap.app
                   </div>
                 </div>
 
@@ -220,14 +220,14 @@ export function LandingPageContent() {
                           className="w-full h-full bg-cover"
                           style={{
                             backgroundImage:
-                              "url('https://api.dicebear.com/9.x/avataaars/svg?seed=Sebastian')",
+                              "url('https://api.dicebear.com/9.x/avataaars/svg?seed=JuanDelacruz')",
                           }}
                         />
                       </div>
                       <div className="space-y-1">
                         <div className="bg-pink-100 border-2 border-black px-3 py-1 inline-block shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] mb-1">
                           <h2 className="text-lg font-black uppercase tracking-tighter text-black leading-none">
-                            Sebastian Curtis Lavarias
+                            Juan Delacruz
                           </h2>
                         </div>
                         <div className="text-xs font-bold font-mono text-zinc-600 flex items-center gap-1">
@@ -537,7 +537,7 @@ export function LandingPageContent() {
             </ul>
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium text-muted-foreground">
-                Best for job seekers, creatives, and freelancers
+                Best for job seekers, freelancers, and creative professionals
               </span>
               <Button asChild variant="outline" className="rounded-full">
                 <a href="/portfolio-builder">
@@ -701,3 +701,5 @@ export function LandingPageContent() {
     </div>
   );
 }
+
+
