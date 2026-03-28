@@ -95,3 +95,11 @@ ext build --turbopack in pps/web-builder is currently blocked by pre-existing u
 - 2026-03-28 [CODE] Menu layout selector now mirrors portfolio/linktree with icon-first cards and no fake previews; added three new menu templates: menu-bistro, menu-runway, and menu-mosaic, all wired through web-builder selection and web-sites rendering.
 - 2026-03-28 [TOOL] Verified both app builds after selector/template expansion: apps/web-sites and apps/web-builder passed.
 
+
+- 2026-03-29 [USER] User plans to switch later to the web-marketing repo after the current menu/template work.
+
+
+- 2026-03-29 [CODE] SEO for public sites is now centralized in apps/web-sites/lib/site-seo.ts with type-aware metadata and JSON-LD for portfolio, linktree, and menu; apps/web-sites/app/sites/[site]/page.tsx now uses request-aware canonical/live URLs and injects structured data.
+- 2026-03-29 [TOOL] 
+pm run build passed in apps/web-sites after the SEO/structured-data pass.
+
