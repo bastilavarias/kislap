@@ -24,7 +24,6 @@ type Menu struct {
 	City          *string          `gorm:"column:city;size:120" json:"city"`
 	Country       *string          `gorm:"column:country;size:120" json:"country"`
 	GoogleMapsURL *string          `gorm:"column:google_maps_url;type:text" json:"google_maps_url"`
-	Currency      *string          `gorm:"column:currency;size:10;default:PHP" json:"currency"`
 	LayoutName    *string          `gorm:"column:layout_name;size:255;default:menu-default" json:"layout_name"`
 	ThemeName     *string          `gorm:"column:theme_name;size:255;default:default" json:"theme_name"`
 	ThemeObject   *json.RawMessage `gorm:"column:theme_object;type:json" json:"theme_object"`

@@ -174,7 +174,6 @@ Follow this schema:
   "city": "string",
   "country": "string",
   "google_maps_url": "string",
-  "currency": "string",
   "categories": [
     {
       "name": "string",

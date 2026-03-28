@@ -18,7 +18,8 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { MenuFormValues } from '@/lib/schemas/menu';
-import { ImageUploadField } from './image-upload-field';
+import { ImageUploadField } from '../image-upload-field';
+import { VariantsEditor } from './variants-editor';
 
 interface Props {
   formMethods: UseFormReturn<MenuFormValues>;
@@ -49,6 +50,7 @@ export function ItemsEditor({ formMethods, fieldArray }: Props) {
       image: null,
       image_url: '',
       badge: '',
+      variants: [],
       placement_order: fields.length,
       is_available: true,
       is_featured: false,
@@ -72,9 +74,14 @@ export function ItemsEditor({ formMethods, fieldArray }: Props) {
               const name = watch(`items.${index}.name`);
               const price = watch(`items.${index}.price`);
               const categoryKey = watch(`items.${index}.category_key`);
+              const variants = watch(`items.${index}.variants`) || [];
               const categoryLabel =
                 categoryOptions.find((category) => category.value === categoryKey)?.label ||
                 'Uncategorized';
+              const defaultVariant = variants.find((variant) => variant.is_default) || variants[0];
+              const priceLabel = variants.length
+                ? `Starts at ${defaultVariant?.price || price}`
+                : price;
 
               return (
                 <div className="flex items-center justify-between rounded-lg border bg-card p-3 transition-colors hover:bg-muted/30">
@@ -82,7 +89,8 @@ export function ItemsEditor({ formMethods, fieldArray }: Props) {
                     <p className="truncate font-medium">{name || 'Untitled item'}</p>
                     <p className="text-xs text-muted-foreground">
                       {categoryLabel}
-                      {price ? ` • ${price}` : ''}
+                      {priceLabel ? ` | ${priceLabel}` : ''}
+                      {variants.length ? ` | ${variants.length} variants` : ''}
                     </p>
                   </div>
                   <div className="flex items-center gap-1">
@@ -118,14 +126,16 @@ export function ItemsEditor({ formMethods, fieldArray }: Props) {
       </div>
 
       <Dialog open={editIndex !== null} onOpenChange={(open) => !open && setEditIndex(null)}>
-        <DialogContent className="sm:max-w-[720px] max-h-[85vh] overflow-y-auto">
+        <DialogContent className="sm:max-w-[780px] max-h-[85vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>{editIndex === null ? 'Item' : 'Edit Item'}</DialogTitle>
-            <DialogDescription>Single-price item now, flexible variants later.</DialogDescription>
+            <DialogDescription>
+              Use a base price for simple items, or add flexible variants for sizes and drink types.
+            </DialogDescription>
           </DialogHeader>
 
           {editIndex !== null && (
-            <div className="grid gap-6 py-4 md:grid-cols-[1fr_220px]">
+            <div className="grid items-start gap-6 py-4 md:grid-cols-[1fr_220px]">
               <div className="space-y-4">
                 <div className="grid gap-4 md:grid-cols-2">
                   <div>
@@ -137,10 +147,10 @@ export function ItemsEditor({ formMethods, fieldArray }: Props) {
                     />
                   </div>
                   <div>
-                    <Label className="mb-2 block">Price</Label>
+                    <Label className="mb-2 block">Base / Starting Price</Label>
                     <Input
                       {...register(`items.${editIndex}.price`)}
-                      placeholder="₱480"
+                      placeholder="PHP 480"
                       className="shadow-none"
                     />
                   </div>
@@ -186,6 +196,8 @@ export function ItemsEditor({ formMethods, fieldArray }: Props) {
                   />
                 </div>
 
+                <VariantsEditor formMethods={formMethods} itemIndex={editIndex} />
+
                 <div className="grid gap-3 md:grid-cols-2">
                   <div className="rounded-lg border p-3">
                     <div className="flex items-center justify-between gap-3">
@@ -214,7 +226,7 @@ export function ItemsEditor({ formMethods, fieldArray }: Props) {
                 </div>
               </div>
 
-              <div className="rounded-lg border bg-muted/20 p-4">
+              <div className="self-start rounded-lg border bg-muted/20 p-4">
                 <Label className="mb-3 block text-sm font-medium">Item Image</Label>
                 <ImageUploadField
                   id={`item-image-${editIndex}`}
@@ -239,3 +251,4 @@ export function ItemsEditor({ formMethods, fieldArray }: Props) {
     </>
   );
 }
+

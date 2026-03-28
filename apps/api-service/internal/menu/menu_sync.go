@@ -104,6 +104,7 @@ func (s *Service) syncItems(tx *gorm.DB, menuID uint64, projectID int64, request
 		item.Description = request.Description
 		item.Badge = request.Badge
 		item.Price = request.Price
+		item.Variants = mapVariantRequests(request.Variants)
 		item.PlacementOrder = request.PlacementOrder
 		item.IsAvailable = request.IsAvailable
 		item.IsFeatured = request.IsFeatured
@@ -119,4 +120,22 @@ func (s *Service) syncItems(tx *gorm.DB, menuID uint64, projectID int64, request
 		query = query.Where("id NOT IN ?", keepIDs)
 	}
 	return query.Delete(&models.MenuItem{}).Error
+}
+
+func mapVariantRequests(requests []MenuItemVariantRequest) []models.MenuItemVariant {
+	if len(requests) == 0 {
+		return nil
+	}
+
+	variants := make([]models.MenuItemVariant, 0, len(requests))
+	for _, request := range requests {
+		variants = append(variants, models.MenuItemVariant{
+			Name:           request.Name,
+			Price:          request.Price,
+			IsDefault:      request.IsDefault,
+			PlacementOrder: request.PlacementOrder,
+		})
+	}
+
+	return variants
 }

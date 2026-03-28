@@ -83,7 +83,6 @@ type MenuResponse struct {
 	City          *string `json:"city"`
 	Country       *string `json:"country"`
 	GoogleMapsURL *string `json:"google_maps_url"`
-	Currency      *string `json:"currency"`
 	Categories []struct {
 		Name        string  `json:"name"`
 		Description *string `json:"description"`

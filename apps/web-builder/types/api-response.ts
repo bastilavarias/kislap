@@ -485,6 +485,12 @@ export interface APIResponseMenuItem {
   image_url?: string | null;
   badge?: string | null;
   price: string;
+  variants?: {
+    name: string;
+    price: string;
+    is_default: boolean;
+    placement_order: number;
+  }[] | null;
   placement_order: number;
   is_available: boolean;
   is_featured: boolean;
@@ -506,7 +512,6 @@ export interface APIResponseMenu {
   city?: string | null;
   country?: string | null;
   google_maps_url?: string | null;
-  currency?: string | null;
   layout_name?: string | null;
   theme_name?: string | null;
   theme_object: APIResponseThemeObject;

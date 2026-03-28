@@ -2,10 +2,16 @@
 
 import React from "react";
 import { Mode } from "@/contexts/settings-context";
-import { FaFacebookF, FaInstagram, FaTiktok, FaWhatsapp } from "react-icons/fa6";
-import { Globe, Mail, MapPin, Phone, Share2 } from "lucide-react";
+import {
+  FaFacebookF,
+  FaInstagram,
+  FaTiktok,
+  FaWhatsapp,
+} from "react-icons/fa6";
+import { Github, Globe, Mail, MapPin, Phone, Share2 } from "lucide-react";
 import { ThemeStyles } from "@/types/theme";
 import { ThemeSwitchToggle } from "../theme-switch-toggle";
+import { KISLAP_LINKS } from "../shared/kislap-links";
 import {
   formatHoursLabel,
   formatMenuLocation,
@@ -29,6 +35,7 @@ type MenuItem = {
   description: string;
   badge?: string;
   image_url?: string | null;
+  variants?: MenuItemData["variants"];
 };
 
 const ICED_LEFT: MenuItem[] = [
@@ -106,7 +113,7 @@ const NON_LEFT: MenuItem[] = [
     name: "MISO CARAMEL MATCHA",
     price: "100",
     description:
-      "\"What's that weird taste? Is it the matcha?\"\n\"No, sir-no. It is the matcha.\"",
+      '"What\'s that weird taste? Is it the matcha?"\n"No, sir-no. It is the matcha."',
   },
   {
     name: "SEASALT SPANISH MATCHA",
@@ -144,9 +151,7 @@ const FALLBACK_MENU: MenuData = {
   address: "1182 ALC Bldg. S.H Loyola St. Sampaloc Manila",
   city: "",
   country: "",
-  business_hours: [
-    { day: "monday", open: "5PM", close: "3AM", closed: false },
-  ],
+  business_hours: [{ day: "monday", open: "5PM", close: "3AM", closed: false }],
   social_links: [
     { platform: "facebook", url: "#" },
     { platform: "instagram", url: "#" },
@@ -201,10 +206,41 @@ const FALLBACK_MENU: MenuData = {
 };
 
 function PriceBadge({ price }: { price: string }) {
-  return <span className="ds-price-badge">{price}</span>;
+  return <span className="menu-price-badge">{price}</span>;
 }
 
-function MenuItemBlock({ name, price, description, badge, image_url }: MenuItem) {
+function formatPesoPrice(value?: string | null) {
+  const trimmed = value?.trim();
+  if (!trimmed) return "";
+  if (/^[₱P$]/i.test(trimmed)) return trimmed;
+  return `₱${trimmed}`;
+}
+
+function getSortedVariants(variants?: MenuItemData["variants"]) {
+  return [...(variants ?? [])].sort(
+    (a, b) => (a.placement_order ?? 0) - (b.placement_order ?? 0),
+  );
+}
+
+function getDisplayPrice(price: string, variants?: MenuItemData["variants"]) {
+  const sortedVariants = getSortedVariants(variants);
+  const defaultVariant =
+    sortedVariants.find((variant) => variant.is_default) ?? sortedVariants[0];
+
+  return defaultVariant?.price?.trim() || price;
+}
+
+function MenuItemBlock({
+  name,
+  price,
+  description,
+  badge,
+  image_url,
+  variants,
+}: MenuItem) {
+  const sortedVariants = getSortedVariants(variants);
+  const displayPrice = getDisplayPrice(price, sortedVariants);
+
   return (
     <div className="flex gap-4">
       {image_url ? (
@@ -220,11 +256,19 @@ function MenuItemBlock({ name, price, description, badge, image_url }: MenuItem)
         </div>
       ) : null}
       <div className="min-w-0 flex-1">
-        <div className="flex flex-wrap items-center gap-y-2">
-          <h3 className="ds-bebas text-2xl tracking-wide md:text-3xl">{name}</h3>
-          <PriceBadge price={price} />
+        <div className="flex items-start gap-3">
+          <div className="min-w-0 flex-1">
+            <div className="flex items-start gap-3">
+              <h3 className="menu-heading min-w-0 flex-1 text-2xl tracking-wide md:text-3xl">
+                {name}
+              </h3>
+              <PriceBadge price={displayPrice} />
+            </div>
+          </div>
           {badge ? (
-            <span className="ds-bebas ml-4 text-xl tracking-wider">{badge}</span>
+            <span className="menu-heading shrink-0 text-xl tracking-wider">
+              {badge}
+            </span>
           ) : null}
         </div>
         <p
@@ -233,6 +277,27 @@ function MenuItemBlock({ name, price, description, badge, image_url }: MenuItem)
         >
           {description}
         </p>
+        {sortedVariants.length ? (
+          <div
+            className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm"
+            style={{ color: "var(--ds-foreground)" }}
+          >
+            {sortedVariants.map((variant) => (
+              <span
+                key={`${name}-${variant.name}-${variant.placement_order ?? 0}`}
+                className="inline-flex items-center gap-2 rounded-full border px-3 py-1"
+                style={{ borderColor: "var(--ds-border)" }}
+              >
+                <span className="font-semibold uppercase tracking-[0.08em]">
+                  {variant.name}
+                </span>
+                <span style={{ color: "var(--ds-muted)" }}>
+                  {formatPesoPrice(variant.price)}
+                </span>
+              </span>
+            ))}
+          </div>
+        ) : null}
       </div>
     </div>
   );
@@ -253,7 +318,7 @@ function getCategoryItems(menu: MenuData, category: MenuCategory) {
   return [...(menu.items ?? [])]
     .filter(
       (item) =>
-        item.menu_category_id === category.id && item.is_available !== false
+        item.menu_category_id === category.id && item.is_available !== false,
     )
     .sort((a, b) => (a.placement_order ?? 0) - (b.placement_order ?? 0));
 }
@@ -285,37 +350,78 @@ function getSocialMeta(platform: string) {
     case "whatsapp":
       return { icon: <FaWhatsapp className="h-5 w-5" />, label: "WhatsApp" };
     default:
-      return { icon: <Globe className="h-4 w-4" />, label: formatPlatformLabel(platform) };
+      return {
+        icon: <Globe className="h-4 w-4" />,
+        label: formatPlatformLabel(platform),
+      };
   }
 }
 
 function getHeaderLinks(menu: MenuData) {
   return [
     menu.website_url?.trim()
-      ? { key: "website", href: menu.website_url.trim(), icon: <Globe className="h-4 w-4" />, label: "Website" }
+      ? {
+          key: "website",
+          href: menu.website_url.trim(),
+          icon: <Globe className="h-4 w-4" />,
+          label: "Website",
+        }
       : null,
     menu.google_maps_url?.trim()
-      ? { key: "map", href: menu.google_maps_url.trim(), icon: <MapPin className="h-4 w-4" />, label: "Map" }
+      ? {
+          key: "map",
+          href: menu.google_maps_url.trim(),
+          icon: <MapPin className="h-4 w-4" />,
+          label: "Map",
+        }
       : null,
     menu.phone?.trim()
-      ? { key: "phone", href: `tel:${menu.phone.trim()}`, icon: <Phone className="h-4 w-4" />, label: "Call" }
+      ? {
+          key: "phone",
+          href: `tel:${menu.phone.trim()}`,
+          icon: <Phone className="h-4 w-4" />,
+          label: "Call",
+        }
       : null,
     menu.email?.trim()
-      ? { key: "email", href: `mailto:${menu.email.trim()}`, icon: <Mail className="h-4 w-4" />, label: "Email" }
+      ? {
+          key: "email",
+          href: `mailto:${menu.email.trim()}`,
+          icon: <Mail className="h-4 w-4" />,
+          label: "Email",
+        }
       : null,
     menu.whatsapp?.trim()
-      ? { key: "whatsapp", href: `https://wa.me/${menu.whatsapp.trim().replace(/[^\d]/g, "")}`, icon: <FaWhatsapp className="h-4 w-4" />, label: "WhatsApp" }
+      ? {
+          key: "whatsapp",
+          href: `https://wa.me/${menu.whatsapp.trim().replace(/[^\d]/g, "")}`,
+          icon: <FaWhatsapp className="h-4 w-4" />,
+          label: "WhatsApp",
+        }
       : null,
-  ].filter(Boolean) as { key: string; href: string; icon: React.ReactNode; label: string }[];
+  ].filter(Boolean) as {
+    key: string;
+    href: string;
+    icon: React.ReactNode;
+    label: string;
+  }[];
 }
 
 function getHeaderDetails(menu: MenuData) {
   return [
     menu.phone?.trim()
-      ? { key: "phone", icon: <Phone className="h-4 w-4" />, value: menu.phone.trim() }
+      ? {
+          key: "phone",
+          icon: <Phone className="h-4 w-4" />,
+          value: menu.phone.trim(),
+        }
       : null,
     menu.email?.trim()
-      ? { key: "email", icon: <Mail className="h-4 w-4" />, value: menu.email.trim() }
+      ? {
+          key: "email",
+          icon: <Mail className="h-4 w-4" />,
+          value: menu.email.trim(),
+        }
       : null,
   ].filter(Boolean) as { key: string; icon: React.ReactNode; value: string }[];
 }
@@ -324,6 +430,12 @@ function getGalleryImages(menu: MenuData) {
   return (menu.gallery_images ?? [])
     .map((image) => image?.trim())
     .filter(Boolean) as string[];
+}
+
+function sanitizeQrColor(value?: string | null, fallback = "111111") {
+  const trimmed = value?.trim();
+  if (!trimmed) return fallback;
+  return trimmed.replace("#", "");
 }
 
 function LogoMark() {
@@ -360,7 +472,7 @@ function MenuSection({
 }) {
   return (
     <section className="mb-12">
-      <h2 className="ds-bebas mb-10 text-center text-4xl tracking-wide md:text-5xl">
+      <h2 className="menu-heading mb-10 text-center text-4xl tracking-wide md:text-5xl">
         {title}
       </h2>
       {imageUrl || description ? (
@@ -370,11 +482,18 @@ function MenuSection({
               className="h-28 w-28 flex-shrink-0 overflow-hidden rounded border"
               style={{ borderColor: "var(--ds-border)" }}
             >
-              <img src={imageUrl} alt={`${typeof title === "string" ? title : "Category"} section`} className="h-full w-full object-cover" />
+              <img
+                src={imageUrl}
+                alt={`${typeof title === "string" ? title : "Category"} section`}
+                className="h-full w-full object-cover"
+              />
             </div>
           ) : null}
           {description ? (
-            <p className="max-w-2xl text-sm leading-relaxed" style={{ color: "var(--ds-muted)" }}>
+            <p
+              className="max-w-2xl text-sm leading-relaxed"
+              style={{ color: "var(--ds-muted)" }}
+            >
               {description}
             </p>
           ) : null}
@@ -396,19 +515,32 @@ function MenuSection({
   );
 }
 
-export function MenuDefault({ menu, themeMode, themeStyles, onSetThemeMode }: Props) {
+export function MenuDefault({
+  menu,
+  themeMode,
+  themeStyles,
+  onSetThemeMode,
+}: Props) {
   const [shareLabel, setShareLabel] = React.useState("Share");
-  const source = menu && (menu.categories?.length || menu.items?.length) ? menu : FALLBACK_MENU;
+  const [currentUrl, setCurrentUrl] = React.useState(
+    menu?.website_url?.trim() || KISLAP_LINKS.website,
+  );
+  const source =
+    menu && (menu.categories?.length || menu.items?.length)
+      ? menu
+      : FALLBACK_MENU;
   const categories = getVisibleCategories(source);
   const location = formatMenuLocation(source).replace(/,\s*,/g, ",");
   const headerLocation =
     location || "1182 ALC Bldg. S.H Loyola St. Sampaloc Manila";
   const headerHours = getHeaderHours(source);
   const showHeaderHours = source.hours_enabled !== false;
-  const socials =
-    source.social_links?.filter((link) => link.url?.trim())?.length
-      ? (source.social_links?.filter((link) => link.url?.trim()) as MenuSocialLink[])
-      : (FALLBACK_MENU.social_links as MenuSocialLink[]);
+  const socials = source.social_links?.filter((link) => link.url?.trim())
+    ?.length
+    ? (source.social_links?.filter((link) =>
+        link.url?.trim(),
+      ) as MenuSocialLink[])
+    : (FALLBACK_MENU.social_links as MenuSocialLink[]);
   const activeTheme =
     themeMode === "dark"
       ? { ...themeStyles.light, ...themeStyles.dark }
@@ -416,14 +548,22 @@ export function MenuDefault({ menu, themeMode, themeStyles, onSetThemeMode }: Pr
   const description = source.description?.trim() || "";
   const galleryImages = getGalleryImages(source);
   const coverImage = source.cover_image_url?.trim() || null;
+  const qrForeground = sanitizeQrColor(
+    source.qr_settings?.foreground_color,
+    sanitizeQrColor(activeTheme.foreground, "111111"),
+  );
+  const qrBackground = sanitizeQrColor(
+    source.qr_settings?.background_color,
+    sanitizeQrColor(activeTheme.background, "ffffff"),
+  );
+  const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=0&color=${qrForeground}&bgcolor=${qrBackground}&data=${encodeURIComponent(
+    currentUrl,
+  )}`;
   const headerLinks = getHeaderLinks(source);
   const headerDetails = getHeaderDetails(source);
   const headerMeta = [
     showHeaderHours
       ? { key: "hours", label: "Store Hours", value: headerHours }
-      : null,
-    source.currency?.trim()
-      ? { key: "currency", label: "Currency", value: source.currency.trim() }
       : null,
   ].filter(Boolean) as { key: string; label: string; value: string }[];
 
@@ -447,31 +587,30 @@ export function MenuDefault({ menu, themeMode, themeStyles, onSetThemeMode }: Pr
     }
   }, [source.name]);
 
+  React.useEffect(() => {
+    if (typeof window === "undefined") return;
+    setCurrentUrl(window.location.href);
+  }, []);
+
   return (
     <>
       <style jsx global>{`
-        @import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;700&display=swap");
-
-        .ds-root {
+        .menu-root {
           background-color: var(--ds-background);
           color: var(--ds-foreground);
-          font-family: "Inter", sans-serif;
           min-height: 100vh;
+          font-family: var(--ds-font-body);
         }
 
-        .ds-root * {
+        .menu-root * {
           box-sizing: border-box;
         }
 
-        .ds-bebas {
-          font-family: "Bebas Neue", sans-serif;
+        .menu-heading {
+          font-family: var(--ds-font-display);
         }
 
-        .ds-serif {
-          font-family: "Inter", sans-serif;
-        }
-
-        .ds-price-badge {
+        .menu-price-badge {
           background-color: var(--ds-badge-background);
           color: var(--ds-badge-foreground);
           border-radius: 9999px;
@@ -480,7 +619,7 @@ export function MenuDefault({ menu, themeMode, themeStyles, onSetThemeMode }: Pr
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          font-family: "Inter", sans-serif;
+          font-family: var(--ds-font-body);
           font-weight: 700;
           font-size: 0.875rem;
           margin-left: 0.75rem;
@@ -489,17 +628,25 @@ export function MenuDefault({ menu, themeMode, themeStyles, onSetThemeMode }: Pr
       `}</style>
 
       <div
-        className="ds-root px-4 py-10 antialiased md:px-8"
+        className="menu-root px-4 py-10 antialiased md:px-8"
         style={
           {
-            "--ds-background": activeTheme.background || "#050505",
-            "--ds-foreground": activeTheme.foreground || "#ffffff",
-            "--ds-muted": activeTheme["muted-foreground"] || "#cccccc",
-            "--ds-border": activeTheme.border || "rgba(255,255,255,0.3)",
-            "--ds-badge-background": activeTheme.card || "#ffffff",
-            "--ds-badge-foreground": activeTheme["card-foreground"] || "#000000",
-            fontFamily:
-              activeTheme["font-sans"] || '"Inter", sans-serif',
+            "--ds-background": activeTheme.background,
+            "--ds-foreground": activeTheme.foreground,
+            "--ds-muted": activeTheme["muted-foreground"],
+            "--ds-border": activeTheme.border,
+            "--ds-badge-background": activeTheme.card,
+            "--ds-badge-foreground": activeTheme["card-foreground"],
+            "--ds-font-body":
+              activeTheme["font-serif"] ||
+              activeTheme["font-sans"] ||
+              "system-ui, sans-serif",
+            "--ds-font-display":
+              activeTheme["font-sans"] || "system-ui, sans-serif",
+            "--ds-font-meta":
+              activeTheme["font-mono"] ||
+              activeTheme["font-sans"] ||
+              "ui-monospace, monospace",
           } as React.CSSProperties
         }
       >
@@ -523,7 +670,8 @@ export function MenuDefault({ menu, themeMode, themeStyles, onSetThemeMode }: Pr
                   className="inline-flex h-10 items-center gap-2 rounded-full border px-3 text-sm transition-opacity hover:opacity-80"
                   style={{
                     borderColor: "var(--ds-border)",
-                    backgroundColor: "color-mix(in srgb, var(--ds-background) 72%, transparent)",
+                    backgroundColor:
+                      "color-mix(in srgb, var(--ds-background) 72%, transparent)",
                     color: "var(--ds-foreground)",
                     backdropFilter: "blur(10px)",
                   }}
@@ -581,11 +729,11 @@ export function MenuDefault({ menu, themeMode, themeStyles, onSetThemeMode }: Pr
               </div>
 
               <div className="mt-4">
-                <h1 className="ds-bebas mb-2 text-5xl tracking-wider md:text-6xl">
+                <h1 className="menu-heading mb-2 text-5xl tracking-wider md:text-6xl">
                   {source.name?.trim() || "DON'T STIR CAFE"}
                 </h1>
                 <p
-                  className="ds-serif text-sm tracking-wide md:text-base"
+                  className="text-sm tracking-wide md:text-base"
                   style={{ color: "var(--ds-muted)" }}
                 >
                   {headerLocation}
@@ -646,7 +794,10 @@ export function MenuDefault({ menu, themeMode, themeStyles, onSetThemeMode }: Pr
                         className="inline-flex h-9 w-9 items-center justify-center rounded-full border transition-opacity hover:opacity-80"
                         target="_blank"
                         rel="noreferrer"
-                        style={{ color: "var(--ds-foreground)", borderColor: "var(--ds-border)" }}
+                        style={{
+                          color: "var(--ds-foreground)",
+                          borderColor: "var(--ds-border)",
+                        }}
                         aria-label={meta.label}
                         title={meta.label}
                       >
@@ -686,7 +837,8 @@ export function MenuDefault({ menu, themeMode, themeStyles, onSetThemeMode }: Pr
 
             if (!categoryItems.length) return null;
 
-            const [leftItems, rightItems] = splitItemsIntoColumns(categoryItems);
+            const [leftItems, rightItems] =
+              splitItemsIntoColumns(categoryItems);
 
             return (
               <React.Fragment key={category.id}>
@@ -707,15 +859,16 @@ export function MenuDefault({ menu, themeMode, themeStyles, onSetThemeMode }: Pr
             );
           })}
 
-          <footer className="mt-16 pb-8" />
-
           {galleryImages.length ? (
             <div
               className="mt-8"
-              style={{ borderTop: "1px solid var(--ds-border)", paddingTop: "1.5rem" }}
+              style={{
+                borderTop: "1px solid var(--ds-border)",
+                paddingTop: "1.5rem",
+              }}
             >
               <div className="mb-5">
-                <h2 className="ds-bebas text-3xl tracking-wide md:text-4xl">
+                <h2 className="menu-heading text-3xl tracking-wide md:text-4xl">
                   Gallery
                 </h2>
                 <p
@@ -742,6 +895,130 @@ export function MenuDefault({ menu, themeMode, themeStyles, onSetThemeMode }: Pr
               </div>
             </div>
           ) : null}
+
+          <section
+            className="mt-12 border-t px-2 pt-8"
+            style={{ borderColor: "var(--ds-border)" }}
+          >
+            <div className="grid items-center gap-6 md:grid-cols-[220px_1fr]">
+              <div
+                className="mx-auto overflow-hidden rounded-2xl border p-3"
+                style={{ borderColor: "var(--ds-border)" }}
+              >
+                <img
+                  src={qrImageUrl}
+                  alt={`QR code for ${source.name || "menu"}`}
+                  className="h-[190px] w-[190px] rounded-xl object-cover"
+                />
+              </div>
+              <div className="text-center md:text-left">
+                <h2 className="menu-heading text-3xl tracking-wide md:text-4xl">
+                  Share This Menu
+                </h2>
+                <p
+                  className="mt-2 max-w-xl text-sm leading-relaxed"
+                  style={{ color: "var(--ds-muted)" }}
+                >
+                  Scan the QR code to open this menu instantly on any phone, or
+                  copy the link and share it with your customers.
+                </p>
+                <div
+                  className="mt-4 inline-flex max-w-full items-center gap-2 rounded-full border px-4 py-2 text-sm"
+                  style={{
+                    borderColor: "var(--ds-border)",
+                    color: "var(--ds-foreground)",
+                  }}
+                >
+                  <Globe className="h-4 w-4 flex-shrink-0" />
+                  <span className="truncate">{currentUrl}</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <footer
+            className="mt-12 border-t-4 pt-10 pb-10 text-center"
+            style={{ borderColor: "var(--ds-border)" }}
+          >
+            <div className="flex flex-col items-center justify-center gap-6 px-4">
+              <div className="space-y-1">
+                <p
+                  className="text-sm font-bold uppercase"
+                  style={{ color: "var(--ds-foreground)" }}
+                >
+                  © {new Date().getFullYear()} {source.name?.trim() || "Menu"}.
+                </p>
+                <p
+                  className="text-xs"
+                  style={{
+                    color: "var(--ds-muted)",
+                    fontFamily: "var(--ds-font-meta)",
+                  }}
+                >
+                  All rights reserved. Made with{" "}
+                  <span className="text-red-500">♥</span>
+                </p>
+              </div>
+
+              <div
+                className="h-1 w-12"
+                style={{ backgroundColor: "var(--ds-foreground)" }}
+              />
+
+              <div className="flex flex-col items-center gap-3">
+                <div className="flex flex-col items-center gap-1">
+                  <span
+                    className="flex items-center gap-1.5 text-xs font-black uppercase tracking-widest"
+                    style={{ color: "var(--ds-foreground)" }}
+                  >
+                    <span className="text-amber-400">✨</span> Powered by Kislap
+                  </span>
+                  <p
+                    className="text-[10px] uppercase tracking-widest"
+                    style={{
+                      color: "var(--ds-muted)",
+                      fontFamily: "var(--ds-font-meta)",
+                    }}
+                  >
+                    Transform your forms into beautiful websites
+                  </p>
+                </div>
+
+                <div className="mt-1 flex items-center gap-4">
+                  <a
+                    href={KISLAP_LINKS.github}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="border-2 border-transparent p-1 transition-colors hover:border-current hover:opacity-80"
+                    style={{ color: "var(--ds-foreground)" }}
+                    title="Kislap Github"
+                  >
+                    <Github className="h-4 w-4" />
+                  </a>
+                  <a
+                    href={KISLAP_LINKS.website}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="border-2 border-transparent p-1 transition-colors hover:border-current hover:opacity-80"
+                    style={{ color: "var(--ds-foreground)" }}
+                    title="Kislap Website"
+                  >
+                    <Globe className="h-4 w-4" />
+                  </a>
+                  <a
+                    href={KISLAP_LINKS.facebook}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="border-2 border-transparent p-1 transition-colors hover:border-current hover:opacity-80"
+                    style={{ color: "var(--ds-foreground)" }}
+                    title="Kislap Facebook"
+                  >
+                    <FaFacebookF className="h-4 w-4" />
+                  </a>
+                </div>
+              </div>
+            </div>
+          </footer>
         </div>
       </div>
     </>

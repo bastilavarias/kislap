@@ -7,7 +7,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Palette, Store, Tags, UtensilsCrossed } from 'lucide-react';
+import { Store, Tags, UtensilsCrossed } from 'lucide-react';
 import { Settings } from '@/contexts/settings-context';
 import { APIResponseProject } from '@/types/api-response';
 import { MenuFormValues } from '@/lib/schemas/menu';
@@ -92,7 +92,7 @@ export function Form({
               </Button>
             </div>
 
-            <div className="flex flex-col gap-8">
+            <div className="mt-6 flex flex-col gap-8">
               <Accordion type="single" defaultValue="business" collapsible>
                 <AccordionItem value="business" className="rounded-lg border px-4">
                   <AccordionTrigger className="py-3 text-base font-medium hover:no-underline">
@@ -104,6 +104,29 @@ export function Form({
                       Business Profile
                     </div>
                     <div className="space-y-4">
+                      <div className="grid gap-4 md:grid-cols-2">
+                        <div className="rounded-lg border bg-muted/20 p-4">
+                          <Label className="mb-3 block text-sm font-medium">Logo</Label>
+                          <ImageUploadField
+                            id="menu-logo"
+                            previewUrl={watch('logo_url')}
+                            currentFile={watch('logo') as File}
+                            onFileSelect={(file) => setValue('logo', file, { shouldDirty: true })}
+                          />
+                        </div>
+                        <div className="rounded-lg border bg-muted/20 p-4">
+                          <Label className="mb-3 block text-sm font-medium">Cover Image</Label>
+                          <ImageUploadField
+                            id="menu-cover"
+                            previewUrl={watch('cover_image_url')}
+                            currentFile={watch('cover_image') as File}
+                            onFileSelect={(file) =>
+                              setValue('cover_image', file, { shouldDirty: true })
+                            }
+                          />
+                        </div>
+                      </div>
+
                       <div>
                         <Label className="mb-2 block">Business Name</Label>
                         <Input {...register('name')} placeholder="Cookie Dokey" className="shadow-none" />
@@ -150,52 +173,13 @@ export function Form({
                         <Label className="mb-2 block">Address</Label>
                         <Input {...register('address')} placeholder="123 Main Street" className="shadow-none" />
                       </div>
-                      <div className="grid gap-4 md:grid-cols-2">
-                        <div>
-                          <Label className="mb-2 block">Google Maps URL</Label>
-                          <Input {...register('google_maps_url')} placeholder="https://maps.google.com/..." className="shadow-none" />
-                        </div>
-                        <div>
-                          <Label className="mb-2 block">Currency</Label>
-                          <Input {...register('currency')} placeholder="PHP" className="shadow-none" />
-                        </div>
-                      </div>
-
-                      <div className="grid gap-4 md:grid-cols-2">
-                        <div className="rounded-lg border bg-muted/20 p-4">
-                          <Label className="mb-3 block text-sm font-medium">Logo</Label>
-                          <ImageUploadField
-                            id="menu-logo"
-                            previewUrl={watch('logo_url')}
-                            currentFile={watch('logo') as File}
-                            onFileSelect={(file) => setValue('logo', file, { shouldDirty: true })}
-                          />
-                        </div>
-                        <div className="rounded-lg border bg-muted/20 p-4">
-                          <Label className="mb-3 block text-sm font-medium">Cover Image</Label>
-                          <ImageUploadField
-                            id="menu-cover"
-                            previewUrl={watch('cover_image_url')}
-                            currentFile={watch('cover_image') as File}
-                            onFileSelect={(file) =>
-                              setValue('cover_image', file, { shouldDirty: true })
-                            }
-                          />
-                        </div>
+                      <div>
+                        <Label className="mb-2 block">Google Maps URL</Label>
+                        <Input {...register('google_maps_url')} placeholder="https://maps.google.com/..." className="shadow-none" />
                       </div>
 
                       <BusinessHoursEditor formMethods={formMethods} />
                       <SocialLinksEditor formMethods={formMethods} />
-                    </div>
-
-                    <div className="rounded-lg border bg-muted/20 p-4">
-                      <Label className="mb-3 block text-sm font-medium">Gallery</Label>
-                      <GalleryUploader
-                        files={galleryImages.map((item) => item.image as File | null)}
-                        urls={galleryImages.map((item) => item.image_url || null)}
-                        onChange={handleGalleryChange}
-                        maxFiles={8}
-                      />
                     </div>
                   </AccordionContent>
                 </AccordionItem>
@@ -230,6 +214,28 @@ export function Form({
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
+
+              <Accordion type="single" defaultValue="gallery" collapsible>
+                <AccordionItem value="gallery" className="rounded-lg border px-4">
+                  <AccordionTrigger className="py-3 text-base font-medium hover:no-underline">
+                    Gallery
+                  </AccordionTrigger>
+                  <AccordionContent className="px-1 pb-4 pt-4">
+                    <div className="mb-4 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-primary">
+                      <Store className="h-4 w-4" />
+                      Gallery
+                    </div>
+                    <div className="rounded-lg border bg-muted/20 p-4">
+                      <GalleryUploader
+                        files={galleryImages.map((item) => item.image as File | null)}
+                        urls={galleryImages.map((item) => item.image_url || null)}
+                        onChange={handleGalleryChange}
+                        maxFiles={8}
+                      />
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
             </div>
           </CardContent>
         </Card>
@@ -237,10 +243,6 @@ export function Form({
 
       <div className="relative lg:col-span-4">
         <div className="sticky top-6 space-y-4">
-          <div className="hidden items-center gap-2 lg:flex">
-            <Palette className="h-5 w-5" />
-            <h2 className="text-xl font-bold">Design & QR</h2>
-          </div>
           <DesignPanel
             layout={layout}
             setLayout={setLayout}

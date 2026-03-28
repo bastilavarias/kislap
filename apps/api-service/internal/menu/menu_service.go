@@ -61,7 +61,6 @@ func (s *Service) Save(payload Payload) (*models.Menu, error) {
 	menu.City = payload.City
 	menu.Country = payload.Country
 	menu.GoogleMapsURL = payload.GoogleMapsURL
-	menu.Currency = payload.Currency
 	menu.LayoutName = &payload.LayoutName
 	menu.ThemeName = themeName
 	menu.ThemeObject = themeRaw

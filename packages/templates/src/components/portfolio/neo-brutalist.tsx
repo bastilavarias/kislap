@@ -48,6 +48,7 @@ import { Project } from "@/types/project";
 import { Portfolio } from "@/types/portfolio";
 import { cn } from "@/lib/utils";
 import { getPortfolioAvatarUrl } from "./avatar";
+import { KISLAP_LINKS } from "../shared/kislap-links";
 
 // --- Types ---
 interface Props {
@@ -545,13 +546,6 @@ const ContactFormSection = ({
 };
 
 const FooterSection = ({ portfolio }: { portfolio: Portfolio }) => {
-  const rootURL = process.env.NEXT_PUBLIC_ROOT_URL || "https://kislap.app";
-  const githubURL =
-    process.env.NEXT_PUBLIC_KISLAP_GITHUB_URL ||
-    "https://github.com/sebas-tech/kislap";
-  const facebookURL =
-    process.env.NEXT_PUBLIC_KISLAP_FACEBOOK_URL || "https://facebook.com";
-
   return (
     <footer className="border-t-4 border-foreground py-12 mt-20 bg-muted/50">
       <div className="flex flex-col items-center justify-center gap-6 text-center px-4">
@@ -580,7 +574,7 @@ const FooterSection = ({ portfolio }: { portfolio: Portfolio }) => {
 
           <div className="flex items-center gap-4 mt-1">
             <a
-              href={githubURL}
+              href={KISLAP_LINKS.github}
               target="_blank"
               rel="noreferrer"
               className="text-foreground hover:text-primary transition-colors border-2 border-transparent hover:border-foreground p-1"
@@ -589,7 +583,7 @@ const FooterSection = ({ portfolio }: { portfolio: Portfolio }) => {
               <Github className="w-4 h-4" />
             </a>
             <a
-              href={rootURL}
+              href={KISLAP_LINKS.website}
               target="_blank"
               rel="noreferrer"
               className="text-foreground hover:text-primary transition-colors border-2 border-transparent hover:border-foreground p-1"
@@ -598,7 +592,7 @@ const FooterSection = ({ portfolio }: { portfolio: Portfolio }) => {
               <Globe className="w-4 h-4" />
             </a>
             <a
-              href={facebookURL}
+              href={KISLAP_LINKS.facebook}
               target="_blank"
               rel="noreferrer"
               className="text-foreground hover:text-primary transition-colors border-2 border-transparent hover:border-foreground p-1"

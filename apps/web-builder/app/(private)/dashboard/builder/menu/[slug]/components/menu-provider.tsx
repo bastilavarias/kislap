@@ -175,7 +175,6 @@ export function MenuProvider({ children }: { children: ReactNode }) {
       city: '',
       country: '',
       google_maps_url: '',
-      currency: 'PHP',
       search_enabled: true,
       hours_enabled: false,
       business_hours: createDefaultBusinessHours(),
@@ -245,6 +244,8 @@ export function MenuProvider({ children }: { children: ReactNode }) {
           setMenuID(savedMenuID);
         }
         if (response.data.menu) {
+          reset(mapToFormValues(response.data.menu));
+          setLayout(response.data.menu.layout_name || 'menu-default');
           setProject((prev) =>
             prev
               ? {

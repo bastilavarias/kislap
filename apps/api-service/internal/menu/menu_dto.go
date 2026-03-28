@@ -53,9 +53,17 @@ type MenuItemRequest struct {
 	Image          *multipart.FileHeader `json:"image"`
 	Badge          *string               `json:"badge"`
 	Price          string                `json:"price"`
+	Variants       []MenuItemVariantRequest `json:"variants"`
 	PlacementOrder int                   `json:"placement_order"`
 	IsAvailable    bool                  `json:"is_available"`
 	IsFeatured     bool                  `json:"is_featured"`
+}
+
+type MenuItemVariantRequest struct {
+	Name           string `json:"name"`
+	Price          string `json:"price"`
+	IsDefault      bool   `json:"is_default"`
+	PlacementOrder int    `json:"placement_order"`
 }
 
 type CreateUpdateMenuRequest struct {
@@ -76,7 +84,6 @@ type CreateUpdateMenuRequest struct {
 	City          *string                     `json:"city"`
 	Country       *string                     `json:"country"`
 	GoogleMapsURL *string                     `json:"google_maps_url"`
-	Currency      *string                     `json:"currency"`
 	LayoutName    string                      `json:"layout_name"`
 	Theme         *ThemeRequest               `json:"theme"`
 	QRSettings    *QRSettingsRequest          `json:"qr_settings"`
@@ -107,7 +114,6 @@ type Payload struct {
 	City          *string
 	Country       *string
 	GoogleMapsURL *string
-	Currency      *string
 	LayoutName    string
 	Theme         *ThemeRequest
 	QRSettings    *QRSettingsRequest
@@ -139,7 +145,6 @@ func (request *CreateUpdateMenuRequest) ToServicePayload() Payload {
 		City:          request.City,
 		Country:       request.Country,
 		GoogleMapsURL: request.GoogleMapsURL,
-		Currency:      request.Currency,
 		LayoutName:    request.LayoutName,
 		Theme:         request.Theme,
 		QRSettings:    request.QRSettings,

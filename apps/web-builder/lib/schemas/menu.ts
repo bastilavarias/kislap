@@ -22,6 +22,16 @@ export const menuItemSchema = z.object({
   image_url: z.string().optional().nullable(),
   badge: z.string().optional().nullable(),
   price: z.string().min(1, 'Price is required'),
+  variants: z
+    .array(
+      z.object({
+        name: z.string().min(1, 'Variant name is required'),
+        price: z.string().min(1, 'Variant price is required'),
+        is_default: z.boolean().default(false),
+        placement_order: z.number().default(0),
+      })
+    )
+    .default([]),
   placement_order: z.number().default(0),
   is_available: z.boolean().default(true),
   is_featured: z.boolean().default(false),
@@ -42,7 +52,6 @@ export const menuFormSchema = z.object({
   city: z.string().optional().nullable(),
   country: z.string().optional().nullable(),
   google_maps_url: z.string().optional().nullable(),
-  currency: z.string().default('PHP'),
   search_enabled: z.boolean().default(true),
   hours_enabled: z.boolean().default(false),
   business_hours: z

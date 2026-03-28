@@ -15,6 +15,12 @@ export interface MenuItem {
   image_url?: string | null;
   badge?: string | null;
   price: string;
+  variants?: {
+    name: string;
+    price: string;
+    is_default: boolean;
+    placement_order: number;
+  }[] | null;
   is_available?: boolean;
   is_featured?: boolean;
   placement_order?: number;
@@ -32,6 +38,12 @@ export interface MenuSocialLink {
   url?: string | null;
 }
 
+export interface MenuQRSettings {
+  foreground_color?: string | null;
+  background_color?: string | null;
+  show_logo?: boolean;
+}
+
 export interface MenuData {
   project_id?: number;
   name?: string;
@@ -47,7 +59,7 @@ export interface MenuData {
   website_url?: string | null;
   google_maps_url?: string | null;
   whatsapp?: string | null;
-  currency?: string | null;
+  qr_settings?: MenuQRSettings | null;
   search_enabled?: boolean;
   hours_enabled?: boolean;
   business_hours?: MenuBusinessHour[] | null;

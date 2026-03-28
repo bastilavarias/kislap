@@ -41,6 +41,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertTitle } from "@/components/ui/alert";
 import { toast } from "sonner";
 import { getPortfolioAvatarUrl } from "./avatar";
+import { KislapShareFooter } from "../shared/kislap-share-footer";
 
 interface Props {
   portfolio: Portfolio;
@@ -492,11 +493,9 @@ export function Minimal({
           </Card>
         </section>
 
-        <footer className="text-center text-sm pt-8 text-muted-foreground">
-          Built with a Minimalist approach. © {new Date().getFullYear()}{" "}
-          {portfolio.name}.
-        </footer>
+        <KislapShareFooter name={portfolio?.name} className="mt-8 bg-transparent" />
       </div>
     </div>
   );
 }
+

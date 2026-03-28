@@ -64,7 +64,6 @@ export function mapToFormValues(source: APIResponseMenu): MenuFormValues {
     city: source.city || '',
     country: source.country || '',
     google_maps_url: source.google_maps_url || '',
-    currency: source.currency || 'PHP',
     search_enabled: source.search_enabled ?? true,
     hours_enabled: source.hours_enabled ?? false,
     business_hours: businessHours,
@@ -90,6 +89,12 @@ export function mapToFormValues(source: APIResponseMenu): MenuFormValues {
       image_url: item.image_url || '',
       badge: item.badge || '',
       price: item.price || '',
+      variants: (item.variants || []).map((variant, variantIndex) => ({
+        name: variant.name || '',
+        price: variant.price || '',
+        is_default: variant.is_default ?? false,
+        placement_order: variant.placement_order ?? variantIndex,
+      })),
       placement_order: item.placement_order ?? index,
       is_available: item.is_available ?? true,
       is_featured: item.is_featured ?? false,
@@ -108,6 +113,11 @@ interface ParsedMenuItem {
   description?: string | null;
   price?: string | null;
   badge?: string | null;
+  variants?: {
+    name?: string | null;
+    price?: string | null;
+    is_default?: boolean | null;
+  }[] | null;
 }
 
 interface ParsedMenuResponse {
@@ -121,7 +131,6 @@ interface ParsedMenuResponse {
   city?: string | null;
   country?: string | null;
   google_maps_url?: string | null;
-  currency?: string | null;
   categories?: ParsedMenuCategory[];
 }
 
@@ -167,6 +176,12 @@ export function mapParsedMenuToFormValues(
       image_url: '',
       badge: item.badge || '',
       price: item.price || '',
+      variants: (item.variants || []).map((variant, variantIndex) => ({
+        name: variant.name || '',
+        price: variant.price || '',
+        is_default: variant.is_default ?? false,
+        placement_order: variantIndex,
+      })),
       placement_order: index,
       is_available: true,
       is_featured: false,
@@ -188,7 +203,6 @@ export function mapParsedMenuToFormValues(
     city: source.city || current?.city || '',
     country: source.country || current?.country || '',
     google_maps_url: source.google_maps_url || current?.google_maps_url || '',
-    currency: source.currency || current?.currency || 'PHP',
     search_enabled: current?.search_enabled ?? true,
     hours_enabled: current?.hours_enabled ?? false,
     business_hours: baseHours,

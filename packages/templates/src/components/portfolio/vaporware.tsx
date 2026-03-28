@@ -48,6 +48,7 @@ import { Project } from "@/types/project";
 import { Portfolio } from "@/types/portfolio";
 import { cn } from "@/lib/utils";
 import { getPortfolioAvatarUrl } from "./avatar";
+import { KislapShareFooter } from "../shared/kislap-share-footer";
 
 interface Props {
   project: Project;
@@ -739,18 +740,7 @@ const ContactSection = ({
 };
 
 const FooterSection = ({ portfolio }: { portfolio: Portfolio }) => {
-  return (
-    <footer className="border-t py-4 mt-auto bg-muted/5">
-      <div className="flex flex-col items-center justify-center gap-6 text-center px-4">
-        <div className="space-y-1">
-          <p className="text-sm font-medium text-foreground">
-            © {new Date().getFullYear()} {portfolio?.name || "My Portfolio"}.
-            All rights reserved.
-          </p>
-        </div>
-      </div>
-    </footer>
-  );
+  return <KislapShareFooter name={portfolio?.name} />;
 };
 
 export function Vaporware({
@@ -788,3 +778,4 @@ export function Vaporware({
     </div>
   );
 }
+
