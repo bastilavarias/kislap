@@ -22,7 +22,7 @@ func NewService(db *gorm.DB, objectStorage objectStorage.Provider) *Service {
 	return &Service{DB: db, ObjectStorage: objectStorage}
 }
 
-func (service Service) List(userID *uint64, page int, limit int) (*[]models.Project, error) {
+func (service Service) List(userID *uint64, page int, limit int, projectType string) (*[]models.Project, error) {
 	var projects []models.Project
 
 	if limit <= 0 {
@@ -34,10 +34,17 @@ func (service Service) List(userID *uint64, page int, limit int) (*[]models.Proj
 	}
 
 	offset := (page - 1) * limit
+	projectType = strings.TrimSpace(strings.ToLower(projectType))
 
 	if userID != nil {
-		err := service.DB.
-			Where("user_id = ?", userID).
+		query := service.DB.
+			Where("user_id = ?", userID)
+
+		if projectType != "" {
+			query = query.Where("type = ?", projectType)
+		}
+
+		err := query.
 			Order("created_at DESC").
 			Limit(limit).
 			Offset(offset).
@@ -50,8 +57,14 @@ func (service Service) List(userID *uint64, page int, limit int) (*[]models.Proj
 		return &projects, nil
 	}
 
-	err := service.DB.
-		Where("published = ?", 1).
+	query := service.DB.
+		Where("published = ?", 1)
+
+	if projectType != "" {
+		query = query.Where("type = ?", projectType)
+	}
+
+	err := query.
 		Order("created_at DESC").
 		Limit(limit).
 		Offset(offset).

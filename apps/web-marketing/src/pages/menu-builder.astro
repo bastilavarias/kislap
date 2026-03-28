@@ -1,0 +1,11 @@
+---
+import Layout from '@/layouts/main.astro';
+import BuilderFeaturePage from '@/components/builder-pages/BuilderFeaturePage.astro';
+import { builderPages } from '@/data/builder-pages';
+
+const page = builderPages["menu-builder"];
+---
+
+<Layout title={page.title} description={page.description} image={page.image}>
+  <BuilderFeaturePage page={page} />
+</Layout>

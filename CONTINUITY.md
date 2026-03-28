@@ -103,3 +103,7 @@ ext build --turbopack in pps/web-builder is currently blocked by pre-existing u
 - 2026-03-29 [TOOL] 
 pm run build passed in apps/web-sites after the SEO/structured-data pass.
 
+
+2026-03-29 [CODE] Began web-marketing upgrade: added type filtering support to apps/api-service/internal/project project list endpoints, created SEO-focused marketing pages for portfolio/linktree/menu in apps/web-marketing/src/pages, added shared builder feature page/data modules, expanded landing specialized-features cards to link into those pages, updated showcase.astro and showcase-feed.tsx for project-type filtering with pagination, and added internal footer links to the three builder pages.
+2026-03-29 [TOOL] gofmt completed for project controller/service and go test ./internal/project passed in apps/api-service. Frontend build for apps/web-marketing could not be run in this shell because Node/npm is not available on PATH.
+
