@@ -46,25 +46,10 @@ const projectTypes = [
     label: 'menu',
     emoji: '🍽️',
     active: true,
-    description: 'Publish a branded digital menu with categories, items, QR, and responsive layouts.',
+    description:
+      'Publish a branded digital menu with categories, items, QR, and responsive layouts.',
     features: ['Categories & items', 'QR-ready', 'Mobile-first menu'],
     route: 'menu',
-  },
-  {
-    label: 'biz',
-    emoji: '💼',
-    active: false,
-    description: 'Create a professional business3 website to attract clients and customers.',
-    features: ['Company info pages', 'Service showcase', 'Contact forms'],
-    route: 'biz',
-  },
-  {
-    label: 'waitlist',
-    emoji: '⏳',
-    active: false,
-    description: 'Build hype and gather early users for your upcoming project or app.',
-    features: ['Sign-up forms', 'Email notifications', 'Analytics dashboard'],
-    route: 'waitlist',
   },
 ];
 
