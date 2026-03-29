@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { buttonVariants } from "@/components/ui/button";
 import { ArrowRight, Code2, Zap, Globe2, Users, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
+import type { APIResponsePublicProjectStats } from "@/types/api-response";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -16,7 +17,11 @@ const itemVariants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
 };
 
-export function AboutPageContent() {
+interface AboutPageContentProps {
+  stats: APIResponsePublicProjectStats;
+}
+
+export function AboutPageContent({ stats }: AboutPageContentProps) {
   return (
     <div className="overflow-hidden">
       <section className="relative pt-20 pb-32">
@@ -67,19 +72,29 @@ export function AboutPageContent() {
             whileInView="visible"
             viewport={{ once: true, margin: "-100px" }}
             variants={containerVariants}
-            className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center"
+            className="grid grid-cols-2 gap-8 text-center md:grid-cols-4"
           >
             {[
-              { label: "Sites Published", value: "100+" },
-              { label: "Active Builders", value: "20+" },
-              { label: "Templates", value: "8" },
-              { label: "Uptime", value: "99.9%" },
+              {
+                label: "Sites Published",
+                value: `${stats.sites_published}+`,
+              },
+              {
+                label: "Active Builders",
+                value: `${stats.active_builders}+`,
+              },
+              { label: "Templates", value: `${stats.template_count}` },
+              { label: "Uptime", value: stats.uptime },
             ].map((stat, i) => (
-              <motion.div key={i} variants={itemVariants} className="space-y-2">
+              <motion.div
+                key={i}
+                variants={itemVariants}
+                className="space-y-3 px-4 py-2 md:border-l md:border-border/50 first:md:border-l-0"
+              >
                 <h3 className="text-3xl md:text-4xl font-bold tracking-tighter">
                   {stat.value}
                 </h3>
-                <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-[0.24em]">
                   {stat.label}
                 </p>
               </motion.div>
@@ -111,81 +126,73 @@ export function AboutPageContent() {
             whileInView="visible"
             viewport={{ once: true, margin: "-100px" }}
             variants={containerVariants}
-            className="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[minmax(250px,auto)]"
+            className="border-y border-border/50"
           >
-            <motion.div
-              variants={itemVariants}
-              className="col-span-1 md:col-span-2 overflow-hidden relative group rounded-xl border border-border/50 bg-gradient-to-br from-card to-muted/20 text-card-foreground shadow-sm"
-            >
-              <div className="p-8 md:p-12 h-full flex flex-col justify-between relative z-10">
-                <div className="space-y-4">
-                  <div className="h-12 w-12 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-500">
-                    <Zap className="w-6 h-6" />
-                  </div>
-                  <h3 className="text-2xl font-bold">Unmatched Speed</h3>
-                  <p className="text-muted-foreground text-lg max-w-md">
-                    Time is your most valuable asset. Our engine is optimized to
-                    get you from "blank page" to "published" in minutes.
-                  </p>
-                </div>
-                <div className="absolute right-0 bottom-0 w-64 h-64 bg-orange-500/5 rounded-full blur-3xl -mr-16 -mb-16 group-hover:bg-orange-500/10 transition-colors duration-500" />
-              </div>
-            </motion.div>
+            {[
+              {
+                title: "Unmatched Speed",
+                description:
+                  "Time is your most valuable asset. Our engine is optimized to get you from blank page to published in minutes.",
+                icon: Zap,
+                tone: "text-orange-500",
+                bg: "bg-orange-500/10",
+              },
+              {
+                title: "Design First",
+                description:
+                  "We sweat the details: typography, spacing, and motion, so you do not have to.",
+                icon: Sparkles,
+                tone: "text-purple-500",
+                bg: "bg-purple-500/10",
+              },
+              {
+                title: "Developer Ready",
+                description:
+                  "Built by developers, for developers. Clean code exports and easy integrations.",
+                icon: Code2,
+                tone: "text-blue-500",
+                bg: "bg-blue-500/10",
+              },
+              {
+                title: "Community Driven",
+                description:
+                  "We are open source and community funded. We listen to our users and build what they actually need.",
+                icon: Users,
+                tone: "text-green-500",
+                bg: "bg-green-500/10",
+              },
+            ].map((item) => {
+              const Icon = item.icon;
 
-            <motion.div
-              variants={itemVariants}
-              className="col-span-1 overflow-hidden relative group rounded-xl border border-border/50 bg-gradient-to-br from-card to-muted/20 text-card-foreground shadow-sm"
-            >
-              <div className="p-8 h-full flex flex-col justify-between">
-                <div className="space-y-4">
-                  <div className="h-12 w-12 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-500">
-                    <Sparkles className="w-6 h-6" />
+              return (
+                <motion.div
+                  key={item.title}
+                  variants={itemVariants}
+                  className="grid gap-6 border-t border-border/50 py-8 first:border-t-0 md:grid-cols-[96px_minmax(0,1fr)] md:items-start md:gap-8 md:py-10"
+                >
+                  <div className="flex justify-center md:justify-start">
+                    <div
+                      className={cn(
+                        "flex h-16 w-16 items-center justify-center rounded-2xl",
+                        item.bg,
+                        item.tone,
+                      )}
+                    >
+                      <Icon className="h-7 w-7" />
+                    </div>
                   </div>
-                  <h3 className="text-2xl font-bold">Design First</h3>
-                  <p className="text-muted-foreground">
-                    We sweat the details: typography, spacing, and motion, so
-                    you do not have to.
-                  </p>
-                </div>
-              </div>
-            </motion.div>
 
-            <motion.div
-              variants={itemVariants}
-              className="col-span-1 overflow-hidden relative group rounded-xl border border-border/50 bg-gradient-to-br from-card to-muted/20 text-card-foreground shadow-sm"
-            >
-              <div className="p-8 h-full flex flex-col justify-between">
-                <div className="space-y-4">
-                  <div className="h-12 w-12 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500">
-                    <Code2 className="w-6 h-6" />
+                  <div className="space-y-3 text-center md:text-left">
+                    <h3 className="text-2xl font-bold tracking-tight text-foreground">
+                      {item.title}
+                    </h3>
+                    <p className="max-w-3xl text-lg leading-relaxed text-muted-foreground">
+                      {item.description}
+                    </p>
                   </div>
-                  <h3 className="text-2xl font-bold">Developer Ready</h3>
-                  <p className="text-muted-foreground">
-                    Built by developers, for developers. Clean code exports and
-                    easy integrations.
-                  </p>
-                </div>
-              </div>
-            </motion.div>
-
-            <motion.div
-              variants={itemVariants}
-              className="col-span-1 md:col-span-2 overflow-hidden relative group rounded-xl border border-border/50 bg-gradient-to-br from-card to-muted/20 text-card-foreground shadow-sm"
-            >
-              <div className="p-8 md:p-12 h-full flex flex-col justify-between relative z-10">
-                <div className="space-y-4">
-                  <div className="h-12 w-12 rounded-xl bg-green-500/10 flex items-center justify-center text-green-500">
-                    <Users className="w-6 h-6" />
-                  </div>
-                  <h3 className="text-2xl font-bold">Community Driven</h3>
-                  <p className="text-muted-foreground text-lg max-w-md">
-                    We are open source and community funded. We listen to our
-                    users and build what they actually need.
-                  </p>
-                </div>
-                <div className="absolute right-0 bottom-0 w-64 h-64 bg-green-500/5 rounded-full blur-3xl -mr-16 -mb-16 group-hover:bg-green-500/10 transition-colors duration-500" />
-              </div>
-            </motion.div>
+                </motion.div>
+              );
+            })}
           </motion.div>
         </div>
       </section>
@@ -203,7 +210,7 @@ export function AboutPageContent() {
               <div className="relative w-64 h-64 md:w-80 md:h-80 rounded-2xl overflow-hidden bg-gradient-to-br from-primary/20 to-purple-500/20 shadow-2xl rotate-3 hover:rotate-0 transition-transform duration-500 ring-1 ring-white/10">
                 <img
                   src="https://avatars.githubusercontent.com/u/24890911?v=4"
-                  alt="Juan Delacruz"
+                  alt="Sebastian Lavarias"
                   className="object-cover w-full h-full"
                   loading="lazy"
                 />
@@ -217,7 +224,9 @@ export function AboutPageContent() {
               transition={{ duration: 0.6 }}
               className="w-full md:w-2/3 space-y-6 text-center md:text-left"
             >
-              <h2 className="text-3xl md:text-4xl font-bold">Built with heart</h2>
+              <h2 className="text-3xl md:text-4xl font-bold">
+                Built with heart
+              </h2>
               <p className="text-lg text-muted-foreground leading-relaxed">
                 "I started Kislap because I was tired of spending weekends
                 fighting with CSS just to update what I wanted people to see. I
@@ -227,7 +236,7 @@ export function AboutPageContent() {
                 digital menus."
               </p>
               <div>
-                <h4 className="font-bold text-xl">Juan Delacruz</h4>
+                <h4 className="font-bold text-xl">Sebastian Lavarias</h4>
                 <p className="text-muted-foreground">~ Pasimuno</p>
               </div>
             </motion.div>
@@ -258,7 +267,7 @@ export function AboutPageContent() {
                 href="https://builder.kislap.app/"
                 className={cn(
                   buttonVariants({ variant: "secondary", size: "lg" }),
-                  "w-full sm:w-auto font-bold h-12 px-8"
+                  "w-full sm:w-auto font-bold h-12 px-8",
                 )}
               >
                 Start Building for Free
@@ -268,7 +277,7 @@ export function AboutPageContent() {
                 href="/showcase"
                 className={cn(
                   buttonVariants({ variant: "outline", size: "lg" }),
-                  "w-full sm:w-auto h-12 px-8 bg-transparent border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground"
+                  "w-full sm:w-auto h-12 px-8 bg-transparent border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground",
                 )}
               >
                 View Showcase
@@ -281,6 +290,3 @@ export function AboutPageContent() {
     </div>
   );
 }
-
-
-

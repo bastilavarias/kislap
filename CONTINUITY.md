@@ -109,3 +109,5 @@ pm run build passed in apps/web-sites after the SEO/structured-data pass.
 
 
 2026-03-29 [CODE] Tightened web-marketing messaging with a sharper homepage hero, updated visible sample/founder placeholder text to Juan Delacruz in landing/about content, refreshed about-page positioning copy to reflect portfolio/linktree/menu, and cleaned several marketing text encoding artifacts/checkmark placeholders.
+2026-03-29 [CODE] Added a public project stats endpoint for web-marketing About (/api/projects/stats/public) returning published-site count, active-builder count, template count, and uptime; pps/web-marketing/src/pages/about.astro now fetches those stats server-side and passes them into bout-page-content.tsx, which now renders a dynamic stats band instead of hardcoded values.
+2026-03-29 [TOOL] gofmt ran on project controller/service/routes and go test ./internal/project passed after the About stats endpoint addition.

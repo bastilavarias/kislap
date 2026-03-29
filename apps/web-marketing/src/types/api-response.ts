@@ -237,3 +237,10 @@ export interface APIResponseDashboardStats {
   total_clicks: number;
   unique_visitors: number;
 }
+
+export interface APIResponsePublicProjectStats {
+  sites_published: number;
+  active_builders: number;
+  template_count: number;
+  uptime: string;
+}

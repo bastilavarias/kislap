@@ -1,13 +1,13 @@
 export interface BuilderFeaturePageConfig {
   slug: "portfolio-builder" | "linktree-builder" | "menu-builder";
+  image: string;
+  templateImage: string;
   title: string;
   description: string;
-  image: string;
   eyebrow: string;
   heroTitle: string;
   heroLead: string;
   heroBody: string;
-  heroPlaceholder: string;
   audienceTitle: string;
   audience: string[];
   stats: Array<{ label: string; value: string }>;
@@ -31,17 +31,17 @@ export interface BuilderFeaturePageConfig {
 export const builderPages: Record<BuilderFeaturePageConfig["slug"], BuilderFeaturePageConfig> = {
   "portfolio-builder": {
     slug: "portfolio-builder",
+    image: "/assets/builder/portfolio-builder.jpg",
+    templateImage: "/assets/templates/portfolio-template.jpg",
     title: "Portfolio Builder - Create a Portfolio Website Fast | Kislap",
     description:
       "Create a portfolio website fast with Kislap. Turn your resume into a polished personal site with SEO, project showcases, contact forms, and multiple portfolio layouts.",
-    image: "/og-image.jpeg",
     eyebrow: "Portfolio Builder",
     heroTitle: "Create a portfolio website without wrestling with a builder.",
     heroLead:
       "Kislap helps freelancers, designers, developers, and job seekers launch a portfolio site that looks intentional and ranks well.",
     heroBody:
       "Start from a form, not a blank canvas. Add your headline, work, links, and experience once, then publish a portfolio website with strong SEO, sharable previews, and layouts that feel production-ready.",
-    heroPlaceholder: "Replace with portfolio builder product shot",
     audienceTitle: "Built for people who need a credible online presence quickly.",
     audience: [
       "Developers showing work, skills, and case studies",
@@ -137,17 +137,17 @@ export const builderPages: Record<BuilderFeaturePageConfig["slug"], BuilderFeatu
   },
   "linktree-builder": {
     slug: "linktree-builder",
+    image: "/assets/builder/linktree-builder.jpg",
+    templateImage: "/assets/templates/linktree-template.jpg",
     title: "Linktree Builder - Create a Link in Bio Page | Kislap",
     description:
       "Create a link in bio page with Kislap. Build a custom linktree-style page for creators, founders, and freelancers with better branding, layouts, and SEO.",
-    image: "/og-image.jpeg",
     eyebrow: "Linktree Builder",
     heroTitle: "Create a link in bio page that feels like your brand, not everyone else's.",
     heroLead:
       "Kislap gives creators and personal brands a cleaner way to publish a link page with stronger identity, better social sharing, and more flexibility.",
     heroBody:
       "Use the linktree builder to collect your profiles, offers, content destinations, and key actions into one page that feels custom instead of generic.",
-    heroPlaceholder: "Replace with linktree builder product shot",
     audienceTitle: "Ideal for creators, freelancers, founders, and people building attention online.",
     audience: [
       "Creators routing traffic from Instagram, TikTok, and YouTube",
@@ -243,17 +243,17 @@ export const builderPages: Record<BuilderFeaturePageConfig["slug"], BuilderFeatu
   },
   "menu-builder": {
     slug: "menu-builder",
+    image: "/assets/builder/menu-builder.jpg",
+    templateImage: "/assets/templates/menu-template.jpg",
     title: "Menu Builder - Create a Digital Menu Website | Kislap",
     description:
       "Create a digital menu website with Kislap. Build a QR-ready menu page for restaurants, cafes, and stalls with themes, gallery support, and mobile-friendly layouts.",
-    image: "/og-image.jpeg",
     eyebrow: "Menu Builder",
     heroTitle: "Create a digital menu that feels like your place, not a spreadsheet online.",
     heroLead:
       "The menu builder helps restaurants, cafes, and small food brands turn their menu into a mobile-friendly website people can scan, share, and revisit.",
     heroBody:
       "Use structured menu sections, item photos, gallery images, QR support, and multiple layouts to build a menu page that actually fits your brand.",
-    heroPlaceholder: "Replace with menu builder product shot",
     audienceTitle: "Made for restaurants, cafes, food stalls, bakeries, and branded menu pages.",
     audience: [
       "Restaurants that need a clean digital menu",

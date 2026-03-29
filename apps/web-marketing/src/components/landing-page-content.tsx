@@ -8,6 +8,7 @@ import {
   Globe,
   LayoutTemplate,
   ShieldCheck,
+  Sparkles,
   FileText,
   Wand2,
   Send,
@@ -220,7 +221,7 @@ export function LandingPageContent() {
                           className="w-full h-full bg-cover"
                           style={{
                             backgroundImage:
-                              "url('https://api.dicebear.com/9.x/avataaars/svg?seed=JuanDelacruz')",
+                              "url('https://api.dicebear.com/9.x/avataaars/svg?seed=6')",
                           }}
                         />
                       </div>
@@ -232,7 +233,7 @@ export function LandingPageContent() {
                         </div>
                         <div className="text-xs font-bold font-mono text-zinc-600 flex items-center gap-1">
                           <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                          FULL-STACK DEV
+                          FULL-STACK WEB DEVELOPER
                         </div>
                       </div>
                     </div>
@@ -284,73 +285,111 @@ export function LandingPageContent() {
         </div>
       </section>
 
-      <section className="py-24 relative overflow-hidden border-t border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-black text-foreground">
+      <section className="relative overflow-hidden border-t border-zinc-200 bg-zinc-50 py-24 text-foreground dark:border-zinc-800 dark:bg-black">
         <div className="absolute inset-0 bg-[radial-gradient(circle,_rgba(59,130,246,0.12)_1px,_transparent_1px)] [background-size:18px_18px] opacity-40" />
-        <div className="container mx-auto px-4 max-w-6xl relative z-10">
-          <div className="max-w-3xl mx-auto text-center space-y-5">
+        <div className="container relative z-10 mx-auto max-w-6xl px-4">
+          <div className="mx-auto max-w-3xl space-y-6 text-center">
             <Badge
               variant="outline"
-              className="bg-primary/5 text-primary border-primary/20"
+              className="border-primary/20 bg-primary/5 text-primary"
             >
               Launch Flow
             </Badge>
-            <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
-              Go Public in <span className="text-primary">3 Steps</span>
-            </h2>
-            <p className="text-zinc-500 dark:text-zinc-400 text-lg leading-relaxed">
-              No scattered tools. No builder chaos. Just create the project,
-              fill out the form, and publish when you are ready.
-            </p>
+            <div className="space-y-5">
+              <h2 className="text-3xl font-bold tracking-tight text-zinc-900 md:text-5xl dark:text-zinc-50">
+                Go Public in <span className="text-primary">3 Steps</span>
+              </h2>
+              <p className="text-lg leading-relaxed text-zinc-500 dark:text-zinc-400">
+                Kislap keeps the path short: start with the right builder, add
+                your content, and publish a page that is ready to share.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 pt-2 text-sm font-medium text-zinc-600 dark:text-zinc-300">
+              {[
+                {
+                  label: "No drag-and-drop setup spiral",
+                  icon: Sparkles,
+                },
+                {
+                  label: "No plugin hunting or theme confusion",
+                  icon: ShieldCheck,
+                },
+                {
+                  label: "No waiting around to get something live",
+                  icon: Send,
+                },
+              ].map((point) => {
+                const Icon = point.icon;
+
+                return (
+                  <div
+                    key={point.label}
+                    className="inline-flex items-center gap-3"
+                  >
+                    <Icon className="h-4 w-4 text-primary" />
+                    <span>{point.label}</span>
+                  </div>
+                );
+              })}
+            </div>
           </div>
 
-          <div className="mt-16 grid gap-10 md:grid-cols-3 md:gap-8">
-            {[
-              {
-                step: "Step 1",
-                title: "Create a project",
-                description:
-                  "Pick the builder you need and start with the right structure from day one.",
-                icon: LayoutTemplate,
-              },
-              {
-                step: "Step 2",
-                title: "Fill form",
-                description:
-                  "Add your content, tune the design, and let the builder handle the heavy lifting.",
-                icon: FileText,
-              },
-              {
-                step: "Step 3",
-                title: "Publish",
-                description:
-                  "Go live on your public page and start sharing it immediately.",
-                icon: Globe,
-              },
-            ].map((item) => {
-              const Icon = item.icon;
+          <div className="relative mx-auto mt-16 max-w-6xl">
+            <div className="pointer-events-none absolute left-[18%] right-[18%] top-14 hidden h-px bg-gradient-to-r from-primary/20 via-primary/50 to-primary/20 md:block" />
 
-              return (
-                <div
-                  key={item.step}
-                  className="relative flex flex-col items-center text-center"
-                >
-                  <div className="hidden md:block absolute left-1/2 top-[76px] h-px w-full bg-border -z-10" />
-                  <div className="relative mb-8 flex h-32 w-32 items-center justify-center rounded-[2rem] border border-zinc-200 dark:border-zinc-800 bg-background shadow-[0_12px_40px_rgba(15,23,42,0.08)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.35)]">
-                    <div className="absolute -top-4 right-0 rounded-full border border-border bg-background px-4 py-1 text-sm font-semibold text-muted-foreground shadow-sm">
-                      {item.step}
+            <div className="grid gap-6 md:grid-cols-3">
+              {[
+                {
+                  step: "01",
+                  title: "Create a project",
+                  description:
+                    "Choose the builder that matches what you actually need to publish.",
+                  icon: LayoutTemplate,
+                },
+                {
+                  step: "02",
+                  title: "Fill form",
+                  description:
+                    "Add your content, tune the design, and let the structure do the heavy lifting.",
+                  icon: FileText,
+                },
+                {
+                  step: "03",
+                  title: "Publish",
+                  description:
+                    "Launch your public page and start sharing it the same day.",
+                  icon: Globe,
+                },
+              ].map((item) => {
+                const Icon = item.icon;
+
+                return (
+                  <div
+                    key={item.step}
+                    className="group relative flex flex-col rounded-[2rem] border border-zinc-200 bg-background/90 p-6 shadow-[0_18px_50px_rgba(15,23,42,0.08)] transition-transform duration-300 hover:-translate-y-1 dark:border-zinc-800 dark:bg-zinc-950/80 dark:shadow-[0_18px_50px_rgba(0,0,0,0.35)]"
+                  >
+                    <div className="mb-8 flex items-start justify-between">
+                      <div className="flex h-16 w-16 items-center justify-center rounded-[1.5rem] border border-primary/15 bg-primary/5 text-primary">
+                        <Icon className="h-7 w-7" />
+                      </div>
+                      <div className="rounded-full border border-zinc-200 bg-background px-3 py-1 text-xs font-semibold tracking-[0.22em] text-zinc-500 shadow-sm dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-400">
+                        {item.step}
+                      </div>
                     </div>
-                    <Icon className="h-10 w-10 text-primary" />
-                  </div>
 
-                  <h3 className="text-2xl font-bold tracking-tight text-foreground">
-                    {item.title}
-                  </h3>
-                  <p className="mt-4 max-w-sm text-base leading-relaxed text-muted-foreground">
-                    {item.description}
-                  </p>
-                </div>
-              );
-            })}
+                    <h3 className="text-2xl font-bold tracking-tight text-foreground">
+                      {item.title}
+                    </h3>
+                    <p className="mt-4 text-base leading-relaxed text-muted-foreground">
+                      {item.description}
+                    </p>
+
+                    <div className="mt-8 h-1.5 w-16 rounded-full bg-gradient-to-r from-primary to-primary/20 transition-all duration-300 group-hover:w-24" />
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       </section>
@@ -574,7 +613,8 @@ export function LandingPageContent() {
               </li>
               <li className="flex items-start gap-3">
                 <Send className="mt-0.5 h-4 w-4 text-fuchsia-600" />
-                Stronger branding and cleaner social sharing than generic link hubs
+                Stronger branding and cleaner social sharing than generic link
+                hubs
               </li>
             </ul>
             <div className="flex items-center justify-between">
@@ -701,5 +741,3 @@ export function LandingPageContent() {
     </div>
   );
 }
-
-

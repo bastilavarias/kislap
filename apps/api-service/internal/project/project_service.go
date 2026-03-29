@@ -18,6 +18,13 @@ type Service struct {
 	ObjectStorage objectStorage.Provider
 }
 
+type PublicStats struct {
+	SitesPublished int64  `json:"sites_published"`
+	ActiveBuilders int64  `json:"active_builders"`
+	TemplateCount  int    `json:"template_count"`
+	Uptime         string `json:"uptime"`
+}
+
 func NewService(db *gorm.DB, objectStorage objectStorage.Provider) *Service {
 	return &Service{DB: db, ObjectStorage: objectStorage}
 }
@@ -76,6 +83,30 @@ func (service Service) List(userID *uint64, page int, limit int, projectType str
 
 	return &projects, nil
 
+}
+
+func (service Service) PublicStats() (*PublicStats, error) {
+	stats := &PublicStats{
+		TemplateCount: 17,
+		Uptime:        "99.9%",
+	}
+
+	if err := service.DB.
+		Model(&models.Project{}).
+		Where("published = ?", 1).
+		Count(&stats.SitesPublished).Error; err != nil {
+		return nil, err
+	}
+
+	if err := service.DB.
+		Model(&models.Project{}).
+		Where("published = ?", 1).
+		Distinct("user_id").
+		Count(&stats.ActiveBuilders).Error; err != nil {
+		return nil, err
+	}
+
+	return stats, nil
 }
 
 func (service Service) Create(userID uint64, payload Payload) (*models.Project, error) {

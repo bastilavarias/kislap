@@ -218,6 +218,18 @@ func (controller Controller) PublicList(context *gin.Context) {
 
 }
 
+func (controller Controller) PublicStats(context *gin.Context) {
+	stats, err := controller.Service.PublicStats()
+
+	if err != nil {
+		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
+		context.Abort()
+		return
+	}
+
+	utils.APIRespondSuccess(context, http.StatusOK, stats)
+}
+
 func (controller Controller) SaveOGImage(context *gin.Context) {
 	idStr := context.Param("id")
 	projectID, err := strconv.Atoi(idStr)

@@ -7,8 +7,8 @@ import (
 	"flash/internal/document"
 	"flash/internal/linktree"
 	"flash/internal/menu"
-	"flash/internal/parsed_file"
 	"flash/internal/page_activity"
+	"flash/internal/parsed_file"
 	"flash/internal/portfolio"
 	"flash/internal/project"
 	"flash/internal/user"
@@ -54,6 +54,7 @@ func RegisterRoutes(router *gin.Engine, db *gorm.DB, llm llm.Provider, objectSto
 
 		api.GET("/projects/list", middleware.AccessTokenValidatorMiddleware(db), projectController.List)
 		api.GET("/projects/list/public", projectController.PublicList)
+		api.GET("/projects/stats/public", projectController.PublicStats)
 		api.GET("/projects/show/:id", projectController.ShowByID)
 		api.GET("/projects/show/slug/:slug", middleware.AccessTokenValidatorMiddleware(db), projectController.ShowBySlug)
 		api.GET("/projects/show/sub-domain/:sub-domain", projectController.ShowBySubDomain)
