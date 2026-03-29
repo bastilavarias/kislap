@@ -4,26 +4,50 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
 
+func resolveCookieConfig(appEnv string) (string, bool, http.SameSite) {
+	domain := os.Getenv("APP_COOKIE_DOMAIN")
+	secure := false
+	sameSite := http.SameSiteLaxMode
+	crossSite := strings.EqualFold(strings.TrimSpace(os.Getenv("APP_COOKIE_CROSS_SITE")), "true")
+
+	if appEnv == "production" {
+		return domain, true, http.SameSiteNoneMode
+	}
+
+	if crossSite {
+		return strings.TrimSpace(domain), true, http.SameSiteNoneMode
+	}
+
+	normalizedDomain := strings.TrimSpace(domain)
+	if strings.Contains(normalizedDomain, "://") || strings.Contains(normalizedDomain, ":") {
+		normalizedDomain = ""
+	}
+
+	if strings.EqualFold(normalizedDomain, "localhost") || strings.Contains(normalizedDomain, "localhost") {
+		normalizedDomain = ""
+	}
+
+	return normalizedDomain, secure, sameSite
+}
+
 func SetCookie(context *gin.Context, name string, data string) {
 	log.Printf("[Cookie] SetCookie called for: %s", name)
 
 	_ = godotenv.Load()
 	appEnv := os.Getenv("APP_ENV")
-
-	domain := os.Getenv("APP_COOKIE_DOMAIN")
-	secure := false
-	sameSite := http.SameSiteLaxMode
+	domain, secure, sameSite := resolveCookieConfig(appEnv)
 
 	log.Printf("[Cookie] Environment detected: '%s'", appEnv)
 
 	if appEnv == "production" {
-		envDomain := os.Getenv("APP_COOKIE_DOMAIN")
+		envDomain := domain
 
 		if envDomain == "" {
 			log.Println("[Cookie] CRITICAL WARNING: APP_COOKIE_DOMAIN is empty!")
@@ -67,16 +91,8 @@ func SetCookie(context *gin.Context, name string, data string) {
 func ClearCookie(context *gin.Context, name string) {
 	log.Printf("[Cookie] ClearCookie called for: %s", name)
 
-	domain := os.Getenv("APP_COOKIE_DOMAIN")
-	secure := false
-	sameSite := http.SameSiteLaxMode
-
 	appEnv := os.Getenv("APP_ENV")
-
-	if appEnv == "production" {
-		domain = os.Getenv("APP_COOKIE_DOMAIN")
-		secure = true
-	}
+	domain, secure, sameSite := resolveCookieConfig(appEnv)
 
 	cookie := &http.Cookie{
 		Name:     name,

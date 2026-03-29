@@ -47,6 +47,8 @@ import { toast } from "sonner";
 import { Project } from "@/types/project";
 import { Portfolio } from "@/types/portfolio";
 import { cn } from "@/lib/utils";
+import { getPortfolioAvatarUrl } from "./avatar";
+import { KislapShareFooter } from "../shared/kislap-share-footer";
 
 interface Props {
   project: Project;
@@ -274,6 +276,8 @@ const HeaderSection = ({
 );
 
 const HeroSection = ({ portfolio }: { portfolio: Portfolio }) => {
+  const avatarUrl = getPortfolioAvatarUrl(portfolio);
+
   const socialLinks = useMemo(() => {
     return [
       { type: "github", url: portfolio.github, icon: Github },
@@ -289,10 +293,7 @@ const HeroSection = ({ portfolio }: { portfolio: Portfolio }) => {
         <div className="relative group">
           <div className="absolute -inset-1 bg-gradient-to-r from-primary to-secondary rounded-full blur opacity-70 group-hover:opacity-100 transition duration-500 animate-spin-slow" />
           <Avatar className="w-32 h-32 md:w-48 md:h-48 border-4 border-background relative">
-            <AvatarImage
-              src={portfolio.user.image_url}
-              className="object-cover"
-            />
+            <AvatarImage src={avatarUrl ?? undefined} className="object-cover" />
             <AvatarFallback className="bg-muted text-4xl font-black text-primary">
               {portfolio.name?.charAt(0) ?? "U"}
             </AvatarFallback>
@@ -739,18 +740,7 @@ const ContactSection = ({
 };
 
 const FooterSection = ({ portfolio }: { portfolio: Portfolio }) => {
-  return (
-    <footer className="border-t py-4 mt-auto bg-muted/5">
-      <div className="flex flex-col items-center justify-center gap-6 text-center px-4">
-        <div className="space-y-1">
-          <p className="text-sm font-medium text-foreground">
-            © {new Date().getFullYear()} {portfolio?.name || "My Portfolio"}.
-            All rights reserved.
-          </p>
-        </div>
-      </div>
-    </footer>
-  );
+  return <KislapShareFooter name={portfolio?.name} />;
 };
 
 export function Vaporware({
@@ -788,3 +778,4 @@ export function Vaporware({
     </div>
   );
 }
+

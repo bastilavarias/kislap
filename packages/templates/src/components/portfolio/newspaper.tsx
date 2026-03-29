@@ -37,6 +37,8 @@ import { toast } from "sonner";
 import { Project } from "@/types/project";
 import { Portfolio } from "@/types/portfolio";
 import { cn } from "@/lib/utils";
+import { getPortfolioAvatarUrl } from "./avatar";
+import { KislapShareFooter } from "../shared/kislap-share-footer";
 
 // --- Types ---
 interface Props {
@@ -99,6 +101,8 @@ const Masthead = ({
 };
 
 const Sidebar = ({ portfolio }: { portfolio: Portfolio }) => {
+  const avatarUrl = getPortfolioAvatarUrl(portfolio);
+
   const socialLinks = useMemo(() => {
     return [
       { type: "github", url: portfolio.github, icon: Github },
@@ -114,10 +118,7 @@ const Sidebar = ({ portfolio }: { portfolio: Portfolio }) => {
       <div className={cn("border-2 p-1", borderClass)}>
         <div className="relative aspect-square w-full grayscale contrast-125 hover:grayscale-0 transition-all duration-500">
           <Avatar className="w-full h-full rounded-none">
-            <AvatarImage
-              src={portfolio.user.image_url}
-              className="object-cover"
-            />
+            <AvatarImage src={avatarUrl ?? undefined} className="object-cover" />
             <AvatarFallback className="text-4xl font-black rounded-none">
               {portfolio.name?.charAt(0) ?? "U"}
             </AvatarFallback>
@@ -474,18 +475,7 @@ const RightColumn = ({
 };
 
 const Footer = ({ portfolio }: { portfolio: Portfolio }) => {
-  return (
-    <footer className="border-t py-4 mt-auto bg-muted/5">
-      <div className="flex flex-col items-center justify-center gap-6 text-center px-4">
-        <div className="space-y-1">
-          <p className="text-sm font-medium text-foreground">
-            © {new Date().getFullYear()} {portfolio?.name || "My Portfolio"}.
-            All rights reserved.
-          </p>
-        </div>
-      </div>
-    </footer>
-  );
+  return <KislapShareFooter name={portfolio?.name} />;
 };
 
 // --- Main Component ---
@@ -525,3 +515,4 @@ export function Newspaper({
     </div>
   );
 }
+

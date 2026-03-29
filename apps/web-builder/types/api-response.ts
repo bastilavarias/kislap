@@ -48,6 +48,23 @@ export interface APIResponseDocumentResume {
   }[];
 }
 
+export interface APIResponseParsedFile {
+  id: number;
+  user_id: number;
+  project_type: string;
+  source_type: string;
+  source_name: string;
+  status: string;
+  parsed_data: Record<string, any> | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface APIResponseParsedFilesList {
+  data: APIResponseParsedFile[];
+  meta: APIResponsePaginationMeta;
+}
+
 interface APIResponseThemeStyles {
   card: string;
   ring: string;
@@ -108,7 +125,7 @@ interface APIResponseUser {
   last_name: string;
   email: string;
   role: string;
-  avatar: string | null;
+  image_url: string | null;
   created_at: string;
   updated_at: string;
   deleted_at: string | null;
@@ -167,6 +184,7 @@ export interface APIResponsePortfolio {
   project_id: number;
   user_id: number;
   name: string;
+  avatar_url: string | null;
   location: string | null;
   job_title: string | null;
   introduction: string;
@@ -197,7 +215,7 @@ export interface APIResponseProject {
   description?: string;
   slug: string;
   sub_domain?: string | null;
-  type: 'portfolio' | 'biz' | 'links' | 'waitlist';
+  type: 'portfolio' | 'biz' | 'linktree' | 'menu' | 'waitlist';
   published: number;
   created_at: string;
   updated_at: string;
@@ -205,6 +223,7 @@ export interface APIResponseProject {
   portfolio: APIResponsePortfolio;
   linktree?: APIResponseLinktree;
   biz?: APIResponseBiz;
+  menu?: APIResponseMenu;
 }
 export interface APIResponseAppoinment {
   id: number;
@@ -424,6 +443,84 @@ export interface APIResponseLinktree {
   layout_name?: string;
   links: APIResponseLinktreeLink[];
   sections: APIResponseLinktreeSection[];
+  user?: APIResponseUser;
+  project?: APIResponseProject;
+}
+
+export interface APIResponseMenuQRSettings {
+  foreground_color?: string;
+  background_color?: string;
+  show_logo?: boolean;
+}
+
+export interface APIResponseMenuBusinessHour {
+  day: string;
+  open: string;
+  close: string;
+  closed: boolean;
+}
+
+export interface APIResponseMenuSocialLink {
+  platform: string;
+  url?: string | null;
+}
+
+export interface APIResponseMenuCategory {
+  id: number;
+  menu_id: number;
+  client_key: string;
+  name: string;
+  description?: string | null;
+  image_url?: string | null;
+  placement_order: number;
+  is_visible: boolean;
+}
+
+export interface APIResponseMenuItem {
+  id: number;
+  menu_id: number;
+  menu_category_id: number;
+  name: string;
+  description?: string | null;
+  image_url?: string | null;
+  badge?: string | null;
+  price: string;
+  variants?: {
+    name: string;
+    price: string;
+    is_default: boolean;
+    placement_order: number;
+  }[] | null;
+  placement_order: number;
+  is_available: boolean;
+  is_featured: boolean;
+}
+
+export interface APIResponseMenu {
+  id: number;
+  project_id: number;
+  user_id: number;
+  name: string;
+  description?: string | null;
+  logo_url?: string | null;
+  cover_image_url?: string | null;
+  phone?: string | null;
+  email?: string | null;
+  website_url?: string | null;
+  address?: string | null;
+  city?: string | null;
+  google_maps_url?: string | null;
+  layout_name?: string | null;
+  theme_name?: string | null;
+  theme_object: APIResponseThemeObject;
+  qr_settings?: APIResponseMenuQRSettings | null;
+  search_enabled: boolean;
+  hours_enabled: boolean;
+  business_hours?: APIResponseMenuBusinessHour[] | null;
+  social_links?: APIResponseMenuSocialLink[] | null;
+  gallery_images?: string[] | null;
+  categories: APIResponseMenuCategory[];
+  items: APIResponseMenuItem[];
   user?: APIResponseUser;
   project?: APIResponseProject;
 }

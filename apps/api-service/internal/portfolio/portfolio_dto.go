@@ -1,5 +1,7 @@
 package portfolio
 
+import "mime/multipart"
+
 type WorkExperienceRequest struct {
 	Company        string  `json:"company" binding:"required"`
 	Role           string  `json:"role" binding:"required"`
@@ -107,6 +109,8 @@ type CreateUpdatePortfolioRequest struct {
 	Github          string                  `json:"github"`
 	Linkedin        string                  `json:"linkedin"`
 	Twitter         string                  `json:"twitter"`
+	AvatarURL       *string                 `json:"avatar_url"`
+	Avatar          *multipart.FileHeader   `json:"avatar"`
 	Theme           *ThemeRequest           `json:"theme"`
 	LayoutName      string                  `json:"layout_name"`
 	WorkExperiences []WorkExperienceRequest `json:"work_experiences"`
@@ -130,6 +134,8 @@ type Payload struct {
 	Github          string
 	Linkedin        string
 	Twitter         string
+	AvatarURL       *string
+	Avatar          *multipart.FileHeader
 	Theme           *ThemeRequest
 	LayoutName      string
 	WorkExperiences []WorkExperienceRequest

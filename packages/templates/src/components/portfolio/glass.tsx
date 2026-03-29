@@ -46,6 +46,8 @@ import { Alert, AlertTitle } from "@/components/ui/alert";
 import { toast } from "sonner";
 import { Project } from "@/types/project";
 import { Portfolio } from "@/types/portfolio";
+import { getPortfolioAvatarUrl } from "./avatar";
+import { KislapShareFooter } from "../shared/kislap-share-footer";
 
 // --- Types ---
 interface Props {
@@ -86,6 +88,8 @@ const HeroSection = ({
   onSetThemeMode: React.Dispatch<React.SetStateAction<Mode>>;
   isDarkMode: boolean;
 }) => {
+  const avatarUrl = getPortfolioAvatarUrl(portfolio);
+
   const socialLinks = useMemo(() => {
     return [
       { type: "github", url: portfolio.github, icon: Github },
@@ -105,10 +109,7 @@ const HeroSection = ({
       <div className="relative shrink-0">
         <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full scale-110" />
         <Avatar className="w-32 h-32 md:w-40 md:h-40 border-4 border-white/50 dark:border-white/10 shadow-xl relative z-10">
-          <AvatarImage
-            src={portfolio.user.image_url}
-            className="object-cover"
-          />
+          <AvatarImage src={avatarUrl ?? undefined} className="object-cover" />
           <AvatarFallback className="text-4xl bg-gradient-to-br from-white/80 to-white/40 dark:from-black/80 dark:to-black/40 backdrop-blur-md">
             {portfolio.name?.charAt(0) ?? "U"}
           </AvatarFallback>
@@ -525,18 +526,7 @@ const EducationSkillsSection = ({ portfolio }: { portfolio: Portfolio }) => {
 };
 
 const FooterSection = ({ portfolio }: { portfolio: Portfolio }) => {
-  return (
-    <footer className="border-t py-4 mt-auto bg-muted/5">
-      <div className="flex flex-col items-center justify-center gap-6 text-center px-4">
-        <div className="space-y-1">
-          <p className="text-sm font-medium text-foreground">
-            © {new Date().getFullYear()} {portfolio?.name || "My Portfolio"}.
-            All rights reserved.
-          </p>
-        </div>
-      </div>
-    </footer>
-  );
+  return <KislapShareFooter name={portfolio?.name} />;
 };
 
 // --- Main Component ---
@@ -588,3 +578,4 @@ export function Glass({
     </div>
   );
 }
+

@@ -6,7 +6,7 @@ type CreateUpdateProjectRequest struct {
 	Name        string `json:"name" binding:"required"`
 	Description string `json:"description"`
 	SubDomain   string `json:"sub_domain" binding:"required"`
-	Type        string `json:"type" binding:"required,oneof=portfolio biz linktree waitlist"`
+	Type        string `json:"type" binding:"required,oneof=portfolio biz linktree menu waitlist"`
 	Published   bool   `json:"published"`
 }
 

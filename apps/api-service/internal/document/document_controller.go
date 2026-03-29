@@ -64,7 +64,7 @@ func (controller Controller) Parse(context *gin.Context) {
 		return
 	}
 
-	data, err := controller.Service.Parse(request.ToServicePayload(theFile))
+	data, err := controller.Service.Parse(request.ToServicePayload(theFile, file.Filename))
 	if err != nil {
 		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
 		context.Abort()

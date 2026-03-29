@@ -198,7 +198,7 @@ export interface APIResponseProject {
   slug: string;
   og_image_url?: string | null;
   sub_domain?: string | null;
-  type: "portfolio" | "biz" | "linktree" | "waitlist";
+  type: "portfolio" | "biz" | "linktree" | "menu" | "waitlist";
   published: number;
   created_at: string;
   updated_at: string;
@@ -236,4 +236,11 @@ export interface APIResponseDashboardStats {
   total_views: number;
   total_clicks: number;
   unique_visitors: number;
+}
+
+export interface APIResponsePublicProjectStats {
+  sites_published: number;
+  active_builders: number;
+  template_count: number;
+  uptime: string;
 }

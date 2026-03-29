@@ -6,13 +6,22 @@ import { Portfolio } from '@/types/portfolio';
 
 interface TemplateProps {
   project: Project;
-  portfolio: Portfolio;
+  portfolio?: Portfolio;
+  biz?: any;
+  linktree?: any;
+  menu?: any;
   themeMode: Mode;
   themeStyles: ThemeStyles;
   onSetThemeMode: React.Dispatch<React.SetStateAction<Mode>>;
 }
 
 import { BizTemplates, PortfolioTemplates, LinktreeTemplates } from '@kislap/templates';
+import { MenuDefault } from '@kislap/templates/src/components/menu/menu-default';
+import { MenuEditorial } from '@kislap/templates/src/components/menu/menu-editorial';
+import { MenuShowcase } from '@kislap/templates/src/components/menu/menu-showcase';
+import { MenuBistro } from '@kislap/templates/src/components/menu/menu-bistro';
+import { MenuRunway } from '@kislap/templates/src/components/menu/menu-runway';
+import { MenuMosaic } from '@kislap/templates/src/components/menu/menu-mosaic';
 
 const { Default, Minimal, Bento, NeoBrutalist, Glass, Cyber, Newspaper, Kinetic, Vaporware } =
   PortfolioTemplates;
@@ -44,6 +53,15 @@ const linktreeTemplates: Record<TemplateName, React.FC<TemplateProps>> = {
   'linktree-neo-brutalist': LinktreeNeoBrutalist,
 };
 
+const menuTemplates: Record<TemplateName, React.FC<TemplateProps>> = {
+  'menu-default': MenuDefault,
+  'menu-editorial': MenuEditorial,
+  'menu-showcase': MenuShowcase,
+  'menu-bistro': MenuBistro,
+  'menu-runway': MenuRunway,
+  'menu-mosaic': MenuMosaic,
+};
+
 /**
  * A utility function to render the correct template component based on layout_name.
  * @param project The project data containing the portfolio and layout_name.
@@ -70,6 +88,9 @@ export const renderTemplate = (
   } else if (project.type === 'linktree') {
     layoutName = project.linktree.layout_name || 'linktree-default';
     Component = linktreeTemplates[layoutName as TemplateName];
+  } else if (project.type === 'menu') {
+    layoutName = project.menu.layout_name || 'menu-default';
+    Component = menuTemplates[layoutName as TemplateName];
   }
 
   return Component ? (
@@ -78,6 +99,7 @@ export const renderTemplate = (
       portfolio={project.portfolio}
       biz={project.biz}
       linktree={project.linktree}
+      menu={project.menu}
       themeMode={themeMode}
       themeStyles={themeStyles}
       onSetThemeMode={onSetThemeMode}

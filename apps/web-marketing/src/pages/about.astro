@@ -2,11 +2,32 @@
 export const prerender = false;
 import Layout from '@/layouts/main.astro'; 
 import { AboutPageContent } from '@/components/about-page-content';
+import type { APIResponsePublicProjectStats } from '@/types/api-response';
 
 const title = "Kislap - About Kislap";
 const description = "We help developers, designers, and founders tell their story with world-class portfolios built in minutes.";
+
+let stats: APIResponsePublicProjectStats = {
+  sites_published: 0,
+  active_builders: 0,
+  template_count: 17,
+  uptime: "99.9%",
+};
+
+try {
+  const response = await fetch(`${import.meta.env.API_URL}/api/projects/stats/public`);
+
+  if (response.ok) {
+    const result = await response.json();
+    stats = result.data || result;
+  } else {
+    console.error("About stats API error:", response.statusText);
+  }
+} catch (error) {
+  console.error("About stats fetch error:", error);
+}
 ---
 
 <Layout title={title} description={description}>
-  <AboutPageContent client:load />
+  <AboutPageContent client:load stats={stats} />
 </Layout>

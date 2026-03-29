@@ -3,6 +3,7 @@ import { User } from './user';
 export interface Portfolio {
   id: number;
   name: string;
+  avatar_url: string | null;
   location: string | null;
   job_title: string | null;
   introduction: string | null;

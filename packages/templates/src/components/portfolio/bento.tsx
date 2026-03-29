@@ -51,6 +51,8 @@ import { toast } from "sonner";
 import { Project } from "@/types/project";
 import { Portfolio } from "@/types/portfolio";
 import { cn } from "@/lib/utils";
+import { getPortfolioAvatarUrl } from "./avatar";
+import { KislapShareFooter } from "../shared/kislap-share-footer";
 
 interface Props {
   project: Project;
@@ -67,6 +69,8 @@ interface SectionProps {
 }
 
 const HeroCard = ({ portfolio, className, style }: SectionProps) => {
+  const avatarUrl = getPortfolioAvatarUrl(portfolio);
+
   return (
     <Card
       className={cn(
@@ -79,12 +83,9 @@ const HeroCard = ({ portfolio, className, style }: SectionProps) => {
 
       <CardHeader className="relative z-10 p-6 md:p-8">
         <div className="flex justify-between items-start gap-4">
-          {portfolio.user?.image_url && (
+          {avatarUrl && (
             <Avatar className="w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 border-4 border-background shadow-2xl ring-2 ring-primary/10 group-hover:scale-105 transition-transform duration-300">
-              <AvatarImage
-                src={portfolio.user.image_url}
-                className="object-cover"
-              />
+              <AvatarImage src={avatarUrl} className="object-cover" />
               <AvatarFallback className="text-2xl md:text-4xl font-black bg-muted text-muted-foreground">
                 {portfolio.name?.charAt(0) ?? "U"}
               </AvatarFallback>
@@ -602,18 +603,7 @@ const ContactFormSection = ({
 };
 
 const FooterSection = ({ portfolio }: { portfolio: Portfolio }) => {
-  return (
-    <footer className="border-t py-4 mt-auto bg-muted/5">
-      <div className="flex flex-col items-center justify-center gap-6 text-center px-4">
-        <div className="space-y-1">
-          <p className="text-sm font-medium text-foreground">
-            © {new Date().getFullYear()} {portfolio?.name || "My Portfolio"}.
-            All rights reserved.
-          </p>
-        </div>
-      </div>
-    </footer>
-  );
+  return <KislapShareFooter name={portfolio?.name} />;
 };
 
 // --- Main Component ---
@@ -702,3 +692,4 @@ export function Bento({
     </div>
   );
 }
+

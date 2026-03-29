@@ -28,8 +28,9 @@ func (controller Controller) List(context *gin.Context) {
 
 	page, _ := strconv.Atoi(context.DefaultQuery("page", "1"))
 	limit, _ := strconv.Atoi(context.DefaultQuery("limit", "10"))
+	projectType := context.Query("type")
 
-	projects, err := controller.Service.List(&userID, page, limit)
+	projects, err := controller.Service.List(&userID, page, limit, projectType)
 
 	if err != nil {
 		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
@@ -203,8 +204,9 @@ func (controller Controller) Publish(context *gin.Context) {
 func (controller Controller) PublicList(context *gin.Context) {
 	page, _ := strconv.Atoi(context.DefaultQuery("page", "1"))
 	limit, _ := strconv.Atoi(context.DefaultQuery("limit", "10"))
+	projectType := context.Query("type")
 
-	projects, err := controller.Service.List(nil, page, limit)
+	projects, err := controller.Service.List(nil, page, limit, projectType)
 
 	if err != nil {
 		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
@@ -214,6 +216,18 @@ func (controller Controller) PublicList(context *gin.Context) {
 
 	utils.APIRespondSuccess(context, http.StatusOK, projects)
 
+}
+
+func (controller Controller) PublicStats(context *gin.Context) {
+	stats, err := controller.Service.PublicStats()
+
+	if err != nil {
+		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
+		context.Abort()
+		return
+	}
+
+	utils.APIRespondSuccess(context, http.StatusOK, stats)
 }
 
 func (controller Controller) SaveOGImage(context *gin.Context) {

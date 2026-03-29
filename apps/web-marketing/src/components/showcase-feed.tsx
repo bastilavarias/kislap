@@ -2,8 +2,6 @@ import { cn } from "@/lib/utils";
 import type { APIResponseProject } from "@/types/api-response";
 import {
   Layout,
-  BarChart3,
-  Zap,
   Globe,
   ArrowRight,
   ChevronLeft,
@@ -11,11 +9,12 @@ import {
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { LivePreviewFrame } from "./live-preview";
 
 const PAGE_LIMIT = 9;
+type ProjectTypeFilter = "all" | "portfolio" | "linktree" | "menu";
 
 const styleConfig: Record<
   string,
@@ -27,17 +26,17 @@ const styleConfig: Record<
     glow: "group-hover:shadow-indigo-500/20",
     icon: Layout,
   },
-  biz: {
-    label: "Business",
-    gradient: "from-emerald-500/20 via-teal-500/20 to-cyan-500/20",
-    glow: "group-hover:shadow-emerald-500/20",
-    icon: BarChart3,
+  linktree: {
+    label: "Linktree",
+    gradient: "from-fuchsia-500/20 via-pink-500/20 to-rose-500/20",
+    glow: "group-hover:shadow-pink-500/20",
+    icon: Globe,
   },
-  waitlist: {
-    label: "Waitlist",
-    gradient: "from-orange-500/20 via-amber-500/20 to-yellow-500/20",
-    glow: "group-hover:shadow-orange-500/20",
-    icon: Zap,
+  menu: {
+    label: "Menu",
+    gradient: "from-amber-500/20 via-orange-500/20 to-red-500/20",
+    glow: "group-hover:shadow-amber-500/20",
+    icon: Layout,
   },
   default: {
     label: "Project",
@@ -157,28 +156,61 @@ const itemVariants = {
   },
 };
 
+const filterOptions: Array<{ value: ProjectTypeFilter; label: string }> = [
+  { value: "all", label: "All" },
+  { value: "portfolio", label: "Portfolio" },
+  { value: "linktree", label: "Linktree" },
+  { value: "menu", label: "Menu" },
+];
+
 interface ShowcaseFeedProps {
   projects: APIResponseProject[];
   apiBaseUrl: string;
+  initialType?: ProjectTypeFilter;
 }
 
-export function ShowcaseFeed({ projects, apiBaseUrl }: ShowcaseFeedProps) {
+export function ShowcaseFeed({
+  projects,
+  apiBaseUrl,
+  initialType = "all",
+}: ShowcaseFeedProps) {
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageCache, setPageCache] = useState<Record<number, APIResponseProject[]>>({
-    1: projects ?? [],
+  const [currentFilter, setCurrentFilter] = useState<ProjectTypeFilter>(initialType);
+  const [pageCache, setPageCache] = useState<
+    Record<ProjectTypeFilter, Record<number, APIResponseProject[]>>
+  >({
+    all: {},
+    portfolio: {},
+    linktree: {},
+    menu: {},
+    [initialType]: { 1: projects ?? [] },
   });
   const [isLoading, setIsLoading] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
-  const [hasNextPage, setHasNextPage] = useState((projects?.length || 0) === PAGE_LIMIT);
+  const [hasNextPageByFilter, setHasNextPageByFilter] = useState<
+    Record<ProjectTypeFilter, boolean>
+  >({
+    all: false,
+    portfolio: false,
+    linktree: false,
+    menu: false,
+    [initialType]: (projects?.length || 0) === PAGE_LIMIT,
+  });
 
-  const currentProjects = useMemo(() => pageCache[currentPage] || [], [pageCache, currentPage]);
+  const currentProjects = useMemo(
+    () => pageCache[currentFilter]?.[currentPage] || [],
+    [pageCache, currentFilter, currentPage],
+  );
   const loadedPages = useMemo(
-    () => Object.keys(pageCache).map(Number).sort((a, b) => a - b),
-    [pageCache],
+    () =>
+      Object.keys(pageCache[currentFilter] || {})
+        .map(Number)
+        .sort((a, b) => a - b),
+    [pageCache, currentFilter],
   );
 
-  const fetchPage = async (page: number) => {
-    if (pageCache[page] || isLoading || !apiBaseUrl) {
+  const fetchPage = async (page: number, filter = currentFilter) => {
+    if (pageCache[filter]?.[page] || isLoading || !apiBaseUrl) {
       setCurrentPage(page);
       return;
     }
@@ -187,20 +219,58 @@ export function ShowcaseFeed({ projects, apiBaseUrl }: ShowcaseFeedProps) {
     setLoadError(null);
 
     try {
-      const res = await fetch(`${apiBaseUrl}/api/projects/list/public?page=${page}&limit=${PAGE_LIMIT}`);
+      const params = new URLSearchParams({
+        page: String(page),
+        limit: String(PAGE_LIMIT),
+      });
+      if (filter !== "all") {
+        params.set("type", filter);
+      }
+
+      const res = await fetch(`${apiBaseUrl}/api/projects/list/public?${params.toString()}`);
       if (!res.ok) throw new Error(`Failed to fetch page ${page}`);
       const json = await res.json();
       const nextItems: APIResponseProject[] = json?.data || [];
 
-      setPageCache((prev) => ({ ...prev, [page]: nextItems }));
+      setPageCache((prev) => ({
+        ...prev,
+        [filter]: {
+          ...(prev[filter] || {}),
+          [page]: nextItems,
+        },
+      }));
       setCurrentPage(page);
-      setHasNextPage(nextItems.length === PAGE_LIMIT);
+      setHasNextPageByFilter((prev) => ({
+        ...prev,
+        [filter]: nextItems.length === PAGE_LIMIT,
+      }));
     } catch {
       setLoadError("Unable to load more showcase projects right now.");
     } finally {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (!pageCache[currentFilter]?.[1] && apiBaseUrl) {
+      void fetchPage(1, currentFilter);
+      return;
+    }
+
+    setCurrentPage(1);
+  }, [currentFilter]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const url = new URL(window.location.href);
+    if (currentFilter === "all") {
+      url.searchParams.delete("type");
+    } else {
+      url.searchParams.set("type", currentFilter);
+    }
+    window.history.replaceState({}, "", url.toString());
+  }, [currentFilter]);
 
   const goPrev = () => {
     if (currentPage <= 1) return;
@@ -209,8 +279,8 @@ export function ShowcaseFeed({ projects, apiBaseUrl }: ShowcaseFeedProps) {
 
   const goNext = async () => {
     const nextPage = currentPage + 1;
-    if (!hasNextPage && !pageCache[nextPage]) return;
-    await fetchPage(nextPage);
+    if (!hasNextPageByFilter[currentFilter] && !pageCache[currentFilter]?.[nextPage]) return;
+    await fetchPage(nextPage, currentFilter);
   };
 
   return (
@@ -245,8 +315,27 @@ export function ShowcaseFeed({ projects, apiBaseUrl }: ShowcaseFeedProps) {
           </motion.h1>
 
           <motion.p variants={itemVariants} className="max-w-2xl text-xl leading-relaxed text-muted-foreground">
-            Explore sites builth with Kislap. Take a look for inspiration!
+            Explore sites built with Kislap. Filter by project type and keep browsing without losing your place.
           </motion.p>
+
+          <motion.div
+            variants={itemVariants}
+            className="flex flex-wrap items-center justify-center gap-3"
+          >
+            {filterOptions.map((option) => (
+              <Button
+                key={option.value}
+                type="button"
+                variant={option.value === currentFilter ? "default" : "outline"}
+                size="sm"
+                onClick={() => setCurrentFilter(option.value)}
+                disabled={isLoading && option.value !== currentFilter}
+                className="rounded-full"
+              >
+                {option.label}
+              </Button>
+            ))}
+          </motion.div>
         </motion.div>
       </div>
 
@@ -284,7 +373,7 @@ export function ShowcaseFeed({ projects, apiBaseUrl }: ShowcaseFeedProps) {
                 type="button"
                 variant={page === currentPage ? "default" : "outline"}
                 size="sm"
-                onClick={() => fetchPage(page)}
+                onClick={() => fetchPage(page, currentFilter)}
                 disabled={isLoading}
               >
                 {page}
@@ -296,7 +385,10 @@ export function ShowcaseFeed({ projects, apiBaseUrl }: ShowcaseFeedProps) {
               variant="outline"
               size="sm"
               onClick={goNext}
-              disabled={isLoading || (!hasNextPage && !pageCache[currentPage + 1])}
+              disabled={
+                isLoading ||
+                (!hasNextPageByFilter[currentFilter] && !pageCache[currentFilter]?.[currentPage + 1])
+              }
             >
               Next
               <ChevronRight className="ml-1 h-4 w-4" />

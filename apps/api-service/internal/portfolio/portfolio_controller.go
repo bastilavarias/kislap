@@ -1,6 +1,7 @@
 package portfolio
 
 import (
+	"encoding/json"
 	"flash/internal/project"
 	objectStorage "flash/sdk/object_storage"
 	"flash/utils"
@@ -19,7 +20,8 @@ type Controller struct {
 
 func NewController(db *gorm.DB, objectStorage objectStorage.Provider) *Controller {
 	service := &Service{
-		DB: db,
+		DB:            db,
+		ObjectStorage: objectStorage,
 	}
 
 	projectService := project.NewService(db, objectStorage)
@@ -28,15 +30,40 @@ func NewController(db *gorm.DB, objectStorage objectStorage.Provider) *Controlle
 }
 
 func (controller Controller) Save(context *gin.Context) {
-	var request CreateUpdatePortfolioRequest
-
-	if err := context.ShouldBindJSON(&request); err != nil {
-		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
+	if err := context.Request.ParseMultipartForm(32 << 20); err != nil {
+		utils.APIRespondError(context, http.StatusBadRequest, "File upload error: "+err.Error())
 		context.Abort()
 		return
 	}
 
-	portfolio, err := controller.Service.Save(request.ToServicePayload())
+	jsonBody := context.Request.FormValue("json_body")
+	if jsonBody == "" {
+		utils.APIRespondError(context, http.StatusBadRequest, "Missing 'json_body'")
+		context.Abort()
+		return
+	}
+
+	var request CreateUpdatePortfolioRequest
+	if err := json.Unmarshal([]byte(jsonBody), &request); err != nil {
+		utils.APIRespondError(context, http.StatusBadRequest, "Invalid JSON: "+err.Error())
+		context.Abort()
+		return
+	}
+
+	if form := context.Request.MultipartForm; form != nil {
+		if files, ok := form.File["avatar"]; ok && len(files) > 0 {
+			request.AvatarURL = nil
+		}
+	}
+
+	payload := request.ToServicePayload()
+	if form := context.Request.MultipartForm; form != nil {
+		if files, ok := form.File["avatar"]; ok && len(files) > 0 {
+			payload.Avatar = files[0]
+		}
+	}
+
+	portfolio, err := controller.Service.Save(payload)
 	if err != nil {
 		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
 		context.Abort()
@@ -56,7 +83,7 @@ func (controller Controller) Save(context *gin.Context) {
 			fmt.Printf("Background OG Image generation failed for project %d: %v\n", projectID, err)
 		}
 
-	}(int64(request.ProjectID))
+	}(int64(payload.ProjectID))
 
 	utils.APIRespondSuccess(context, http.StatusOK, gin.H{
 		"portfolio": portfolio,

@@ -41,6 +41,7 @@ import {
   Loader2,
   Plus,
   ArrowUpRight,
+  UtensilsCrossed,
 } from 'lucide-react';
 
 const typeConfig: Record<string, { label: string; color: string; icon: any; projectName: string }> =
@@ -62,6 +63,12 @@ const typeConfig: Record<string, { label: string; color: string; icon: any; proj
       color: 'text-pink-600 bg-pink-50 border-pink-200',
       icon: ExternalLink,
       projectName: 'linktree',
+    },
+    menu: {
+      label: 'Menu',
+      color: 'text-emerald-600 bg-emerald-50 border-emerald-200',
+      icon: UtensilsCrossed,
+      projectName: 'menu',
     },
     waitlist: {
       label: 'Waitlist',

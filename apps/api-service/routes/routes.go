@@ -6,7 +6,9 @@ import (
 	"flash/internal/biz"
 	"flash/internal/document"
 	"flash/internal/linktree"
+	"flash/internal/menu"
 	"flash/internal/page_activity"
+	"flash/internal/parsed_file"
 	"flash/internal/portfolio"
 	"flash/internal/project"
 	"flash/internal/user"
@@ -31,6 +33,8 @@ func RegisterRoutes(router *gin.Engine, db *gorm.DB, llm llm.Provider, objectSto
 		userController := user.NewController(db)
 		projectController := project.NewController(db, objectStorage)
 		documentController := document.NewController(db, llm, objectStorage)
+		parsedFileService := parsed_file.NewService(db, documentController.Service)
+		parsedFileController := parsed_file.NewController(parsedFileService)
 		portfolioController := portfolio.NewController(db, objectStorage)
 		appointmentController := appointment.NewController(db)
 		pageActivityController := page_activity.NewController(db)
@@ -38,6 +42,7 @@ func RegisterRoutes(router *gin.Engine, db *gorm.DB, llm llm.Provider, objectSto
 		bizController := biz.NewController(db, objectStorage)
 
 		linktreeController := linktree.NewController(db, objectStorage)
+		menuController := menu.NewController(db, objectStorage)
 
 		api.POST("/auth/login", authController.Login)
 		api.POST("/auth/github", authController.GithubLogin)
@@ -49,6 +54,7 @@ func RegisterRoutes(router *gin.Engine, db *gorm.DB, llm llm.Provider, objectSto
 
 		api.GET("/projects/list", middleware.AccessTokenValidatorMiddleware(db), projectController.List)
 		api.GET("/projects/list/public", projectController.PublicList)
+		api.GET("/projects/stats/public", projectController.PublicStats)
 		api.GET("/projects/show/:id", projectController.ShowByID)
 		api.GET("/projects/show/slug/:slug", middleware.AccessTokenValidatorMiddleware(db), projectController.ShowBySlug)
 		api.GET("/projects/show/sub-domain/:sub-domain", projectController.ShowBySubDomain)
@@ -60,6 +66,8 @@ func RegisterRoutes(router *gin.Engine, db *gorm.DB, llm llm.Provider, objectSto
 		api.DELETE("/projects/:id", middleware.AccessTokenValidatorMiddleware(db), projectController.Delete)
 
 		api.POST("/documents", middleware.AccessTokenValidatorMiddleware(db), documentController.Parse)
+		api.GET("/parsed-files", middleware.AccessTokenValidatorMiddleware(db), parsedFileController.List)
+		api.POST("/parsed-files", middleware.AccessTokenValidatorMiddleware(db), parsedFileController.Create)
 
 		// Portfolio
 		api.GET("/portfolios/:id", middleware.AccessTokenValidatorMiddleware(db), portfolioController.Get)
@@ -83,5 +91,9 @@ func RegisterRoutes(router *gin.Engine, db *gorm.DB, llm llm.Provider, objectSto
 		// Linktree
 		api.GET("/linktree/:id", middleware.AccessTokenValidatorMiddleware(db), linktreeController.Get)
 		api.POST("/linktree", middleware.AccessTokenValidatorMiddleware(db), linktreeController.Save)
+
+		// Menu
+		api.GET("/menu/:id", middleware.AccessTokenValidatorMiddleware(db), menuController.Get)
+		api.POST("/menu", middleware.AccessTokenValidatorMiddleware(db), menuController.Save)
 	}
 }

@@ -2,7 +2,7 @@
 
 import { Mode } from '@/contexts/settings-context';
 import { ComponentThemeProvider } from '@/providers/ComponentThemesProvider';
-import { useState, useEffect } from 'react'; // useEffect kept only for page view tracking
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { Project } from '@/types/project';
 import { ThemeStyles } from '@/types/theme';
 import { defaultThemeState } from '@/config/theme';
@@ -16,11 +16,55 @@ interface BuilderProps {
   initialSubdomain: string;
 }
 
+function isValidMode(value: string | null): value is Mode {
+  return value === 'light' || value === 'dark' || value === 'system';
+}
+
 export function Builder({ initialProject, initialSubdomain }: BuilderProps) {
   const [project] = useState<Project | null>(initialProject);
-  const [themeMode, setThemeMode] = useState<Mode>('light');
+  const [themeMode, setThemeMode] = useState<Mode>('system');
+  const [systemMode, setSystemMode] = useState<'light' | 'dark'>('light');
 
   const { trackPageView } = usePageActivity();
+
+  const storageKey = useMemo(() => {
+    if (!project) return null;
+    return `kislap:site-theme-mode:${project.type}:${project.id ?? initialSubdomain}`;
+  }, [project, initialSubdomain]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const syncSystemMode = () => setSystemMode(mediaQuery.matches ? 'dark' : 'light');
+
+    syncSystemMode();
+    mediaQuery.addEventListener('change', syncSystemMode);
+
+    return () => mediaQuery.removeEventListener('change', syncSystemMode);
+  }, []);
+
+  useEffect(() => {
+    if (!storageKey || typeof window === 'undefined') return;
+
+    const savedMode = window.localStorage.getItem(storageKey);
+    setThemeMode(isValidMode(savedMode) ? savedMode : 'system');
+  }, [storageKey]);
+
+  const setPersistedThemeMode = useCallback<React.Dispatch<React.SetStateAction<Mode>>>(
+    (value) => {
+      setThemeMode((previousMode) => {
+        const nextMode = typeof value === 'function' ? value(previousMode) : value;
+
+        if (storageKey && typeof window !== 'undefined') {
+          window.localStorage.setItem(storageKey, nextMode);
+        }
+
+        return nextMode;
+      });
+    },
+    [storageKey]
+  );
 
   useEffect(() => {
     if (project?.id) {
@@ -53,6 +97,8 @@ export function Builder({ initialProject, initialSubdomain }: BuilderProps) {
     themeObject = project.biz?.theme_object || {};
   } else if (project.type === 'linktree') {
     themeObject = project.linktree?.theme_object || {};
+  } else if (project.type === 'menu') {
+    themeObject = project.menu?.theme_object || {};
   }
 
   let normalizedThemeObject: Record<string, unknown> = {};
@@ -73,11 +119,19 @@ export function Builder({ initialProject, initialSubdomain }: BuilderProps) {
   const themeStyles: ThemeStyles =
     rawStyles && typeof rawStyles === 'object' ? (rawStyles as ThemeStyles) : defaultThemeState;
 
-  const TemplateComponent = renderTemplate(project, themeMode, themeStyles, setThemeMode);
+  const resolvedThemeMode: 'light' | 'dark' =
+    themeMode === 'system' ? systemMode : themeMode;
+
+  const TemplateComponent = renderTemplate(
+    project,
+    resolvedThemeMode,
+    themeStyles,
+    setPersistedThemeMode
+  );
 
   return (
     <div className="relative flex min-h-full w-full flex-auto flex-col gap-10">
-      <ComponentThemeProvider themeStyles={themeStyles} mode={themeMode}>
+      <ComponentThemeProvider themeStyles={themeStyles} mode={resolvedThemeMode}>
         <AcknowledgementBanner />
         <div
           style={{

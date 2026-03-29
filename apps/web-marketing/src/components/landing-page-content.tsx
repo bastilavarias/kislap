@@ -7,12 +7,8 @@ import {
   LineChart,
   Globe,
   LayoutTemplate,
-  Code2,
   ShieldCheck,
-  GitBranch,
-  Terminal,
-  Cpu,
-  Database,
+  Sparkles,
   FileText,
   Wand2,
   Send,
@@ -57,8 +53,8 @@ export function LandingPageContent() {
             variants={fadeIn}
             className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-8 bg-clip-text text-transparent bg-gradient-to-b from-foreground to-foreground/70"
           >
-            Turn simple forms into <br />
-            <span className="text-primary">stunning websites.</span>
+            Build your portfolio, <br />
+            <span className="text-primary">link page, or menu fast.</span>
           </motion.h1>
 
           <motion.p
@@ -69,8 +65,8 @@ export function LandingPageContent() {
           >
             No drag and drop chaos. No design skills needed.{" "}
             <br className="hidden md:block" />
-            Just fill in the blanks, and Kislap generates a high performance
-            site instantly.
+            Pick the right builder, fill the form, and publish a polished page
+            that is ready to share.
           </motion.p>
 
           <motion.div
@@ -154,7 +150,7 @@ export function LandingPageContent() {
                           Full Name
                         </label>
                         <div className="h-9 w-full rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-3 flex items-center text-sm font-medium text-foreground shadow-sm">
-                          Sebastian Curtis Lavarias
+                          Juan Delacruz
                         </div>
                       </div>
 
@@ -213,7 +209,7 @@ export function LandingPageContent() {
                     <div className="w-2.5 h-2.5 rounded-full bg-zinc-300" />
                   </div>
                   <div className="bg-zinc-100 dark:bg-zinc-800 rounded-md px-3 py-1 text-[10px] text-zinc-500 font-mono flex items-center gap-1.5">
-                    <Globe className="w-3 h-3" /> sebastech.kislap.app
+                    <Globe className="w-3 h-3" /> juandelacruz.kislap.app
                   </div>
                 </div>
 
@@ -225,19 +221,19 @@ export function LandingPageContent() {
                           className="w-full h-full bg-cover"
                           style={{
                             backgroundImage:
-                              "url('https://api.dicebear.com/9.x/avataaars/svg?seed=Sebastian')",
+                              "url('https://api.dicebear.com/9.x/avataaars/svg?seed=6')",
                           }}
                         />
                       </div>
                       <div className="space-y-1">
                         <div className="bg-pink-100 border-2 border-black px-3 py-1 inline-block shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] mb-1">
                           <h2 className="text-lg font-black uppercase tracking-tighter text-black leading-none">
-                            Sebastian Curtis Lavarias
+                            Juan Delacruz
                           </h2>
                         </div>
                         <div className="text-xs font-bold font-mono text-zinc-600 flex items-center gap-1">
                           <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                          FULL-STACK DEV
+                          FULL-STACK WEB DEVELOPER
                         </div>
                       </div>
                     </div>
@@ -289,28 +285,111 @@ export function LandingPageContent() {
         </div>
       </section>
 
-      <section className="border-y bg-muted/30 py-10">
-        <div className="container mx-auto px-4 text-center">
-          <p className="text-sm font-semibold text-muted-foreground uppercase tracking-widest mb-8">
-            Built with the modern stack you love
-          </p>
-          <div className="flex flex-wrap justify-center gap-8 md:gap-16 opacity-70">
-            {[
-              { name: "Next.js", icon: Globe },
-              { name: "Go", icon: Cpu },
-              { name: "MySQL", icon: Database },
-              { name: "Cloudflare", icon: Zap },
-              { name: "Tailwind CSS", icon: LayoutTemplate },
-              { name: "TypeScript", icon: Code2 },
-            ].map((tech) => (
-              <div
-                key={tech.name}
-                className="flex items-center gap-2 font-mono text-sm md:text-base font-medium select-none hover:text-foreground hover:opacity-100 transition-colors"
-              >
-                <tech.icon className="w-4 h-4 md:w-5 md:h-5 text-primary" />
-                {tech.name}
-              </div>
-            ))}
+      <section className="relative overflow-hidden border-t border-zinc-200 bg-zinc-50 py-24 text-foreground dark:border-zinc-800 dark:bg-black">
+        <div className="absolute inset-0 bg-[radial-gradient(circle,_rgba(59,130,246,0.12)_1px,_transparent_1px)] [background-size:18px_18px] opacity-40" />
+        <div className="container relative z-10 mx-auto max-w-6xl px-4">
+          <div className="mx-auto max-w-3xl space-y-6 text-center">
+            <Badge
+              variant="outline"
+              className="border-primary/20 bg-primary/5 text-primary"
+            >
+              Launch Flow
+            </Badge>
+            <div className="space-y-5">
+              <h2 className="text-3xl font-bold tracking-tight text-zinc-900 md:text-5xl dark:text-zinc-50">
+                Go Public in <span className="text-primary">3 Steps</span>
+              </h2>
+              <p className="text-lg leading-relaxed text-zinc-500 dark:text-zinc-400">
+                Kislap keeps the path short: start with the right builder, add
+                your content, and publish a page that is ready to share.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 pt-2 text-sm font-medium text-zinc-600 dark:text-zinc-300">
+              {[
+                {
+                  label: "No drag-and-drop setup spiral",
+                  icon: Sparkles,
+                },
+                {
+                  label: "No plugin hunting or theme confusion",
+                  icon: ShieldCheck,
+                },
+                {
+                  label: "No waiting around to get something live",
+                  icon: Send,
+                },
+              ].map((point) => {
+                const Icon = point.icon;
+
+                return (
+                  <div
+                    key={point.label}
+                    className="inline-flex items-center gap-3"
+                  >
+                    <Icon className="h-4 w-4 text-primary" />
+                    <span>{point.label}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="relative mx-auto mt-16 max-w-6xl">
+            <div className="pointer-events-none absolute left-[18%] right-[18%] top-14 hidden h-px bg-gradient-to-r from-primary/20 via-primary/50 to-primary/20 md:block" />
+
+            <div className="grid gap-6 md:grid-cols-3">
+              {[
+                {
+                  step: "01",
+                  title: "Create a project",
+                  description:
+                    "Choose the builder that matches what you actually need to publish.",
+                  icon: LayoutTemplate,
+                },
+                {
+                  step: "02",
+                  title: "Fill form",
+                  description:
+                    "Add your content, tune the design, and let the structure do the heavy lifting.",
+                  icon: FileText,
+                },
+                {
+                  step: "03",
+                  title: "Publish",
+                  description:
+                    "Launch your public page and start sharing it the same day.",
+                  icon: Globe,
+                },
+              ].map((item) => {
+                const Icon = item.icon;
+
+                return (
+                  <div
+                    key={item.step}
+                    className="group relative flex flex-col rounded-[2rem] border border-zinc-200 bg-background/90 p-6 shadow-[0_18px_50px_rgba(15,23,42,0.08)] transition-transform duration-300 hover:-translate-y-1 dark:border-zinc-800 dark:bg-zinc-950/80 dark:shadow-[0_18px_50px_rgba(0,0,0,0.35)]"
+                  >
+                    <div className="mb-8 flex items-start justify-between">
+                      <div className="flex h-16 w-16 items-center justify-center rounded-[1.5rem] border border-primary/15 bg-primary/5 text-primary">
+                        <Icon className="h-7 w-7" />
+                      </div>
+                      <div className="rounded-full border border-zinc-200 bg-background px-3 py-1 text-xs font-semibold tracking-[0.22em] text-zinc-500 shadow-sm dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-400">
+                        {item.step}
+                      </div>
+                    </div>
+
+                    <h3 className="text-2xl font-bold tracking-tight text-foreground">
+                      {item.title}
+                    </h3>
+                    <p className="mt-4 text-base leading-relaxed text-muted-foreground">
+                      {item.description}
+                    </p>
+
+                    <div className="mt-8 h-1.5 w-16 rounded-full bg-gradient-to-r from-primary to-primary/20 transition-all duration-300 group-hover:w-24" />
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       </section>
@@ -433,9 +512,8 @@ export function LandingPageContent() {
         </motion.div>
       </section>
 
-      {/* --- 5. NEW: PORTFOLIO SUPERPOWERS (The "And if..." Section) --- */}
+      {/* --- 5. SPECIALIZED BUILDERS --- */}
       <section className="container mx-auto px-4 max-w-6xl pb-24">
-        {/* Subtle Divider / Transition */}
         <div className="flex items-center gap-4 mb-12 opacity-50">
           <div className="h-px bg-border flex-1" />
           <span className="text-sm font-mono uppercase tracking-widest text-muted-foreground">
@@ -450,232 +528,145 @@ export function LandingPageContent() {
               variant="outline"
               className="w-fit text-emerald-600 border-emerald-600/20 bg-emerald-50 dark:bg-emerald-950/30 dark:text-emerald-400"
             >
-              For Job Seekers & Freelancers
+              Purpose-built Builders
             </Badge>
             <h2 className="text-3xl md:text-4xl font-bold">
-              Building a Portfolio? <br />
+              Choose the page type that matches <br />
               <span className="text-muted-foreground">
-                We made it unfair for the competition.
+                what you actually need to publish.
               </span>
             </h2>
           </div>
           <p className="text-muted-foreground text-lg max-w-md text-right hidden md:block">
-            Specific tools designed to help you land your next role or client
-            faster.
+            Each builder has its own structure, content flow, and public
+            experience. Pick the one that fits the job, then go deeper.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8">
-          {/* Feature A: Resume Parser */}
+        <div className="grid gap-8 lg:grid-cols-3">
           <div className="group relative overflow-hidden rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-background p-8 hover:border-emerald-500/50 transition-all duration-300 hover:shadow-lg">
             <div className="mb-6 flex items-center gap-4">
               <div className="p-3 bg-blue-500/10 rounded-2xl text-blue-500 group-hover:scale-110 transition-transform">
                 <FileText className="w-6 h-6" />
               </div>
-              <h3 className="text-2xl font-bold">Resume to Website</h3>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-blue-500/80 mb-2">
+                  Portfolio
+                </p>
+                <h3 className="text-2xl font-bold">Portfolio Builder</h3>
+              </div>
             </div>
             <p className="text-muted-foreground mb-8 text-lg leading-relaxed">
-              Hate filling out forms? Just drag & drop your existing resume
-              (PDF). Our AI extracts your bio, experience, and skills to build
-              your site instantly.
+              Turn your resume, work, and proof into a portfolio site that wins
+              trust faster.
             </p>
-
-            {/* Visual: PDF Upload Simulation */}
-            <div className="relative h-48 bg-muted/20 rounded-xl border-2 border-dashed border-muted-foreground/20 flex flex-col items-center justify-center gap-3 overflow-hidden group-hover:border-blue-500/30 transition-colors">
-              <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent z-10" />
-              <motion.div
-                animate={{ y: [0, -5, 0] }}
-                transition={{ duration: 4, repeat: Infinity }}
-              >
-                <FileText className="w-12 h-12 text-muted-foreground/40" />
-              </motion.div>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground/60 font-medium">
-                <Wand2 className="w-3 h-3 text-blue-500" />
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-500">
-                  Parsing with AI...
-                </span>
-              </div>
-              {/* Floating Extracted Data Pills */}
-              <div className="absolute bottom-4 flex gap-2 opacity-80 z-20">
-                <Badge
-                  variant="secondary"
-                  className="bg-white dark:bg-zinc-800 shadow-sm"
-                >
-                  Experience
-                </Badge>
-                <Badge
-                  variant="secondary"
-                  className="bg-white dark:bg-zinc-800 shadow-sm"
-                >
-                  Skills
-                </Badge>
-              </div>
+            <ul className="mb-8 space-y-3 text-sm text-muted-foreground">
+              <li className="flex items-start gap-3">
+                <Wand2 className="mt-0.5 h-4 w-4 text-blue-500" />
+                Resume parsing for a faster first draft
+              </li>
+              <li className="flex items-start gap-3">
+                <LayoutTemplate className="mt-0.5 h-4 w-4 text-blue-500" />
+                Portfolio layouts with SEO and social sharing built in
+              </li>
+              <li className="flex items-start gap-3">
+                <Mail className="mt-0.5 h-4 w-4 text-blue-500" />
+                Public page ready for applications, outreach, and inquiries
+              </li>
+            </ul>
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-muted-foreground">
+                Best for job seekers, freelancers, and creative professionals
+              </span>
+              <Button asChild variant="outline" className="rounded-full">
+                <a href="/portfolio-builder">
+                  Explore more <ArrowRight className="ml-2 h-4 w-4" />
+                </a>
+              </Button>
             </div>
           </div>
 
-          {/* Feature B: Contact Form */}
           <div className="group relative overflow-hidden rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-background p-8 hover:border-emerald-500/50 transition-all duration-300 hover:shadow-lg">
             <div className="mb-6 flex items-center gap-4">
-              <div className="p-3 bg-emerald-500/10 rounded-2xl text-emerald-600 group-hover:scale-110 transition-transform">
-                <Mail className="w-6 h-6" />
+              <div className="p-3 bg-fuchsia-500/10 rounded-2xl text-fuchsia-600 group-hover:scale-110 transition-transform">
+                <Globe className="w-6 h-6" />
               </div>
-              <h3 className="text-2xl font-bold">Direct Messaging</h3>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-fuchsia-600/80 mb-2">
+                  Link in Bio
+                </p>
+                <h3 className="text-2xl font-bold">Linktree Builder</h3>
+              </div>
             </div>
             <p className="text-muted-foreground mb-8 text-lg leading-relaxed">
-              Let visitors reach you instantly. A built-in, spam-protected
-              contact form that delivers messages straight to your dashboard. No
-              backend required.
+              Route social traffic into one branded page that feels intentional,
+              not disposable.
             </p>
-
-            {/* Visual: Neo-Brutal Form Simulation */}
-            <div className="relative h-48 bg-muted/20 rounded-xl border border-muted/20 p-5 flex items-center justify-center overflow-hidden">
-              {/* The Form Card */}
-              <div className="w-full max-w-[280px] bg-white border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] p-4 relative scale-90 group-hover:scale-95 transition-transform duration-300">
-                {/* Floating Header Label */}
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-white border-2 border-black px-3 py-0.5 font-black text-[10px] tracking-widest uppercase shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                  SEND_MESSAGE
-                </div>
-
-                <div className="grid grid-cols-5 gap-2 mt-2">
-                  {/* Left Inputs */}
-                  <div className="col-span-3 space-y-2">
-                    <div className="h-6 w-full border border-black bg-white px-2 flex items-center text-[8px] font-mono text-zinc-400">
-                      YOUR NAME
-                    </div>
-                    <div className="h-6 w-full border border-black bg-white px-2 flex items-center text-[8px] font-mono text-zinc-400">
-                      YOUR@EMAIL.COM
-                    </div>
-                    <div className="h-6 w-full border border-black bg-white px-2 flex items-center text-[8px] font-mono text-zinc-400">
-                      +63 900 000 000
-                    </div>
-                  </div>
-
-                  {/* Right Textarea */}
-                  <div className="col-span-2">
-                    <div className="h-full w-full border border-black bg-white p-2 text-[8px] font-mono text-zinc-400 leading-tight">
-                      TYPE YOUR MESSAGE HERE...
-                    </div>
-                  </div>
-                </div>
-
-                {/* Submit Button */}
-                <div className="mt-3 w-full bg-black text-white border border-black py-1.5 flex items-center justify-center gap-1 text-[9px] font-bold hover:bg-zinc-800 cursor-pointer">
-                  TRANSMIT <Send className="w-2 h-2" />
-                </div>
-              </div>
+            <ul className="mb-8 space-y-3 text-sm text-muted-foreground">
+              <li className="flex items-start gap-3">
+                <LayoutTemplate className="mt-0.5 h-4 w-4 text-fuchsia-600" />
+                Mobile-first layouts for creators and personal brands
+              </li>
+              <li className="flex items-start gap-3">
+                <LineChart className="mt-0.5 h-4 w-4 text-fuchsia-600" />
+                Better routing for launches, newsletters, booking, and offers
+              </li>
+              <li className="flex items-start gap-3">
+                <Send className="mt-0.5 h-4 w-4 text-fuchsia-600" />
+                Stronger branding and cleaner social sharing than generic link
+                hubs
+              </li>
+            </ul>
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-muted-foreground">
+                Best for creators, founders, and speakers
+              </span>
+              <Button asChild variant="outline" className="rounded-full">
+                <a href="/linktree-builder">
+                  Explore more <ArrowRight className="ml-2 h-4 w-4" />
+                </a>
+              </Button>
             </div>
           </div>
-        </div>
-      </section>
 
-      <section className="py-24 relative overflow-hidden border-t border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-black text-foreground">
-        <div className="container mx-auto px-4 max-w-5xl relative z-10">
-          <div className="flex flex-col md:flex-row items-center gap-12">
-            <div className="flex-1 space-y-6 text-center md:text-left">
-              <Badge
-                variant="outline"
-                className="bg-primary/5 text-primary border-primary/20"
-              >
-                <Terminal className="w-3 h-3 mr-2" /> For Developers
-              </Badge>
-
-              <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
-                Open Source & <br />
-                Community Driven.
-              </h2>
-
-              <p className="text-zinc-500 dark:text-zinc-400 text-lg leading-relaxed">
-                Kislap isn't just a tool; it's a platform built by developers,
-                for developers. Inspect the code, self-host it, or contribute a
-                new feature.
-              </p>
-
-              <div className="flex flex-wrap gap-4 pt-4 justify-center md:justify-start">
-                <Button
-                  variant="outline"
-                  className="h-12 border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-900 dark:text-zinc-100 bg-transparent"
-                  asChild
-                >
-                  <a
-                    href="https://github.com/bastilavarias/kislap"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="flex items-center"
-                  >
-                    <Github className="mr-2 w-4 h-4" /> View Source
-                  </a>
-                </Button>
-
-                <Button
-                  variant="ghost"
-                  className="h-12 text-zinc-600 dark:text-zinc-400 hover:text-foreground hover:bg-zinc-200/50 dark:hover:bg-zinc-800"
-                  asChild
-                >
-                  <a
-                    href="https://github.com/bastilavarias/kislap/issues"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="flex items-center"
-                  >
-                    <GitBranch className="mr-2 w-4 h-4" /> Contribute
-                  </a>
-                </Button>
+          <div className="group relative overflow-hidden rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-background p-8 hover:border-emerald-500/50 transition-all duration-300 hover:shadow-lg">
+            <div className="mb-6 flex items-center gap-4">
+              <div className="p-3 bg-amber-500/10 rounded-2xl text-amber-600 group-hover:scale-110 transition-transform">
+                <LayoutTemplate className="w-6 h-6" />
+              </div>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-amber-600/80 mb-2">
+                  Digital Menu
+                </p>
+                <h3 className="text-2xl font-bold">Menu Builder</h3>
               </div>
             </div>
-
-            <div className="flex-1 w-full max-w-md">
-              <div className="rounded-xl bg-[#09090b] border border-zinc-200 dark:border-zinc-800 shadow-2xl dark:shadow-none overflow-hidden font-mono text-sm relative group">
-                <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 to-purple-500/20 blur-xl opacity-0 group-hover:opacity-50 transition duration-1000" />
-
-                <div className="relative">
-                  <div className="flex items-center px-4 py-3 border-b border-zinc-800 bg-zinc-950/50 gap-2">
-                    <div className="w-2.5 h-2.5 rounded-full bg-red-500/80" />
-                    <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/80" />
-                    <div className="w-2.5 h-2.5 rounded-full bg-green-500/80" />
-                    <div className="ml-auto text-xs text-zinc-500">
-                      stack.ts
-                    </div>
-                  </div>
-
-                  <div className="p-6 text-blue-200/90 space-y-2 leading-relaxed selection:bg-white/20">
-                    <div className="flex">
-                      <span className="text-purple-400 mr-2">export</span>{" "}
-                      <span className="text-yellow-300 mr-1">const </span>{" "}
-                      architecture = {"{"}
-                    </div>
-
-                    <div className="pl-4">
-                      <span className="text-zinc-100">backend:</span>{" "}
-                      <span className="text-green-400">'Go'</span>,
-                    </div>
-
-                    <div className="pl-4">
-                      <span className="text-zinc-100">frontend:</span>{" "}
-                      <span className="text-green-400">'Next.js'</span>,
-                    </div>
-
-                    <div className="pl-4">
-                      <span className="text-zinc-100">cloud:</span>{" "}
-                      <span className="text-green-400">'Cloudflare'</span>,
-                    </div>
-
-                    <div className="pl-4">
-                      <span className="text-zinc-100">ai_engine:</span>{" "}
-                      <span className="text-green-400">'Gemini'</span>,
-                    </div>
-
-                    <div className="pl-4">
-                      <span className="text-zinc-100">os:</span>{" "}
-                      <span className="text-green-400">'Linux'</span>,
-                    </div>
-
-                    <div>{"}"};</div>
-                    <div className="pt-4 text-zinc-500 italic">
-                      // Built for performance.
-                    </div>
-                  </div>
-                </div>
-              </div>
+            <p className="text-muted-foreground mb-8 text-lg leading-relaxed">
+              Publish a QR-ready menu page people can actually browse on mobile.
+            </p>
+            <ul className="mb-8 space-y-3 text-sm text-muted-foreground">
+              <li className="flex items-start gap-3">
+                <LayoutTemplate className="mt-0.5 h-4 w-4 text-amber-600" />
+                Branded menu layouts with gallery and cover support
+              </li>
+              <li className="flex items-start gap-3">
+                <LineChart className="mt-0.5 h-4 w-4 text-amber-600" />
+                Categories, items, variants, and QR-friendly structure
+              </li>
+              <li className="flex items-start gap-3">
+                <Globe className="mt-0.5 h-4 w-4 text-amber-600" />
+                Public menu pages that can be shared, indexed, and revisited
+              </li>
+            </ul>
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-muted-foreground">
+                Best for cafes, restaurants, and food brands
+              </span>
+              <Button asChild variant="outline" className="rounded-full">
+                <a href="/menu-builder">
+                  Explore more <ArrowRight className="ml-2 h-4 w-4" />
+                </a>
+              </Button>
             </div>
           </div>
         </div>

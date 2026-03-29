@@ -2,6 +2,7 @@ import { Metadata, ResolvingMetadata } from 'next';
 import { headers } from 'next/headers';
 import { Builder } from '@/app/components/builder';
 import { SiteError } from '@/components/site-error';
+import { buildProjectJsonLd, buildProjectMetadata } from '@/lib/site-seo';
 
 const getSubdomain = async () => {
   const headersList = await headers();
@@ -14,6 +15,21 @@ const getSubdomain = async () => {
     return parts[0];
   }
   return null;
+};
+
+const getLiveUrl = async (subdomain: string) => {
+  const headersList = await headers();
+  const forwardedProto = headersList.get('x-forwarded-proto');
+  const host = headersList.get('host');
+
+  if (host) {
+    const protocol =
+      forwardedProto || (host.includes('localhost') || host.includes('127.0.0.1') ? 'http' : 'https');
+    return `${protocol}://${host}`;
+  }
+
+  const rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN || 'kislap.app';
+  return `https://${subdomain}.${rootDomain}`;
 };
 
 async function getProject(subdomain: string) {
@@ -42,49 +58,8 @@ export async function generateMetadata(
   const project = await getProject(subdomain);
   if (!project || !project.published) return { title: 'Not Found' };
 
-  const rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN || 'kislap.app';
-  const liveUrl = `https://${subdomain}.${rootDomain}`;
-
-  const typeWithDesc = {
-    portfolio: 'Portfolio Preview',
-  };
-  const ogImage = project.og_image_url || '/og-image.png';
-  const name =
-    project.portfolio?.name ||
-    `${project.name} ${typeWithDesc[project.type as keyof typeof typeWithDesc] || ''}`;
-  const description =
-    project.portfolio?.description ||
-    `${project.name} ${typeWithDesc[project.type as keyof typeof typeWithDesc] || ''}`;
-
-  return {
-    title: name,
-    description: description,
-    metadataBase: new URL(liveUrl),
-    icons: {
-      icon: '/icon.svg',
-    },
-    openGraph: {
-      title: name,
-      description: description,
-      url: liveUrl,
-      siteName: `${project.name} | Kislap - Turn simple forms into stunning websites.`,
-      images: [
-        {
-          url: ogImage,
-          width: 1200,
-          height: 630,
-          alt: name,
-        },
-      ],
-      type: 'website',
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: name,
-      description: description,
-      images: [ogImage],
-    },
-  };
+  const liveUrl = await getLiveUrl(subdomain);
+  return buildProjectMetadata(project, liveUrl);
 }
 
 export default async function Page() {
@@ -104,5 +79,16 @@ export default async function Page() {
     return <SiteError type="not-published" />;
   }
 
-  return <Builder initialProject={project} initialSubdomain={subdomain} />;
+  const liveUrl = await getLiveUrl(subdomain);
+  const jsonLd = buildProjectJsonLd(project, liveUrl);
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <Builder initialProject={project} initialSubdomain={subdomain} />
+    </>
+  );
 }

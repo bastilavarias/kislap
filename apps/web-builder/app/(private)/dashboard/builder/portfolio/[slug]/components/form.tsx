@@ -1,7 +1,8 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
+import { ImageUploadField } from '@/components/image-upload-field';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -36,7 +37,7 @@ import {
   Twitter,
 } from 'lucide-react';
 import ThemeControlPanel from '@/components/customizer/theme-control-panel';
-import { FileParserDialog } from '@/app/(private)/dashboard/builder/portfolio/[slug]/components/file-parser-dialog';
+import { ParsedFileDialog } from '@/components/parsed-file-dialog';
 import { PortfolioFormValues } from '@/lib/schemas/portfolio';
 import { UseFormReturn, UseFieldArrayReturn } from 'react-hook-form';
 import {
@@ -84,12 +85,10 @@ interface Props {
   educationFieldArray: UseFieldArrayReturn<PortfolioFormValues, 'education', 'id'>;
   showcaseFieldArray: UseFieldArrayReturn<PortfolioFormValues, 'showcases', 'id'>;
   skillFieldArray: UseFieldArrayReturn<PortfolioFormValues, 'skills', 'id'>;
-  files: File[] | [];
-  setFiles: React.Dispatch<React.SetStateAction<File[] | []>>;
-  isFileUploadDialogOpen: boolean;
-  setIsFileUploadDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  isFileProcessing: boolean;
-  fileProcessingError: string;
+  isParserOpen: boolean;
+  setIsParserOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  applyParsedResume: (data: Record<string, any>) => void;
+  fallbackAvatarUrl: string | null;
 
   localThemeSettings: Settings | null;
   setLocalThemeSettings: React.Dispatch<React.SetStateAction<Settings | null>>;
@@ -102,7 +101,6 @@ interface Props {
   onAddShowcase: () => void;
   onAddTechnologyToShowcase: (index: number, name: string) => void;
   onRemoveTechnologyFromShowcase: (showcaseIndex: number, technologyIndex: number) => void;
-  onProcessResumeFile: () => Promise<void>;
 }
 
 function AddItemDialog({
@@ -285,13 +283,10 @@ export function Form({
   onAddShowcase,
   onAddTechnologyToShowcase,
   onRemoveTechnologyFromShowcase,
-  files,
-  setFiles,
-  isFileUploadDialogOpen,
-  setIsFileUploadDialogOpen,
-  isFileProcessing,
-  fileProcessingError,
-  onProcessResumeFile,
+  isParserOpen,
+  setIsParserOpen,
+  applyParsedResume,
+  fallbackAvatarUrl,
   localThemeSettings,
   setLocalThemeSettings,
   layout,
@@ -351,9 +346,9 @@ export function Form({
                   bg-gradient-to-r from-blue-500 to-purple-500 
                   hover:from-blue-600 hover:to-purple-600 
                   text-white border-0 transition-all"
-                  onClick={() => setIsFileUploadDialogOpen(true)}
+                  onClick={() => setIsParserOpen(true)}
                 >
-                  🤖 Parse Resume
+                  Parse Resume
                 </Button>
               </div>
 
@@ -369,25 +364,36 @@ export function Form({
                         <div className="flex items-center gap-2 text-sm text-primary font-semibold uppercase tracking-wider">
                           <User className="w-4 h-4" /> Identity
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-                          <div className="col-span-1 md:col-span-8">
-                            <Label className="mb-2 block">Name</Label>
-                            <Input
-                              {...register('name')}
-                              placeholder="John Doe"
-                              className="shadow-none"
+                        <div className="flex flex-col gap-6 md:flex-row">
+                          <div className="shrink-0 md:w-64">
+                            <Label className="mb-2 block">Avatar</Label>
+                            <ImageUploadField
+                              id="portfolio-avatar-upload"
+                              previewUrl={watch('avatar_url') || fallbackAvatarUrl}
+                              currentFile={watch('avatar') as File}
+                              onFileSelect={(file) => setValue('avatar', file)}
                             />
-                            {errors.name && (
-                              <p className="text-destructive text-sm mt-1">{errors.name.message}</p>
-                            )}
                           </div>
-                          <div className="col-span-1 md:col-span-4">
-                            <Label className="mb-2 block">Job Title</Label>
-                            <Input
-                              {...register('job_title')}
-                              placeholder="Software Engineer"
-                              className="shadow-none"
-                            />
+                          <div className="grid flex-1 grid-cols-1 gap-4 md:grid-cols-12">
+                            <div className="col-span-1 md:col-span-8">
+                              <Label className="mb-2 block">Name</Label>
+                              <Input
+                                {...register('name')}
+                                placeholder="John Doe"
+                                className="shadow-none"
+                              />
+                              {errors.name && (
+                                <p className="text-destructive text-sm mt-1">{errors.name.message}</p>
+                              )}
+                            </div>
+                            <div className="col-span-1 md:col-span-4">
+                              <Label className="mb-2 block">Job Title</Label>
+                              <Input
+                                {...register('job_title')}
+                                placeholder="Software Engineer"
+                                className="shadow-none"
+                              />
+                            </div>
                           </div>
                         </div>
                         <div>
@@ -935,15 +941,16 @@ export function Form({
         </Sheet>
       </div>
 
-      <FileParserDialog
-        onProcess={onProcessResumeFile}
-        files={files}
-        onChangeFiles={setFiles}
-        loading={isFileProcessing}
-        open={isFileUploadDialogOpen}
-        onOpenChange={setIsFileUploadDialogOpen}
-        error={fileProcessingError}
+      <ParsedFileDialog
+        open={isParserOpen}
+        onOpenChange={setIsParserOpen}
+        projectType="portfolio"
+        sourceType="resume"
+        title="Resume Parser"
+        description="Upload a resume and reuse parsed results anytime."
+        onApplyParsedData={applyParsedResume}
       />
     </div>
   );
 }
+

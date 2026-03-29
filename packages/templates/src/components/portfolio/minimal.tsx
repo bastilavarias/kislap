@@ -40,6 +40,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertTitle } from "@/components/ui/alert";
 import { toast } from "sonner";
+import { getPortfolioAvatarUrl } from "./avatar";
+import { KislapShareFooter } from "../shared/kislap-share-footer";
 
 interface Props {
   portfolio: Portfolio;
@@ -51,6 +53,7 @@ interface Props {
 interface Portfolio {
   id: number;
   name: string;
+  avatar_url: string | null;
   location: string | null;
   job_title: string | null;
   introduction: string | null;
@@ -90,6 +93,9 @@ interface Portfolio {
     technologies: { id: number; name: string }[];
   }[];
   skills: { id: number; name: string }[];
+  user: {
+    image_url: string | null;
+  };
 }
 
 export function Minimal({
@@ -98,6 +104,7 @@ export function Minimal({
   onSetThemeMode,
   themeStyles,
 }: Props) {
+  const avatarUrl = getPortfolioAvatarUrl(portfolio);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -175,7 +182,7 @@ export function Minimal({
           <div className="flex gap-6 items-center w-full">
             <div className="relative">
               <Avatar className="w-24 h-24 md:w-32 md:h-32 border-4 border-primary/20 bg-muted/50 rounded-full shadow-lg">
-                <AvatarImage src="https://placehold.co/300x300/e0f2fe/0369a1?text=A.D." />
+                <AvatarImage src={avatarUrl ?? undefined} />
                 <AvatarFallback className="text-4xl font-bold rounded-full bg-primary text-primary-foreground">
                   {portfolio.name?.charAt(0) ?? "U"}
                 </AvatarFallback>
@@ -486,11 +493,9 @@ export function Minimal({
           </Card>
         </section>
 
-        <footer className="text-center text-sm pt-8 text-muted-foreground">
-          Built with a Minimalist approach. © {new Date().getFullYear()}{" "}
-          {portfolio.name}.
-        </footer>
+        <KislapShareFooter name={portfolio?.name} className="mt-8 bg-transparent" />
       </div>
     </div>
   );
 }
+

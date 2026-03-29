@@ -69,9 +69,48 @@ const ThemeControlPanel = ({
 
   const currentStyles = localSettings?.theme?.styles?.[localSettings?.mode as Mode] || {};
 
+  const mergeLocalSettings = useCallback(
+    (nextSettings: Partial<Settings> | ((prev: Settings | null) => Partial<Settings>)) => {
+      if (!stateless) return;
+
+      setLocalSettings((prev: Settings | null) => {
+        const resolved =
+          typeof nextSettings === 'function' ? nextSettings(prev) : nextSettings;
+
+        const previousTheme = prev?.theme || localSettings?.theme || settings.theme;
+        const previousStyles = previousTheme.styles || settings.theme.styles;
+        const nextTheme = resolved.theme || {};
+        const nextStyles = nextTheme.styles || {};
+
+        return {
+          ...(prev || localSettings || settings),
+          ...resolved,
+          mode: resolved.mode ?? prev?.mode ?? localSettings?.mode ?? settings.mode,
+          theme: {
+            ...previousTheme,
+            ...nextTheme,
+            styles: {
+              ...previousStyles,
+              ...nextStyles,
+              light: {
+                ...(previousStyles?.light || {}),
+                ...(nextStyles?.light || {}),
+              },
+              dark: {
+                ...(previousStyles?.dark || {}),
+                ...(nextStyles?.dark || {}),
+              },
+            },
+          },
+        };
+      });
+    },
+    [localSettings, setLocalSettings, settings, stateless]
+  );
+
   const onLocalUpdateSettings = (newSettings: Partial<Settings>) => {
     if (stateless) {
-      setLocalSettings(newSettings);
+      mergeLocalSettings(newSettings);
       return;
     }
     updateSettings(settings);
@@ -79,14 +118,11 @@ const ThemeControlPanel = ({
 
   const onLocalApplyThemePreset = (preset: string) => {
     if (stateless) {
-      onLocalUpdateSettings({
-        ...localSettings,
+      mergeLocalSettings({
         theme: {
-          ...localSettings?.theme,
+          ...(localSettings?.theme || settings.theme),
           preset,
-          styles: {
-            ...getPresetThemeStyles(preset),
-          },
+          styles: getPresetThemeStyles(preset),
         },
       });
       return;
@@ -173,19 +209,17 @@ const ThemeControlPanel = ({
 
   useEffect(() => {
     if (!localSettings?.theme?.styles?.light || !localSettings?.theme?.styles?.dark) {
-      const updatedSettings = {
-        ...localSettings,
+      mergeLocalSettings({
         theme: {
-          ...localSettings?.theme,
+          ...(localSettings?.theme || settings.theme),
           styles: {
             light: localSettings?.theme?.styles?.light || {},
             dark: localSettings?.theme?.styles?.dark || {},
           },
         },
-      };
-      onLocalUpdateSettings(updatedSettings);
+      });
     }
-  }, [localSettings, onLocalUpdateSettings]);
+  }, [localSettings, mergeLocalSettings, settings.theme]);
 
   const form = (
     <div className="flex flex-col gap-6">
@@ -222,7 +256,7 @@ const ThemeControlPanel = ({
         themeSettings={localSettings}
         setThemeSettings={setLocalSettings}
         hideImportButton={hideImportButton}
-        hideRandomButton={hideImportButton}
+        hideRandomButton={hideRandomButton}
       />
 
       {!hideModeToggle && (

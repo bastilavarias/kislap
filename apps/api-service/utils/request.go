@@ -33,3 +33,30 @@ func ValidateRequestPDF(file multipart.File, filename string, maxSize int64) err
 
 	return nil
 }
+
+func ValidateRequestImageOrPDF(file multipart.File, filename string, maxSize int64) error {
+	if sizer, ok := file.(interface{ Size() int64 }); ok && sizer.Size() > maxSize {
+		return errors.New("file too large")
+	}
+
+	buffer := make([]byte, 512)
+	n, err := file.Read(buffer)
+	if err != nil && err != io.EOF {
+		return errors.New("failed to read file for validation")
+	}
+	mimeType := http.DetectContentType(buffer[:n])
+	allowed := mimeType == "application/pdf" ||
+		mimeType == "image/png" ||
+		mimeType == "image/jpeg" ||
+		mimeType == "image/webp"
+
+	if !allowed {
+		return errors.New("invalid file type, must be PDF, PNG, JPG, or WEBP")
+	}
+
+	if seeker, ok := file.(io.Seeker); ok {
+		_, _ = seeker.Seek(0, io.SeekStart)
+	}
+
+	return nil
+}

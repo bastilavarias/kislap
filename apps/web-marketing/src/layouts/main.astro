@@ -11,7 +11,8 @@ import {
   Github, 
   Heart, 
   MessageCircle, 
-ArrowUpRight
+  ArrowUpRight,
+  ChevronDown
 } from '@lucide/astro';
 import { Button, buttonVariants } from "@/components/ui/button";
 
@@ -36,6 +37,12 @@ const currentYear = new Date().getFullYear();
 const PUBLIC_LINKS = [
   { title: 'Showcase', url: '/showcase' },
   { title: 'About us', url: '/about' },
+];
+
+const BUILDER_LINKS = [
+  { title: 'Portfolio', url: '/portfolio-builder' },
+  { title: 'Linktree', url: '/linktree-builder' },
+  { title: 'Menu', url: '/menu-builder' },
 ];
 
 const FOOTER_LINKS = {
@@ -90,8 +97,12 @@ const FOOTER_LINKS = {
 <script type="application/ld+json" set:html={JSON.stringify({
   "@context": "https://schema.org",
   "@type": "SiteNavigationElement",
-  "name": [...PUBLIC_LINKS.map(l => l.title), "Builder"],
-  "url": [...PUBLIC_LINKS.map(l => new URL(l.url, site).toString()), "https://builder.kislap.app/"]
+  "name": [...PUBLIC_LINKS.map(l => l.title), "Learn more", ...BUILDER_LINKS.map(l => l.title), "Builder"],
+  "url": [
+    ...PUBLIC_LINKS.map(l => new URL(l.url, site).toString()),
+    ...BUILDER_LINKS.map(l => new URL(l.url, site).toString()),
+    "https://builder.kislap.app/"
+  ]
 })} />
   </head>
   <body class="min-h-screen bg-background grid-background text-foreground font-sans antialiased flex flex-col">
@@ -105,6 +116,28 @@ const FOOTER_LINKS = {
 
       <nav class="hidden md:flex items-center gap-6" aria-label="Main Navigation">
   <ul class="flex items-center gap-6 m-0 p-0 list-none">
+    <li class="relative group">
+      <button
+        type="button"
+        class="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+        aria-haspopup="true"
+      >
+        Learn more
+        <ChevronDown class="h-4 w-4 transition-transform group-hover:rotate-180" />
+      </button>
+
+      <div class="invisible absolute right-0 top-full z-50 mt-3 min-w-[220px] translate-y-2 rounded-2xl border border-border bg-background/95 p-2 opacity-0 shadow-xl backdrop-blur-md transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
+        {BUILDER_LINKS.map((link) => (
+          <a
+            href={link.url}
+            class="flex items-center justify-between rounded-xl px-4 py-3 text-sm font-medium text-foreground transition hover:bg-accent hover:text-primary"
+          >
+            <span>{link.title}</span>
+            <ArrowUpRight class="h-4 w-4 opacity-50" />
+          </a>
+        ))}
+      </div>
+    </li>
     {PUBLIC_LINKS.map((link) => (
       <li>
         <a 
@@ -147,6 +180,23 @@ const FOOTER_LINKS = {
             {link.title}
           </a>
         ))}
+        <details class="rounded-2xl border border-border bg-card/60 px-4 py-3 text-left">
+          <summary class="flex cursor-pointer list-none items-center justify-between text-sm font-medium text-foreground">
+            <span>Learn more</span>
+            <ChevronDown class="h-4 w-4 text-muted-foreground" />
+          </summary>
+          <div class="mt-3 space-y-2">
+            {BUILDER_LINKS.map((link) => (
+              <a
+                href={link.url}
+                class="flex items-center justify-between rounded-xl px-3 py-2 text-sm font-medium text-muted-foreground transition hover:bg-accent hover:text-primary"
+              >
+                <span>{link.title}</span>
+                <ArrowUpRight class="h-4 w-4 opacity-50" />
+              </a>
+            ))}
+          </div>
+        </details>
 		        <a 
         href="https://builder.kislap.app/" 
         class={`${buttonVariants({ variant: "default", size: "lg" })} 
@@ -172,8 +222,8 @@ const FOOTER_LINKS = {
           <div class="md:col-span-1 space-y-4">
             <LogoVersion url="/" />
             <p class="text-muted-foreground text-sm leading-relaxed max-w-xs">
-              Turn your forms into stunning portfolios. The open source website builder for
-              developers who value their time.
+              Turn your forms into polished public websites. Kislap helps you build
+              portfolio pages, link-in-bio sites, and digital menus without drag-and-drop chaos.
             </p>
           </div>
 
@@ -190,6 +240,24 @@ const FOOTER_LINKS = {
               class="text-sm text-muted-foreground hover:text-primary transition-colors w-fit"
             >
               Showcase
+            </a>
+            <a
+              href="/portfolio-builder"
+              class="text-sm text-muted-foreground hover:text-primary transition-colors w-fit"
+            >
+              Portfolio Builder
+            </a>
+            <a
+              href="/linktree-builder"
+              class="text-sm text-muted-foreground hover:text-primary transition-colors w-fit"
+            >
+              Linktree Builder
+            </a>
+            <a
+              href="/menu-builder"
+              class="text-sm text-muted-foreground hover:text-primary transition-colors w-fit"
+            >
+              Menu Builder
             </a>
           </div>
 

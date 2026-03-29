@@ -47,6 +47,8 @@ import { toast } from "sonner";
 import { Project } from "@/types/project";
 import { Portfolio } from "@/types/portfolio";
 import { cn } from "@/lib/utils";
+import { getPortfolioAvatarUrl } from "./avatar";
+import { KISLAP_LINKS } from "../shared/kislap-links";
 
 // --- Types ---
 interface Props {
@@ -80,6 +82,8 @@ const HeroSection = ({
   onSetThemeMode: React.Dispatch<React.SetStateAction<Mode>>;
   isDarkMode: boolean;
 }) => {
+  const avatarUrl = getPortfolioAvatarUrl(portfolio);
+
   const socialLinks = useMemo(() => {
     return [
       { type: "github", url: portfolio.github, icon: Github },
@@ -92,12 +96,12 @@ const HeroSection = ({
   return (
     <header className="flex flex-col md:flex-row gap-8 items-start justify-between border-b-4 border-foreground pb-8">
       <div className="flex gap-6 items-center w-full md:w-auto">
-        {portfolio.user?.image_url && (
+        {avatarUrl && (
           <div className="relative shrink-0">
             <div className="absolute inset-0 bg-foreground translate-x-2 translate-y-2" />
             <Avatar className="w-20 h-20 md:w-32 md:h-32 border-4 border-foreground relative z-10 rounded-none">
               <AvatarImage
-                src={portfolio.user?.image_url}
+                src={avatarUrl}
                 alt={portfolio.user?.first_name}
                 className="object-cover"
               />
@@ -542,13 +546,6 @@ const ContactFormSection = ({
 };
 
 const FooterSection = ({ portfolio }: { portfolio: Portfolio }) => {
-  const rootURL = process.env.NEXT_PUBLIC_ROOT_URL || "https://kislap.app";
-  const githubURL =
-    process.env.NEXT_PUBLIC_KISLAP_GITHUB_URL ||
-    "https://github.com/sebas-tech/kislap";
-  const facebookURL =
-    process.env.NEXT_PUBLIC_KISLAP_FACEBOOK_URL || "https://facebook.com";
-
   return (
     <footer className="border-t-4 border-foreground py-12 mt-20 bg-muted/50">
       <div className="flex flex-col items-center justify-center gap-6 text-center px-4">
@@ -577,7 +574,7 @@ const FooterSection = ({ portfolio }: { portfolio: Portfolio }) => {
 
           <div className="flex items-center gap-4 mt-1">
             <a
-              href={githubURL}
+              href={KISLAP_LINKS.github}
               target="_blank"
               rel="noreferrer"
               className="text-foreground hover:text-primary transition-colors border-2 border-transparent hover:border-foreground p-1"
@@ -586,7 +583,7 @@ const FooterSection = ({ portfolio }: { portfolio: Portfolio }) => {
               <Github className="w-4 h-4" />
             </a>
             <a
-              href={rootURL}
+              href={KISLAP_LINKS.website}
               target="_blank"
               rel="noreferrer"
               className="text-foreground hover:text-primary transition-colors border-2 border-transparent hover:border-foreground p-1"
@@ -595,7 +592,7 @@ const FooterSection = ({ portfolio }: { portfolio: Portfolio }) => {
               <Globe className="w-4 h-4" />
             </a>
             <a
-              href={facebookURL}
+              href={KISLAP_LINKS.facebook}
               target="_blank"
               rel="noreferrer"
               className="text-foreground hover:text-primary transition-colors border-2 border-transparent hover:border-foreground p-1"

@@ -18,11 +18,18 @@ type Service struct {
 	ObjectStorage objectStorage.Provider
 }
 
+type PublicStats struct {
+	SitesPublished int64  `json:"sites_published"`
+	ActiveBuilders int64  `json:"active_builders"`
+	TemplateCount  int    `json:"template_count"`
+	Uptime         string `json:"uptime"`
+}
+
 func NewService(db *gorm.DB, objectStorage objectStorage.Provider) *Service {
 	return &Service{DB: db, ObjectStorage: objectStorage}
 }
 
-func (service Service) List(userID *uint64, page int, limit int) (*[]models.Project, error) {
+func (service Service) List(userID *uint64, page int, limit int, projectType string) (*[]models.Project, error) {
 	var projects []models.Project
 
 	if limit <= 0 {
@@ -34,10 +41,17 @@ func (service Service) List(userID *uint64, page int, limit int) (*[]models.Proj
 	}
 
 	offset := (page - 1) * limit
+	projectType = strings.TrimSpace(strings.ToLower(projectType))
 
 	if userID != nil {
-		err := service.DB.
-			Where("user_id = ?", userID).
+		query := service.DB.
+			Where("user_id = ?", userID)
+
+		if projectType != "" {
+			query = query.Where("type = ?", projectType)
+		}
+
+		err := query.
 			Order("created_at DESC").
 			Limit(limit).
 			Offset(offset).
@@ -50,8 +64,14 @@ func (service Service) List(userID *uint64, page int, limit int) (*[]models.Proj
 		return &projects, nil
 	}
 
-	err := service.DB.
-		Where("published = ?", 1).
+	query := service.DB.
+		Where("published = ?", 1)
+
+	if projectType != "" {
+		query = query.Where("type = ?", projectType)
+	}
+
+	err := query.
 		Order("created_at DESC").
 		Limit(limit).
 		Offset(offset).
@@ -63,6 +83,30 @@ func (service Service) List(userID *uint64, page int, limit int) (*[]models.Proj
 
 	return &projects, nil
 
+}
+
+func (service Service) PublicStats() (*PublicStats, error) {
+	stats := &PublicStats{
+		TemplateCount: 17,
+		Uptime:        "99.9%",
+	}
+
+	if err := service.DB.
+		Model(&models.Project{}).
+		Where("published = ?", 1).
+		Count(&stats.SitesPublished).Error; err != nil {
+		return nil, err
+	}
+
+	if err := service.DB.
+		Model(&models.Project{}).
+		Where("published = ?", 1).
+		Distinct("user_id").
+		Count(&stats.ActiveBuilders).Error; err != nil {
+		return nil, err
+	}
+
+	return stats, nil
 }
 
 func (service Service) Create(userID uint64, payload Payload) (*models.Project, error) {
@@ -174,6 +218,7 @@ func (service Service) ShowBySlug(slug string, level string) (*models.Project, e
 	if level == "full" && project.Type == "portfolio" {
 		if err := service.DB.
 			Preload("Portfolio").
+			Preload("Portfolio.User").
 			Preload("Portfolio.WorkExperiences").
 			Preload("Portfolio.Education").
 			Preload("Portfolio.Showcases").
@@ -208,6 +253,20 @@ func (service Service) ShowBySlug(slug string, level string) (*models.Project, e
 			return nil, err
 		}
 		normalizeLinktreeContent(&project)
+	}
+
+	if level == "full" && project.Type == "menu" {
+		if err := service.DB.
+			Preload("Menu").
+			Preload("Menu.Categories", func(db *gorm.DB) *gorm.DB {
+				return db.Order("placement_order ASC")
+			}).
+			Preload("Menu.Items", func(db *gorm.DB) *gorm.DB {
+				return db.Order("placement_order ASC")
+			}).
+			First(&project, project.ID).Error; err != nil {
+			return nil, err
+		}
 	}
 
 	return &project, nil
@@ -246,6 +305,15 @@ func (service Service) ShowBySubDomain(subDomain string) (*models.Project, error
 		query = query.
 			Preload("Linktree").
 			Preload("Linktree.Links", func(db *gorm.DB) *gorm.DB {
+				return db.Order("placement_order ASC")
+			})
+	case "menu":
+		query = query.
+			Preload("Menu").
+			Preload("Menu.Categories", func(db *gorm.DB) *gorm.DB {
+				return db.Order("placement_order ASC")
+			}).
+			Preload("Menu.Items", func(db *gorm.DB) *gorm.DB {
 				return db.Order("placement_order ASC")
 			})
 	default:
@@ -292,9 +360,13 @@ func (service Service) Publish(projectID int, payload PublishProjectPayload) (*m
 		return nil, err
 	}
 
-	service.DB.Model(&proj).Select("Published").Updates(models.Project{
-		Published: payload.Published,
-	})
+	if err := service.DB.Model(&proj).Update("published", payload.Published).Error; err != nil {
+		return nil, err
+	}
+
+	if err := service.DB.First(&proj, projectID).Error; err != nil {
+		return nil, err
+	}
 
 	return &proj, nil
 }
