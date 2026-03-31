@@ -20,7 +20,7 @@ import {
   PortfolioTemplates,
   LinktreeTemplates,
   MenuTemplates,
-} from '../../../packages/templates/src';
+} from '@kislap/templates';
 
 const { Default, Minimal, Bento, NeoBrutalist, Glass, Cyber, Newspaper, Kinetic, Vaporware } =
   PortfolioTemplates;

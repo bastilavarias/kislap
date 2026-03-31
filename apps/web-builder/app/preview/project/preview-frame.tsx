@@ -6,7 +6,7 @@ import {
   LinktreeTemplates,
   MenuTemplates,
   PortfolioTemplates,
-} from '../../../../../packages/templates/src';
+} from '@kislap/templates';
 import { ComponentThemeProvider } from '@/providers/ComponentThemesProvider';
 import { createMockProject, getPreviewThemeStyles, type PreviewProjectParams } from '@/lib/project-preview-data';
 

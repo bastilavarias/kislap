@@ -35,6 +35,8 @@ const nextConfig: NextConfig = {
 
   allowedDevOrigins: ['kislap.app', '*.kislap.app', 'kislap.test', '*.kislap.test'],
 
+  transpilePackages: ['@kislap/templates'],
+
   outputFileTracingRoot: repoRoot,
 
   turbopack: {
