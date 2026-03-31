@@ -223,7 +223,7 @@ function PriceBadge({
 }) {
   return (
     <span
-      className="ml-3 inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-sm font-bold"
+      className="inline-flex min-w-9 items-center justify-center rounded-full px-2 py-1 text-sm font-bold"
       style={{
         backgroundColor: tokens.badgeBackgroundColor,
         color: tokens.badgeForegroundColor,
@@ -269,10 +269,10 @@ function MenuItemBlock({
   const displayPrice = getDisplayPrice(price, sortedVariants);
 
   return (
-    <div className="flex gap-4">
+    <div className="flex flex-col gap-4 @sm:flex-row">
       {image_url ? (
         <div
-          className="hidden h-20 w-20 flex-shrink-0 overflow-hidden rounded border md:block"
+          className="h-20 w-full flex-shrink-0 overflow-hidden rounded border @sm:w-20 @md:h-24 @md:w-24"
           style={{ borderColor: tokens.borderColor }}
         >
           <img
@@ -283,33 +283,41 @@ function MenuItemBlock({
         </div>
       ) : null}
       <div className="min-w-0 flex-1">
-        <div className="flex items-start gap-3">
-          <div className="min-w-0 flex-1">
-            <div className="flex items-start gap-3">
+        <div className="flex flex-col gap-3">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div className="min-w-0 flex-1">
               <h3
-                className="min-w-0 flex-1 text-2xl font-semibold tracking-wide md:text-3xl"
+                className="text-xl font-semibold leading-tight tracking-wide @sm:text-2xl @md:text-[1.85rem]"
                 style={{ fontFamily: tokens.headingFont }}
               >
                 {name}
               </h3>
-              <PriceBadge price={displayPrice} tokens={tokens} />
             </div>
+            <PriceBadge price={displayPrice} tokens={tokens} />
           </div>
           {badge ? (
-            <span
-              className="shrink-0 text-xl font-semibold tracking-wider"
-              style={{ fontFamily: tokens.headingFont }}
-            >
-              {badge}
-            </span>
+            <div>
+              <span
+                className="inline-flex rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em]"
+                style={{
+                  fontFamily: tokens.headingFont,
+                  borderColor: tokens.borderColor,
+                  color: tokens.foregroundColor,
+                }}
+              >
+                {badge}
+              </span>
+            </div>
           ) : null}
+          <div>
+            <p
+              className="mt-1 whitespace-pre-line text-sm leading-relaxed"
+              style={{ color: tokens.mutedColor, fontFamily: tokens.bodyFont }}
+            >
+              {description}
+            </p>
+          </div>
         </div>
-        <p
-          className="mt-1 whitespace-pre-line text-sm"
-          style={{ color: tokens.mutedColor, fontFamily: tokens.bodyFont }}
-        >
-          {description}
-        </p>
         {sortedVariants.length ? (
           <div
             className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm"
@@ -334,11 +342,6 @@ function MenuItemBlock({
       </div>
     </div>
   );
-}
-
-function splitItemsIntoColumns(items: MenuItemData[]) {
-  const midpoint = Math.ceil(items.length / 2);
-  return [items.slice(0, midpoint), items.slice(midpoint)] as const;
 }
 
 function getVisibleCategories(menu: MenuData) {
@@ -483,27 +486,25 @@ function MenuSection({
   title,
   description,
   imageUrl,
-  leftItems,
-  rightItems,
+  items,
   tokens,
 }: {
   title: React.ReactNode;
   description?: string | null;
   imageUrl?: string | null;
-  leftItems: MenuItem[];
-  rightItems: MenuItem[];
+  items: MenuItem[];
   tokens: MenuThemeTokens;
 }) {
   return (
     <section className="mb-12">
       <h2
-        className="mb-10 text-center text-4xl font-semibold tracking-wide md:text-5xl"
+        className="mb-10 text-center text-4xl font-semibold tracking-wide @md:text-5xl"
         style={{ fontFamily: tokens.headingFont }}
       >
         {title}
       </h2>
       {imageUrl || description ? (
-        <div className="mx-auto mb-8 flex max-w-3xl flex-col items-center gap-4 text-center md:flex-row md:items-start md:text-left">
+        <div className="mx-auto mb-8 flex max-w-3xl flex-col items-center gap-4 text-center">
           {imageUrl ? (
             <div
               className="h-28 w-28 flex-shrink-0 overflow-hidden rounded border"
@@ -515,8 +516,8 @@ function MenuSection({
                 className="h-full w-full object-cover"
               />
             </div>
-          ) : null}
-          {description ? (
+      ) : null}
+      {description ? (
             <p
               className="max-w-2xl text-sm leading-relaxed"
               style={{ color: tokens.mutedColor, fontFamily: tokens.bodyFont }}
@@ -526,17 +527,10 @@ function MenuSection({
           ) : null}
         </div>
       ) : null}
-      <div className="grid grid-cols-1 gap-x-16 gap-y-8 md:grid-cols-2">
-        <div className="space-y-8">
-          {leftItems.map((item) => (
-            <MenuItemBlock key={item.name} {...item} tokens={tokens} />
-          ))}
-        </div>
-        <div className="space-y-8">
-          {rightItems.map((item) => (
-            <MenuItemBlock key={item.name} {...item} tokens={tokens} />
-          ))}
-        </div>
+      <div className="grid gap-8 @lg:grid-cols-2 @lg:gap-x-10 @lg:gap-y-10">
+        {items.map((item) => (
+          <MenuItemBlock key={item.name} {...item} tokens={tokens} />
+        ))}
       </div>
     </section>
   );
@@ -639,7 +633,7 @@ export function MenuDefault({
   return (
     <>
       <div
-        className="min-h-screen px-4 py-10 antialiased md:px-8"
+        className="@container min-h-screen px-4 py-10 antialiased @md:px-8"
         style={{
           backgroundColor: tokens.backgroundColor,
           color: tokens.foregroundColor,
@@ -674,18 +668,18 @@ export function MenuDefault({
                   aria-label="Share menu"
                 >
                   <Share2 className="h-4 w-4" />
-                  <span className="hidden sm:inline">{shareLabel}</span>
+                  <span className="hidden @sm:inline">{shareLabel}</span>
                 </button>
               </div>
               {coverImage ? (
                 <img
                   src={coverImage}
                   alt={`${source.name || "Menu"} cover`}
-                  className="h-44 w-full object-cover md:h-56"
+                  className="h-44 w-full object-cover @md:h-56"
                 />
               ) : (
                 <div
-                  className="h-32 w-full md:h-40"
+                  className="h-32 w-full @md:h-40"
                   style={{
                     background:
                       `linear-gradient(135deg, color-mix(in srgb, ${tokens.foregroundColor} 10%, transparent), transparent 60%)`,
@@ -701,9 +695,9 @@ export function MenuDefault({
               />
             </div>
 
-            <div className="relative mx-auto -mt-12 flex max-w-3xl flex-col items-center px-4 text-center md:-mt-14">
+            <div className="relative mx-auto -mt-12 flex max-w-3xl flex-col items-center px-4 text-center @md:-mt-14">
               <div
-                className="relative flex h-28 w-28 flex-shrink-0 items-center justify-center rounded-full border-4 shadow-sm md:h-32 md:w-32"
+                className="relative flex h-28 w-28 flex-shrink-0 items-center justify-center rounded-full border-4 shadow-sm @md:h-32 @md:w-32"
                 style={{
                   borderColor: tokens.foregroundColor,
                   backgroundColor: tokens.backgroundColor,
@@ -726,13 +720,13 @@ export function MenuDefault({
 
               <div className="mt-4">
                 <h1
-                  className="mb-2 text-5xl font-semibold tracking-wider md:text-6xl"
+                  className="mb-2 text-5xl font-semibold tracking-wider @md:text-6xl"
                   style={{ fontFamily: tokens.headingFont }}
                 >
                   {source.name?.trim() || "DON'T STIR CAFE"}
                 </h1>
                 <p
-                  className="text-sm tracking-wide md:text-base"
+                  className="text-sm tracking-wide @md:text-base"
                   style={{ color: tokens.mutedColor }}
                 >
                   {headerLocation}
@@ -757,7 +751,7 @@ export function MenuDefault({
                       >
                         {entry.label}
                       </div>
-                      <div className="mt-1 text-sm font-semibold md:text-base">
+                      <div className="mt-1 text-sm font-semibold @md:text-base">
                         {entry.value}
                       </div>
                     </div>
@@ -840,8 +834,7 @@ export function MenuDefault({
 
             if (!categoryItems.length) return null;
 
-            const [leftItems, rightItems] =
-              splitItemsIntoColumns(categoryItems);
+            const items = categoryItems;
 
             return (
               <React.Fragment key={category.id}>
@@ -855,8 +848,7 @@ export function MenuDefault({
                   title={renderSectionTitle(category.name)}
                   description={category.description}
                   imageUrl={category.image_url}
-                  leftItems={leftItems}
-                  rightItems={rightItems}
+                  items={items}
                   tokens={tokens}
                 />
               </React.Fragment>
@@ -873,7 +865,7 @@ export function MenuDefault({
             >
               <div className="mb-5">
                 <h2
-                  className="text-3xl font-semibold tracking-wide md:text-4xl"
+                  className="text-3xl font-semibold tracking-wide @md:text-4xl"
                   style={{ fontFamily: tokens.headingFont }}
                 >
                   Gallery
@@ -882,7 +874,7 @@ export function MenuDefault({
                   A closer look at the space, drinks, and atmosphere.
                 </p>
               </div>
-              <div className="columns-1 gap-4 sm:columns-2 md:columns-3">
+              <div className="columns-1 gap-4 @md:columns-2 @lg:columns-3">
                 {galleryImages.map((image, index) => (
                   <div
                     key={`${image}-${index}`}
@@ -904,7 +896,7 @@ export function MenuDefault({
             className="mt-12 border-t px-2 pt-8"
             style={{ borderColor: tokens.borderColor }}
           >
-            <div className="grid items-center gap-6 md:grid-cols-[220px_1fr]">
+            <div className="grid items-center gap-6 @lg:grid-cols-[220px_1fr]">
               <div className="mx-auto">
                 <img
                   src={qrImageUrl}
@@ -912,9 +904,9 @@ export function MenuDefault({
                   className="h-[190px] w-[190px] object-cover"
                 />
               </div>
-              <div className="text-center md:text-left">
+              <div className="text-center @lg:text-left">
                 <h2
-                  className="text-3xl font-semibold tracking-wide md:text-4xl"
+                  className="text-3xl font-semibold tracking-wide @md:text-4xl"
                   style={{ fontFamily: tokens.headingFont }}
                 >
                   Share This Menu
@@ -960,7 +952,7 @@ export function MenuDefault({
                   }}
                 >
                   All rights reserved. Made with{" "}
-                  <span className="text-red-500">♥</span>
+                  <span className="text-red-500">?</span>
                 </p>
               </div>
 
@@ -975,7 +967,7 @@ export function MenuDefault({
                     className="flex items-center gap-1.5 text-xs font-black uppercase tracking-widest"
                     style={{ color: tokens.foregroundColor, fontFamily: tokens.headingFont }}
                   >
-                    <span className="text-amber-400">✨</span> Powered by Kislap
+                    <span className="text-amber-400">?</span> Powered by Kislap
                   </span>
                   <p
                     className="text-[10px] uppercase tracking-widest"
@@ -1028,4 +1020,7 @@ export function MenuDefault({
     </>
   );
 }
+
+
+
 

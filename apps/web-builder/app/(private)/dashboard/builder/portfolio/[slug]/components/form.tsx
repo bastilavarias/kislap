@@ -296,6 +296,7 @@ export function Form({
     register,
     watch,
     setValue,
+    reset,
     formState: { errors },
   } = formMethods;
 
@@ -323,14 +324,44 @@ export function Form({
   const accordionItemClass =
     'border-b rounded-none px-0 shadow-none lg:border lg:rounded-lg lg:px-4 last:border-0 lg:last:border';
 
+  const handleClearContent = () => {
+    if (!window.confirm('Clear the current portfolio form content? Layout and theme will stay as they are.')) {
+      return;
+    }
+
+    reset({
+      name: '',
+      job_title: '',
+      avatar: null,
+      avatar_url: '',
+      location: '',
+      introduction: '',
+      about: '',
+      email: '',
+      phone: '',
+      website: '',
+      github: '',
+      linkedin: '',
+      twitter: '',
+      work_experiences: [],
+      education: [],
+      showcases: [],
+      skills: [],
+      layout_name: layout,
+    } as PortfolioFormValues);
+  };
+
   return (
     <div className="w-full relative">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start pb-20 lg:pb-0">
         <div className="lg:col-span-8 space-y-6">
           <Card className="shadow-none lg:border-border lg:bg-card lg:border">
             <CardContent className="p-3 lg:p-6">
-              <div className="flex justify-between items-center mb-6 px-1 lg:px-0">
+              <div className="flex justify-between items-center mb-6 px-1 lg:px-0 gap-4">
                 <h1 className="text-2xl font-bold">Content</h1>
+                <Button type="button" variant="outline" className="shadow-none" onClick={handleClearContent}>
+                  Clear content
+                </Button>
               </div>
 
               <div className="flex items-center justify-between mb-8 bg-muted/20 p-4 rounded-xl border">

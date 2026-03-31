@@ -7,12 +7,13 @@ import { PortfolioFormValues, PortfolioSchema } from '@/lib/schemas/portfolio';
 import { useProject } from '@/hooks/api/use-project';
 import { usePortfolio } from '@/hooks/api/use-portfolio';
 import { APIResponseDocumentResume, APIResponsePortfolio, APIResponseProject } from '@/types/api-response';
-import { useParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 import { Settings } from '@/contexts/settings-context';
 import { AuthUser } from '@/hooks/api/use-auth';
 import { useAuthContext } from '@/contexts/auth-context';
 import { buildPortfolioSaveFormData } from './portfolio-save-payload';
+import { buildPortfolioStarterValues, createThemeObject, getStarterById } from '@/lib/project-starters';
 
 interface PortfolioContextType {
   project: APIResponseProject | null;
@@ -113,6 +114,7 @@ function mapToFormValues(
 
 export function PortfolioProvider({ children }: { children: ReactNode }) {
   const params = useParams();
+  const searchParams = useSearchParams();
   const [project, setProject] = useState<APIResponseProject | null>(null);
   const [localThemeSettings, setLocalThemeSettings] = useState<Settings | null>(null);
   const [layout, setLayout] = useState<string>('default');
@@ -167,17 +169,26 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
       const { success, data } = await getBySlug(slug, 'full');
       if (success && data) {
         setProject(data);
-        if (data.portfolio) {
+        if (data.portfolio?.id) {
           const mapped = mapToFormValues(data.portfolio);
           Object.entries(mapped).forEach(([key, val]) => setValue(key as any, val));
           setLocalThemeSettings({ mode: 'light', theme: data.portfolio.theme_object });
           setLayout(data.portfolio.layout_name ?? 'default');
+        } else {
+          const starter = getStarterById('portfolio', searchParams.get('starter'));
+          const starterLayout = searchParams.get('layout') || starter.defaults.layoutName;
+          const starterThemePreset = searchParams.get('theme') || starter.defaults.themePreset;
+          const starterValues = buildPortfolioStarterValues(starter.id, data.name || 'John Doe');
+
+          Object.entries(starterValues).forEach(([key, val]) => setValue(key as any, val));
+          setLocalThemeSettings({ mode: 'light', theme: createThemeObject(starterThemePreset) });
+          setLayout(starterLayout);
         }
       }
       setIsLoading(false);
     };
     loadProject();
-  }, [params.slug, authUser]);
+  }, [params.slug, authUser, searchParams, setValue]);
 
   const save = async () => {
     setIsSaving(true);

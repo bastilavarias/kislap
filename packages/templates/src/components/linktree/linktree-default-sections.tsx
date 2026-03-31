@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import type React from "react";
 import { ArrowUpRight } from "lucide-react";
@@ -73,7 +73,7 @@ function PromoSection({
 function SupportSection({ section }: { section: LinktreeSection }) {
   return (
     <div className="rounded-2xl border border-border/70 bg-card p-4">
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-[1fr_112px] sm:items-center">
+      <div className="grid grid-cols-1 gap-4 @sm:grid-cols-[1fr_112px] @sm:items-center">
         <div>
           {section.title ? (
             <p className="text-sm font-semibold">{section.title}</p>
@@ -114,13 +114,13 @@ function QuoteSection({ section }: { section: LinktreeSection }) {
     <div
       style={accentStyle}
       className={cn(
-        "rounded-2xl border border-border/70 p-6 sm:p-8",
+        "rounded-2xl border border-border/70 p-6 @sm:p-8",
         hasAccent ? "" : "bg-card",
       )}
     >
       <blockquote
         className={cn(
-          "text-center text-2xl italic leading-tight sm:text-[2rem]",
+          "text-center text-2xl italic leading-tight @sm:text-[2rem]",
           hasAccent ? "text-white" : "text-foreground",
         )}
       >
@@ -178,3 +178,5 @@ export function DefaultSection({
   if (section.type === "banner") return <BannerSection section={section} />;
   return null;
 }
+
+

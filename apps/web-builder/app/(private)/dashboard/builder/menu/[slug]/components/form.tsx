@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Store, Tags, UtensilsCrossed } from 'lucide-react';
 import { Settings } from '@/contexts/settings-context';
 import { APIResponseProject } from '@/types/api-response';
+import { createDefaultBusinessHours, createDefaultSocialLinks } from '@/lib/menu-defaults';
 import { MenuFormValues } from '@/lib/schemas/menu';
 import { ParsedFileDialog } from '@/components/parsed-file-dialog';
 import { BusinessHoursEditor } from './business-hours-editor';
@@ -47,7 +48,7 @@ export function Form({
   setIsParserOpen,
   applyParsedMenu,
 }: Props) {
-  const { register, watch, setValue } = formMethods;
+  const { register, watch, setValue, reset } = formMethods;
 
   useEffect(() => {
     setValue('layout_name', layout);
@@ -62,14 +63,53 @@ export function Form({
     setValue('gallery_images', items, { shouldDirty: true });
   };
 
+  const handleClearContent = () => {
+    if (!window.confirm('Clear the current menu form content? Layout and theme will stay as they are.')) {
+      return;
+    }
+
+    reset({
+      name: '',
+      description: '',
+      logo: null,
+      logo_url: '',
+      cover_image: null,
+      cover_image_url: '',
+      phone: '',
+      email: '',
+      website_url: '',
+      address: '',
+      city: '',
+      google_maps_url: '',
+      search_enabled: true,
+      hours_enabled: false,
+      business_hours: createDefaultBusinessHours(),
+      social_links: createDefaultSocialLinks(),
+      gallery_images: [],
+      layout_name: layout,
+      qr_settings: {
+        foreground_color: '#111111',
+        background_color: '#ffffff',
+        show_logo: false,
+      },
+      categories: [],
+      items: [],
+    });
+  };
+
   return (
     <div className="grid grid-cols-1 gap-6 pb-20 lg:grid-cols-12 lg:pb-0">
       <div className="space-y-6 lg:col-span-8">
         <Card className="border-border shadow-none">
           <CardContent className="p-6">
-            <div className="mb-6 flex items-center gap-2">
-              <UtensilsCrossed className="h-6 w-6" />
-              <h1 className="text-2xl font-bold">Menu Editor</h1>
+            <div className="mb-6 flex items-center justify-between gap-4">
+              <div className="flex items-center gap-2">
+                <UtensilsCrossed className="h-6 w-6" />
+                <h1 className="text-2xl font-bold">Menu Editor</h1>
+              </div>
+              <Button type="button" variant="outline" className="shadow-none" onClick={handleClearContent}>
+                Clear content
+              </Button>
             </div>
 
             <div className="flex items-center justify-between rounded-xl border bg-muted/20 p-4">

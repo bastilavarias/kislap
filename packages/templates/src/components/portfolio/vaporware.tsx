@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -185,9 +185,9 @@ const PerspectiveGrid = () => (
 
 const RetroSun = () => (
   <div className="fixed top-[15vh] left-1/2 -translate-x-1/2 -z-20">
-    <div className="w-[300px] h-[300px] md:w-[600px] md:h-[600px] rounded-full bg-gradient-to-t from-primary via-secondary to-transparent opacity-60 blur-2xl" />
+    <div className="w-[300px] h-[300px] @md:w-[600px] @md:h-[600px] rounded-full bg-gradient-to-t from-primary via-secondary to-transparent opacity-60 blur-2xl" />
     <div className="absolute inset-0 w-full h-full rounded-full bg-gradient-to-t from-primary to-transparent opacity-80" />
-    <div className="absolute bottom-0 left-0 right-0 h-1/2 flex flex-col justify-end gap-1 md:gap-2">
+    <div className="absolute bottom-0 left-0 right-0 h-1/2 flex flex-col justify-end gap-1 @md:gap-2">
       {[...Array(6)].map((_, i) => (
         <div
           key={i}
@@ -241,7 +241,7 @@ const VwReveal = ({
 
 // --- Styles ---
 const panelClass =
-  "relative bg-background/95 backdrop-blur-xl border border-primary/30 p-6 md:p-8 shadow-[0_0_15px_-5px_hsl(var(--primary)/0.3)] hover:shadow-[0_0_25px_-5px_hsl(var(--primary)/0.5)] hover:border-primary/60 transition-all duration-300 rounded-xl overflow-hidden group";
+  "relative bg-background/95 backdrop-blur-xl border border-primary/30 p-6 @md:p-8 shadow-[0_0_15px_-5px_hsl(var(--primary)/0.3)] hover:shadow-[0_0_25px_-5px_hsl(var(--primary)/0.5)] hover:border-primary/60 transition-all duration-300 rounded-xl overflow-hidden group";
 const neonText =
   "font-black tracking-widest uppercase drop-shadow-[0_0_5px_hsl(var(--primary)/0.8)]";
 
@@ -292,7 +292,7 @@ const HeroSection = ({ portfolio }: { portfolio: Portfolio }) => {
       <VwReveal>
         <div className="relative group">
           <div className="absolute -inset-1 bg-gradient-to-r from-primary to-secondary rounded-full blur opacity-70 group-hover:opacity-100 transition duration-500 animate-spin-slow" />
-          <Avatar className="w-32 h-32 md:w-48 md:h-48 border-4 border-background relative">
+          <Avatar className="w-32 h-32 @md:w-48 @md:h-48 border-4 border-background relative">
             <AvatarImage src={avatarUrl ?? undefined} className="object-cover" />
             <AvatarFallback className="bg-muted text-4xl font-black text-primary">
               {portfolio.name?.charAt(0) ?? "U"}
@@ -303,7 +303,7 @@ const HeroSection = ({ portfolio }: { portfolio: Portfolio }) => {
 
       <div className="space-y-4 max-w-4xl mx-auto">
         <VwReveal delay={200}>
-          <h1 className="text-4xl md:text-7xl font-black uppercase leading-tight italic transform -skew-x-3">
+          <h1 className="text-4xl @md:text-7xl font-black uppercase leading-tight italic transform -skew-x-3">
             <span
               className="glitch-text"
               data-text={portfolio.job_title || "CREATOR"}
@@ -313,7 +313,7 @@ const HeroSection = ({ portfolio }: { portfolio: Portfolio }) => {
           </h1>
         </VwReveal>
         <VwReveal delay={400}>
-          <p className="text-lg md:text-xl text-primary font-medium max-w-2xl mx-auto leading-relaxed drop-shadow-md border-l-2 border-primary pl-4 text-left md:text-center md:border-l-0 md:pl-0">
+          <p className="text-lg @md:text-xl text-primary font-medium max-w-2xl mx-auto leading-relaxed drop-shadow-md border-l-2 border-primary pl-4 text-left @md:text-center @md:border-l-0 @md:pl-0">
             {portfolio.introduction}
           </p>
         </VwReveal>
@@ -345,12 +345,12 @@ const SkillsSection = ({ portfolio }: { portfolio: Portfolio }) => {
       <VwReveal>
         <div className="flex items-center gap-4 mb-8">
           <Cpu className="w-8 h-8 text-primary" />
-          <h2 className={`text-3xl md:text-4xl ${neonText}`}>Arsenal</h2>
+          <h2 className={`text-3xl @md:text-4xl ${neonText}`}>Arsenal</h2>
           <div className="h-[2px] flex-1 bg-gradient-to-r from-primary to-transparent" />
         </div>
       </VwReveal>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 @md:grid-cols-4 gap-4">
         {portfolio.skills.map((skill, i) => (
           <VwReveal key={skill.id} delay={i * 50}>
             <div className="relative group overflow-hidden bg-background/90 border border-primary/30 p-4 text-center hover:bg-primary/10 transition-colors rounded-md shadow-sm">
@@ -373,14 +373,14 @@ const ExperienceEducationSection = ({
   portfolio: Portfolio;
 }) => {
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+    <div className="grid grid-cols-1 @lg:grid-cols-2 gap-12">
       {/* Experience Logs */}
       {portfolio.work_experiences && portfolio.work_experiences.length > 0 && (
         <section className="space-y-8">
           <VwReveal>
             <div className="flex items-center gap-3 mb-4 text-primary">
               <Activity className="w-6 h-6" />
-              <h2 className={`text-2xl md:text-3xl ${neonText}`}>
+              <h2 className={`text-2xl @md:text-3xl ${neonText}`}>
                 System Logs
               </h2>
             </div>
@@ -419,7 +419,7 @@ const ExperienceEducationSection = ({
           <VwReveal>
             <div className="flex items-center gap-3 mb-4">
               <Disc className="w-6 h-6 text-primary" />
-              <h2 className={`text-2xl md:text-3xl ${neonText} text-primary`}>
+              <h2 className={`text-2xl @md:text-3xl ${neonText} text-primary`}>
                 Core Data
               </h2>
             </div>
@@ -474,12 +474,12 @@ const ProjectsSection = ({
       <VwReveal>
         <div className="flex items-center gap-4 mb-12">
           <Terminal className="w-8 h-8 text-primary" />
-          <h2 className={`text-3xl md:text-4xl ${neonText}`}>Executables</h2>
+          <h2 className={`text-3xl @md:text-4xl ${neonText}`}>Executables</h2>
           <div className="h-[2px] flex-1 bg-gradient-to-r from-primary to-transparent" />
         </div>
       </VwReveal>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 @md:grid-cols-2 @lg:grid-cols-3 gap-6">
         {portfolio.showcases.map((proj, i) => (
           <VwReveal key={proj.id} delay={i * 100} className="h-full">
             <Link
@@ -584,34 +584,34 @@ const ContactSection = ({
 
   return (
     // Added outer padding (px-4) so it doesn't touch screen edges on mobile
-    <section className="w-full max-w-4xl mx-auto px-4 sm:px-6">
+    <section className="w-full max-w-4xl mx-auto px-4 @sm:px-6">
       <VwReveal>
         <div className="bg-background border-2 border-primary rounded-lg shadow-[0_0_30px_hsl(var(--primary)/0.2)] overflow-hidden">
           {/* Header Bar: Prevent shrinking of dots and allow text truncation */}
           <div className="bg-primary/5 p-2 flex items-center gap-2 border-b border-primary/20">
-            <div className="flex shrink-0 gap-1.5 sm:gap-2">
-              <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-red-500" />
-              <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-yellow-500" />
-              <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-green-500" />
+            <div className="flex shrink-0 gap-1.5 @sm:gap-2">
+              <div className="w-2.5 h-2.5 @sm:w-3 @sm:h-3 rounded-full bg-red-500" />
+              <div className="w-2.5 h-2.5 @sm:w-3 @sm:h-3 rounded-full bg-yellow-500" />
+              <div className="w-2.5 h-2.5 @sm:w-3 @sm:h-3 rounded-full bg-green-500" />
             </div>
-            <span className="text-[10px] sm:text-xs font-mono ml-2 text-muted-foreground opacity-70 truncate">
+            <span className="text-[10px] @sm:text-xs font-mono ml-2 text-muted-foreground opacity-70 truncate">
               bash --login contact-form
             </span>
           </div>
 
           {/* Content Area: Adjusted padding for mobile vs desktop */}
-          <div className="p-5 sm:p-8 md:p-12 bg-background/95 backdrop-blur">
+          <div className="p-5 @sm:p-8 @md:p-12 bg-background/95 backdrop-blur">
             {/* Grid: Explicit single column on mobile, 2 cols on md+ */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+            <div className="grid grid-cols-1 @md:grid-cols-2 gap-8 @md:gap-12">
               {/* Left Column: Info */}
               <div className="space-y-6">
                 <h3
-                  className={`text-2xl sm:text-3xl font-black italic uppercase ${neonText} text-secondary`}
+                  className={`text-2xl @sm:text-3xl font-black italic uppercase ${neonText} text-secondary`}
                 >
                   Uplink
                 </h3>
 
-                <div className="space-y-4 text-sm font-bold tracking-wider text-muted-foreground break-all sm:break-normal">
+                <div className="space-y-4 text-sm font-bold tracking-wider text-muted-foreground break-all @sm:break-normal">
                   {portfolio.email && (
                     <div className="flex items-center gap-3">
                       <Mail className="w-5 h-5 min-w-5 text-primary" />
@@ -629,7 +629,7 @@ const ContactSection = ({
                 </div>
 
                 {/* Status Terminal: Added overflow handling for small screens */}
-                <div className="font-mono text-xs text-primary/60 mt-6 sm:mt-8 p-4 border border-primary/20 rounded bg-primary/5 overflow-x-auto whitespace-nowrap">
+                <div className="font-mono text-xs text-primary/60 mt-6 @sm:mt-8 p-4 border border-primary/20 rounded bg-primary/5 overflow-x-auto whitespace-nowrap">
                   $ status check
                   <br />
                   {`> `} port 8080 open
@@ -661,7 +661,7 @@ const ContactSection = ({
                   </Label>
                   <Input
                     {...register("name")}
-                    className="bg-muted/30 border-primary/30 focus:border-primary rounded-none font-mono text-sm h-10 sm:h-11"
+                    className="bg-muted/30 border-primary/30 focus:border-primary rounded-none font-mono text-sm h-10 @sm:h-11"
                     placeholder="GUEST_USER"
                   />
                   {errors.name && (
@@ -677,7 +677,7 @@ const ContactSection = ({
                   </Label>
                   <Input
                     {...register("email")}
-                    className="bg-muted/30 border-primary/30 focus:border-primary rounded-none font-mono text-sm h-10 sm:h-11"
+                    className="bg-muted/30 border-primary/30 focus:border-primary rounded-none font-mono text-sm h-10 @sm:h-11"
                     placeholder="USER@NET.COM"
                   />
                   {errors.email && (
@@ -693,7 +693,7 @@ const ContactSection = ({
                   </Label>
                   <Input
                     {...register("contact_number")}
-                    className="bg-muted/30 border-primary/30 focus:border-primary rounded-none font-mono text-sm h-10 sm:h-11"
+                    className="bg-muted/30 border-primary/30 focus:border-primary rounded-none font-mono text-sm h-10 @sm:h-11"
                     placeholder="OPTIONAL"
                   />
                 </div>
@@ -754,7 +754,7 @@ export function Vaporware({
   if (!portfolio) return null;
 
   return (
-    <div className="min-h-screen font-mono text-foreground bg-background selection:bg-primary selection:text-primary-foreground overflow-x-hidden relative">
+    <div className="@container min-h-screen font-mono text-foreground bg-background selection:bg-primary selection:text-primary-foreground overflow-x-hidden relative">
       <ScanlineOverlay />
       <PerspectiveGrid />
       <RetroSun />
@@ -778,4 +778,7 @@ export function Vaporware({
     </div>
   );
 }
+
+
+
 

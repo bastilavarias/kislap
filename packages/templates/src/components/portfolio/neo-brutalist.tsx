@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useMemo, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -94,12 +94,12 @@ const HeroSection = ({
   }, [portfolio]);
 
   return (
-    <header className="flex flex-col md:flex-row gap-8 items-start justify-between border-b-4 border-foreground pb-8">
-      <div className="flex gap-6 items-center w-full md:w-auto">
+    <header className="flex flex-col @md:flex-row gap-8 items-start justify-between border-b-4 border-foreground pb-8">
+      <div className="flex gap-6 items-center w-full @md:w-auto">
         {avatarUrl && (
           <div className="relative shrink-0">
             <div className="absolute inset-0 bg-foreground translate-x-2 translate-y-2" />
-            <Avatar className="w-20 h-20 md:w-32 md:h-32 border-4 border-foreground relative z-10 rounded-none">
+            <Avatar className="w-20 h-20 @md:w-32 @md:h-32 border-4 border-foreground relative z-10 rounded-none">
               <AvatarImage
                 src={avatarUrl}
                 alt={portfolio.user?.first_name}
@@ -113,21 +113,21 @@ const HeroSection = ({
         )}
 
         <div className="space-y-2">
-          <h1 className="text-3xl md:text-6xl font-black uppercase tracking-tighter bg-primary/20 inline-block px-2 break-all md:break-normal">
+          <h1 className="text-3xl @md:text-6xl font-black uppercase tracking-tighter bg-primary/20 inline-block px-2 break-all @md:break-normal">
             {portfolio.name || "Untitled"}
           </h1>
-          <div className="flex flex-col md:flex-row gap-2 md:items-center text-sm md:text-lg font-bold">
+          <div className="flex flex-col @md:flex-row gap-2 @md:items-center text-sm @md:text-lg font-bold">
             {portfolio.job_title && (
               <span className="flex items-center gap-2">
-                <Terminal className="w-4 h-4 md:w-5 md:h-5" />{" "}
+                <Terminal className="w-4 h-4 @md:w-5 @md:h-5" />{" "}
                 {portfolio.job_title}
               </span>
             )}
             {portfolio.location && (
               <>
-                <span className="hidden md:inline text-foreground/50">|</span>
+                <span className="hidden @md:inline text-foreground/50">|</span>
                 <span className="flex items-center gap-2">
-                  <MapPin className="w-4 h-4 md:w-5 md:h-5" />{" "}
+                  <MapPin className="w-4 h-4 @md:w-5 @md:h-5" />{" "}
                   {portfolio.location}
                 </span>
               </>
@@ -136,7 +136,7 @@ const HeroSection = ({
         </div>
       </div>
 
-      <div className="flex flex-row-reverse md:flex-col items-end gap-4 w-full md:w-auto justify-between md:justify-start">
+      <div className="flex flex-row-reverse @md:flex-col items-end gap-4 w-full @md:w-auto justify-between @md:justify-start">
         <ThemeSwitchToggle
           isDarkMode={isDarkMode}
           onSetThemeMode={onSetThemeMode}
@@ -169,8 +169,8 @@ const AboutSection = ({ portfolio }: { portfolio: Portfolio }) => {
       <div
         className="
     bg-foreground text-background px-2 py-1 text-xs font-bold uppercase
-    md:absolute md:top-0 md:right-0 md:translate-y-[-50%] md:translate-x-[50%] md:rotate-3
-    md:block text-center
+    @md:absolute @md:top-0 @md:right-0 @md:translate-y-[-50%] @md:translate-x-[50%] @md:rotate-3
+    @md:block text-center
   "
       >
         About_Me.txt
@@ -202,11 +202,11 @@ const ExperienceSection = ({ portfolio }: { portfolio: Portfolio }) => {
             key={exp.id}
             className={`p-6 border-4 border-foreground bg-card ${
               idx % 2 === 0
-                ? "md:translate-x-2"
-                : "md:-translate-x-2 md:hover:translate-x-0"
+                ? "@md:translate-x-2"
+                : "@md:-translate-x-2 @md:hover:translate-x-0"
             } transition-transform`}
           >
-            <div className="flex flex-col md:flex-row justify-between md:items-start mb-4 gap-2">
+            <div className="flex flex-col @md:flex-row justify-between @md:items-start mb-4 gap-2">
               <div>
                 <h3 className="text-xl font-bold bg-primary/30 inline px-1">
                   {exp.role}
@@ -215,7 +215,7 @@ const ExperienceSection = ({ portfolio }: { portfolio: Portfolio }) => {
               </div>
               <Badge
                 variant="outline"
-                className="rounded-none border-2 border-foreground px-3 py-1 text-xs md:text-sm self-start font-mono"
+                className="rounded-none border-2 border-foreground px-3 py-1 text-xs @md:text-sm self-start font-mono"
               >
                 {exp.start_date || "N/A"} {"->"} {exp.end_date || "Present"}
               </Badge>
@@ -332,14 +332,14 @@ const ProjectsSection = ({
 
   return (
     <section className="pt-8 border-t-4 border-foreground">
-      <h2 className="text-3xl md:text-4xl font-black uppercase mb-8 text-center md:text-left">
+      <h2 className="text-3xl @md:text-4xl font-black uppercase mb-8 text-center @md:text-left">
         Selected_Projects{" "}
         <span className="text-primary text-sm align-middle font-normal normal-case tracking-normal">
           (Click to view)
         </span>
       </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 @md:grid-cols-2 gap-6">
         {portfolio.showcases.map((project) => (
           <Link
             key={project.id}
@@ -448,7 +448,7 @@ const ContactFormSection = ({
 
   return (
     <section className="py-12">
-      <div className="border-4 border-foreground p-4 md:p-8 bg-background relative shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:shadow-[8px_8px_0px_0px_rgba(255,255,255,1)]">
+      <div className="border-4 border-foreground p-4 @md:p-8 bg-background relative shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:shadow-[8px_8px_0px_0px_rgba(255,255,255,1)]">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-background border-4 border-foreground px-6 py-2">
           <h2 className="text-2xl font-black uppercase">Send_Message</h2>
         </div>
@@ -463,7 +463,7 @@ const ContactFormSection = ({
           </Alert>
         )}
 
-        <div className="grid md:grid-cols-2 gap-6 mt-6">
+        <div className="grid @md:grid-cols-2 gap-6 mt-6">
           <div className="space-y-4">
             <div className="space-y-2">
               <Label className="uppercase font-bold">Name *</Label>
@@ -555,7 +555,7 @@ const FooterSection = ({ portfolio }: { portfolio: Portfolio }) => {
           </p>
           <p className="text-xs font-mono text-muted-foreground">
             All rights reserved. Made with{" "}
-            <span className="text-red-500 animate-pulse">❤️</span>
+            <span className="text-red-500 animate-pulse">â¤ï¸</span>
           </p>
         </div>
 
@@ -565,7 +565,7 @@ const FooterSection = ({ portfolio }: { portfolio: Portfolio }) => {
         <div className="flex flex-col items-center gap-3">
           <div className="flex flex-col items-center gap-1">
             <span className="text-xs font-black tracking-widest text-foreground uppercase flex items-center gap-1.5">
-              <span className="text-amber-400">✨</span> Powered by Kislap
+              <span className="text-amber-400">âœ¨</span> Powered by Kislap
             </span>
             <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-mono">
               Transform your forms into beautiful websites
@@ -621,7 +621,7 @@ export function NeoBrutalist({
   if (!portfolio) return null;
 
   return (
-    <div className="min-h-screen bg-background text-foreground p-4 md:p-8 font-mono">
+    <div className="@container min-h-screen bg-background text-foreground p-4 @md:p-8 font-mono">
       <div className="max-w-5xl mx-auto space-y-12">
         <HeroSection
           portfolio={portfolio}
@@ -631,14 +631,14 @@ export function NeoBrutalist({
         />
 
         {/* INTRODUCTION & SKILLS GRID */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
-          <div className="md:col-span-8 space-y-8">
+        <div className="grid grid-cols-1 @md:grid-cols-12 gap-8">
+          <div className="@md:col-span-8 space-y-8">
             <AboutSection portfolio={portfolio} />
             <ExperienceSection portfolio={portfolio} />
             <EducationSection portfolio={portfolio} />
           </div>
 
-          <div className="md:col-span-4 space-y-8">
+          <div className="@md:col-span-4 space-y-8">
             <SkillsSection portfolio={portfolio} />
             <ContactInfoSection portfolio={portfolio} />
           </div>
@@ -656,3 +656,6 @@ export function NeoBrutalist({
     </div>
   );
 }
+
+
+

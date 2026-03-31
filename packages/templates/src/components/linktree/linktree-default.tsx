@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useMemo, useState } from "react";
 import type React from "react";
@@ -190,12 +190,12 @@ export function LinktreeDefault({
   ]);
 
   return (
-    <div className="min-h-screen w-full p-4 sm:p-6" style={pageBackgroundStyle}>
+    <div className="@container min-h-screen w-full p-4 @sm:p-6" style={pageBackgroundStyle}>
       <motion.section
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.25 }}
-        className="mx-auto w-full max-w-[620px] rounded-3xl border border-border/70 bg-background/95 p-4 sm:p-6"
+        className="mx-auto w-full max-w-[620px] rounded-3xl border border-border/70 bg-background/95 p-4 @sm:p-6"
       >
         <div className="mb-6 flex items-center justify-end gap-2">
           <ThemeSwitchToggle
@@ -292,3 +292,6 @@ export function LinktreeDefault({
     </div>
   );
 }
+
+
+

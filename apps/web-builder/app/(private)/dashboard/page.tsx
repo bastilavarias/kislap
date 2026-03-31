@@ -1,5 +1,7 @@
-import { ProjectFormDialog } from '@//components/project-form-dialog';
 import { ProjectList } from '@/app/\(private\)/dashboard/components/projects-list';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { Plus } from 'lucide-react';
 
 export default function Page() {
   return (
@@ -14,7 +16,12 @@ export default function Page() {
             </p>
           </div>
         </div>
-        <ProjectFormDialog />
+        <Button asChild className="rounded-full">
+          <Link href="/dashboard/projects/new">
+            <Plus className="mr-2 h-4 w-4" />
+            Create Project
+          </Link>
+        </Button>
       </div>
       <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
         <ProjectList />

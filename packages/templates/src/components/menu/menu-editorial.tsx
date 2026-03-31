@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React from "react";
 import { Globe, Github, Mail, MapPin, Phone, Share2 } from "lucide-react";
@@ -115,10 +115,10 @@ export function MenuEditorial({ menu, themeMode, themeStyles, onSetThemeMode }: 
   }, []);
 
   return (
-    <div style={{ backgroundColor, color: foregroundColor, fontFamily: bodyFont }} className="min-h-screen px-4 py-8 md:px-8">
+    <div style={{ backgroundColor, color: foregroundColor, fontFamily: bodyFont }} className="@container min-h-screen px-4 py-8 @md:px-8">
       <div className="mx-auto max-w-6xl">
         <header className="mb-10 overflow-hidden rounded-[2rem] border" style={{ borderColor, backgroundColor: cardColor }}>
-          <div className="relative h-56 w-full md:h-80">
+          <div className="relative h-56 w-full @md:h-80">
             {source.cover_image_url ? (
               <img src={source.cover_image_url} alt={source.name || "Menu cover"} className="h-full w-full object-cover" />
             ) : (
@@ -141,9 +141,9 @@ export function MenuEditorial({ menu, themeMode, themeStyles, onSetThemeMode }: 
             </div>
           </div>
 
-          <div className="grid gap-8 px-6 pb-8 pt-6 md:grid-cols-[auto_1fr] md:px-10">
-            <div className="-mt-12 flex justify-center md:-mt-16 md:justify-start">
-              <div className="relative z-10 h-32 w-32 overflow-hidden rounded-[2rem] border-4 shadow-sm md:h-40 md:w-40" style={{ borderColor: backgroundColor, backgroundColor: cardColor }}>
+          <div className="grid gap-8 px-6 pb-8 pt-6 @md:grid-cols-[auto_1fr] @md:px-10">
+            <div className="-mt-12 flex justify-center @md:-mt-16 @md:justify-start">
+              <div className="relative z-10 h-32 w-32 overflow-hidden rounded-[2rem] border-4 shadow-sm @md:h-40 @md:w-40" style={{ borderColor: backgroundColor, backgroundColor: cardColor }}>
                 {source.logo_url ? (
                   <img src={source.logo_url} alt={source.name || "Menu logo"} className="h-full w-full object-cover" />
                 ) : (
@@ -152,51 +152,51 @@ export function MenuEditorial({ menu, themeMode, themeStyles, onSetThemeMode }: 
               </div>
             </div>
 
-            <div className="space-y-5 text-center md:text-left">
+            <div className="space-y-5 text-center @md:text-left">
               <div>
                 <p className="text-xs uppercase tracking-[0.25em]" style={{ color: mutedColor }}>
                   {source.city?.trim() || "House Menu"}
                 </p>
-                <h1 className="mt-2 text-4xl font-semibold md:text-6xl" style={{ fontFamily: headingFont }}>
+                <h1 className="mt-2 text-4xl font-semibold @md:text-6xl" style={{ fontFamily: headingFont }}>
                   {source.name || "Cafe Editorial"}
                 </h1>
-                <p className="mt-3 max-w-2xl text-sm md:text-base" style={{ color: mutedColor }}>
+                <p className="mt-3 max-w-2xl text-sm @md:text-base" style={{ color: mutedColor }}>
                   {source.description || "A warm all-day menu for coffee, brunch, and quiet late conversations."}
                 </p>
               </div>
 
-              <div className="grid gap-4 md:grid-cols-2">
+              <div className="grid gap-4 @md:grid-cols-2">
                 {formatMenuLocation(source) ? (
-                  <div className="text-center md:text-left">
+                  <div className="text-center @md:text-left">
                     <div
-                      className="flex items-center justify-center gap-2 text-[11px] uppercase tracking-[0.18em] md:justify-start"
+                      className="flex items-center justify-center gap-2 text-[11px] uppercase tracking-[0.18em] @md:justify-start"
                       style={{ color: mutedColor }}
                     >
                       <MapPin className="h-4 w-4" />
                       Address
                     </div>
-                    <p className="mt-2 text-sm font-medium md:text-base">
+                    <p className="mt-2 text-sm font-medium @md:text-base">
                       {formatMenuLocation(source)}
                     </p>
                   </div>
                 ) : null}
                 {hours ? (
-                  <div className="text-center md:text-left">
+                  <div className="text-center @md:text-left">
                     <div
-                      className="flex items-center justify-center gap-2 text-[11px] uppercase tracking-[0.18em] md:justify-start"
+                      className="flex items-center justify-center gap-2 text-[11px] uppercase tracking-[0.18em] @md:justify-start"
                       style={{ color: mutedColor }}
                     >
                       <Phone className="h-4 w-4" />
                       Store Hours
                     </div>
-                    <p className="mt-2 text-sm font-semibold md:text-base">
+                    <p className="mt-2 text-sm font-semibold @md:text-base">
                       {formatHoursLabel(hours)}
                     </p>
                   </div>
                 ) : null}
               </div>
 
-              <div className="flex flex-wrap justify-center gap-3 md:justify-start">
+              <div className="flex flex-wrap justify-center gap-3 @md:justify-start">
                 {source.phone ? (
                   <span className="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm" style={{ borderColor }}>
                     <Phone className="h-4 w-4" /> {source.phone}
@@ -210,7 +210,7 @@ export function MenuEditorial({ menu, themeMode, themeStyles, onSetThemeMode }: 
               </div>
 
               {socials.length ? (
-                <div className="flex flex-wrap justify-center gap-3 md:justify-start">
+                <div className="flex flex-wrap justify-center gap-3 @md:justify-start">
                   {socials.map((social) => (
                     <a
                       key={`${social.platform}-${social.url}`}
@@ -238,9 +238,9 @@ export function MenuEditorial({ menu, themeMode, themeStyles, onSetThemeMode }: 
             if (!items.length) return null;
 
             return (
-              <section key={category.id} className="grid gap-6 border-t pt-8 md:grid-cols-[280px_1fr]" style={{ borderColor }}>
+              <section key={category.id} className="grid gap-6 border-t pt-8 @md:grid-cols-[280px_1fr]" style={{ borderColor }}>
                 <div className="space-y-3">
-                  <h2 className="text-3xl font-semibold md:text-4xl" style={{ fontFamily: headingFont }}>
+                  <h2 className="text-3xl font-semibold @md:text-4xl" style={{ fontFamily: headingFont }}>
                     {category.name}
                   </h2>
                   {category.description ? (
@@ -249,7 +249,7 @@ export function MenuEditorial({ menu, themeMode, themeStyles, onSetThemeMode }: 
                     </p>
                   ) : null}
                 </div>
-                <div className="grid gap-4 md:grid-cols-2">
+                <div className="grid gap-4 @md:grid-cols-2">
                   {items.map((item) => {
                     const variants = [...(item.variants || [])].sort((a, b) => (a.placement_order ?? 0) - (b.placement_order ?? 0));
                     const defaultVariant = variants.find((variant) => variant.is_default) ?? variants[0];
@@ -275,7 +275,7 @@ export function MenuEditorial({ menu, themeMode, themeStyles, onSetThemeMode }: 
                           <div className="mt-4 flex flex-wrap gap-2">
                             {variants.map((variant) => (
                               <span key={`${item.id}-${variant.name}`} className="rounded-full border px-3 py-1 text-xs uppercase tracking-[0.12em]" style={{ borderColor }}>
-                                {variant.name} â‚±{variant.price}
+                                {variant.name} ₱{variant.price}
                               </span>
                             ))}
                           </div>
@@ -290,7 +290,7 @@ export function MenuEditorial({ menu, themeMode, themeStyles, onSetThemeMode }: 
         </div>
 
         <section className="mt-12 border-t pt-8" style={{ borderColor }}>
-          <div className="grid items-center gap-6 md:grid-cols-[220px_1fr]">
+          <div className="grid items-center gap-6 @md:grid-cols-[220px_1fr]">
             <div className="mx-auto">
               <img
                 src={qrImageUrl}
@@ -298,8 +298,8 @@ export function MenuEditorial({ menu, themeMode, themeStyles, onSetThemeMode }: 
                 className="h-[190px] w-[190px] object-cover"
               />
             </div>
-            <div className="text-center md:text-left">
-              <h2 className="text-3xl font-semibold md:text-4xl" style={{ fontFamily: headingFont }}>
+            <div className="text-center @md:text-left">
+              <h2 className="text-3xl font-semibold @md:text-4xl" style={{ fontFamily: headingFont }}>
                 Share This Menu
               </h2>
               <p className="mt-2 max-w-xl text-sm leading-relaxed" style={{ color: mutedColor }}>
@@ -333,3 +333,6 @@ export function MenuEditorial({ menu, themeMode, themeStyles, onSetThemeMode }: 
     </div>
   );
 }
+
+
+

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import type React from "react";
 import { useMemo, useState } from "react";
 import { ThemeSwitchToggle } from "../theme-switch-toggle";
@@ -85,7 +85,7 @@ function LinkCard({
       whileTap={{ scale: 0.98 }}
       style={BRUTAL_SHADOW}
       className={cn(
-        "group relative block w-full border-2 border-border bg-card p-3 sm:p-4",
+        "group relative block w-full border-2 border-border bg-card p-3 @sm:p-4",
         "transition-all duration-150 hover:bg-muted/30 hover:shadow-none",
       )}
     >
@@ -112,11 +112,11 @@ function LinkCard({
         </div>
 
         <div className="min-w-0 flex-1">
-          <h3 className="truncate text-[14px] md:text-[16px] font-black uppercase tracking-wide leading-tight">
+          <h3 className="truncate text-[14px] @md:text-[16px] font-black uppercase tracking-wide leading-tight">
             {link.title}
           </h3>
           {link.description ? (
-            <p className="text-[12px] md:text-[14px] font-medium leading-relaxed text-muted-foreground">
+            <p className="text-[12px] @md:text-[14px] font-medium leading-relaxed text-muted-foreground">
               {link.description}
             </p>
           ) : null}
@@ -200,17 +200,17 @@ export function LinktreeNeoBrutalist({
 
   return (
     <div
-      className={cn("min-h-screen w-full text-foreground font-sans p-4")}
+      className={cn("@container min-h-screen w-full text-foreground font-sans p-4")}
       style={pageBackgroundStyle}
     >
       <section
         style={BRUTAL_SHADOW_LG}
         className={cn(
-          "mx-auto w-full max-w-[680px] border-4 border-border p-3 sm:p-5",
+          "mx-auto w-full max-w-[680px] border-4 border-border p-3 @sm:p-5",
           isGridBackground ? "bg-background/95" : "bg-background",
         )}
       >
-        <div className="mb-5 flex items-center justify-end gap-2 sm:mb-7">
+        <div className="mb-5 flex items-center justify-end gap-2 @sm:mb-7">
           <div className="flex items-center gap-2">
             <div className="border-2 border-border bg-primary px-2 py-1 text-primary-foreground">
               <ThemeSwitchToggle
@@ -237,7 +237,7 @@ export function LinktreeNeoBrutalist({
         <div className="px-2 pb-2 text-center">
           <div
             style={BRUTAL_SHADOW}
-            className="mx-auto h-24 w-24 overflow-hidden border-4 border-border bg-muted sm:h-28 sm:w-28"
+            className="mx-auto h-24 w-24 overflow-hidden border-4 border-border bg-muted @sm:h-28 @sm:w-28"
           >
             {linktree?.logo_url ? (
               <img
@@ -261,7 +261,7 @@ export function LinktreeNeoBrutalist({
             </p>
           ) : null}
 
-          <div className="mt-3 flex flex-wrap items-center justify-center gap-2 text-sm sm:text-base font-semibold text-muted-foreground">
+          <div className="mt-3 flex flex-wrap items-center justify-center gap-2 text-sm @sm:text-base font-semibold text-muted-foreground">
             {phoneValue ? (
               <a href={`tel:${phoneValue}`} className="inline-flex items-center gap-1 hover:text-foreground" onClick={(event) => handleTrackedContactClick(event, `tel:${phoneValue}`)}>
                 <Phone className="h-3.5 w-3.5" />
@@ -278,14 +278,14 @@ export function LinktreeNeoBrutalist({
           </div>
 
           {linktree?.about ? (
-            <p className="mx-auto mt-2 max-w-[54ch] text-xs sm:text-sm font-normal leading-snug text-muted-foreground/80">
+            <p className="mx-auto mt-2 max-w-[54ch] text-xs @sm:text-sm font-normal leading-snug text-muted-foreground/80">
               {linktree.about}
             </p>
           ) : null}
         </div>
 
         {contentItems.length > 0 ? (
-          <div className="mt-6 flex flex-col gap-3 sm:gap-4">
+          <div className="mt-6 flex flex-col gap-3 @sm:gap-4">
             {contentItems.map((item, index) =>
               item.kind === "link" && item.link ? (
                 <LinkCard key={`link-${item.id}`} link={item.link} index={index} onTrackClick={handleTrackClick} />
@@ -299,3 +299,6 @@ export function LinktreeNeoBrutalist({
     </div>
   );
 }
+
+
+

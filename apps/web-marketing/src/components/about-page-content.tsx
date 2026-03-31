@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { getBuilderProjectCreateUrl } from "@/lib/site-config";
 import { buttonVariants } from "@/components/ui/button";
 import { ArrowRight, Code2, Zap, Globe2, Users, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -264,7 +265,7 @@ export function AboutPageContent({ stats }: AboutPageContentProps) {
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <a
-                href="https://builder.kislap.app/"
+                href={getBuilderProjectCreateUrl()}
                 className={cn(
                   buttonVariants({ variant: "secondary", size: "lg" }),
                   "w-full sm:w-auto font-bold h-12 px-8",

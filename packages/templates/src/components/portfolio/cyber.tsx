@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -106,7 +106,7 @@ const HeroSection = ({
   }, [portfolio]);
 
   return (
-    <header className="relative flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-b border-primary/20 pb-6 pt-2 md:pt-0">
+    <header className="relative flex flex-col @md:flex-row justify-between items-start @md:items-end gap-6 border-b border-primary/20 pb-6 pt-2 @md:pt-0">
       {/* Positioned Absolutely:
         This keeps it in the top-right corner regardless of the layout direction (row/col)
       */}
@@ -117,17 +117,17 @@ const HeroSection = ({
         />
       </div>
 
-      <div className="space-y-2 mt-2 md:mt-0">
+      <div className="space-y-2 mt-2 @md:mt-0">
         <div className="flex items-center gap-2 text-[10px] font-mono text-primary uppercase tracking-[0.2em]">
           <Activity className="w-3 h-3 animate-pulse" />
           <span>System_Online</span>
           <span className="opacity-50">::</span>
           <span>V.2.0.45</span>
         </div>
-        <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tighter leading-[0.9]">
+        <h1 className="text-5xl @md:text-7xl font-black uppercase tracking-tighter leading-[0.9]">
           {portfolio.name || "Unknown_User"}
         </h1>
-        <div className="flex items-center gap-3 font-mono text-sm md:text-base text-muted-foreground">
+        <div className="flex items-center gap-3 font-mono text-sm @md:text-base text-muted-foreground">
           {portfolio.job_title && (
             <span className="bg-primary/10 px-2 py-0.5 border-l-2 border-primary text-primary font-bold">
               {portfolio.job_title}
@@ -452,7 +452,7 @@ const ProjectsSection = ({
         </span>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 @md:grid-cols-2 gap-4">
         {portfolio.showcases.map((project) => (
           <Link
             key={project.id}
@@ -527,7 +527,7 @@ const ExperienceSection = ({ portfolio }: { portfolio: Portfolio }) => {
             {/* Timeline Node */}
             <div className="absolute left-[-5px] top-1 w-[9px] h-[9px] bg-background border-2 border-primary rounded-full group-hover:bg-primary transition-colors" />
 
-            <div className="flex flex-col md:flex-row md:items-baseline justify-between mb-2">
+            <div className="flex flex-col @md:flex-row @md:items-baseline justify-between mb-2">
               <h3 className="text-xl font-bold uppercase">{exp.role}</h3>
               <span className="font-mono text-xs text-primary bg-primary/10 px-2 py-0.5 border border-primary/20">
                 {exp.start_date || "N/A"} &gt;&gt; {exp.end_date || "Present"}
@@ -603,7 +603,7 @@ export function Cyber({
   if (!portfolio) return null;
 
   return (
-    <div className="min-h-screen relative font-sans text-foreground overflow-hidden selection:bg-primary selection:text-primary-foreground">
+    <div className="@container min-h-screen relative font-sans text-foreground overflow-hidden selection:bg-primary selection:text-primary-foreground">
       <div className="fixed inset-0 -z-10 bg-background">
         <div
           className="absolute inset-0 opacity-[0.03] dark:opacity-[0.07] pointer-events-none"
@@ -625,7 +625,7 @@ export function Cyber({
         />
       </div>
 
-      <div className="max-w-7xl mx-auto p-4 md:p-8 space-y-12">
+      <div className="max-w-7xl mx-auto p-4 @md:p-8 space-y-12">
         {/* HEADER: SYSTEM STATUS & NAV */}
         <HeroSection
           portfolio={portfolio}
@@ -635,16 +635,16 @@ export function Cyber({
         />
 
         {/* MAIN DASHBOARD GRID */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div className="grid grid-cols-1 @lg:grid-cols-12 gap-6">
           {/* LEFT COLUMN: AVATAR & STATS (Span 4) */}
-          <div className="lg:col-span-4 space-y-6">
+          <div className="@lg:col-span-4 space-y-6">
             <IdCardSection portfolio={portfolio} />
             <SkillsSection portfolio={portfolio} />
             <ContactFormSection portfolio={portfolio} project={project} />
           </div>
 
           {/* RIGHT COLUMN: CONTENT (Span 8) */}
-          <div className="lg:col-span-8 space-y-8">
+          <div className="@lg:col-span-8 space-y-8">
             <AboutSection portfolio={portfolio} />
             <ProjectsSection portfolio={portfolio} projectId={project.id} />
             <ExperienceSection portfolio={portfolio} />
@@ -657,4 +657,7 @@ export function Cyber({
     </div>
   );
 }
+
+
+
 

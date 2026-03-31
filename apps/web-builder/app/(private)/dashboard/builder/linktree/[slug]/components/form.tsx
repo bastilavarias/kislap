@@ -53,6 +53,7 @@ export function Form({
     watch,
     setValue,
     control,
+    reset,
     formState: { errors },
   } = formMethods;
 
@@ -63,16 +64,38 @@ export function Form({
 
   const backgroundStyle = (watch('background_style') as 'plain' | 'grid') || 'grid';
 
+  const handleClearContent = () => {
+    if (!window.confirm('Clear the current link page form content? Layout, background style, and theme will stay as they are.')) {
+      return;
+    }
+
+    reset({
+      name: '',
+      tagline: '',
+      about: '',
+      phone: '',
+      email: '',
+      logo: null,
+      logo_url: '',
+      background_style: backgroundStyle,
+      layout_name: layout,
+      sections: [],
+    });
+  };
+
   return (
     <div className="w-full relative">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start pb-20 lg:pb-0">
         <div className="lg:col-span-8 space-y-6">
           <Card className="shadow-none border-border">
             <CardContent className="p-6">
-              <div className="flex justify-between items-center mb-6">
+              <div className="flex justify-between items-center mb-6 gap-4">
                 <h1 className="text-2xl font-bold flex items-center gap-2">
                   <LinkIcon className="w-6 h-6" /> Linktree Content
                 </h1>
+                <Button type="button" variant="outline" className="shadow-none" onClick={handleClearContent}>
+                  Clear content
+                </Button>
               </div>
 
               <div className="flex flex-col gap-10">

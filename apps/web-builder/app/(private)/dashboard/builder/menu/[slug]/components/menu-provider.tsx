@@ -3,7 +3,7 @@
 import { createContext, ReactNode, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { UseFieldArrayReturn, UseFormReturn, useFieldArray, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 import { Settings } from '@/contexts/settings-context';
 import { useAuthContext } from '@/contexts/auth-context';
@@ -15,6 +15,7 @@ import { MenuFormValues, menuFormSchema } from '@/lib/schemas/menu';
 import { APIResponseProject } from '@/types/api-response';
 import { buildMenuSaveFormData } from './menu-save-payload';
 import { mapParsedMenuToFormValues, mapToFormValues } from './menu-form-mapper';
+import { buildMenuStarterValues, createThemeObject, getStarterById } from '@/lib/project-starters';
 
 const defaultMenuThemeSettings: Settings = {
   mode: 'light',
@@ -145,6 +146,7 @@ const MenuContext = createContext<MenuContextType | undefined>(undefined);
 
 export function MenuProvider({ children }: { children: ReactNode }) {
   const params = useParams();
+  const searchParams = useSearchParams();
   const slug = Array.isArray(params.slug) ? params.slug[0] : (params.slug as string | undefined);
   const { authUser } = useAuthContext();
   const { getBySlug, publish: apiPublish } = useProject();
@@ -204,13 +206,24 @@ export function MenuProvider({ children }: { children: ReactNode }) {
       const { success, data } = await getBySlug(slug, 'full');
       if (success && data) {
         setProject(data);
-        if (data.menu) {
+        if (data.menu?.id) {
           reset(mapToFormValues(data.menu));
           setMenuID(data.menu.id);
           setLayout(data.menu.layout_name || 'menu-default');
           setLocalThemeSettings({
             mode: 'light',
             theme: data.menu.theme_object || defaultMenuThemeSettings.theme,
+          });
+        } else {
+          const starter = getStarterById('menu', searchParams.get('starter'));
+          const starterLayout = searchParams.get('layout') || starter.defaults.layoutName;
+          const starterThemePreset = searchParams.get('theme') || starter.defaults.themePreset;
+
+          reset(buildMenuStarterValues(starter.id, data.name || 'John Doe Cafe'));
+          setLayout(starterLayout);
+          setLocalThemeSettings({
+            mode: 'light',
+            theme: createThemeObject(starterThemePreset),
           });
         }
         loadedSlugRef.current = slug;
@@ -222,7 +235,7 @@ export function MenuProvider({ children }: { children: ReactNode }) {
     };
 
     void loadProject();
-  }, [slug]);
+  }, [slug, reset, searchParams]);
 
   const save = async () => {
     await handleSubmit(async (data) => {

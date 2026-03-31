@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React from "react";
 import { Globe, Mail, MapPin, Phone, Share2, Github } from "lucide-react";
@@ -71,8 +71,8 @@ function socialIcon(platform: string) {
 function formatVariantPrice(value?: string | null) {
   const trimmed = value?.trim();
   if (!trimmed) return null;
-  if (/^[â‚±$Â£â‚¬]/.test(trimmed)) return trimmed;
-  return `â‚±${trimmed}`;
+  if (/^[₱$£€]/.test(trimmed)) return trimmed;
+  return `₱${trimmed}`;
 }
 
 function resolvePrice(item: MenuItem) {
@@ -86,7 +86,7 @@ function SectionItem({ item, headingFont, mutedColor, accentColor, borderColor }
   return (
     <article className="border-b pb-5 last:border-b-0 last:pb-0" style={{ borderColor }}>
       <div className="flex items-start justify-between gap-4">
-        <h3 className="max-w-xl text-2xl font-semibold leading-tight md:text-3xl" style={{ fontFamily: headingFont }}>{item.name}</h3>
+        <h3 className="max-w-xl text-2xl font-semibold leading-tight @md:text-3xl" style={{ fontFamily: headingFont }}>{item.name}</h3>
         <span
           className="shrink-0 text-sm uppercase tracking-[0.18em]"
           style={{ color: accentColor, fontFamily: headingFont }}
@@ -94,7 +94,7 @@ function SectionItem({ item, headingFont, mutedColor, accentColor, borderColor }
           ₱{resolvePrice(item)}
         </span>
       </div>
-      {item.description ? <p className="mt-2 text-sm leading-7 md:text-base" style={{ color: mutedColor }}>{item.description}</p> : null}
+      {item.description ? <p className="mt-2 text-sm leading-7 @md:text-base" style={{ color: mutedColor }}>{item.description}</p> : null}
       {variants.length ? (
         <div className="mt-3 flex flex-wrap gap-2">
           {variants.map((variant) => (
@@ -155,9 +155,9 @@ export function MenuMosaic({ menu, themeMode, themeStyles, onSetThemeMode }: Pro
   const heroImages = [source.cover_image_url, ...(gallery || [])].filter(Boolean) as string[];
 
   return (
-    <div style={{ backgroundColor, color: foregroundColor, fontFamily: bodyFont }} className="min-h-screen px-4 py-6 md:px-8 md:py-10">
+    <div style={{ backgroundColor, color: foregroundColor, fontFamily: bodyFont }} className="@container min-h-screen px-4 py-6 @md:px-8 @md:py-10">
       <div className="mx-auto max-w-7xl">
-        <header className="relative overflow-hidden rounded-[2rem] border p-5 md:p-6" style={{ borderColor }}>
+        <header className="relative overflow-hidden rounded-[2rem] border p-5 @md:p-6" style={{ borderColor }}>
           <div className="absolute right-5 top-5 z-10 flex items-center gap-2">
             <ThemeSwitchToggle isDarkMode={themeMode === "dark"} onSetThemeMode={onSetThemeMode} />
             <button type="button" onClick={handleShare} className="inline-flex h-11 items-center gap-2 rounded-full border px-4 text-sm transition-opacity hover:opacity-80" style={{ borderColor, backgroundColor }}>
@@ -165,21 +165,21 @@ export function MenuMosaic({ menu, themeMode, themeStyles, onSetThemeMode }: Pro
             </button>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-[1.2fr_0.8fr]">
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="overflow-hidden rounded-[1.8rem] sm:col-span-2">
+          <div className="grid gap-4 @md:grid-cols-[1.2fr_0.8fr]">
+            <div className="grid gap-4 @sm:grid-cols-2">
+              <div className="overflow-hidden rounded-[1.8rem] @sm:col-span-2">
                 {heroImages[0] ? (
-                  <img src={heroImages[0]} alt={source.name || "Cover image"} className="h-64 w-full object-cover md:h-[360px]" />
+                  <img src={heroImages[0]} alt={source.name || "Cover image"} className="h-64 w-full object-cover @md:h-[360px]" />
                 ) : (
-                  <div className="h-64 w-full md:h-[360px]" style={{ background: `linear-gradient(135deg, ${accentColor}22, transparent 70%)` }} />
+                  <div className="h-64 w-full @md:h-[360px]" style={{ background: `linear-gradient(135deg, ${accentColor}22, transparent 70%)` }} />
                 )}
               </div>
               {heroImages.slice(1, 3).map((image, index) => (
-                <img key={`${image}-${index}`} src={image} alt={`${source.name || "Menu"} visual ${index + 2}`} className="h-40 w-full rounded-[1.5rem] object-cover md:h-48" />
+                <img key={`${image}-${index}`} src={image} alt={`${source.name || "Menu"} visual ${index + 2}`} className="h-40 w-full rounded-[1.5rem] object-cover @md:h-48" />
               ))}
             </div>
 
-            <div className="flex flex-col justify-between gap-6 md:pl-4">
+            <div className="flex flex-col justify-between gap-6 @md:pl-4">
               <div className="flex items-center gap-4">
                 <div className="h-20 w-20 overflow-hidden rounded-[1.6rem] border" style={{ borderColor }}>
                   {source.logo_url ? (
@@ -190,13 +190,13 @@ export function MenuMosaic({ menu, themeMode, themeStyles, onSetThemeMode }: Pro
                 </div>
                 <div>
                   <p className="text-xs uppercase tracking-[0.24em]" style={{ color: accentColor }}>{source.city?.trim() || "Cafe"}</p>
-                  <h1 className="mt-2 text-4xl font-semibold leading-none md:text-5xl" style={{ fontFamily: headingFont }}>{source.name || "Mosaic Cafe"}</h1>
+                  <h1 className="mt-2 text-4xl font-semibold leading-none @md:text-5xl" style={{ fontFamily: headingFont }}>{source.name || "Mosaic Cafe"}</h1>
                 </div>
               </div>
 
-              <p className="text-sm leading-7 md:text-base" style={{ color: mutedColor }}>{source.description || FALLBACK_MENU.description}</p>
+              <p className="text-sm leading-7 @md:text-base" style={{ color: mutedColor }}>{source.description || FALLBACK_MENU.description}</p>
 
-              <div className="space-y-2 text-sm md:text-base">
+              <div className="space-y-2 text-sm @md:text-base">
                 {formatMenuLocation(source) ? <p>{formatMenuLocation(source)}</p> : null}
                 {hours ? <p>{formatHoursLabel(hours)}</p> : null}
                 {source.phone ? <p>{source.phone}</p> : null}
@@ -220,16 +220,16 @@ export function MenuMosaic({ menu, themeMode, themeStyles, onSetThemeMode }: Pro
             if (!categoryItems.length) return null;
             const reverse = index % 2 === 1;
             return (
-              <section key={category.id} className={`grid gap-8 ${reverse ? "md:grid-cols-[1fr_0.42fr]" : "md:grid-cols-[0.42fr_1fr]"} md:items-start`}>
-                <div className={reverse ? "md:order-2" : ""}>
+              <section key={category.id} className={`grid gap-8 ${reverse ? "@md:grid-cols-[1fr_0.42fr]" : "@md:grid-cols-[0.42fr_1fr]"} @md:items-start`}>
+                <div className={reverse ? "@md:order-2" : ""}>
                   <p className="text-xs uppercase tracking-[0.24em]" style={{ color: accentColor }}>Collection {String(index + 1).padStart(2, "0")}</p>
-                  <h2 className="mt-3 text-3xl font-semibold md:text-5xl" style={{ fontFamily: headingFont }}>{category.name}</h2>
-                  {category.description ? <p className="mt-3 max-w-sm text-sm leading-7 md:text-base" style={{ color: mutedColor }}>{category.description}</p> : null}
+                  <h2 className="mt-3 text-3xl font-semibold @md:text-5xl" style={{ fontFamily: headingFont }}>{category.name}</h2>
+                  {category.description ? <p className="mt-3 max-w-sm text-sm leading-7 @md:text-base" style={{ color: mutedColor }}>{category.description}</p> : null}
                   {(category.image_url || heroImages[index + 1]) ? (
-                    <img src={category.image_url || heroImages[index + 1]} alt={category.name} className="mt-5 h-52 w-full rounded-[1.8rem] object-cover md:h-72" />
+                    <img src={category.image_url || heroImages[index + 1]} alt={category.name} className="mt-5 h-52 w-full rounded-[1.8rem] object-cover @md:h-72" />
                   ) : null}
                 </div>
-                <div className={`space-y-6 border-t pt-5 ${reverse ? "md:order-1" : ""}`} style={{ borderColor }}>
+                <div className={`space-y-6 border-t pt-5 ${reverse ? "@md:order-1" : ""}`} style={{ borderColor }}>
                   {categoryItems.map((item) => (
                     <SectionItem key={item.id} item={item} headingFont={headingFont} mutedColor={mutedColor} accentColor={accentColor} borderColor={borderColor} />
                   ))}
@@ -240,8 +240,8 @@ export function MenuMosaic({ menu, themeMode, themeStyles, onSetThemeMode }: Pro
 
           {gallery.length ? (
             <section className="border-t pt-8" style={{ borderColor }}>
-              <h2 className="text-3xl font-semibold md:text-4xl" style={{ fontFamily: headingFont }}>Gallery</h2>
-              <div className="mt-6 columns-1 gap-4 sm:columns-2 lg:columns-3">
+              <h2 className="text-3xl font-semibold @md:text-4xl" style={{ fontFamily: headingFont }}>Gallery</h2>
+              <div className="mt-6 columns-1 gap-4 @sm:columns-2 @lg:columns-3">
                 {gallery.map((image, index) => (
                   <img key={`${image}-${index}`} src={image} alt={`${source.name || "Menu"} gallery ${index + 1}`} className="mb-4 w-full break-inside-avoid rounded-[1.75rem] object-cover" />
                 ))}
@@ -249,11 +249,11 @@ export function MenuMosaic({ menu, themeMode, themeStyles, onSetThemeMode }: Pro
             </section>
           ) : null}
 
-          <section className="grid gap-5 border-t pt-8 md:grid-cols-[220px_1fr] md:items-center" style={{ borderColor }}>
+          <section className="grid gap-5 border-t pt-8 @md:grid-cols-[220px_1fr] @md:items-center" style={{ borderColor }}>
             <img src={qrImageUrl} alt={`QR code for ${source.name || "menu"}`} className="h-[190px] w-[190px] object-cover" />
             <div>
-              <h2 className="text-3xl font-semibold md:text-4xl" style={{ fontFamily: headingFont }}>Share This Menu</h2>
-              <p className="mt-2 max-w-xl text-sm leading-7 md:text-base" style={{ color: mutedColor }}>
+              <h2 className="text-3xl font-semibold @md:text-4xl" style={{ fontFamily: headingFont }}>Share This Menu</h2>
+              <p className="mt-2 max-w-xl text-sm leading-7 @md:text-base" style={{ color: mutedColor }}>
                 Let people save the menu, send it around the table, or open it again the next time they come back.
               </p>
               <div className="mt-4 inline-flex max-w-full items-center gap-2 text-sm" style={{ color: mutedColor }}>
@@ -265,7 +265,7 @@ export function MenuMosaic({ menu, themeMode, themeStyles, onSetThemeMode }: Pro
         </main>
 
         <footer className="mt-14 border-t pt-10 pb-10 text-center" style={{ borderColor }}>
-          <p className="text-sm" style={{ color: mutedColor }}>Â© {new Date().getFullYear()} {source.name || "Mosaic Cafe"}. All rights reserved.</p>
+          <p className="text-sm" style={{ color: mutedColor }}>© {new Date().getFullYear()} {source.name || "Mosaic Cafe"}. All rights reserved.</p>
           <div className="mt-5 inline-flex items-center gap-4">
             <a href={KISLAP_LINKS.github} target="_blank" rel="noreferrer" className="transition-opacity hover:opacity-80"><Github className="h-4 w-4" /></a>
             <a href={KISLAP_LINKS.website} target="_blank" rel="noreferrer" className="transition-opacity hover:opacity-80"><Globe className="h-4 w-4" /></a>
@@ -276,3 +276,6 @@ export function MenuMosaic({ menu, themeMode, themeStyles, onSetThemeMode }: Pro
     </div>
   );
 }
+
+
+

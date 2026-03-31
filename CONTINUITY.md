@@ -111,3 +111,75 @@ pm run build passed in apps/web-sites after the SEO/structured-data pass.
 2026-03-29 [CODE] Tightened web-marketing messaging with a sharper homepage hero, updated visible sample/founder placeholder text to Juan Delacruz in landing/about content, refreshed about-page positioning copy to reflect portfolio/linktree/menu, and cleaned several marketing text encoding artifacts/checkmark placeholders.
 2026-03-29 [CODE] Added a public project stats endpoint for web-marketing About (/api/projects/stats/public) returning published-site count, active-builder count, template count, and uptime; pps/web-marketing/src/pages/about.astro now fetches those stats server-side and passes them into bout-page-content.tsx, which now renders a dynamic stats band instead of hardcoded values.
 2026-03-29 [TOOL] gofmt ran on project controller/service/routes and go test ./internal/project passed after the About stats endpoint addition.
+2026-03-31 [USER] Requested a UX improvement audit for apps/web-marketing to identify the highest-impact next steps for conversion and clarity.
+2026-03-31 [USER] Refined builder-creation direction: replace the dialog with a dedicated project-creation page that uses a left-side guided form and a right-side live preview driven by selected type/starter/layout/theme, using placeholder content to show the result before creation.
+
+- 2026-03-31 [CODE] Centralized pps/web-marketing builder/public URLs through src/lib/site-config.ts, replaced hardcoded marketing CTAs/nav/footer/showcase links with env-driven helpers, and pointed builder feature pages to starter-aware creation URLs using BUILDER_URL and SITE_URL.
+- 2026-03-31 [CODE] Added a dedicated builder creation route at pps/web-builder/app/(private)/dashboard/projects/new with a left-side guided flow (type, starter, layout, theme, basics) and a right-side live preview rendered from shared templates using placeholder content.
+- 2026-03-31 [CODE] Added shared starter definitions in pps/web-builder/lib/project-starters.ts, wired starter query params through marketing -> builder links, seeded empty portfolio/linktree/menu providers from starter defaults on first load, and preserved intended destination across auth redirects with post_auth_redirect session storage.
+- 2026-03-31 [CODE] Restored missing appointment compatibility expected by shared portfolio templates by adding pps/web-builder/lib/schemas/appointment.ts and reintroducing create + CreateAppointmentPayload in pps/web-builder/hooks/api/use-appointment.ts.
+- 2026-03-31 [CODE] Wrapped ClientAuthGuard in Suspense inside both pps/web-builder/app/(private)/layout.tsx and pps/web-builder/app/(public)/layout.tsx to satisfy Next.js useSearchParams() CSR bailout requirements during production build.
+- 2026-03-31 [TOOL] 
+pm run build passed in pps/web-marketing and pps/web-builder using C:\laragon\bin\nodejs\node-v22\npm.cmd after the env-driven marketing URL pass and new builder creation flow work.
+
+- 2026-03-31 [CODE] Project creation preview now renders on a fixed desktop canvas and scales to fit the available panel in project-template-preview.tsx, preventing shared public templates from appearing as squeezed in-pane layouts during starter selection.
+- 2026-03-31 [TOOL] 
+pm run build passed again in pps/web-builder after the project creation preview scaling fix.
+
+- 2026-03-31 [CODE] Added desktop/tablet/mobile preview controls to the new builder project-creation page and expanded starter mock data across portfolio/linktree/menu so previews render fuller, more believable sample content during selection.
+- 2026-03-31 [TOOL] 
+pm run build passed in pps/web-builder after the preview viewport toggle and starter-data expansion pass.
+
+- 2026-03-31 [CODE] Replaced the in-page project creation preview with a dedicated iframe-backed preview route at pps/web-builder/app/preview/project, using shared template components in their own document so layout spacing, breakpoints, and image behavior are much closer to the real public render.
+- 2026-03-31 [CODE] Extracted shared mock preview project generation into pps/web-builder/lib/project-preview-data.ts and expanded preview menu imagery/content so starter previews show richer category/item/gallery states.
+- 2026-03-31 [TOOL] 
+pm run build passed in pps/web-builder after the iframe-backed preview route conversion.
+
+- 2026-03-31 [CODE] Enriched builder starter mock data with fuller portfolio history/projects, richer linktree sections, more menu items/images, and swapped avatar/logo/cover placeholders to real photo assets so project creation previews look more convincing.
+- 2026-03-31 [TOOL] 
+pm run build passed in pps/web-builder after the starter data enrichment pass.
+
+- 2026-03-31 [CODE] Tuned the portfolio starter preview data to mirror the real default portfolio shape more closely: 3 experiences with human-readable dates, 2 project cards, a longer intro paragraph, denser skills, and a cleaner social set so the hero and content rhythm align better with the actual published layout.
+- 2026-03-31 [TOOL] 
+pm run build passed in pps/web-builder after the portfolio preview data alignment pass.
+
+- 2026-03-31 [CODE] Removed the iframe from the builder project creation preview and replaced it with a builder-side preview renderer that mirrors the pps/web-sites pattern: builder-local enderTemplate, theme normalization, ComponentThemeProvider, and shared template rendering inside the creation page.
+- 2026-03-31 [TOOL] 
+pm run build passed in pps/web-builder after switching the creation preview from iframe-backed rendering to the builder-side shared-template render path.
+
+- 2026-03-31: Converted shared portfolio/linktree/menu templates toward container-query breakpoints for builder preview fidelity, added @source for @kislap/templates in web-builder globals, removed preview filler height/padding issues, reset preview scroll on selection change, and normalized touched template files back to UTF-8 after batch edits. Builder build passes.
+
+- 2026-03-31: Adjusted builder menu preview fidelity for default menu. In pps/web-builder/lib/project-starters.ts, removed category image_url values from the default/cafe base starter so preview only shows item images, not category images. In packages/templates/src/components/menu/menu-default.tsx, simplified MenuSection to accept a single items array and render a real 2-column grid at @lg instead of the old left/right split props. Removed unused splitItemsIntoColumns. Verified with pps/web-builder build passing.
+
+- 2026-03-31: Expanded menu starter preview data in pps/web-builder/lib/project-starters.ts. Default/cafe starter now has more item images and variants; restaurant and food-stall starters gained more items plus variants. Starter-specific preview names now resolve to Cafe Moto, Resto Express, and Siomai Prince. Updated pps/web-builder/app/(private)/dashboard/projects/new/components/project-creation-page.tsx so the menu project-name placeholder and preview fallback use those branded starter names. Verified with pps/web-builder build passing.
+
+- 2026-03-31: Added more preview menu items per category in pps/web-builder/lib/project-starters.ts. Cafe starter gained additional coffee/non-coffee/pastry items; restaurant starter gained more starters and mains; food-stall starter gained more extras and rice-bowl items. Verified with pps/web-builder build passing.
+
+- 2026-03-31: Fixed preview menu category/item linkage in pps/web-builder/lib/project-preview-data.ts. uildMenuProjectData now creates categories first and maps each item’s menu_category_id from its category_key instead of using index + 1. This was why menu preview only showed a few items despite richer starter data. Verified with pps/web-builder build passing.
+
+- 2026-03-31: Reworked portfolio preview persona in pps/web-builder/lib/project-starters.ts to a new fictional profile (Avery Navarro) with different avatar, contact info, work history, education, showcases, and skills. Updated freelancer copy to remove leftover John reference. In pps/web-builder/app/(private)/dashboard/projects/new/components/project-creation-page.tsx, portfolio placeholder/preview fallback now uses starter-aware names. In pps/web-builder/lib/project-preview-data.ts, portfolio preview slug/user names are derived from projectName instead of hardcoded john-doe. Verified with pps/web-builder build passing.
+
+- 2026-03-31: Reworked link page preview personas and sections in pps/web-builder/lib/project-starters.ts. Default link persona is now Mika Reyes, personal-brand is Nika Valdez, and launch-links is Orbit Labs. Expanded link sections with more creative banner/link/quote mixes inspired by the user's own link page style. Updated pps/web-builder/app/(private)/dashboard/projects/new/components/project-creation-page.tsx so linktree placeholder/preview fallback uses starter-aware names. Updated pps/web-builder/lib/project-preview-data.ts so linktree preview slug/subdomain derive from project name instead of hardcoded john-doe-links. Verified with pps/web-builder build passing.
+
+- 2026-03-31: Linktree preview cleanup. In pps/web-builder/lib/project-starters.ts, set the creator starter default layout to linktree-neo-brutalist. In pps/web-builder/lib/project-preview-data.ts, fixed uildLinktreeProjectData to split link items from non-link sections instead of assigning every section into both links and sections; this removed the empty/duplicated cards showing in neo-brutalist preview. Verified with pps/web-builder build passing.
+
+- 2026-03-31: Enriched creator linktree preview in pps/web-builder/lib/project-starters.ts with more section types already supported by shared templates. Added a promo/image section, a support/QR section, and accent colors for banner/quote so the preview shows richer possibilities beyond plain link rows. Verified with pps/web-builder build passing.
+
+- 2026-03-31: Cleaned mojibake from shared menu templates and portfolio neo-brutalist footer. Fixed broken peso/copyright output in menu-editorial.tsx, menu-showcase.tsx, menu-runway.tsx, menu-mosaic.tsx, menu-bistro.tsx, and portfolio/neo-brutalist.tsx. g now finds no remaining Â/broken peso sequences in those paths. pps/web-builder build passes.
+
+- 2026-03-31: Tweaked project creation selection cards in pps/web-builder/app/(private)/dashboard/projects/new/components/project-creation-page.tsx so selected/hover states keep a solid card background. Replaced translucent g-primary/10/g-accent/20 with g-card plus a light red gradient overlay on selected cards, and made audience chips use opaque g-background. Verified with pps/web-builder build passing.
+
+- 2026-03-31: Adjusted the preview viewport toggle styling in pps/web-builder/app/(private)/dashboard/projects/new/components/project-template-preview.tsx. Replaced the rounded capsule segmented control with a sharper bordered control using divider lines and square-ish segment buttons. Verified with pps/web-builder build passing.
+
+- 2026-03-31: Flattened the outer preview shell in pps/web-builder/app/(private)/dashboard/projects/new/components/project-template-preview.tsx by removing the large rounded border radius. Verified with pps/web-builder build passing.
+
+- 2026-03-31: Added a Clear form action to the new project creation page in pps/web-builder/app/(private)/dashboard/projects/new/components/project-creation-page.tsx. Reset clears name/description/subdomain and restores the initial type/starter/layout/theme derived from query params/defaults. Placed it beside the create button. Verified with pps/web-builder build passing.
+
+- 2026-03-31: Removed the mistaken Clear form button from the new project creation page in pps/web-builder/app/(private)/dashboard/projects/new/components/project-creation-page.tsx. Added the reset action where it actually belongs: Clear content buttons in the real builder forms for portfolio, linktree, and menu (.../portfolio/[slug]/components/form.tsx, .../linktree/[slug]/components/form.tsx, .../menu/[slug]/components/form.tsx). These clear content fields and nested arrays while preserving the current layout/theme selection. Verified with pps/web-builder build passing.
+
+- 2026-03-31: Reworked the marketing homepage 'Everything you need. Nothing you don\'t.' section in pps/web-marketing/src/components/landing-page-content.tsx from a generic 4-card feature grid into a more proof-driven layout: stronger performance lead block, analytics proof block, instant public URLs with example URL rows, and conversion/template placeholders using inline placeholder visuals while waiting for real assets.
+
+- 2026-03-31: Replaced the previous 'Everything you need. Nothing you don\'t.' homepage block in pps/web-marketing/src/components/landing-page-content.tsx with a clearer 'Why Kislap' section. New structure focuses on the product argument (less builder chaos, faster publishing rhythm) and a companion proof column for hosted URLs, built-in analytics, and template readiness using lightweight placeholder visuals.
+
+- 2026-03-31: Tightened the homepage 'Why Kislap' proof row in pps/web-marketing/src/components/landing-page-content.tsx by changing the sample public URLs to include the https:// prefix for stronger trust signaling. Could not rerun the marketing build in this shell because 
+pm is not available on PATH.

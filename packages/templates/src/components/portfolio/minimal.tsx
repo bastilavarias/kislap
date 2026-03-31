@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -175,13 +175,13 @@ export function Minimal({
     "border-none shadow-none rounded-lg bg-card/50 backdrop-blur-sm transition-all duration-300 hover:shadow-lg";
 
   return (
-    <div className="min-h-screen bg-background text-foreground p-4 md:p-12 font-sans">
+    <div className="@container min-h-screen bg-background text-foreground p-4 @md:p-12 font-sans">
       <div className="max-w-6xl mx-auto space-y-12">
         {/* HEADER SECTION */}
-        <header className="flex flex-col md:flex-row gap-8 items-center justify-between border-b border-foreground/10 pb-10">
+        <header className="flex flex-col @md:flex-row gap-8 items-center justify-between border-b border-foreground/10 pb-10">
           <div className="flex gap-6 items-center w-full">
             <div className="relative">
-              <Avatar className="w-24 h-24 md:w-32 md:h-32 border-4 border-primary/20 bg-muted/50 rounded-full shadow-lg">
+              <Avatar className="w-24 h-24 @md:w-32 @md:h-32 border-4 border-primary/20 bg-muted/50 rounded-full shadow-lg">
                 <AvatarImage src={avatarUrl ?? undefined} />
                 <AvatarFallback className="text-4xl font-bold rounded-full bg-primary text-primary-foreground">
                   {portfolio.name?.charAt(0) ?? "U"}
@@ -190,10 +190,10 @@ export function Minimal({
             </div>
 
             <div className="space-y-1 flex-1">
-              <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight">
+              <h1 className="text-4xl @md:text-5xl font-extrabold tracking-tight">
                 {portfolio.name}
               </h1>
-              <div className="flex flex-col md:flex-row gap-2 md:items-center text-xl font-medium text-muted-foreground">
+              <div className="flex flex-col @md:flex-row gap-2 @md:items-center text-xl font-medium text-muted-foreground">
                 <span className="flex items-center gap-2 text-primary">
                   <Terminal className="w-5 h-5" /> {portfolio.job_title}
                 </span>
@@ -210,9 +210,9 @@ export function Minimal({
           </div>
         </header>
 
-        <div className="flex flex-col md:flex-row gap-12">
+        <div className="flex flex-col @md:flex-row gap-12">
           {/* MAIN CONTENT COLUMN (8/12) */}
-          <div className="md:w-8/12 space-y-10">
+          <div className="@md:w-8/12 space-y-10">
             {/* ABOUT ME / DETAILED INTRODUCTION */}
             <section className="border-l-4 border-primary/50 pl-6">
               <h2 className={minimalistHeaderClass}>About Me</h2>
@@ -303,7 +303,7 @@ export function Minimal({
           </div>
 
           {/* SIDEBAR COLUMN (4/12) */}
-          <div className="md:w-4/12 space-y-10">
+          <div className="@md:w-4/12 space-y-10">
             {/* CONTACT & SOCIALS */}
             <Card className={minimalistCardClass}>
               <CardHeader className="p-4 border-b border-border/50">
@@ -411,7 +411,7 @@ export function Minimal({
         <section className="py-12 border-t border-foreground/10 mt-12">
           <h2 className="text-3xl font-bold mb-8 text-center">Get in Touch</h2>
           <Card
-            className={minimalistCardClass + " max-w-3xl mx-auto p-6 md:p-8"}
+            className={minimalistCardClass + " max-w-3xl mx-auto p-6 @md:p-8"}
           >
             {error && (
               <Alert
@@ -423,7 +423,7 @@ export function Minimal({
               </Alert>
             )}
 
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid @md:grid-cols-2 gap-6">
               <div className="space-y-4">
                 <div className="space-y-2">
                   <Label className="font-semibold">Name *</Label>
@@ -498,4 +498,7 @@ export function Minimal({
     </div>
   );
 }
+
+
+
 

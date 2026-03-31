@@ -6,6 +6,7 @@ import {
   Zap,
   LineChart,
   Globe,
+  Database,
   LayoutTemplate,
   ShieldCheck,
   Sparkles,
@@ -17,6 +18,7 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { getBuilderProjectCreateUrl, SITE_HOST_LABEL } from "@/lib/site-config";
 import {
   Accordion,
   AccordionContent,
@@ -81,7 +83,7 @@ export function LandingPageContent() {
               asChild
             >
               <a
-                href="https://builder.kislap.app/"
+                href={getBuilderProjectCreateUrl()}
                 className="flex items-center"
               >
                 Start Building Now <ArrowRight className="ml-2 w-5 h-5" />
@@ -209,7 +211,7 @@ export function LandingPageContent() {
                     <div className="w-2.5 h-2.5 rounded-full bg-zinc-300" />
                   </div>
                   <div className="bg-zinc-100 dark:bg-zinc-800 rounded-md px-3 py-1 text-[10px] text-zinc-500 font-mono flex items-center gap-1.5">
-                    <Globe className="w-3 h-3" /> juandelacruz.kislap.app
+                    <Globe className="w-3 h-3" /> juandelacruz.{SITE_HOST_LABEL}
                   </div>
                 </div>
 
@@ -394,121 +396,109 @@ export function LandingPageContent() {
         </div>
       </section>
 
-      <section className="container mx-auto px-4 max-w-6xl py-20">
-        <div className="mb-16 md:text-center max-w-3xl mx-auto">
-          <h2 className="text-3xl md:text-5xl font-bold mb-6 tracking-tight">
-            Everything you need. <br /> Nothing you don't.
-          </h2>
-          <p className="text-xl text-muted-foreground">
-            We stripped away the complex menus and confusing plugins. What's
-            left is pure performance.
-          </p>
-        </div>
-
+      <section className="container mx-auto px-4 max-w-6xl">
         <motion.div
           variants={staggerContainer}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-6"
+          className=""
         >
-          <motion.div
-            variants={fadeIn}
-            className="md:col-span-2 relative group overflow-hidden rounded-3xl border bg-gradient-to-br from-background to-muted/20 p-8 hover:border-primary/50 transition-colors"
-          >
-            <div className="absolute top-6 right-6 p-3 bg-primary/10 rounded-2xl text-primary">
-              <Zap className="w-6 h-6" />
-            </div>
-            <h3 className="text-2xl font-bold mb-2">Lightning Fast</h3>
-            <p className="text-muted-foreground mb-8 max-w-md">
-              Google loves fast sites. Kislap sites are optimized for Core Web
-              Vitals out of the box. No plugins needed.
-            </p>
-            <div className="w-full bg-background border rounded-xl p-4 flex items-center gap-4 shadow-sm">
-              <div className="flex-1 space-y-2">
-                <div className="flex justify-between text-sm font-medium">
-                  <span>Performance</span>
-                  <span className="text-green-600">100/100</span>
-                </div>
-                <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
-                  <div className="h-full w-full bg-green-500 rounded-full" />
-                </div>
+          <div className="grid gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:gap-16">
+            <motion.div variants={fadeIn} className="space-y-6 lg:pr-8">
+              <div className="inline-flex items-center gap-2 rounded-full border border-primary/15 bg-primary/5 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-primary">
+                <Sparkles className="h-3.5 w-3.5" />
+                Why Kislap
               </div>
-              <div className="flex-1 space-y-2">
-                <div className="flex justify-between text-sm font-medium">
-                  <span>SEO</span>
-                  <span className="text-green-600">100/100</span>
-                </div>
-                <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
-                  <div className="h-full w-full bg-green-500 rounded-full" />
-                </div>
-              </div>
-            </div>
-          </motion.div>
+              <h3 className="text-3xl font-bold leading-tight md:text-4xl">
+                Publish faster without assembling a website stack first.
+              </h3>
+              <p className="max-w-xl text-lg leading-relaxed text-muted-foreground">
+                Kislap gives you the builder and the practical infrastructure
+                around it, so the job stays simple: create the page, fill the
+                content, and go live.
+              </p>
+            </motion.div>
 
-          <motion.div
-            variants={fadeIn}
-            className="relative group overflow-hidden rounded-3xl border bg-background p-8 hover:border-primary/50 transition-colors"
-          >
-            <div className="absolute top-6 right-6 p-3 bg-blue-500/10 rounded-2xl text-blue-500">
-              <LineChart className="w-6 h-6" />
-            </div>
-            <h3 className="text-2xl font-bold mb-2">Analytics</h3>
-            <p className="text-muted-foreground mb-6 mt-5">
-              Friendly view counts and click tracking built in.
-            </p>
-
-            <img
-              src="/designs/dash.png"
-              className="w-full h-auto rounded-lg border shadow-sm shrink-0 object-cover"
-            />
-          </motion.div>
-
-          <motion.div
-            variants={fadeIn}
-            className="relative group overflow-hidden rounded-3xl border bg-background p-8 hover:border-primary/50 transition-colors"
-          >
-            <div className="absolute top-6 right-6 p-3 bg-purple-500/10 rounded-2xl text-purple-500">
-              <Globe className="w-6 h-6" />
-            </div>
-            <h3 className="text-2xl font-bold mb-2">Free Domains</h3>
-            <p className="text-muted-foreground mt-5">
-              You will have a <strong>FREE</strong> <code>kislap.app</code>{" "}
-              domain instantly. We handle the SSL certificates automatically.
-            </p>
-          </motion.div>
-
-          <motion.div
-            variants={fadeIn}
-            className="md:col-span-2 relative group overflow-hidden rounded-3xl border bg-gradient-to-tr from-background to-muted/20 p-8 hover:border-primary/50 transition-colors"
-          >
-            <div className="absolute top-6 right-6 p-3 bg-orange-500/10 rounded-2xl text-orange-500">
-              <LayoutTemplate className="w-6 h-6" />
-            </div>
-
-            <h3 className="text-2xl font-bold mb-2">Designed to Convert</h3>
-
-            <p className="text-muted-foreground mb-8 max-w-lg">
-              Don't stress about design theory. Our templates are crafted to
-              look good on mobile, tablet, and desktop.
-            </p>
-
-            <div className="flex-row gap-4 md:flex">
+            <motion.div variants={fadeIn} className="divide-y">
               {[
-                "/coffee.png",
-                "/neo-brutalist.png",
-                "/newspaper.png",
-                "/simple.png",
-              ].map((src, index) => (
-                <img
-                  key={index}
-                  src={`/designs/${src}`}
-                  alt={`Template preview ${index + 1}`}
-                  className="w-full md:w-40 h-auto rounded-lg border shadow-sm shrink-0 object-cover"
-                />
-              ))}
-            </div>
-          </motion.div>
+                {
+                  title: "Dashboard",
+                  meta: "Managed for you",
+                  description:
+                    "Keep projects, content, and changes in one workspace instead of scattering them across tools.",
+                  icon: Database,
+                  footer: null,
+                },
+                {
+                  title: "Analytics",
+                  meta: "Views and clicks",
+                  description:
+                    "See what people open and what they actually click without adding another service first.",
+                  icon: LineChart,
+                  footer: (
+                    <div className="grid grid-cols-3 gap-4 pt-4">
+                      {[
+                        ["Views", "263"],
+                        ["Clicks", "91"],
+                        ["CTR", "19.6%"],
+                      ].map(([label, value]) => (
+                        <div key={label}>
+                          <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+                            {label}
+                          </div>
+                          <div className="mt-1.5 text-xl font-bold">
+                            {value}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ),
+                },
+                {
+                  title: "Hosting + public URL",
+                  meta: "SSL ready",
+                  description:
+                    "Every project gets a live public URL without you solving hosting, SSL, or deployment first.",
+                  icon: Globe,
+                  footer: (
+                    <div className="space-y-2 pt-4 text-base">
+                      <div className="font-semibold text-primary underline underline-offset-4 decoration-primary/40">
+                        https://juandelacruz.kislap.app
+                      </div>
+                      <div className="font-semibold text-primary underline underline-offset-4 decoration-primary/40">
+                        https://cafemoto.kislap.app
+                      </div>
+                    </div>
+                  ),
+                },
+              ].map((item) => {
+                const Icon = item.icon;
+                return (
+                  <div
+                    key={item.title}
+                    className="grid gap-5 py-6 md:grid-cols-[190px_1fr] md:gap-8"
+                  >
+                    <div className="space-y-2">
+                      <div className="inline-flex items-center gap-2 text-base font-medium">
+                        <Icon className="h-4.5 w-4.5 text-primary" />
+                        <span>{item.title}</span>
+                      </div>
+                      <div className="text-[15px] text-muted-foreground">
+                        {item.meta}
+                      </div>
+                    </div>
+                    <div>
+                      <p className="text-[15px] leading-relaxed text-muted-foreground">
+                        {item.description}
+                      </p>
+                      {item.footer}
+                    </div>
+                  </div>
+                );
+              })}
+            </motion.div>
+          </div>
         </motion.div>
       </section>
 
@@ -681,7 +671,7 @@ export function LandingPageContent() {
           {[
             {
               q: "Is Kislap free to use?",
-              a: "Yes! You can build, publish, and host your site on our kislap.app subdomain for free, forever.",
+              a: "Yes! You can build, publish, and host your site on a Kislap public URL for free, forever.",
             },
             {
               q: "Can I export my code?",
@@ -725,7 +715,7 @@ export function LandingPageContent() {
                 asChild
               >
                 <a
-                  href="https://builder.kislap.app/"
+                  href={getBuilderProjectCreateUrl()}
                   className="flex items-center"
                 >
                   Get Started for Free
