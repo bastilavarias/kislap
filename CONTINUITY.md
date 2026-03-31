@@ -183,3 +183,6 @@ pm run build passed in pps/web-builder after switching the creation preview fro
 
 - 2026-03-31: Tightened the homepage 'Why Kislap' proof row in pps/web-marketing/src/components/landing-page-content.tsx by changing the sample public URLs to include the https:// prefix for stronger trust signaling. Could not rerun the marketing build in this shell because 
 pm is not available on PATH.
+
+- 2026-03-31: Investigated portfolio avatar upload flow after live-site report. API/controller/service path already handled multipart vatar correctly. Tightened builder-side portfolio form in pps/web-builder/app/(private)/dashboard/builder/portfolio/[slug]/components/form.tsx to mark avatar selection dirty/validated and clear stale vatar_url when a new file is chosen. Updated pps/web-builder/app/(private)/dashboard/builder/portfolio/[slug]/components/portfolio-provider.tsx so successful saves clear the temporary vatar File, write back the saved vatar_url, and sync the in-memory project portfolio object. Could not rerun pps/web-builder build in this shell because 
+pm is not available on PATH.

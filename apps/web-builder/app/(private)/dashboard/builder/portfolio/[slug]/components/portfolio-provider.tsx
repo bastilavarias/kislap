@@ -208,6 +208,19 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
         if (response.success) {
           //@ts-ignore
           setPortfolioID(response?.data?.portfolio?.id || null);
+          const savedPortfolio = response?.data?.portfolio;
+          if (savedPortfolio) {
+            setValue('avatar', null, { shouldDirty: false });
+            setValue('avatar_url', savedPortfolio.avatar_url || '', { shouldDirty: false });
+            setProject((prev) =>
+              prev
+                ? {
+                    ...prev,
+                    portfolio: savedPortfolio,
+                  }
+                : prev
+            );
+          }
           toast.success('Saved successfully');
         } else {
           toast.error(response.message || 'Error saving');

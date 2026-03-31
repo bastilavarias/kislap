@@ -402,7 +402,15 @@ export function Form({
                               id="portfolio-avatar-upload"
                               previewUrl={watch('avatar_url') || fallbackAvatarUrl}
                               currentFile={watch('avatar') as File}
-                              onFileSelect={(file) => setValue('avatar', file)}
+                              onFileSelect={(file) => {
+                                setValue('avatar', file, { shouldDirty: true, shouldValidate: true });
+                                if (file) {
+                                  setValue('avatar_url', '', {
+                                    shouldDirty: true,
+                                    shouldValidate: true,
+                                  });
+                                }
+                              }}
                             />
                           </div>
                           <div className="grid flex-1 grid-cols-1 gap-4 md:grid-cols-12">
