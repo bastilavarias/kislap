@@ -189,3 +189,7 @@ pm is not available on PATH.
 
 - 2026-03-31: Fixed brittle menu template imports in both pps/web-builder/hooks/use-template-renderer.tsx and pps/web-sites/hooks/use-template-renderer.tsx. Replaced deep imports like @kislap/templates/src/components/menu/menu-bistro with package-root MenuTemplates destructuring from @kislap/templates, matching the existing Portfolio/Biz/Linktree loading pattern. Could not rerun builds in this shell because 
 pm is not available on PATH.
+
+- 2026-03-31: Fixed web-builder shared-template resolution for Turbopack builds. web-builder is not configured as a workspace consumer of @kislap/templates, so package-root imports failed. Switched pps/web-builder/hooks/use-template-renderer.tsx and pps/web-builder/app/preview/project/preview-frame.tsx to import directly from ../../../packages/templates/src and ../../../../../packages/templates/src. Updated pps/web-builder/app/globals.css to scan ../../../packages/templates/src instead of 
+ode_modules/@kislap/templates, and added experimental.turbo.root to pps/web-builder/next.config.ts so external shared-template source imports resolve cleanly from the monorepo root. Could not rerun the build in this shell because 
+pm is not available on PATH.
