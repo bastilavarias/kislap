@@ -15,18 +15,23 @@ interface TemplateProps {
   onSetThemeMode: React.Dispatch<React.SetStateAction<Mode>>;
 }
 
-import { BizTemplates, PortfolioTemplates, LinktreeTemplates } from '@kislap/templates';
+import { Default } from '@kislap/templates/src/components/portfolio/default';
+import { Minimal } from '@kislap/templates/src/components/portfolio/minimal';
+import { Bento } from '@kislap/templates/src/components/portfolio/bento';
+import { NeoBrutalist } from '@kislap/templates/src/components/portfolio/neo-brutalist';
+import { Glass } from '@kislap/templates/src/components/portfolio/glass';
+import { Cyber } from '@kislap/templates/src/components/portfolio/cyber';
+import { Newspaper } from '@kislap/templates/src/components/portfolio/newspaper';
+import { Kinetic } from '@kislap/templates/src/components/portfolio/kinetic';
+import { Vaporware } from '@kislap/templates/src/components/portfolio/vaporware';
+import { LinktreeDefault } from '@kislap/templates/src/components/linktree/linktree-default';
+import { LinktreeNeoBrutalist } from '@kislap/templates/src/components/linktree/linktree-neo-brutalist';
 import { MenuDefault } from '@kislap/templates/src/components/menu/menu-default';
 import { MenuEditorial } from '@kislap/templates/src/components/menu/menu-editorial';
 import { MenuShowcase } from '@kislap/templates/src/components/menu/menu-showcase';
 import { MenuBistro } from '@kislap/templates/src/components/menu/menu-bistro';
 import { MenuRunway } from '@kislap/templates/src/components/menu/menu-runway';
 import { MenuMosaic } from '@kislap/templates/src/components/menu/menu-mosaic';
-
-const { Default, Minimal, Bento, NeoBrutalist, Glass, Cyber, Newspaper, Kinetic, Vaporware } =
-  PortfolioTemplates;
-const { BizDefault, BizCyber, BizRetro } = BizTemplates;
-const { LinktreeDefault, LinktreeNeoBrutalist } = LinktreeTemplates;
 
 type TemplateName = string;
 
@@ -40,12 +45,6 @@ const templates: Record<TemplateName, React.FC<TemplateProps>> = {
   newspaper: Newspaper,
   kinetic: Kinetic,
   vaporware: Vaporware,
-};
-
-const bizTemplates: Record<TemplateName, React.FC<TemplateProps>> = {
-  'biz-default': BizDefault,
-  'biz-cyber': BizCyber,
-  'biz-retro': BizRetro,
 };
 
 const linktreeTemplates: Record<TemplateName, React.FC<TemplateProps>> = {
@@ -74,9 +73,6 @@ export const renderTemplate = (
   if (project.type === 'portfolio') {
     layoutName = project.portfolio.layout_name || 'default';
     Component = templates[layoutName as TemplateName];
-  } else if (project.type === 'biz') {
-    layoutName = project.biz.layout_name || 'biz-default';
-    Component = bizTemplates[layoutName as TemplateName];
   } else if (project.type === 'linktree') {
     layoutName = project.linktree.layout_name || 'linktree-default';
     Component = linktreeTemplates[layoutName as TemplateName];
@@ -98,4 +94,3 @@ export const renderTemplate = (
     />
   ) : null;
 };
-

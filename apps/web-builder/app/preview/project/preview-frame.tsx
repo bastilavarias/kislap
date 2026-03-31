@@ -2,26 +2,34 @@
 
 import { useMemo } from 'react';
 import Link from 'next/link';
-import { LinktreeTemplates, MenuTemplates, PortfolioTemplates } from '@kislap/templates';
+import { Default } from '@kislap/templates/src/components/portfolio/default';
+import { NeoBrutalist } from '@kislap/templates/src/components/portfolio/neo-brutalist';
+import { Newspaper } from '@kislap/templates/src/components/portfolio/newspaper';
+import { LinktreeDefault } from '@kislap/templates/src/components/linktree/linktree-default';
+import { LinktreeNeoBrutalist } from '@kislap/templates/src/components/linktree/linktree-neo-brutalist';
+import { MenuDefault } from '@kislap/templates/src/components/menu/menu-default';
+import { MenuEditorial } from '@kislap/templates/src/components/menu/menu-editorial';
+import { MenuShowcase } from '@kislap/templates/src/components/menu/menu-showcase';
+import { MenuRunway } from '@kislap/templates/src/components/menu/menu-runway';
 import { ComponentThemeProvider } from '@/providers/ComponentThemesProvider';
 import { createMockProject, getPreviewThemeStyles, type PreviewProjectParams } from '@/lib/project-preview-data';
 
 const portfolioTemplateMap: Record<string, React.ComponentType<any>> = {
-  default: PortfolioTemplates.Default,
-  'neo-brutalist': PortfolioTemplates.NeoBrutalist,
-  newspaper: PortfolioTemplates.Newspaper,
+  default: Default,
+  'neo-brutalist': NeoBrutalist,
+  newspaper: Newspaper,
 };
 
 const linktreeTemplateMap: Record<string, React.ComponentType<any>> = {
-  'linktree-default': LinktreeTemplates.LinktreeDefault,
-  'linktree-neo-brutalist': LinktreeTemplates.LinktreeNeoBrutalist,
+  'linktree-default': LinktreeDefault,
+  'linktree-neo-brutalist': LinktreeNeoBrutalist,
 };
 
 const menuTemplateMap: Record<string, React.ComponentType<any>> = {
-  'menu-default': MenuTemplates.MenuDefault,
-  'menu-editorial': MenuTemplates.MenuEditorial,
-  'menu-showcase': MenuTemplates.MenuShowcase,
-  'menu-runway': MenuTemplates.MenuRunway,
+  'menu-default': MenuDefault,
+  'menu-editorial': MenuEditorial,
+  'menu-showcase': MenuShowcase,
+  'menu-runway': MenuRunway,
 };
 
 function PreviewAcknowledgementBanner() {
@@ -58,14 +66,14 @@ export function ProjectPreviewFrame(props: PreviewProjectParams) {
 
   const PreviewComponent = useMemo(() => {
     if (props.type === 'portfolio') {
-      return portfolioTemplateMap[props.layoutName] ?? PortfolioTemplates.Default;
+      return portfolioTemplateMap[props.layoutName] ?? Default;
     }
 
     if (props.type === 'linktree') {
-      return linktreeTemplateMap[props.layoutName] ?? LinktreeTemplates.LinktreeDefault;
+      return linktreeTemplateMap[props.layoutName] ?? LinktreeDefault;
     }
 
-    return menuTemplateMap[props.layoutName] ?? MenuTemplates.MenuDefault;
+    return menuTemplateMap[props.layoutName] ?? MenuDefault;
   }, [props.layoutName, props.type]);
 
   return (
