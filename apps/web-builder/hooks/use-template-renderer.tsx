@@ -15,14 +15,12 @@ interface TemplateProps {
   onSetThemeMode: React.Dispatch<React.SetStateAction<Mode>>;
 }
 
-import BizTemplates from '../../../packages/templates/src/components/biz';
 import PortfolioTemplates from '../../../packages/templates/src/components/portfolio';
 import LinktreeTemplates from '../../../packages/templates/src/components/linktree';
 import MenuTemplates from '../../../packages/templates/src/components/menu';
 
 const { Default, Minimal, Bento, NeoBrutalist, Glass, Cyber, Newspaper, Kinetic, Vaporware } =
   PortfolioTemplates;
-const { BizDefault, BizCyber, BizRetro } = BizTemplates;
 const { LinktreeDefault, LinktreeNeoBrutalist } = LinktreeTemplates;
 const { MenuDefault, MenuEditorial, MenuShowcase, MenuBistro, MenuRunway, MenuMosaic } =
   MenuTemplates;
@@ -39,12 +37,6 @@ const templates: Record<TemplateName, React.FC<TemplateProps>> = {
   newspaper: Newspaper,
   kinetic: Kinetic,
   vaporware: Vaporware,
-};
-
-const bizTemplates: Record<TemplateName, React.FC<TemplateProps>> = {
-  'biz-default': BizDefault,
-  'biz-cyber': BizCyber,
-  'biz-retro': BizRetro,
 };
 
 const linktreeTemplates: Record<TemplateName, React.FC<TemplateProps>> = {
@@ -73,9 +65,6 @@ export const renderTemplate = (
   if (project.type === 'portfolio') {
     layoutName = project.portfolio.layout_name || 'default';
     Component = templates[layoutName as TemplateName];
-  } else if (project.type === 'biz') {
-    layoutName = project.biz.layout_name || 'biz-default';
-    Component = bizTemplates[layoutName as TemplateName];
   } else if (project.type === 'linktree') {
     layoutName = project.linktree.layout_name || 'linktree-default';
     Component = linktreeTemplates[layoutName as TemplateName];
