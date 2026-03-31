@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -90,10 +90,10 @@ const Masthead = ({
         </span>
       </div>
 
-      <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tight leading-none mb-2">
+      <h1 className="text-5xl @md:text-7xl font-black uppercase tracking-tight leading-none mb-2">
         The {portfolio.name ? portfolio.name.split(" ").pop() : "Daily"} Post
       </h1>
-      <p className="text-xl md:text-2xl italic font-medium text-muted-foreground font-serif">
+      <p className="text-xl @md:text-2xl italic font-medium text-muted-foreground font-serif">
         "{portfolio.job_title}"
       </p>
     </header>
@@ -113,7 +113,7 @@ const Sidebar = ({ portfolio }: { portfolio: Portfolio }) => {
   }, [portfolio]);
 
   return (
-    <div className="md:col-span-1 space-y-6">
+    <div className="@md:col-span-1 space-y-6">
       {/* PROFILE "MUGSHOT" */}
       <div className={cn("border-2 p-1", borderClass)}>
         <div className="relative aspect-square w-full grayscale contrast-125 hover:grayscale-0 transition-all duration-500">
@@ -197,17 +197,17 @@ const Sidebar = ({ portfolio }: { portfolio: Portfolio }) => {
 
 const MainContent = ({ portfolio }: { portfolio: Portfolio }) => {
   return (
-    <div className="md:col-span-2 space-y-6">
+    <div className="@md:col-span-2 space-y-6">
       {/* HERO ARTICLE */}
       <div className="space-y-3 pb-6 border-b border-foreground/20">
-        <h2 className="text-3xl md:text-4xl font-bold leading-tight">
+        <h2 className="text-3xl @md:text-4xl font-bold leading-tight">
           Breaking: {portfolio.job_title} Enters the Market with Fresh Ideas
         </h2>
         <div className="flex items-center gap-2 text-[10px] font-sans uppercase text-muted-foreground">
           <span>By {portfolio.name}</span>
-          <span>•</span>
+          <span>â€¢</span>
           <span>{portfolio.location || "Remote"}</span>
-          <span>•</span>
+          <span>â€¢</span>
           <span>2 Min Read</span>
         </div>
         {(portfolio.introduction || portfolio.about) && (
@@ -252,7 +252,7 @@ const MainContent = ({ portfolio }: { portfolio: Portfolio }) => {
                     </span>
                     {exp.location && (
                       <span className="text-[10px] font-sans uppercase text-muted-foreground">
-                        • {exp.location}
+                        â€¢ {exp.location}
                       </span>
                     )}
                   </div>
@@ -337,7 +337,7 @@ const RightColumn = ({
   };
 
   return (
-    <div className="md:col-span-1 space-y-6">
+    <div className="@md:col-span-1 space-y-6">
       {/* PROJECTS LIST */}
       {portfolio.showcases && portfolio.showcases.length > 0 && (
         <div className={cn("p-4 bg-muted/30 border", borderClass)}>
@@ -491,7 +491,7 @@ export function Newspaper({
   if (!portfolio) return null;
 
   return (
-    <div className="min-h-screen bg-background text-foreground p-4 md:p-8 font-serif">
+    <div className="@container min-h-screen bg-background text-foreground p-4 @md:p-8 font-serif">
       <div className="max-w-6xl mx-auto space-y-6">
         <Masthead
           portfolio={portfolio}
@@ -500,7 +500,7 @@ export function Newspaper({
           isDarkMode={isDarkMode}
         />
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6">
+        <div className="grid grid-cols-1 @md:grid-cols-4 gap-4 @md:gap-6">
           <Sidebar portfolio={portfolio} />
           <MainContent portfolio={portfolio} />
           <RightColumn
@@ -515,4 +515,7 @@ export function Newspaper({
     </div>
   );
 }
+
+
+
 

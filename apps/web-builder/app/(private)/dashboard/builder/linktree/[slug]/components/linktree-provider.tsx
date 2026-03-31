@@ -7,13 +7,14 @@ import { LinktreeFormValues, linktreeFormSchema } from '@/lib/schemas/linktree';
 import { useProject } from '@/hooks/api/use-project';
 import { useLinktree } from '@/hooks/api/use-linktree';
 import { APIResponseProject } from '@/types/api-response';
-import { useParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 import { Settings } from '@/contexts/settings-context';
 import { AuthUser } from '@/hooks/api/use-auth';
 import { useAuthContext } from '@/contexts/auth-context';
 import { mapToFormValues } from './linktree-form-mapper';
 import { buildLinktreeSaveFormData } from './linktree-save-payload';
+import { buildLinktreeStarterValues, createThemeObject, getStarterById } from '@/lib/project-starters';
 
 interface LinktreeContextType {
   project: APIResponseProject | null;
@@ -51,6 +52,7 @@ const LinktreeContext = createContext<LinktreeContextType | undefined>(undefined
 
 export function LinktreeProvider({ children }: { children: ReactNode }) {
   const params = useParams();
+  const searchParams = useSearchParams();
   const [project, setProject] = useState<APIResponseProject | null>(null);
   const [localThemeSettings, setLocalThemeSettings] = useState<Settings | null>(null);
   const [layout, setLayout] = useState<string>('default-linktree');
@@ -99,17 +101,25 @@ export function LinktreeProvider({ children }: { children: ReactNode }) {
       const { success, data } = await getBySlug(slug, 'full');
       if (success && data) {
         setProject(data);
-        if (data.linktree) {
+        if (data.linktree?.id) {
           const mapped = mapToFormValues(data.linktree);
           reset(mapped);
           setLocalThemeSettings({ mode: 'light', theme: data.linktree.theme_object });
           setLayout(data.linktree.layout_name ?? 'default-linktree');
+        } else {
+          const starter = getStarterById('linktree', searchParams.get('starter'));
+          const starterLayout = searchParams.get('layout') || starter.defaults.layoutName;
+          const starterThemePreset = searchParams.get('theme') || starter.defaults.themePreset;
+
+          reset(buildLinktreeStarterValues(starter.id, data.name || 'John Doe'));
+          setLocalThemeSettings({ mode: 'light', theme: createThemeObject(starterThemePreset) });
+          setLayout(starterLayout);
         }
       }
       setIsLoading(false);
     };
     loadProject();
-  }, [params.slug, authUser]);
+  }, [params.slug, authUser, reset, searchParams]);
 
   const save = async () => {
     setIsSaving(true);

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React from "react";
 import { Globe, Github, Mail, MapPin, Phone, Share2 } from "lucide-react";
@@ -106,9 +106,9 @@ export function MenuShowcase({ menu, themeMode, themeStyles, onSetThemeMode }: P
   const gallery = (source.gallery_images || []).filter(Boolean) as string[];
 
   return (
-    <div style={{ backgroundColor, color: foregroundColor, fontFamily: bodyFont }} className="min-h-screen px-4 py-8 md:px-8">
+    <div style={{ backgroundColor, color: foregroundColor, fontFamily: bodyFont }} className="@container min-h-screen px-4 py-8 @md:px-8">
       <div className="mx-auto max-w-6xl">
-        <section className="relative overflow-hidden rounded-[2rem] border p-5 md:p-8" style={{ borderColor, backgroundColor: cardColor }}>
+        <section className="relative overflow-hidden rounded-[2rem] border p-5 @md:p-8" style={{ borderColor, backgroundColor: cardColor }}>
           <div className="absolute right-5 top-5 flex items-center gap-2">
             <ThemeSwitchToggle isDarkMode={themeMode === "dark"} onSetThemeMode={onSetThemeMode} />
             <button
@@ -122,13 +122,13 @@ export function MenuShowcase({ menu, themeMode, themeStyles, onSetThemeMode }: P
             </button>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-[1.1fr_0.9fr] md:items-end">
+          <div className="grid gap-6 @md:grid-cols-[1.1fr_0.9fr] @md:items-end">
             <div className="overflow-hidden rounded-[1.5rem]">
               {source.cover_image_url ? (
-                <img src={source.cover_image_url} alt={source.name || "Menu cover"} className="h-64 w-full object-cover md:h-[420px]" />
+                <img src={source.cover_image_url} alt={source.name || "Menu cover"} className="h-64 w-full object-cover @md:h-[420px]" />
               ) : (
                 <div
-                  className="h-64 w-full md:h-[420px]"
+                  className="h-64 w-full @md:h-[420px]"
                   style={{ background: `linear-gradient(135deg, ${activeTheme.primary || foregroundColor}22, transparent 70%)` }}
                 />
               )}
@@ -147,17 +147,17 @@ export function MenuShowcase({ menu, themeMode, themeStyles, onSetThemeMode }: P
                   <p className="text-xs uppercase tracking-[0.22em]" style={{ color: mutedColor }}>
                     {source.city?.trim() || "Menu"}
                   </p>
-                  <h1 className="mt-1 text-4xl font-semibold md:text-5xl" style={{ fontFamily: headingFont }}>
+                  <h1 className="mt-1 text-4xl font-semibold @md:text-5xl" style={{ fontFamily: headingFont }}>
                     {source.name || "Studio Supper"}
                   </h1>
                 </div>
               </div>
 
-              <p className="max-w-xl text-sm leading-relaxed md:text-base" style={{ color: mutedColor }}>
+              <p className="max-w-xl text-sm leading-relaxed @md:text-base" style={{ color: mutedColor }}>
                 {source.description || "Visual-first menu for cafes, bakeries, and modern comfort food spots."}
               </p>
 
-              <div className="grid gap-3 sm:grid-cols-2">
+              <div className="grid gap-3 @sm:grid-cols-2">
                 {formatMenuLocation(source) ? (
                   <div className="rounded-2xl border p-4" style={{ borderColor }}>
                     <div className="flex items-center gap-2 text-xs uppercase tracking-[0.18em]" style={{ color: mutedColor }}>
@@ -225,16 +225,16 @@ export function MenuShowcase({ menu, themeMode, themeStyles, onSetThemeMode }: P
               if (!items.length) return null;
 
               return (
-                <section key={category.id} className="rounded-[2rem] border p-6 md:p-8" style={{ borderColor }}>
-                  <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+                <section key={category.id} className="rounded-[2rem] border p-6 @md:p-8" style={{ borderColor }}>
+                  <div className="mb-6 flex flex-col gap-3 @md:flex-row @md:items-end @md:justify-between">
                     <div>
-                      <h2 className="text-3xl font-semibold md:text-4xl" style={{ fontFamily: headingFont }}>
+                      <h2 className="text-3xl font-semibold @md:text-4xl" style={{ fontFamily: headingFont }}>
                         {category.name}
                       </h2>
                       {category.description ? <p className="mt-2 text-sm" style={{ color: mutedColor }}>{category.description}</p> : null}
                     </div>
                   </div>
-                  <div className="grid gap-4 md:grid-cols-2">
+                  <div className="grid gap-4 @md:grid-cols-2">
                     {items.map((item) => {
                       const variants = [...(item.variants || [])].sort((a, b) => (a.placement_order ?? 0) - (b.placement_order ?? 0));
                       const defaultVariant = variants.find((variant) => variant.is_default) ?? variants[0];
@@ -256,7 +256,7 @@ export function MenuShowcase({ menu, themeMode, themeStyles, onSetThemeMode }: P
                             <div className="mt-4 flex flex-wrap gap-2">
                               {variants.map((variant) => (
                                 <span key={`${item.id}-${variant.name}`} className="rounded-full px-3 py-1 text-xs uppercase tracking-[0.12em]" style={{ backgroundColor: `${foregroundColor}10` }}>
-                                  {variant.name} â‚±{variant.price}
+                                  {variant.name} ₱{variant.price}
                                 </span>
                               ))}
                             </div>
@@ -272,10 +272,10 @@ export function MenuShowcase({ menu, themeMode, themeStyles, onSetThemeMode }: P
 
         {gallery.length ? (
           <section className="mt-10 border-t pt-8" style={{ borderColor }}>
-            <h2 className="text-3xl font-semibold md:text-4xl" style={{ fontFamily: headingFont }}>
+            <h2 className="text-3xl font-semibold @md:text-4xl" style={{ fontFamily: headingFont }}>
               Gallery
             </h2>
-            <div className="mt-5 columns-1 gap-4 sm:columns-2 md:columns-3">
+            <div className="mt-5 columns-1 gap-4 @sm:columns-2 @md:columns-3">
               {gallery.map((image, index) => (
                 <div key={`${image}-${index}`} className="mb-4 break-inside-avoid overflow-hidden rounded-[1.25rem] border" style={{ borderColor }}>
                   <img src={image} alt={`${source.name || "Menu"} gallery ${index + 1}`} className="h-auto w-full object-cover" />
@@ -286,7 +286,7 @@ export function MenuShowcase({ menu, themeMode, themeStyles, onSetThemeMode }: P
         ) : null}
 
         <section className="mt-10 border-t pt-8" style={{ borderColor }}>
-          <div className="grid gap-6 md:grid-cols-[220px_1fr] md:items-center">
+          <div className="grid gap-6 @md:grid-cols-[220px_1fr] @md:items-center">
             <div className="mx-auto">
               <img
                 src={qrImageUrl}
@@ -294,8 +294,8 @@ export function MenuShowcase({ menu, themeMode, themeStyles, onSetThemeMode }: P
                 className="h-[190px] w-[190px] object-cover"
               />
             </div>
-            <div className="text-center md:text-left">
-              <h2 className="text-3xl font-semibold md:text-4xl" style={{ fontFamily: headingFont }}>
+            <div className="text-center @md:text-left">
+              <h2 className="text-3xl font-semibold @md:text-4xl" style={{ fontFamily: headingFont }}>
                 Share This Menu
               </h2>
               <p className="mt-2 max-w-xl text-sm leading-relaxed" style={{ color: mutedColor }}>
@@ -327,3 +327,6 @@ export function MenuShowcase({ menu, themeMode, themeStyles, onSetThemeMode }: P
     </div>
   );
 }
+
+
+

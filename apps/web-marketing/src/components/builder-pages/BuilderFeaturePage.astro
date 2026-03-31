@@ -2,6 +2,7 @@
 import { ArrowRight, CheckCircle2, Search, Sparkles } from '@lucide/astro';
 import { builderPages, type BuilderFeaturePageConfig } from '@/data/builder-pages';
 import { BuilderPageFaq } from '@/components/builder-pages/builder-page-faq';
+import { BUILDER_URL, getBuilderProjectCreateUrl } from '@/lib/site-config';
 
 interface Props {
   page: BuilderFeaturePageConfig;
@@ -9,6 +10,12 @@ interface Props {
 
 const { page } = Astro.props;
 const relatedPages = Object.values(builderPages).filter((entry) => entry.slug !== page.slug);
+const builderCreateLink =
+  page.slug === 'portfolio-builder'
+    ? getBuilderProjectCreateUrl({ type: 'portfolio', starter: 'resume-first' })
+    : page.slug === 'linktree-builder'
+      ? getBuilderProjectCreateUrl({ type: 'linktree', starter: 'creator' })
+      : getBuilderProjectCreateUrl({ type: 'menu', starter: 'cafe' });
 const schema = {
   "@context": "https://schema.org",
   "@graph": [
@@ -25,7 +32,7 @@ const schema = {
       "applicationCategory": "BusinessApplication",
       "operatingSystem": "Web",
       "description": page.description,
-      "url": "https://builder.kislap.app/",
+      "url": BUILDER_URL,
     },
     {
       "@type": "FAQPage",
@@ -68,7 +75,7 @@ const schema = {
 
         <div class="flex flex-col gap-4 sm:flex-row">
           <a
-            href="https://builder.kislap.app/"
+            href={builderCreateLink}
             class="inline-flex items-center justify-center rounded-full bg-primary px-6 py-3 text-base font-semibold text-primary-foreground transition hover:translate-y-[-1px] hover:shadow-lg"
           >
             Start building now
@@ -281,7 +288,7 @@ const schema = {
       </p>
       <div class="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
         <a
-          href="https://builder.kislap.app/"
+          href={builderCreateLink}
           class="inline-flex items-center justify-center rounded-full bg-background px-6 py-3 text-base font-semibold text-foreground transition hover:translate-y-[-1px] hover:shadow-lg"
         >
           Open the builder

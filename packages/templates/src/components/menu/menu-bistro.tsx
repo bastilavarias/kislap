@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React from "react";
 import { Globe, Mail, MapPin, Phone, Share2, Github } from "lucide-react";
@@ -102,15 +102,15 @@ function ItemLine({
   return (
     <article className="border-t pt-5 first:border-t-0 first:pt-0" style={{ borderColor }}>
       <div className="flex items-start justify-between gap-4">
-        <h3 className="text-xl font-semibold uppercase tracking-[0.08em] md:text-2xl" style={{ fontFamily: headingFont }}>
+        <h3 className="text-xl font-semibold uppercase tracking-[0.08em] @md:text-2xl" style={{ fontFamily: headingFont }}>
           {item.name}
         </h3>
         <span className="shrink-0 text-sm font-semibold uppercase tracking-[0.16em]" style={{ color: accentColor, fontFamily: headingFont }}>
-          ?{price}
+          ₱{price}
         </span>
       </div>
       {item.description ? (
-        <p className="mt-2 max-w-2xl text-sm leading-7 md:text-[15px]" style={{ color: mutedColor, fontFamily: bodyFont }}>
+        <p className="mt-2 max-w-2xl text-sm leading-7 @md:text-[15px]" style={{ color: mutedColor, fontFamily: bodyFont }}>
           {item.description}
         </p>
       ) : null}
@@ -177,9 +177,9 @@ export function MenuBistro({ menu, themeMode, themeStyles, onSetThemeMode }: Pro
   };
 
   return (
-    <div style={{ backgroundColor, color: foregroundColor, fontFamily: bodyFont }} className="min-h-screen px-4 py-6 md:px-8 md:py-10">
+    <div style={{ backgroundColor, color: foregroundColor, fontFamily: bodyFont }} className="@container min-h-screen px-4 py-6 @md:px-8 @md:py-10">
       <div className="mx-auto max-w-7xl">
-        <header className="grid gap-10 border-b pb-10 md:grid-cols-[1.2fr_0.8fr] md:items-end" style={{ borderColor }}>
+        <header className="grid gap-10 border-b pb-10 @md:grid-cols-[1.2fr_0.8fr] @md:items-end" style={{ borderColor }}>
           <div className="space-y-6">
             <div className="flex flex-wrap items-center gap-3">
               <ThemeSwitchToggle isDarkMode={themeMode === "dark"} onSetThemeMode={onSetThemeMode} />
@@ -194,7 +194,7 @@ export function MenuBistro({ menu, themeMode, themeStyles, onSetThemeMode }: Pro
               </button>
             </div>
             <div className="flex items-center gap-5">
-              <div className="h-24 w-24 overflow-hidden rounded-full border md:h-28 md:w-28" style={{ borderColor }}>
+              <div className="h-24 w-24 overflow-hidden rounded-full border @md:h-28 @md:w-28" style={{ borderColor }}>
                 {source.logo_url ? (
                   <img src={source.logo_url} alt={source.name || "Menu logo"} className="h-full w-full object-cover" />
                 ) : (
@@ -205,15 +205,15 @@ export function MenuBistro({ menu, themeMode, themeStyles, onSetThemeMode }: Pro
                 <p className="text-xs uppercase tracking-[0.24em]" style={{ color: mutedColor }}>
                   {source.city?.trim() || "House Menu"}
                 </p>
-                <h1 className="mt-2 text-4xl font-semibold md:text-6xl" style={{ fontFamily: headingFont }}>
+                <h1 className="mt-2 text-4xl font-semibold @md:text-6xl" style={{ fontFamily: headingFont }}>
                   {source.name || "Late Table Bistro"}
                 </h1>
               </div>
             </div>
-            <p className="max-w-2xl text-base leading-8 md:text-lg" style={{ color: mutedColor }}>
+            <p className="max-w-2xl text-base leading-8 @md:text-lg" style={{ color: mutedColor }}>
               {source.description || FALLBACK_MENU.description}
             </p>
-            <div className="flex flex-wrap gap-x-8 gap-y-3 text-sm md:text-base">
+            <div className="flex flex-wrap gap-x-8 gap-y-3 text-sm @md:text-base">
               {formatMenuLocation(source) ? (
                 <div className="space-y-1">
                   <p className="text-[11px] uppercase tracking-[0.22em]" style={{ color: mutedColor }}>Address</p>
@@ -235,17 +235,17 @@ export function MenuBistro({ menu, themeMode, themeStyles, onSetThemeMode }: Pro
             </div>
           </div>
 
-          <div className="space-y-5 md:justify-self-end md:text-right">
+          <div className="space-y-5 @md:justify-self-end @md:text-right">
             <div className="overflow-hidden rounded-[2rem]">
               {source.cover_image_url ? (
-                <img src={source.cover_image_url} alt={source.name || "Cover image"} className="h-56 w-full object-cover md:w-[420px]" />
+                <img src={source.cover_image_url} alt={source.name || "Cover image"} className="h-56 w-full object-cover @md:w-[420px]" />
               ) : (
-                <div className="h-56 w-full md:w-[420px]" style={{ background: `linear-gradient(135deg, ${accentColor}22, transparent 72%)` }} />
+                <div className="h-56 w-full @md:w-[420px]" style={{ background: `linear-gradient(135deg, ${accentColor}22, transparent 72%)` }} />
               )}
             </div>
             {source.email ? <p className="text-sm" style={{ color: mutedColor }}>{source.email}</p> : null}
             {socials.length ? (
-              <div className="flex flex-wrap gap-3 md:justify-end">
+              <div className="flex flex-wrap gap-3 @md:justify-end">
                 {socials.map((social) => (
                   <a key={`${social.platform}-${social.url}`} href={social.url || "#"} target="_blank" rel="noreferrer" className="inline-flex h-10 w-10 items-center justify-center rounded-full border transition-opacity hover:opacity-80" style={{ borderColor }}>
                     {socialIcon(social.platform)}
@@ -261,21 +261,21 @@ export function MenuBistro({ menu, themeMode, themeStyles, onSetThemeMode }: Pro
             const categoryItems = items.filter((item) => item.menu_category_id === category.id);
             if (!categoryItems.length) return null;
             return (
-              <section key={category.id} className="grid gap-8 border-t pt-8 md:grid-cols-[0.34fr_1fr]" style={{ borderColor }}>
-                <div className="md:sticky md:top-8 md:self-start">
+              <section key={category.id} className="grid gap-8 border-t pt-8 @md:grid-cols-[0.34fr_1fr]" style={{ borderColor }}>
+                <div className="@md:sticky @md:top-8 @md:self-start">
                   <p className="text-xs uppercase tracking-[0.28em]" style={{ color: accentColor }}>
                     Section {String(index + 1).padStart(2, "0")}
                   </p>
-                  <h2 className="mt-3 text-3xl font-semibold uppercase md:text-5xl" style={{ fontFamily: headingFont }}>
+                  <h2 className="mt-3 text-3xl font-semibold uppercase @md:text-5xl" style={{ fontFamily: headingFont }}>
                     {category.name}
                   </h2>
                   {category.description ? (
-                    <p className="mt-3 max-w-sm text-sm leading-7 md:text-base" style={{ color: mutedColor }}>
+                    <p className="mt-3 max-w-sm text-sm leading-7 @md:text-base" style={{ color: mutedColor }}>
                       {category.description}
                     </p>
                   ) : null}
                   {category.image_url ? (
-                    <img src={category.image_url} alt={category.name} className="mt-5 h-44 w-full rounded-[1.5rem] object-cover md:max-w-sm" />
+                    <img src={category.image_url} alt={category.name} className="mt-5 h-44 w-full rounded-[1.5rem] object-cover @md:max-w-sm" />
                   ) : null}
                 </div>
                 <div className="space-y-7">
@@ -300,10 +300,10 @@ export function MenuBistro({ menu, themeMode, themeStyles, onSetThemeMode }: Pro
               <div className="flex items-end justify-between gap-6">
                 <div>
                   <p className="text-xs uppercase tracking-[0.24em]" style={{ color: accentColor }}>Moments</p>
-                  <h2 className="mt-2 text-3xl font-semibold md:text-4xl" style={{ fontFamily: headingFont }}>Gallery</h2>
+                  <h2 className="mt-2 text-3xl font-semibold @md:text-4xl" style={{ fontFamily: headingFont }}>Gallery</h2>
                 </div>
               </div>
-              <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="mt-6 grid gap-4 @sm:grid-cols-2 @lg:grid-cols-4">
                 {gallery.map((image, index) => (
                   <img
                     key={`${image}-${index}`}
@@ -322,13 +322,13 @@ export function MenuBistro({ menu, themeMode, themeStyles, onSetThemeMode }: Pro
             </section>
           ) : null}
 
-          <section className="grid gap-6 border-t pt-8 md:grid-cols-[220px_1fr] md:items-center" style={{ borderColor }}>
-            <div className="mx-auto md:mx-0">
+          <section className="grid gap-6 border-t pt-8 @md:grid-cols-[220px_1fr] @md:items-center" style={{ borderColor }}>
+            <div className="mx-auto @md:mx-0">
               <img src={qrImageUrl} alt={`QR code for ${source.name || "menu"}`} className="h-[190px] w-[190px] object-cover" />
             </div>
             <div>
-              <h2 className="text-3xl font-semibold md:text-4xl" style={{ fontFamily: headingFont }}>Share This Menu</h2>
-              <p className="mt-2 max-w-xl text-sm leading-7 md:text-base" style={{ color: mutedColor }}>
+              <h2 className="text-3xl font-semibold @md:text-4xl" style={{ fontFamily: headingFont }}>Share This Menu</h2>
+              <p className="mt-2 max-w-xl text-sm leading-7 @md:text-base" style={{ color: mutedColor }}>
                 Scan the code to open the latest menu on any phone, or send the link to customers before they even arrive.
               </p>
               <div className="mt-4 inline-flex max-w-full items-center gap-2 rounded-full border px-4 py-2 text-sm" style={{ borderColor }}>
@@ -351,3 +351,6 @@ export function MenuBistro({ menu, themeMode, themeStyles, onSetThemeMode }: Pro
     </div>
   );
 }
+
+
+

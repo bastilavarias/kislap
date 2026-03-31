@@ -42,6 +42,13 @@ export function Callback() {
         setStorageAuthUser(data.user);
         setAccessToken(data.access_token);
 
+        const pendingRedirect = window.sessionStorage.getItem('post_auth_redirect');
+        if (pendingRedirect) {
+          window.sessionStorage.removeItem('post_auth_redirect');
+          await router.push(pendingRedirect);
+          return;
+        }
+
         await router.push('/dashboard');
       } else {
         setLoading(false);

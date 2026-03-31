@@ -288,11 +288,11 @@ export function ProjectList() {
       <div className="flex flex-col items-center justify-center py-24 text-center rounded-2xl border border-dashed border-border/60 bg-muted/5">
         <h3 className="text-xl font-semibold tracking-tight mb-2">Create your first project</h3>
         <p className="text-muted-foreground max-w-sm mx-auto mb-8 leading-relaxed">
-          You haven't created any portfolios yet. Launch your first site in minutes.
+          Start with a portfolio, link page, or digital menu and we will give you a stronger first draft to build from.
         </p>
-        <div className="relative">
-          <ProjectFormDialog onOpenChange={handleDialogChange} />
-        </div>
+        <Button asChild className="rounded-full">
+          <Link href="/dashboard/projects/new">Choose a starter</Link>
+        </Button>
       </div>
     );
   }
@@ -309,15 +309,34 @@ export function ProjectList() {
           />
         ))}
 
-        <div
-          className="group relative flex flex-col items-center justify-center h-full min-h-[300px] border border-dashed border-border/60 rounded-xl hover:bg-muted/30 transition-colors cursor-pointer"
-          onClick={() => setIsEditOpen(true)}
+        <Link
+          href="/dashboard/projects/new"
+          className="group relative flex min-h-[300px] flex-col overflow-hidden rounded-xl border border-dashed border-border/60 bg-card/30 p-6 transition-colors hover:bg-muted/30"
         >
-          <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-            <Plus className="w-6 h-6 text-muted-foreground cursor-pointer" />
+          <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-full bg-muted transition-transform group-hover:scale-110">
+            <Plus className="h-6 w-6 text-muted-foreground" />
           </div>
-          <span className="font-medium text-muted-foreground">Create New Project</span>
-        </div>
+          <div className="space-y-3">
+            <h3 className="text-xl font-semibold tracking-tight text-foreground">
+              Start something new
+            </h3>
+            <p className="text-sm leading-relaxed text-muted-foreground">
+              Pick the right builder, preview the layout and theme, then create the project with
+              a stronger first draft.
+            </p>
+          </div>
+          <div className="mt-auto flex flex-wrap gap-2 pt-8">
+            <Badge variant="secondary" className="rounded-full px-3 py-1 text-xs font-medium shadow-none">
+              Portfolio
+            </Badge>
+            <Badge variant="secondary" className="rounded-full px-3 py-1 text-xs font-medium shadow-none">
+              Linktree
+            </Badge>
+            <Badge variant="secondary" className="rounded-full px-3 py-1 text-xs font-medium shadow-none">
+              Menu
+            </Badge>
+          </div>
+        </Link>
       </div>
 
       <ProjectFormDialog

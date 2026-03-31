@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import {
   FaDiscord,
@@ -49,3 +49,4 @@ export function BrandGlyph({ iconKey }: { iconKey: string }) {
   if (iconKey === "discord") return <FaDiscord className="h-4 w-4" />;
   return null;
 }
+

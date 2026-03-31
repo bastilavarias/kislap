@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useMemo, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -80,20 +80,20 @@ const HeroSection = ({
         />
       </div>
 
-      <div className="flex flex-col-reverse md:flex-row justify-between items-start gap-6 md:gap-8">
+      <div className="flex flex-col-reverse @md:flex-row justify-between items-start gap-6 @md:gap-8">
         <div className="space-y-4 flex-1 w-full">
-          <div className="space-y-2 text-center md:text-left">
-            <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold tracking-tight text-foreground">
+          <div className="space-y-2 text-center @md:text-left">
+            <h1 className="text-3xl @sm:text-4xl @md:text-6xl font-bold tracking-tight text-foreground">
               {portfolio?.name || "Untitled Portfolio"}
             </h1>
             {portfolio?.job_title && (
-              <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground font-medium">
+              <p className="text-lg @sm:text-xl @md:text-2xl text-muted-foreground font-medium">
                 {portfolio.job_title}
               </p>
             )}
           </div>
 
-          <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-4 gap-y-2 text-sm text-muted-foreground">
+          <div className="flex flex-wrap items-center justify-center @md:justify-start gap-x-4 gap-y-2 text-sm text-muted-foreground">
             {portfolio?.location && (
               <div className="flex items-center gap-1.5">
                 <MapPin className="w-4 h-4 shrink-0" />
@@ -109,7 +109,7 @@ const HeroSection = ({
           </div>
 
           {socialLinks.length > 0 && (
-            <div className="flex justify-center md:justify-start gap-2 pt-2">
+            <div className="flex justify-center @md:justify-start gap-2 pt-2">
               {socialLinks.map((link: any, i: number) => (
                 <Link key={i} href={link.url!} target="_blank">
                   <Button
@@ -125,9 +125,9 @@ const HeroSection = ({
           )}
         </div>
 
-        <div className="flex flex-row justify-center md:flex-col md:items-center md:items-end md:justify-between w-full md:w-auto gap-4">
+        <div className="flex flex-row justify-center @md:flex-col @md:items-center @md:items-end @md:justify-between w-full @md:w-auto gap-4">
           {avatarUrl && (
-            <Avatar className="w-24 h-24 md:w-32 md:h-32 border bg-muted">
+            <Avatar className="w-24 h-24 @md:w-32 @md:h-32 border bg-muted">
               <AvatarImage src={avatarUrl} className="object-cover" />
               <AvatarFallback className="text-2xl text-muted-foreground">
                 {portfolio.name?.charAt(0) ?? "U"}
@@ -138,8 +138,8 @@ const HeroSection = ({
       </div>
 
       {(portfolio?.about || portfolio?.introduction) && (
-        <div className="max-w-3xl mx-auto md:mx-0">
-          <p className="text-base sm:text-lg leading-relaxed text-muted-foreground text-center md:text-left">
+        <div className="max-w-3xl mx-auto @md:mx-0">
+          <p className="text-base @sm:text-lg leading-relaxed text-muted-foreground text-center @md:text-left">
             {portfolio.about || portfolio.introduction}
           </p>
         </div>
@@ -163,19 +163,19 @@ const ExperienceSection = ({ portfolio }: { portfolio: Portfolio }) => {
             key={exp.id}
             className="group relative border-l-2 border-transparent hover:border-primary/20 pl-4 -ml-4 transition-colors"
           >
-            <div className="flex flex-col sm:flex-row sm:items-baseline justify-between mb-2 gap-1">
+            <div className="flex flex-col @sm:flex-row @sm:items-baseline justify-between mb-2 gap-1">
               <h3 className="font-semibold text-lg text-foreground group-hover:text-primary transition-colors">
                 {exp.role}
               </h3>
               <span className="text-sm text-muted-foreground font-medium whitespace-nowrap">
-                {exp.start_date || "N/A"} — {exp.end_date || "Present"}
+                {exp.start_date || "N/A"} â€” {exp.end_date || "Present"}
               </span>
             </div>
             <div className="text-sm text-muted-foreground mb-3 font-medium">
-              {[exp.company, exp.location].filter(Boolean).join(" • ")}
+              {[exp.company, exp.location].filter(Boolean).join(" â€¢ ")}
             </div>
             {exp.about && (
-              <p className="text-muted-foreground leading-relaxed text-sm sm:text-base">
+              <p className="text-muted-foreground leading-relaxed text-sm @sm:text-base">
                 {exp.about}
               </p>
             )}
@@ -206,7 +206,7 @@ const ProjectsSection = ({
       <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
         Projects
       </h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 @sm:grid-cols-2 gap-6">
         {portfolio.showcases.map((project) => (
           <Link
             key={project.id}
@@ -266,7 +266,7 @@ const EducationSection = ({ portfolio }: { portfolio: Portfolio }) => {
         {portfolio.education.map((edu) => (
           <div
             key={edu.id}
-            className="flex flex-col sm:flex-row sm:items-center justify-between py-2 border-b border-border/40 last:border-0 gap-1"
+            className="flex flex-col @sm:flex-row @sm:items-center justify-between py-2 border-b border-border/40 last:border-0 gap-1"
           >
             <div>
               <div className="font-medium text-foreground">{edu.school}</div>
@@ -276,7 +276,7 @@ const EducationSection = ({ portfolio }: { portfolio: Portfolio }) => {
                 </div>
               )}
             </div>
-            <div className="text-sm text-muted-foreground mt-1 sm:mt-0 font-medium whitespace-nowrap">
+            <div className="text-sm text-muted-foreground mt-1 @sm:mt-0 font-medium whitespace-nowrap">
               {edu.year_start || "N/A"} - {edu.year_end || "Present"}
             </div>
           </div>
@@ -470,22 +470,22 @@ export function Default({
   if (!portfolio) return null;
 
   return (
-    <div className="min-h-screen bg-background text-foreground selection:bg-primary/10 selection:text-primary font-sans">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 space-y-16">
+    <div className="@container min-h-screen bg-background text-foreground selection:bg-primary/10 selection:text-primary font-sans">
+      <div className="max-w-5xl mx-auto px-4 @sm:px-6 space-y-16">
         <HeroSection
           portfolio={portfolio}
           themeMode={themeMode}
           onSetThemeMode={onSetThemeMode}
         />
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 border-t pt-12">
-          <div className="lg:col-span-8 space-y-16">
+        <div className="grid grid-cols-1 @lg:grid-cols-12 gap-12 border-t pt-12">
+          <div className="@lg:col-span-8 space-y-16">
             <ExperienceSection portfolio={portfolio} />
             <ProjectsSection portfolio={portfolio} projectId={project.id} />
             <EducationSection portfolio={portfolio} />
           </div>
 
-          <div className="lg:col-span-4 space-y-12">
+          <div className="@lg:col-span-4 space-y-12">
             <SkillsSection portfolio={portfolio} />
             <div className="sticky top-10">
               <ContactFormSection portfolio={portfolio} project={project} />
@@ -498,4 +498,5 @@ export function Default({
     </div>
   );
 }
+
 

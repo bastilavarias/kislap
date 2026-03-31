@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -193,7 +193,7 @@ const HeroSection = ({
       </header>
 
       {/* Hero Content */}
-      <section className="relative min-h-[60vh] flex flex-col justify-center items-center text-center space-y-8 pt-12 md:pt-0">
+      <section className="relative min-h-[60vh] flex flex-col justify-center items-center text-center space-y-8 pt-12 @md:pt-0">
         {/* Background Decoration */}
         <div className="absolute inset-0 -z-10 overflow-hidden">
           <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-primary/10 rounded-full blur-3xl animate-[pulse_4s_ease-in-out_infinite]" />
@@ -203,7 +203,7 @@ const HeroSection = ({
         <Reveal>
           <div className="relative inline-block mb-4">
             <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full scale-110" />
-            <Avatar className="w-32 h-32 md:w-40 md:h-40 border-4 border-background shadow-2xl relative z-10 transition-transform hover:scale-105 duration-300">
+            <Avatar className="w-32 h-32 @md:w-40 @md:h-40 border-4 border-background shadow-2xl relative z-10 transition-transform hover:scale-105 duration-300">
               <AvatarImage src={avatarUrl ?? undefined} className="object-cover" />
               <AvatarFallback className="text-4xl font-bold bg-muted">
                 {portfolio.name?.charAt(0)}
@@ -214,13 +214,13 @@ const HeroSection = ({
         </Reveal>
 
         <Reveal delay={100}>
-          <h1 className="text-5xl md:text-8xl font-black tracking-tight leading-none bg-clip-text text-transparent bg-gradient-to-b from-foreground to-foreground/50">
+          <h1 className="text-5xl @md:text-8xl font-black tracking-tight leading-none bg-clip-text text-transparent bg-gradient-to-b from-foreground to-foreground/50">
             {portfolio.job_title || "Creator"}
           </h1>
         </Reveal>
 
         <Reveal delay={200}>
-          <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+          <p className="text-xl @md:text-2xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
             {portfolio.introduction}
           </p>
         </Reveal>
@@ -260,12 +260,12 @@ const ExperienceSection = ({ portfolio }: { portfolio: Portfolio }) => {
         </h2>
       </Reveal>
 
-      <div className="space-y-8 border-l-2 border-border ml-2 pl-8 md:pl-12 relative">
+      <div className="space-y-8 border-l-2 border-border ml-2 pl-8 @md:pl-12 relative">
         {portfolio.work_experiences.map((exp, idx) => (
           <Reveal key={exp.id} delay={idx * 100}>
             <div className="relative group">
               {/* Timeline Dot with Pulse */}
-              <div className="absolute -left-[41px] md:-left-[57px] top-1.5 w-4 h-4 bg-background border-2 border-primary rounded-full group-hover:bg-primary transition-colors duration-300">
+              <div className="absolute -left-[41px] @md:-left-[57px] top-1.5 w-4 h-4 bg-background border-2 border-primary rounded-full group-hover:bg-primary transition-colors duration-300">
                 <div className="absolute inset-0 rounded-full bg-primary opacity-20 animate-ping" />
               </div>
 
@@ -277,7 +277,7 @@ const ExperienceSection = ({ portfolio }: { portfolio: Portfolio }) => {
                   variant="secondary"
                   className="font-mono text-xs font-normal"
                 >
-                  {exp.start_date || "N/A"} — {exp.end_date || "Present"}
+                  {exp.start_date || "N/A"} â€” {exp.end_date || "Present"}
                 </Badge>
               </div>
 
@@ -387,23 +387,23 @@ const ProjectsSection = ({
   return (
     <section className="space-y-12">
       <Reveal>
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-border pb-6">
+        <div className="flex flex-col @md:flex-row @md:items-end justify-between gap-4 border-b border-border pb-6">
           <div>
-            <h2 className="text-3xl md:text-5xl font-black mb-2">
+            <h2 className="text-3xl @md:text-5xl font-black mb-2">
               Featured Work
             </h2>
             <p className="text-muted-foreground">
               A selection of recent deployments
             </p>
           </div>
-          <div className="hidden md:flex items-center gap-2 text-sm font-bold text-primary">
+          <div className="hidden @md:flex items-center gap-2 text-sm font-bold text-primary">
             <MousePointer2 className="w-4 h-4 animate-bounce" /> Hover for
             details
           </div>
         </div>
       </Reveal>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 @md:grid-cols-2 @lg:grid-cols-3 gap-8">
         {portfolio.showcases.map((project, idx) => (
           <Reveal key={project.id} delay={idx * 100} className="h-full">
             <Link
@@ -525,14 +525,14 @@ const ContactFormSection = ({
   return (
     <section className="relative">
       <Reveal>
-        <div className="bg-primary/5 rounded-[2.5rem] p-8 md:p-16 border border-primary/10 relative overflow-hidden">
+        <div className="bg-primary/5 rounded-[2.5rem] p-8 @md:p-16 border border-primary/10 relative overflow-hidden">
           {/* Decorative Circles */}
           <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2" />
           <div className="absolute bottom-0 left-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl -translate-x-1/2 translate-y-1/2" />
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 relative z-10">
+          <div className="grid grid-cols-1 @lg:grid-cols-2 gap-12 relative z-10">
             <div className="space-y-6">
-              <h2 className="text-4xl md:text-5xl font-black leading-tight">
+              <h2 className="text-4xl @md:text-5xl font-black leading-tight">
                 Let's Build <br /> Something{" "}
                 <span className="text-primary">Impossible.</span>
               </h2>
@@ -662,7 +662,7 @@ export function Kinetic({
   if (!portfolio) return null;
 
   return (
-    <div className="min-h-screen bg-background text-foreground font-sans selection:bg-primary selection:text-primary-foreground overflow-x-hidden">
+    <div className="@container min-h-screen bg-background text-foreground font-sans selection:bg-primary selection:text-primary-foreground overflow-x-hidden">
       <HeroSection
         portfolio={portfolio}
         themeMode={themeMode}
@@ -670,8 +670,8 @@ export function Kinetic({
         isDarkMode={isDarkMode}
       />
 
-      <main className="max-w-7xl mx-auto p-4 md:p-8 space-y-24 pb-24">
-        <section className="grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-24">
+      <main className="max-w-7xl mx-auto p-4 @md:p-8 space-y-24 pb-24">
+        <section className="grid grid-cols-1 @lg:grid-cols-2 gap-12 @md:gap-24">
           <ExperienceSection portfolio={portfolio} />
           <EducationStatsSection portfolio={portfolio} />
         </section>
@@ -685,4 +685,7 @@ export function Kinetic({
     </div>
   );
 }
+
+
+
 

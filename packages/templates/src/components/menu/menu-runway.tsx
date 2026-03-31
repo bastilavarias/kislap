@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React from "react";
 import { Globe, Mail, MapPin, Phone, Share2, Github } from "lucide-react";
@@ -86,7 +86,7 @@ function ItemRow({ item, headingFont, mutedColor, accentColor, borderColor }: { 
     <article className="border-t pt-5 first:border-t-0 first:pt-0" style={{ borderColor }}>
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h3 className="text-2xl font-semibold leading-tight md:text-[2rem]" style={{ fontFamily: headingFont }}>
+          <h3 className="text-2xl font-semibold leading-tight @md:text-[2rem]" style={{ fontFamily: headingFont }}>
             {item.name}
           </h3>
           {item.badge ? <p className="mt-1 text-[11px] uppercase tracking-[0.2em]" style={{ color: accentColor }}>{item.badge}</p> : null}
@@ -94,7 +94,7 @@ function ItemRow({ item, headingFont, mutedColor, accentColor, borderColor }: { 
         <span className="shrink-0 text-sm uppercase tracking-[0.18em]" style={{ color: accentColor, fontFamily: headingFont }}> ₱{resolvePrice(item)}
         </span>
       </div>
-      {item.description ? <p className="mt-2 max-w-xl text-sm leading-7 md:text-base" style={{ color: mutedColor }}>{item.description}</p> : null}
+      {item.description ? <p className="mt-2 max-w-xl text-sm leading-7 @md:text-base" style={{ color: mutedColor }}>{item.description}</p> : null}
       {variants.length ? (
         <div className="mt-3 flex flex-wrap gap-2">
           {variants.map((variant) => (
@@ -153,10 +153,10 @@ export function MenuRunway({ menu, themeMode, themeStyles, onSetThemeMode }: Pro
   };
 
   return (
-    <div style={{ backgroundColor, color: foregroundColor, fontFamily: bodyFont }} className="min-h-screen px-4 py-6 md:px-8 md:py-10">
-      <div className="mx-auto max-w-7xl md:grid md:grid-cols-[0.38fr_1fr] md:gap-10">
-        <aside className="md:sticky md:top-6 md:h-[calc(100vh-3rem)] md:overflow-auto md:pr-2">
-          <div className="space-y-6 border-b pb-8 md:border-b-0 md:pb-0" style={{ borderColor }}>
+    <div style={{ backgroundColor, color: foregroundColor, fontFamily: bodyFont }} className="@container min-h-screen px-4 py-6 @md:px-8 @md:py-10">
+      <div className="mx-auto max-w-7xl @md:grid @md:grid-cols-[0.38fr_1fr] @md:gap-10">
+        <aside className="@md:sticky @md:top-6 @md:h-[calc(100vh-3rem)] @md:overflow-auto @md:pr-2">
+          <div className="space-y-6 border-b pb-8 @md:border-b-0 @md:pb-0" style={{ borderColor }}>
             <div className="flex items-center justify-between">
               <ThemeSwitchToggle isDarkMode={themeMode === "dark"} onSetThemeMode={onSetThemeMode} />
               <button type="button" onClick={handleShare} className="inline-flex h-11 items-center gap-2 rounded-full border px-4 text-sm transition-opacity hover:opacity-80" style={{ borderColor }}>
@@ -165,9 +165,9 @@ export function MenuRunway({ menu, themeMode, themeStyles, onSetThemeMode }: Pro
             </div>
             <div className="overflow-hidden rounded-[2.2rem]">
               {source.cover_image_url ? (
-                <img src={source.cover_image_url} alt={source.name || "Cover image"} className="h-72 w-full object-cover md:h-[340px]" />
+                <img src={source.cover_image_url} alt={source.name || "Cover image"} className="h-72 w-full object-cover @md:h-[340px]" />
               ) : (
-                <div className="h-72 w-full md:h-[340px]" style={{ background: `linear-gradient(145deg, ${accentColor}20, transparent 72%)` }} />
+                <div className="h-72 w-full @md:h-[340px]" style={{ background: `linear-gradient(145deg, ${accentColor}20, transparent 72%)` }} />
               )}
             </div>
             <div className="flex items-end gap-4">
@@ -183,8 +183,8 @@ export function MenuRunway({ menu, themeMode, themeStyles, onSetThemeMode }: Pro
                 <h1 className="mt-2 text-4xl font-semibold leading-none" style={{ fontFamily: headingFont }}>{source.name || "Runway Kitchen"}</h1>
               </div>
             </div>
-            <p className="max-w-md text-sm leading-7 md:text-base" style={{ color: mutedColor }}>{source.description || FALLBACK_MENU.description}</p>
-            <div className="space-y-3 text-sm md:text-base">
+            <p className="max-w-md text-sm leading-7 @md:text-base" style={{ color: mutedColor }}>{source.description || FALLBACK_MENU.description}</p>
+            <div className="space-y-3 text-sm @md:text-base">
               {formatMenuLocation(source) ? <p><span style={{ color: mutedColor }}>Address</span><br />{formatMenuLocation(source)}</p> : null}
               {hours ? <p><span style={{ color: mutedColor }}>Store Hours</span><br />{formatHoursLabel(hours)}</p> : null}
               {source.phone ? <p><span style={{ color: mutedColor }}>Phone</span><br />{source.phone}</p> : null}
@@ -202,17 +202,17 @@ export function MenuRunway({ menu, themeMode, themeStyles, onSetThemeMode }: Pro
           </div>
         </aside>
 
-        <main className="mt-10 space-y-16 md:mt-0">
+        <main className="mt-10 space-y-16 @md:mt-0">
           {categories.map((category, index) => {
             const categoryItems = items.filter((item) => item.menu_category_id === category.id);
             if (!categoryItems.length) return null;
             return (
-              <section key={category.id} className="grid gap-6 md:grid-cols-[0.28fr_1fr] md:gap-10">
+              <section key={category.id} className="grid gap-6 @md:grid-cols-[0.28fr_1fr] @md:gap-10">
                 <div className="border-t pt-4" style={{ borderColor }}>
                   <p className="text-xs uppercase tracking-[0.24em]" style={{ color: accentColor }}>
                     {String(index + 1).padStart(2, "0")}
                   </p>
-                  <h2 className="mt-3 text-3xl font-semibold uppercase leading-none md:text-5xl" style={{ fontFamily: headingFont }}>
+                  <h2 className="mt-3 text-3xl font-semibold uppercase leading-none @md:text-5xl" style={{ fontFamily: headingFont }}>
                     {category.name}
                   </h2>
                   {category.description ? <p className="mt-3 max-w-xs text-sm leading-7" style={{ color: mutedColor }}>{category.description}</p> : null}
@@ -236,8 +236,8 @@ export function MenuRunway({ menu, themeMode, themeStyles, onSetThemeMode }: Pro
 
           {gallery.length ? (
             <section className="border-t pt-8" style={{ borderColor }}>
-              <h2 className="text-3xl font-semibold md:text-4xl" style={{ fontFamily: headingFont }}>Gallery</h2>
-              <div className="mt-6 columns-1 gap-4 sm:columns-2">
+              <h2 className="text-3xl font-semibold @md:text-4xl" style={{ fontFamily: headingFont }}>Gallery</h2>
+              <div className="mt-6 columns-1 gap-4 @sm:columns-2">
                 {gallery.map((image, index) => (
                   <img key={`${image}-${index}`} src={image} alt={`${source.name || "Menu"} gallery ${index + 1}`} className="mb-4 w-full break-inside-avoid rounded-[1.75rem] object-cover" />
                 ))}
@@ -245,11 +245,11 @@ export function MenuRunway({ menu, themeMode, themeStyles, onSetThemeMode }: Pro
             </section>
           ) : null}
 
-          <section className="grid gap-5 border-t pt-8 md:grid-cols-[220px_1fr] md:items-center" style={{ borderColor }}>
+          <section className="grid gap-5 border-t pt-8 @md:grid-cols-[220px_1fr] @md:items-center" style={{ borderColor }}>
             <img src={qrImageUrl} alt={`QR code for ${source.name || "menu"}`} className="h-[190px] w-[190px] object-cover" />
             <div>
-              <h2 className="text-3xl font-semibold md:text-4xl" style={{ fontFamily: headingFont }}>Share This Menu</h2>
-              <p className="mt-2 max-w-xl text-sm leading-7 md:text-base" style={{ color: mutedColor }}>
+              <h2 className="text-3xl font-semibold @md:text-4xl" style={{ fontFamily: headingFont }}>Share This Menu</h2>
+              <p className="mt-2 max-w-xl text-sm leading-7 @md:text-base" style={{ color: mutedColor }}>
                 Keep the latest menu one scan away for regulars, walk-ins, and customers sending the link around.
               </p>
               <div className="mt-4 inline-flex max-w-full items-center gap-2 text-sm" style={{ color: mutedColor }}>
@@ -260,7 +260,7 @@ export function MenuRunway({ menu, themeMode, themeStyles, onSetThemeMode }: Pro
           </section>
 
           <footer className="border-t pt-10 pb-10" style={{ borderColor }}>
-            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div className="flex flex-col gap-4 @md:flex-row @md:items-center @md:justify-between">
               <p className="text-sm" style={{ color: mutedColor }}>© {new Date().getFullYear()} {source.name || "Runway Kitchen"}. All rights reserved.</p>
               <div className="flex items-center gap-4">
                 <a href={KISLAP_LINKS.github} target="_blank" rel="noreferrer" className="transition-opacity hover:opacity-80"><Github className="h-4 w-4" /></a>
@@ -274,3 +274,6 @@ export function MenuRunway({ menu, themeMode, themeStyles, onSetThemeMode }: Pro
     </div>
   );
 }
+
+
+

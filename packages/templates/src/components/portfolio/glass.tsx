@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -101,14 +101,14 @@ const HeroSection = ({
 
   return (
     <header
-      className={`${glassPanelClass} p-6 md:p-10 flex flex-col md:flex-row items-center md:items-start gap-8 relative overflow-hidden group`}
+      className={`${glassPanelClass} p-6 @md:p-10 flex flex-col @md:flex-row items-center @md:items-start gap-8 relative overflow-hidden group`}
     >
       {/* Shine effect on hover */}
       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000 ease-in-out pointer-events-none" />
 
       <div className="relative shrink-0">
         <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full scale-110" />
-        <Avatar className="w-32 h-32 md:w-40 md:h-40 border-4 border-white/50 dark:border-white/10 shadow-xl relative z-10">
+        <Avatar className="w-32 h-32 @md:w-40 @md:h-40 border-4 border-white/50 dark:border-white/10 shadow-xl relative z-10">
           <AvatarImage src={avatarUrl ?? undefined} className="object-cover" />
           <AvatarFallback className="text-4xl bg-gradient-to-br from-white/80 to-white/40 dark:from-black/80 dark:to-black/40 backdrop-blur-md">
             {portfolio.name?.charAt(0) ?? "U"}
@@ -116,12 +116,12 @@ const HeroSection = ({
         </Avatar>
       </div>
 
-      <div className="flex-1 text-center md:text-left space-y-4 relative z-10">
+      <div className="flex-1 text-center @md:text-left space-y-4 relative z-10">
         <div>
-          <h1 className="text-4xl md:text-6xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/60">
+          <h1 className="text-4xl @md:text-6xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/60">
             {portfolio.name || "Untitled Portfolio"}
           </h1>
-          <div className="flex flex-wrap justify-center md:justify-start gap-3 mt-3 items-center text-muted-foreground font-medium">
+          <div className="flex flex-wrap justify-center @md:justify-start gap-3 mt-3 items-center text-muted-foreground font-medium">
             {portfolio.job_title && (
               <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/30 dark:bg-white/5 border border-white/20">
                 <Sparkles className="w-4 h-4 text-yellow-500" />{" "}
@@ -137,12 +137,12 @@ const HeroSection = ({
         </div>
 
         {(portfolio.introduction || portfolio.about) && (
-          <p className="text-lg md:text-xl leading-relaxed opacity-90 max-w-2xl">
+          <p className="text-lg @md:text-xl leading-relaxed opacity-90 max-w-2xl">
             {portfolio.introduction || portfolio.about}
           </p>
         )}
 
-        <div className="flex flex-wrap justify-center md:justify-start gap-3 pt-2">
+        <div className="flex flex-wrap justify-center @md:justify-start gap-3 pt-2">
           {socialLinks.map((link, i) => (
             <Link key={i} href={link.url!} target="_blank">
               <Button
@@ -203,7 +203,7 @@ const ExperienceSection = ({ portfolio }: { portfolio: Portfolio }) => {
             key={exp.id}
             className={`${glassPanelClass} p-6 transition-all duration-300 hover:bg-white/60 dark:hover:bg-black/60 group`}
           >
-            <div className="flex flex-col md:flex-row justify-between md:items-start gap-2 mb-3">
+            <div className="flex flex-col @md:flex-row justify-between @md:items-start gap-2 mb-3">
               <div>
                 <h3 className="text-xl font-bold group-hover:text-primary transition-colors">
                   {exp.role}
@@ -542,7 +542,7 @@ export function Glass({
   if (!portfolio) return null;
 
   return (
-    <div className="min-h-screen relative font-sans selection:bg-primary/30 text-foreground overflow-hidden">
+    <div className="@container min-h-screen relative font-sans selection:bg-primary/30 text-foreground overflow-hidden">
       {/* Animated Background */}
       <div className="fixed inset-0 -z-10 bg-[#f0f2f5] dark:bg-[#0f0f11]">
         <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-purple-400/30 dark:bg-purple-900/20 blur-[100px] animate-pulse" />
@@ -550,7 +550,7 @@ export function Glass({
         <div className="absolute top-[40%] left-[40%] w-[400px] h-[400px] rounded-full bg-pink-400/20 dark:bg-pink-900/10 blur-[90px] translate-x-[-50%] translate-y-[-50%]" />
       </div>
 
-      <div className="max-w-6xl mx-auto p-4 md:p-8 space-y-8">
+      <div className="max-w-6xl mx-auto p-4 @md:p-8 space-y-8">
         <HeroSection
           portfolio={portfolio}
           themeMode={themeMode}
@@ -558,16 +558,16 @@ export function Glass({
           isDarkMode={isDarkMode}
         />
 
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
+        <div className="grid grid-cols-1 @md:grid-cols-12 gap-8">
           {/* Left Column */}
-          <div className="md:col-span-8 space-y-8">
+          <div className="@md:col-span-8 space-y-8">
             <AboutSection portfolio={portfolio} />
             <ExperienceSection portfolio={portfolio} />
             <ProjectsSection portfolio={portfolio} projectId={project.id} />
           </div>
 
           {/* Right Column (Sidebar) */}
-          <div className="md:col-span-4 space-y-8">
+          <div className="@md:col-span-4 space-y-8">
             <ContactSection portfolio={portfolio} project={project} />
             <EducationSkillsSection portfolio={portfolio} />
           </div>
@@ -578,4 +578,7 @@ export function Glass({
     </div>
   );
 }
+
+
+
 

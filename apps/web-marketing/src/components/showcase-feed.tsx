@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { LivePreviewFrame } from "./live-preview";
+import { getPublicProjectUrl } from "@/lib/site-config";
 
 const PAGE_LIMIT = 9;
 type ProjectTypeFilter = "all" | "portfolio" | "linktree" | "menu";
@@ -50,7 +51,7 @@ function ShowcaseCard({ project }: { project: APIResponseProject }) {
   const [isHovered, setIsHovered] = useState(false);
   const [ogImageFailed, setOgImageFailed] = useState(false);
   const styles = styleConfig[project.type] || styleConfig.default;
-  const liveUrl = project.sub_domain ? `https://${project.sub_domain}.kislap.app` : "#";
+  const liveUrl = getPublicProjectUrl(project.sub_domain);
   const displayUrl = liveUrl.replace(/^https?:\/\//, "");
   const hasOgImage = !!project.og_image_url && !ogImageFailed;
 

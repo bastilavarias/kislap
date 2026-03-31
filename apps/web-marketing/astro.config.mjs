@@ -8,7 +8,7 @@ import node from "@astrojs/node";
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://kislap.app",
+  site: process.env.SITE_URL || "https://kislap.app",
 
   output: "static",
   adapter: node({
@@ -25,6 +25,8 @@ export default defineConfig({
     schema: {
       APP_VERSION: envField.string({ context: "client", access: "public" }),
       API_URL: envField.string({ context: "client", access: "public" }),
+      BUILDER_URL: envField.string({ context: "client", access: "public" }),
+      SITE_URL: envField.string({ context: "client", access: "public" }),
     },
   },
 });
