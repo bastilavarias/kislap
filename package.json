@@ -2,6 +2,7 @@
   "name": "kislap",
   "private": true,
   "workspaces": [
+    "apps/web-builder",
     "apps/web-sites",
     "packages/*"
   ]

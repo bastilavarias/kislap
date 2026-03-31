@@ -15,23 +15,23 @@ interface TemplateProps {
   onSetThemeMode: React.Dispatch<React.SetStateAction<Mode>>;
 }
 
-import { Default } from '../../../packages/templates/src/components/portfolio/default';
-import { Minimal } from '../../../packages/templates/src/components/portfolio/minimal';
-import { Bento } from '../../../packages/templates/src/components/portfolio/bento';
-import { NeoBrutalist } from '../../../packages/templates/src/components/portfolio/neo-brutalist';
-import { Glass } from '../../../packages/templates/src/components/portfolio/glass';
-import { Cyber } from '../../../packages/templates/src/components/portfolio/cyber';
-import { Newspaper } from '../../../packages/templates/src/components/portfolio/newspaper';
-import { Kinetic } from '../../../packages/templates/src/components/portfolio/kinetic';
-import { Vaporware } from '../../../packages/templates/src/components/portfolio/vaporware';
-import { LinktreeDefault } from '../../../packages/templates/src/components/linktree/linktree-default';
-import { LinktreeNeoBrutalist } from '../../../packages/templates/src/components/linktree/linktree-neo-brutalist';
-import { MenuDefault } from '../../../packages/templates/src/components/menu/menu-default';
-import { MenuEditorial } from '../../../packages/templates/src/components/menu/menu-editorial';
-import { MenuShowcase } from '../../../packages/templates/src/components/menu/menu-showcase';
-import { MenuBistro } from '../../../packages/templates/src/components/menu/menu-bistro';
-import { MenuRunway } from '../../../packages/templates/src/components/menu/menu-runway';
-import { MenuMosaic } from '../../../packages/templates/src/components/menu/menu-mosaic';
+import { Default } from '@kislap/templates/src/components/portfolio/default';
+import { Minimal } from '@kislap/templates/src/components/portfolio/minimal';
+import { Bento } from '@kislap/templates/src/components/portfolio/bento';
+import { NeoBrutalist } from '@kislap/templates/src/components/portfolio/neo-brutalist';
+import { Glass } from '@kislap/templates/src/components/portfolio/glass';
+import { Cyber } from '@kislap/templates/src/components/portfolio/cyber';
+import { Newspaper } from '@kislap/templates/src/components/portfolio/newspaper';
+import { Kinetic } from '@kislap/templates/src/components/portfolio/kinetic';
+import { Vaporware } from '@kislap/templates/src/components/portfolio/vaporware';
+import { LinktreeDefault } from '@kislap/templates/src/components/linktree/linktree-default';
+import { LinktreeNeoBrutalist } from '@kislap/templates/src/components/linktree/linktree-neo-brutalist';
+import { MenuDefault } from '@kislap/templates/src/components/menu/menu-default';
+import { MenuEditorial } from '@kislap/templates/src/components/menu/menu-editorial';
+import { MenuShowcase } from '@kislap/templates/src/components/menu/menu-showcase';
+import { MenuBistro } from '@kislap/templates/src/components/menu/menu-bistro';
+import { MenuRunway } from '@kislap/templates/src/components/menu/menu-runway';
+import { MenuMosaic } from '@kislap/templates/src/components/menu/menu-mosaic';
 
 type TemplateName = string;
 
