@@ -15,12 +15,10 @@ interface TemplateProps {
   onSetThemeMode: React.Dispatch<React.SetStateAction<Mode>>;
 }
 
-import {
-  BizTemplates,
-  PortfolioTemplates,
-  LinktreeTemplates,
-  MenuTemplates,
-} from '@kislap/templates';
+import BizTemplates from '../../../packages/templates/src/components/biz';
+import PortfolioTemplates from '../../../packages/templates/src/components/portfolio';
+import LinktreeTemplates from '../../../packages/templates/src/components/linktree';
+import MenuTemplates from '../../../packages/templates/src/components/menu';
 
 const { Default, Minimal, Bento, NeoBrutalist, Glass, Cyber, Newspaper, Kinetic, Vaporware } =
   PortfolioTemplates;

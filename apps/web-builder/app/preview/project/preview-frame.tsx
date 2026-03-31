@@ -2,11 +2,9 @@
 
 import { useMemo } from 'react';
 import Link from 'next/link';
-import {
-  LinktreeTemplates,
-  MenuTemplates,
-  PortfolioTemplates,
-} from '@kislap/templates';
+import LinktreeTemplates from '../../../../../packages/templates/src/components/linktree';
+import MenuTemplates from '../../../../../packages/templates/src/components/menu';
+import PortfolioTemplates from '../../../../../packages/templates/src/components/portfolio';
 import { ComponentThemeProvider } from '@/providers/ComponentThemesProvider';
 import { createMockProject, getPreviewThemeStyles, type PreviewProjectParams } from '@/lib/project-preview-data';
 
