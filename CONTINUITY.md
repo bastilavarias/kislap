@@ -201,3 +201,6 @@ pm is not available on PATH.
 - 2026-03-31: Changed pps/web-builder/package.json production build script from 
 ext build --turbopack to plain 
 ext build. Reason: Vercel production builds were still failing with opaque Turbopack RangeError: Invalid count value: -1 even after import/root fixes. Kept local dev on Turbopack for fast iteration, but moved production builds to the more stable Next/Webpack path for deployment reliability.
+
+- 2026-03-31: After moving web-builder production builds to standard 
+ext build, webpack surfaced real missing shared-template deps from the iz template family. Added leaflet, eact-leaflet, and aligned lucide-react to ^0.555.0 in pps/web-builder/package.json so shared templates imported by web-builder can compile on Vercel.
