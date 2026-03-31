@@ -15,18 +15,14 @@ interface TemplateProps {
   onSetThemeMode: React.Dispatch<React.SetStateAction<Mode>>;
 }
 
-import { BizTemplates, PortfolioTemplates, LinktreeTemplates } from '@kislap/templates';
-import { MenuDefault } from '@kislap/templates/src/components/menu/menu-default';
-import { MenuEditorial } from '@kislap/templates/src/components/menu/menu-editorial';
-import { MenuShowcase } from '@kislap/templates/src/components/menu/menu-showcase';
-import { MenuBistro } from '@kislap/templates/src/components/menu/menu-bistro';
-import { MenuRunway } from '@kislap/templates/src/components/menu/menu-runway';
-import { MenuMosaic } from '@kislap/templates/src/components/menu/menu-mosaic';
+import { BizTemplates, PortfolioTemplates, LinktreeTemplates, MenuTemplates } from '@kislap/templates';
 
 const { Default, Minimal, Bento, NeoBrutalist, Glass, Cyber, Newspaper, Kinetic, Vaporware } =
   PortfolioTemplates;
 const { BizDefault, BizCyber, BizRetro } = BizTemplates;
 const { LinktreeDefault, LinktreeNeoBrutalist } = LinktreeTemplates;
+const { MenuDefault, MenuEditorial, MenuShowcase, MenuBistro, MenuRunway, MenuMosaic } =
+  MenuTemplates;
 
 type TemplateName = string;
 

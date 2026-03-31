@@ -186,3 +186,6 @@ pm is not available on PATH.
 
 - 2026-03-31: Investigated portfolio avatar upload flow after live-site report. API/controller/service path already handled multipart vatar correctly. Tightened builder-side portfolio form in pps/web-builder/app/(private)/dashboard/builder/portfolio/[slug]/components/form.tsx to mark avatar selection dirty/validated and clear stale vatar_url when a new file is chosen. Updated pps/web-builder/app/(private)/dashboard/builder/portfolio/[slug]/components/portfolio-provider.tsx so successful saves clear the temporary vatar File, write back the saved vatar_url, and sync the in-memory project portfolio object. Could not rerun pps/web-builder build in this shell because 
 pm is not available on PATH.
+
+- 2026-03-31: Fixed brittle menu template imports in both pps/web-builder/hooks/use-template-renderer.tsx and pps/web-sites/hooks/use-template-renderer.tsx. Replaced deep imports like @kislap/templates/src/components/menu/menu-bistro with package-root MenuTemplates destructuring from @kislap/templates, matching the existing Portfolio/Biz/Linktree loading pattern. Could not rerun builds in this shell because 
+pm is not available on PATH.
