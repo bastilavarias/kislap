@@ -32,6 +32,8 @@ import {
   Phone,
   Globe,
   User,
+  FileText,
+  UploadCloud,
   Linkedin,
   Github,
   Twitter,
@@ -68,6 +70,7 @@ import { Settings } from '@/contexts/settings-context';
 import { cn } from '@/lib/utils';
 import { SortableList } from '@/components/sortable-list';
 import { PortfolioFormPreview } from './portfolio-form-preview';
+import { Dropzone, DropzoneContent, DropzoneEmptyState } from '@/components/ui/shadcn-io/dropzone';
 
 const LAYOUT_OPTIONS = [
   { id: 'default', name: 'Default', icon: LayoutTemplate, description: 'Clean & Standard' },
@@ -337,6 +340,8 @@ export function Form({
       job_title: '',
       avatar: null,
       avatar_url: '',
+      resume: null,
+      resume_url: '',
       location: '',
       introduction: '',
       about: '',
@@ -443,8 +448,8 @@ export function Form({
                               }}
                             />
                           </div>
-                          <div className="grid flex-1 grid-cols-1 gap-4 md:grid-cols-12">
-                            <div className="col-span-1 md:col-span-8">
+                          <div className="grid flex-1 grid-cols-1 gap-4">
+                            <div>
                               <Label className="mb-2 block">Name</Label>
                               <Input
                                 {...register('name')}
@@ -455,7 +460,7 @@ export function Form({
                                 <p className="text-destructive text-sm mt-1">{errors.name.message}</p>
                               )}
                             </div>
-                            <div className="col-span-1 md:col-span-4">
+                            <div>
                               <Label className="mb-2 block">Job Title</Label>
                               <Input
                                 {...register('job_title')}
@@ -464,6 +469,88 @@ export function Form({
                               />
                             </div>
                           </div>
+                        </div>
+                        <div className="space-y-3">
+                          <div className="flex items-start justify-between gap-3">
+                            <div>
+                              <Label className="mb-1 block">Resume / CV</Label>
+                              <p className="text-xs text-muted-foreground">
+                                Optional. Upload a PDF so visitors can download it from your portfolio.
+                              </p>
+                            </div>
+                            {(watch('resume') || watch('resume_url')) && (
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                className="h-8 px-2 text-xs shadow-none"
+                                onClick={() => {
+                                  setValue('resume', null, {
+                                    shouldDirty: true,
+                                    shouldValidate: true,
+                                  });
+                                  setValue('resume_url', '', {
+                                    shouldDirty: true,
+                                    shouldValidate: true,
+                                  });
+                                }}
+                              >
+                                Remove PDF
+                              </Button>
+                            )}
+                          </div>
+
+                          <Dropzone
+                            className="min-h-[136px] rounded-lg border border-dashed border-border bg-muted/20 transition-colors hover:bg-muted/30"
+                            accept={{ 'application/pdf': ['.pdf'] }}
+                            maxFiles={1}
+                            maxSize={1024 * 1024 * 10}
+                            onDrop={(files) => {
+                              const file = files[0] ?? null;
+                              setValue('resume', file, {
+                                shouldDirty: true,
+                                shouldValidate: true,
+                              });
+                              if (file) {
+                                setValue('resume_url', '', {
+                                  shouldDirty: true,
+                                  shouldValidate: true,
+                                });
+                              }
+                            }}
+                          >
+                            <DropzoneEmptyState>
+                              <div className="flex flex-col items-center justify-center gap-3 px-6 py-8 text-center">
+                                <div className="rounded-full border border-border bg-background p-3">
+                                  <UploadCloud className="h-5 w-5 text-primary" />
+                                </div>
+                                <div className="space-y-1">
+                                  <p className="text-sm font-medium">Drop a PDF here or click to upload</p>
+                                  <p className="text-xs text-muted-foreground">PDF only, up to 10MB.</p>
+                                </div>
+                              </div>
+                            </DropzoneEmptyState>
+                            <DropzoneContent files={watch('resume') ? [watch('resume') as File] : []} />
+                          </Dropzone>
+
+                          {(watch('resume') || watch('resume_url')) && (
+                            <div className="flex items-center gap-3 rounded-lg border bg-background px-3 py-3 text-sm">
+                              <div className="rounded-md bg-muted p-2">
+                                <FileText className="h-4 w-4 text-primary" />
+                              </div>
+                              <div className="min-w-0 flex-1">
+                                <p className="truncate font-medium">
+                                  {watch('resume') instanceof File
+                                    ? (watch('resume') as File).name
+                                    : 'Current resume on file'}
+                                </p>
+                                <p className="text-xs text-muted-foreground">
+                                  {watch('resume') instanceof File
+                                    ? `${Math.max(1, Math.round((watch('resume') as File).size / 1024))} KB • PDF`
+                                    : 'This will appear as a download button on your public portfolio.'}
+                                </p>
+                              </div>
+                            </div>
+                          )}
                         </div>
                         <div>
                           <Label className="mb-2 block">Short Introduction</Label>

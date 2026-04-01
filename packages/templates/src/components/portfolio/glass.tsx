@@ -48,6 +48,7 @@ import { Project } from "@/types/project";
 import { Portfolio } from "@/types/portfolio";
 import { getPortfolioAvatarUrl } from "./avatar";
 import { KislapShareFooter } from "../shared/kislap-share-footer";
+import { PortfolioResumeButton } from "./portfolio-resume-button";
 
 // --- Types ---
 interface Props {
@@ -154,6 +155,10 @@ const HeroSection = ({
               </Button>
             </Link>
           ))}
+          <PortfolioResumeButton
+            resumeUrl={portfolio.resume_url}
+            className="rounded-full bg-white/30 dark:bg-white/5 border-white/20 hover:bg-white/40"
+          />
           <div className="ml-auto">
             <ThemeSwitchToggle
               isDarkMode={isDarkMode}

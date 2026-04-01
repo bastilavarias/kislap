@@ -53,6 +53,7 @@ import { Portfolio } from "@/types/portfolio";
 import { cn } from "@/lib/utils";
 import { getPortfolioAvatarUrl } from "./avatar";
 import { KislapShareFooter } from "../shared/kislap-share-footer";
+import { PortfolioResumeButton } from "./portfolio-resume-button";
 
 interface Props {
   project: Project;
@@ -174,7 +175,7 @@ const SocialsCard = ({ portfolio, className, style }: SectionProps) => {
     ].filter((link) => link.url);
   }, [portfolio]);
 
-  if (socialLinks.length === 0) return null;
+  if (socialLinks.length === 0 && !portfolio.resume_url) return null;
 
   return (
     <Card
@@ -199,6 +200,7 @@ const SocialsCard = ({ portfolio, className, style }: SectionProps) => {
             </Button>
           </Link>
         ))}
+        <PortfolioResumeButton resumeUrl={portfolio.resume_url} />
       </div>
     </Card>
   );

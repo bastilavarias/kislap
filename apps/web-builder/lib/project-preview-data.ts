@@ -66,6 +66,7 @@ function buildPortfolioProjectData(
       user_id: 1,
       name: portfolio.name || projectName,
       avatar_url: portfolio.avatar_url || '',
+      resume_url: portfolio.resume_url || '',
       location: portfolio.location || '',
       job_title: portfolio.job_title || '',
       introduction: portfolio.introduction || '',

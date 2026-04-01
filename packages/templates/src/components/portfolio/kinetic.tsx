@@ -49,6 +49,7 @@ import { Project } from "@/types/project";
 import { Portfolio } from "@/types/portfolio";
 import { getPortfolioAvatarUrl } from "./avatar";
 import { KislapShareFooter } from "../shared/kislap-share-footer";
+import { PortfolioResumeButton } from "./portfolio-resume-button";
 
 // --- Types ---
 interface Props {
@@ -237,6 +238,10 @@ const HeroSection = ({
                 </Button>
               </Link>
             ))}
+            <PortfolioResumeButton
+              resumeUrl={portfolio.resume_url}
+              className="rounded-full h-12 px-8 bg-background/80"
+            />
             <Button className="rounded-full h-12 px-8 gap-2 bg-primary text-primary-foreground shadow-lg shadow-primary/25 hover:shadow-primary/50 transition-all duration-300 hover:-translate-y-1 hover:scale-105">
               <Mail className="w-4 h-4" /> Get in Touch
             </Button>

@@ -42,6 +42,7 @@ import { Alert, AlertTitle } from "@/components/ui/alert";
 import { toast } from "sonner";
 import { getPortfolioAvatarUrl } from "./avatar";
 import { KislapShareFooter } from "../shared/kislap-share-footer";
+import { PortfolioResumeButton } from "./portfolio-resume-button";
 
 interface Props {
   portfolio: Portfolio;
@@ -54,6 +55,7 @@ interface Portfolio {
   id: number;
   name: string;
   avatar_url: string | null;
+  resume_url: string | null;
   location: string | null;
   job_title: string | null;
   introduction: string | null;
@@ -346,6 +348,10 @@ export function Minimal({
                       </Link>
                     </div>
                   ))}
+                  <PortfolioResumeButton
+                    resumeUrl={portfolio.resume_url}
+                    className="w-full justify-start"
+                  />
                 </div>
                 <div className="pt-4 border-t border-border/50 flex justify-center">
                   <ThemeSwitchToggle

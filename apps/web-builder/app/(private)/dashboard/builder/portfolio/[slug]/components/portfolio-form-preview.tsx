@@ -32,12 +32,14 @@ function createPortfolioPreviewProject({
   themeSettings,
   projectName,
   avatarUrl,
+  resumeUrl,
 }: {
   values: PortfolioFormValues;
   layout: string;
   themeSettings: Settings | null;
   projectName: string;
   avatarUrl: string;
+  resumeUrl: string;
 }): Project {
   const now = new Date().toISOString();
   const themeObject = JSON.stringify(themeSettings?.theme || { preset: null, styles: defaultThemeState });
@@ -66,6 +68,7 @@ function createPortfolioPreviewProject({
       id: 1,
       name: values.name || projectName,
       avatar_url: avatarUrl || null,
+      resume_url: resumeUrl || null,
       location: values.location || null,
       job_title: values.job_title || null,
       introduction: values.introduction || null,
@@ -148,6 +151,7 @@ export function PortfolioFormPreview({
 }) {
   const [viewport, setViewport] = useState<PreviewViewport>('desktop');
   const [filePreviewUrl, setFilePreviewUrl] = useState<string | null>(null);
+  const [resumePreviewUrl, setResumePreviewUrl] = useState<string | null>(null);
   const viewportWidth = getViewportWidth(viewport);
   const scrollAreaRef = useRef<HTMLDivElement | null>(null);
   const contentRef = useRef<HTMLDivElement | null>(null);
@@ -167,6 +171,19 @@ export function PortfolioFormPreview({
     return () => URL.revokeObjectURL(objectUrl);
   }, [values.avatar]);
 
+  useEffect(() => {
+    const resumeFile = values.resume instanceof File ? values.resume : null;
+    if (!resumeFile) {
+      setResumePreviewUrl(null);
+      return;
+    }
+
+    const objectUrl = URL.createObjectURL(resumeFile);
+    setResumePreviewUrl(objectUrl);
+
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [values.resume]);
+
   const previewProject = useMemo(
     () =>
       createPortfolioPreviewProject({
@@ -175,8 +192,9 @@ export function PortfolioFormPreview({
         themeSettings,
         projectName: values.name?.trim() || 'Portfolio Preview',
         avatarUrl: filePreviewUrl || values.avatar_url || fallbackAvatarUrl || '',
+        resumeUrl: resumePreviewUrl || values.resume_url || '',
       }),
-    [fallbackAvatarUrl, filePreviewUrl, layout, themeSettings, values]
+    [fallbackAvatarUrl, filePreviewUrl, layout, resumePreviewUrl, themeSettings, values]
   );
 
   useEffect(() => {

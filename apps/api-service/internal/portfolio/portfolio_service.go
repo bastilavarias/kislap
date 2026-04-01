@@ -48,6 +48,7 @@ func (service Service) Save(payload Payload) (*models.Portfolio, error) {
 			Linkedin:        &payload.Linkedin,
 			Twitter:         &payload.Twitter,
 			AvatarURL:       payload.AvatarURL,
+			ResumeURL:       payload.ResumeURL,
 			ThemeName:       &payload.Theme.Preset,
 			ThemeObject:     themeRaw,
 			LayoutName:      &payload.LayoutName,
@@ -63,6 +64,13 @@ func (service Service) Save(payload Payload) (*models.Portfolio, error) {
 				return nil, err
 			}
 			portfolio.AvatarURL = &avatarURL
+		}
+		if payload.Resume != nil {
+			resumeURL, err := service.uploadFile(payload.Resume, payload.ProjectID, "resume")
+			if err != nil {
+				return nil, err
+			}
+			portfolio.ResumeURL = &resumeURL
 		}
 
 		if err := service.DB.Create(&portfolio).Error; err != nil {
@@ -88,6 +96,7 @@ func (service Service) Save(payload Payload) (*models.Portfolio, error) {
 		portfolio.Linkedin = &payload.Linkedin
 		portfolio.Twitter = &payload.Twitter
 		portfolio.AvatarURL = payload.AvatarURL
+		portfolio.ResumeURL = payload.ResumeURL
 		portfolio.ThemeName = &payload.Theme.Preset
 		portfolio.ThemeObject = themeRaw
 		portfolio.LayoutName = &payload.LayoutName
@@ -100,6 +109,16 @@ func (service Service) Save(payload Payload) (*models.Portfolio, error) {
 			portfolio.AvatarURL = &avatarURL
 		} else if payload.AvatarURL == nil {
 			portfolio.AvatarURL = nil
+		}
+
+		if payload.Resume != nil {
+			resumeURL, err := service.uploadFile(payload.Resume, payload.ProjectID, "resume")
+			if err != nil {
+				return nil, err
+			}
+			portfolio.ResumeURL = &resumeURL
+		} else if payload.ResumeURL == nil {
+			portfolio.ResumeURL = nil
 		}
 
 		if err := service.DB.Transaction(func(tx *gorm.DB) error {

@@ -161,6 +161,7 @@ export interface APIResponsePortfolio {
   user_id: number;
   name: string;
   avatar_url: string | null;
+  resume_url: string | null;
   location: string | null;
   job_title: string | null;
   introduction: string;

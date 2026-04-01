@@ -5,6 +5,8 @@ export const PortfolioSchema = z.object({
   job_title: z.string().optional().nullable(),
   avatar: z.any().optional().nullable(),
   avatar_url: z.string().optional().nullable(),
+  resume: z.any().optional().nullable(),
+  resume_url: z.string().optional().nullable(),
   location: z.string().optional().nullable(),
   introduction: z.string().optional().nullable(),
   about: z.string().optional().nullable(),

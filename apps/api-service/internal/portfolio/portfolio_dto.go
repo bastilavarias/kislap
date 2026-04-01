@@ -111,6 +111,8 @@ type CreateUpdatePortfolioRequest struct {
 	Twitter         string                  `json:"twitter"`
 	AvatarURL       *string                 `json:"avatar_url"`
 	Avatar          *multipart.FileHeader   `json:"avatar"`
+	ResumeURL       *string                 `json:"resume_url"`
+	Resume          *multipart.FileHeader   `json:"resume"`
 	Theme           *ThemeRequest           `json:"theme"`
 	LayoutName      string                  `json:"layout_name"`
 	WorkExperiences []WorkExperienceRequest `json:"work_experiences"`
@@ -136,6 +138,8 @@ type Payload struct {
 	Twitter         string
 	AvatarURL       *string
 	Avatar          *multipart.FileHeader
+	ResumeURL       *string
+	Resume          *multipart.FileHeader
 	Theme           *ThemeRequest
 	LayoutName      string
 	WorkExperiences []WorkExperienceRequest

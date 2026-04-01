@@ -39,6 +39,7 @@ import { Portfolio } from "@/types/portfolio";
 import { cn } from "@/lib/utils";
 import { getPortfolioAvatarUrl } from "./avatar";
 import { KislapShareFooter } from "../shared/kislap-share-footer";
+import { PortfolioResumeButton } from "./portfolio-resume-button";
 
 // --- Types ---
 interface Props {
@@ -168,6 +169,11 @@ const Sidebar = ({ portfolio }: { portfolio: Portfolio }) => {
                 </Button>
               </Link>
             ))}
+            <PortfolioResumeButton
+              resumeUrl={portfolio.resume_url}
+              label="Download CV"
+              className="rounded-none border-foreground hover:bg-foreground hover:text-background"
+            />
           </div>
         </div>
       </div>
