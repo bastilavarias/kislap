@@ -215,3 +215,20 @@ ext build, webpack surfaced real missing shared-template deps from the iz templ
 ode_modules/@kislap/templates.
 
 - 2026-03-31: Updated root package.json workspaces to include pps/web-builder. This aligns the monorepo workspace graph with the actual apps consuming shared packages like @kislap/templates, and should improve local-package resolution/linking behavior in CI/Vercel for web-builder.
+
+- 2026-04-01: Added root dev-clients.sh for Windows/Git Bash-friendly local frontend development. It launches 
+pm run dev in pps/web-builder, pps/web-sites, and pps/web-marketing in parallel and traps Ctrl+C to stop all three together.
+
+- 2026-04-01: Wired the root dev launcher into package.json with dev:clients, which runs ash ./dev-clients.sh from the repo root to start web-builder, web-sites, and web-marketing together.
+
+- 2026-04-01: Updated root dev-clients.sh to launch frontend apps on fixed dev ports: web-builder on 3000, web-sites on 3001, and web-marketing on 4321. Next apps use -p, Astro marketing uses --port.
+
+- 2026-04-01: Added responsive mobile/tablet switching to the new project creation page in pps/web-builder/app/(private)/dashboard/projects/new/components/project-creation-page.tsx. Desktop (xl) still uses the split form/preview layout. Below xl, a Form / Preview tab switch is shown and only one pane is rendered at a time to keep the preview readable on smaller screens.
+
+- 2026-04-01: Tightened pps/web-builder/app/(private)/dashboard/projects/new/components/project-template-preview.tsx to prevent horizontal scrollbars in the preview shell. Changed the scroll area to overflow-y-auto overflow-x-hidden and constrained the scaled preview wrapper with maxWidth: '100%' plus overflow-x-hidden, so desktop preview scaling cannot spill beyond the container width.
+
+- 2026-04-01: Rolled back the preview-shell overflow clamp in pps/web-builder/app/(private)/dashboard/projects/new/components/project-template-preview.tsx. The attempt to force overflow-x-hidden and maxWidth: '100%' on the scaled preview wrapper caused broader preview breakage, so the shell was restored to the prior overflow-auto / plain wrapper behavior.
+
+- 2026-04-01: Adjusted pps/web-builder/app/(private)/dashboard/projects/new/components/project-template-preview.tsx so Desktop preview mode on narrow screens uses a true wide canvas with horizontal scrolling instead of forced scaling/clipping. Added useHorizontalDesktopScroll condition: when iewport === 'desktop' and the available preview width is under 1024 and narrower than the desktop canvas, scale is pinned to 1 and the preview shell becomes overflow-x-auto overflow-y-auto. Tablet/mobile preview modes still use the fit-to-pane scaling behavior.
+
+- Tightened mobile create-project preview containment: added min-w-0/max-w-full to the project creation grid and preview column, and updated the preview shell so desktop-mode horizontal scrolling stays inside the preview area instead of expanding the whole page (pps/web-builder/app/(private)/dashboard/projects/new/components/project-creation-page.tsx, pps/web-builder/app/(private)/dashboard/projects/new/components/project-template-preview.tsx).

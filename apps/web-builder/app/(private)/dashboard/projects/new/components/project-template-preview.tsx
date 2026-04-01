@@ -71,11 +71,17 @@ export function ProjectTemplatePreview(props: PreviewProps) {
     scrollArea.scrollLeft = 0;
   }, [props.type, props.starterId, props.layoutName, props.themePreset, viewport]);
 
-  const scale = Math.min(1, Math.max(0.5, availableWidth / viewportWidth));
+  const useHorizontalDesktopScroll =
+    viewport === 'desktop' && availableWidth < 1024 && availableWidth < viewportWidth;
+  const scale = useHorizontalDesktopScroll
+    ? 1
+    : Math.min(1, Math.max(0.5, availableWidth / viewportWidth));
   const scaledHeight = Math.ceil(contentHeight * scale);
+  const previewShellWidth = useHorizontalDesktopScroll ? viewportWidth : viewportWidth * scale;
+  const previewShellHeight = useHorizontalDesktopScroll ? contentHeight : scaledHeight;
 
   return (
-    <div className="flex h-full flex-col overflow-hidden border border-border/70 bg-card/60 shadow-[0_24px_80px_rgba(15,23,42,0.12)] backdrop-blur-sm">
+    <div className="flex h-full min-w-0 max-w-full flex-col overflow-hidden border border-border/70 bg-card/60 shadow-[0_24px_80px_rgba(15,23,42,0.12)] backdrop-blur-sm">
       <div className="border-b border-border/60 px-5 py-4">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
@@ -113,8 +119,17 @@ export function ProjectTemplatePreview(props: PreviewProps) {
         </div>
       </div>
 
-      <div ref={scrollAreaRef} className="min-h-0 flex-1 overflow-auto bg-muted/10">
-        <div className="mx-auto" style={{ width: viewportWidth * scale, height: scaledHeight }}>
+      <div
+        ref={scrollAreaRef}
+        className={[
+          'min-h-0 flex-1 bg-muted/10',
+          useHorizontalDesktopScroll ? 'overflow-x-auto overflow-y-auto' : 'overflow-auto',
+        ].join(' ')}
+      >
+        <div
+          className={useHorizontalDesktopScroll ? 'min-w-max' : 'mx-auto'}
+          style={{ width: previewShellWidth, height: previewShellHeight }}
+        >
           <div
             ref={contentRef}
             style={{
