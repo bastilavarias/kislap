@@ -244,7 +244,7 @@ export function Minimal({
                       </div>
                       <Badge
                         variant="secondary"
-                        className="text-xs opacity-80 whitespace-nowrap"
+                        className="text-xs opacity-80 break-words [overflow-wrap:anywhere]"
                       >
                         {exp.start_date} - {exp.end_date}
                       </Badge>

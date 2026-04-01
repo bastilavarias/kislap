@@ -13,6 +13,7 @@ import {
   formatPlatformLabel,
   MenuData,
   MenuSocialLink,
+  normalizeMenuShareUrl,
 } from "./menu-types";
 
 interface Props {
@@ -66,7 +67,7 @@ function sanitizeQrColor(value?: string | null, fallback = "111111") {
 
 export function MenuEditorial({ menu, themeMode, themeStyles, onSetThemeMode }: Props) {
   const [currentUrl, setCurrentUrl] = React.useState(
-    menu?.website_url?.trim() || KISLAP_LINKS.website
+    normalizeMenuShareUrl(menu?.website_url) || KISLAP_LINKS.website
   );
   const source =
     menu && ((menu.categories?.length ?? 0) > 0 || (menu.items?.length ?? 0) > 0)
@@ -102,16 +103,16 @@ export function MenuEditorial({ menu, themeMode, themeStyles, onSetThemeMode }: 
     if (typeof window === "undefined") return;
     try {
       if (navigator.share) {
-        await navigator.share({ title: source.name || "Menu", url: window.location.href });
+        await navigator.share({ title: source.name || "Menu", url: normalizeMenuShareUrl(window.location.href) || window.location.href });
       } else {
-        await navigator.clipboard.writeText(window.location.href);
+        await navigator.clipboard.writeText(normalizeMenuShareUrl(window.location.href) || window.location.href);
       }
     } catch {}
   };
 
   React.useEffect(() => {
     if (typeof window === "undefined") return;
-    setCurrentUrl(window.location.href);
+    setCurrentUrl(normalizeMenuShareUrl(window.location.href) || window.location.href);
   }, []);
 
   return (
@@ -274,7 +275,7 @@ export function MenuEditorial({ menu, themeMode, themeStyles, onSetThemeMode }: 
                         {variants.length ? (
                           <div className="mt-4 flex flex-wrap gap-2">
                             {variants.map((variant) => (
-                              <span key={`${item.id}-${variant.name}`} className="rounded-full border px-3 py-1 text-xs uppercase tracking-[0.12em]" style={{ borderColor }}>
+                              <span key={`${item.id}-${variant.name}`} className="max-w-full break-words rounded-full border px-3 py-1 text-xs uppercase tracking-[0.12em] [overflow-wrap:anywhere]" style={{ borderColor }}>
                                 {variant.name} ₱{variant.price}
                               </span>
                             ))}
@@ -306,11 +307,11 @@ export function MenuEditorial({ menu, themeMode, themeStyles, onSetThemeMode }: 
                 Scan the QR code to open this menu on any phone, or copy the link and send it directly to your guests.
               </p>
               <div
-                className="mt-4 inline-flex max-w-full items-center gap-2 rounded-full border px-4 py-2 text-sm"
+                className="mt-4 flex w-full max-w-full items-start gap-2 rounded-2xl border px-4 py-2 text-sm"
                 style={{ borderColor }}
               >
-                <Globe className="h-4 w-4 flex-shrink-0" />
-                <span className="truncate">{currentUrl}</span>
+                <Globe className="mt-0.5 h-4 w-4 flex-shrink-0" />
+                <span className="min-w-0 break-all [overflow-wrap:anywhere]">{currentUrl}</span>
               </div>
             </div>
           </div>

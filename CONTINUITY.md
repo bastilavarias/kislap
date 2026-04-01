@@ -248,3 +248,12 @@ pm run dev in pps/web-builder, pps/web-sites, and pps/web-marketing in parall
 - Highlighted the active theme editing state in ThemeControlPanel by changing Editing light/dark into a small pill-style status chip so the current editing bucket is easier to notice (pps/web-builder/components/customizer/theme-control-panel.tsx).
 
 - Adjusted the active theme editing state styling in ThemeControlPanel again: replaced the pill chip with a lighter underlined text treatment for Editing light/dark (pps/web-builder/components/customizer/theme-control-panel.tsx).
+
+- 2026-04-01: Hardened template overflow handling for mobile/shared links. Updated the menu template family (packages/templates/src/components/menu/menu-default.tsx, menu-editorial.tsx, menu-bistro.tsx, menu-showcase.tsx, menu-runway.tsx, menu-mosaic.tsx) so QR/share URL blocks use full-width wrapping containers instead of truncating pill rows, which fixes long social-app URLs like ?fbclid=... from blowing out the layout. Also loosened a few badge/variant/date chips in portfolio/menu templates (packages/templates/src/components/portfolio/default.tsx, minimal.tsx, ento.tsx, glass.tsx) by removing nowrap assumptions and allowing word wrapping.
+
+- 2026-04-01: Normalized menu QR/share links to canonical page URLs. Added 
+ormalizeMenuShareUrl in packages/templates/src/components/menu/menu-types.ts and updated the menu template family (menu-default.tsx, menu-editorial.tsx, menu-bistro.tsx, menu-showcase.tsx, menu-runway.tsx, menu-mosaic.tsx) so displayed share URLs, copied links, and QR code data use origin + pathname instead of full tracked URLs with query strings like ?fbclid=....
+
+- 2026-04-01: Fixed the menu-default logo overlay bug in packages/templates/src/components/menu/menu-default.tsx. The diagonal slash element inside the circular logo shell was being rendered even when a real logo_url image existed, causing a visible white/foreground line across uploaded logos. It now renders only for the fallback logo mark.
+
+- 2026-04-01: Fixed marketing showcase/public project URL generation in pps/web-marketing/src/lib/site-config.ts. getPublicProjectUrl now builds real subdomain-based public URLs (subdomain.kislap.app / subdomain.localhost:3001) instead of the old /sites/{subdomain} path pattern, so showcase cards and live previews point at the correct public host style again.

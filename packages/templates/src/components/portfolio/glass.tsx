@@ -212,7 +212,7 @@ const ExperienceSection = ({ portfolio }: { portfolio: Portfolio }) => {
               </div>
               <Badge
                 variant="secondary"
-                className="bg-white/20 dark:bg-white/10 backdrop-blur-md self-start whitespace-nowrap"
+                className="max-w-full break-words bg-white/20 dark:bg-white/10 backdrop-blur-md self-start [overflow-wrap:anywhere]"
               >
                 {exp.start_date || "N/A"} - {exp.end_date || "Present"}
               </Badge>

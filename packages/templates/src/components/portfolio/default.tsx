@@ -167,7 +167,7 @@ const ExperienceSection = ({ portfolio }: { portfolio: Portfolio }) => {
               <h3 className="font-semibold text-lg text-foreground group-hover:text-primary transition-colors">
                 {exp.role}
               </h3>
-              <span className="text-sm text-muted-foreground font-medium whitespace-nowrap">
+              <span className="text-sm text-muted-foreground font-medium break-words [overflow-wrap:anywhere]">
                 {exp.start_date || "N/A"} â€” {exp.end_date || "Present"}
               </span>
             </div>
@@ -276,7 +276,7 @@ const EducationSection = ({ portfolio }: { portfolio: Portfolio }) => {
                 </div>
               )}
             </div>
-            <div className="text-sm text-muted-foreground mt-1 @sm:mt-0 font-medium whitespace-nowrap">
+            <div className="text-sm text-muted-foreground mt-1 @sm:mt-0 font-medium break-words [overflow-wrap:anywhere]">
               {edu.year_start || "N/A"} - {edu.year_end || "Present"}
             </div>
           </div>

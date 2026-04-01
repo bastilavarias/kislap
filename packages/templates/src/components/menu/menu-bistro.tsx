@@ -7,7 +7,7 @@ import { Mode } from "@/contexts/settings-context";
 import { ThemeStyles } from "@/types/theme";
 import { ThemeSwitchToggle } from "../theme-switch-toggle";
 import { KISLAP_LINKS } from "../shared/kislap-links";
-import { formatHoursLabel, formatMenuLocation, MenuData, MenuItem, MenuSocialLink } from "./menu-types";
+import { formatHoursLabel, formatMenuLocation, MenuData, MenuItem, MenuSocialLink, normalizeMenuShareUrl } from "./menu-types";
 
 interface Props {
   menu?: MenuData;
@@ -119,7 +119,7 @@ function ItemLine({
           {variants.map((variant) => (
             <span
               key={`${item.id}-${variant.name}-${variant.price}`}
-              className="inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs uppercase tracking-[0.14em]"
+              className="inline-flex max-w-full flex-wrap items-center gap-2 rounded-full border px-3 py-1 text-xs uppercase tracking-[0.14em] [overflow-wrap:anywhere]"
               style={{ borderColor, color: mutedColor, fontFamily: headingFont }}
             >
               <span>{variant.name}</span>
@@ -133,7 +133,7 @@ function ItemLine({
 }
 
 export function MenuBistro({ menu, themeMode, themeStyles, onSetThemeMode }: Props) {
-  const [currentUrl, setCurrentUrl] = React.useState(menu?.website_url?.trim() || KISLAP_LINKS.website);
+  const [currentUrl, setCurrentUrl] = React.useState(normalizeMenuShareUrl(menu?.website_url) || KISLAP_LINKS.website);
   const [shareLabel, setShareLabel] = React.useState("Share");
   const source = menu && ((menu.categories?.length ?? 0) > 0 || (menu.items?.length ?? 0) > 0) ? menu : FALLBACK_MENU;
   const activeTheme = getActiveTheme(themeMode, themeStyles);
@@ -158,12 +158,12 @@ export function MenuBistro({ menu, themeMode, themeStyles, onSetThemeMode }: Pro
   const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=0&color=${qrForeground}&bgcolor=${qrBackground}&data=${encodeURIComponent(currentUrl)}`;
 
   React.useEffect(() => {
-    if (typeof window !== "undefined") setCurrentUrl(window.location.href);
+    if (typeof window !== "undefined") setCurrentUrl(normalizeMenuShareUrl(window.location.href) || window.location.href);
   }, []);
 
   const handleShare = async () => {
     if (typeof window === "undefined") return;
-    const url = window.location.href;
+    const url = normalizeMenuShareUrl(window.location.href) || window.location.href;
     const title = source.name?.trim() || "Menu";
     try {
       if (navigator.share) {
@@ -331,9 +331,9 @@ export function MenuBistro({ menu, themeMode, themeStyles, onSetThemeMode }: Pro
               <p className="mt-2 max-w-xl text-sm leading-7 @md:text-base" style={{ color: mutedColor }}>
                 Scan the code to open the latest menu on any phone, or send the link to customers before they even arrive.
               </p>
-              <div className="mt-4 inline-flex max-w-full items-center gap-2 rounded-full border px-4 py-2 text-sm" style={{ borderColor }}>
-                <Globe className="h-4 w-4 shrink-0" />
-                <span className="truncate">{currentUrl}</span>
+              <div className="mt-4 flex w-full max-w-full items-start gap-2 rounded-2xl border px-4 py-2 text-sm" style={{ borderColor }}>
+                <Globe className="mt-0.5 h-4 w-4 shrink-0" />
+                <span className="min-w-0 break-all [overflow-wrap:anywhere]">{currentUrl}</span>
               </div>
             </div>
           </section>

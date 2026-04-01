@@ -7,7 +7,7 @@ import { Mode } from "@/contexts/settings-context";
 import { ThemeStyles } from "@/types/theme";
 import { ThemeSwitchToggle } from "../theme-switch-toggle";
 import { KISLAP_LINKS } from "../shared/kislap-links";
-import { formatHoursLabel, formatMenuLocation, MenuData, MenuSocialLink } from "./menu-types";
+import { formatHoursLabel, formatMenuLocation, MenuData, MenuSocialLink, normalizeMenuShareUrl } from "./menu-types";
 
 interface Props {
   menu?: MenuData;
@@ -59,7 +59,7 @@ function sanitizeQrColor(value?: string | null, fallback = "111111") {
 
 export function MenuShowcase({ menu, themeMode, themeStyles, onSetThemeMode }: Props) {
   const [currentUrl, setCurrentUrl] = React.useState(
-    menu?.website_url?.trim() || KISLAP_LINKS.website
+    normalizeMenuShareUrl(menu?.website_url) || KISLAP_LINKS.website
   );
   const source =
     menu && ((menu.categories?.length ?? 0) > 0 || (menu.items?.length ?? 0) > 0)
@@ -91,16 +91,16 @@ export function MenuShowcase({ menu, themeMode, themeStyles, onSetThemeMode }: P
     if (typeof window === "undefined") return;
     try {
       if (navigator.share) {
-        await navigator.share({ title: source.name || "Menu", url: window.location.href });
+        await navigator.share({ title: source.name || "Menu", url: normalizeMenuShareUrl(window.location.href) || window.location.href });
       } else {
-        await navigator.clipboard.writeText(window.location.href);
+        await navigator.clipboard.writeText(normalizeMenuShareUrl(window.location.href) || window.location.href);
       }
     } catch {}
   };
 
   React.useEffect(() => {
     if (typeof window === "undefined") return;
-    setCurrentUrl(window.location.href);
+    setCurrentUrl(normalizeMenuShareUrl(window.location.href) || window.location.href);
   }, []);
 
   const gallery = (source.gallery_images || []).filter(Boolean) as string[];
@@ -255,7 +255,7 @@ export function MenuShowcase({ menu, themeMode, themeStyles, onSetThemeMode }: P
                           {variants.length ? (
                             <div className="mt-4 flex flex-wrap gap-2">
                               {variants.map((variant) => (
-                                <span key={`${item.id}-${variant.name}`} className="rounded-full px-3 py-1 text-xs uppercase tracking-[0.12em]" style={{ backgroundColor: `${foregroundColor}10` }}>
+                                <span key={`${item.id}-${variant.name}`} className="max-w-full break-words rounded-full px-3 py-1 text-xs uppercase tracking-[0.12em] [overflow-wrap:anywhere]" style={{ backgroundColor: `${foregroundColor}10` }}>
                                   {variant.name} ₱{variant.price}
                                 </span>
                               ))}
@@ -301,9 +301,9 @@ export function MenuShowcase({ menu, themeMode, themeStyles, onSetThemeMode }: P
               <p className="mt-2 max-w-xl text-sm leading-relaxed" style={{ color: mutedColor }}>
                 Give guests a fast way to revisit the menu. Scan the code, open the page, and share it anywhere in seconds.
               </p>
-              <div className="mt-4 inline-flex max-w-full items-center gap-2 rounded-full border px-4 py-2 text-sm" style={{ borderColor }}>
-                <Globe className="h-4 w-4 flex-shrink-0" />
-                <span className="truncate">{currentUrl}</span>
+              <div className="mt-4 flex w-full max-w-full items-start gap-2 rounded-2xl border px-4 py-2 text-sm" style={{ borderColor }}>
+                <Globe className="mt-0.5 h-4 w-4 flex-shrink-0" />
+                <span className="min-w-0 break-all [overflow-wrap:anywhere]">{currentUrl}</span>
               </div>
             </div>
           </div>
@@ -321,7 +321,7 @@ export function MenuShowcase({ menu, themeMode, themeStyles, onSetThemeMode }: P
             <a href={KISLAP_LINKS.website} target="_blank" rel="noreferrer"><Globe className="h-4 w-4" /></a>
             <a href={KISLAP_LINKS.facebook} target="_blank" rel="noreferrer"><FaFacebookF className="h-4 w-4" /></a>
           </div>
-          <p className="mt-4 text-xs" style={{ color: mutedColor }}>{currentUrl}</p>
+          <p className="mt-4 text-xs break-all [overflow-wrap:anywhere]" style={{ color: mutedColor }}>{currentUrl}</p>
         </footer>
       </div>
     </div>

@@ -33,7 +33,14 @@ export function getBuilderProjectCreateUrl(params?: {
 
 export function getPublicProjectUrl(subdomain?: string | null) {
   if (!subdomain) return '#';
-  return getSiteUrl(`/sites/${subdomain}`);
+
+  const siteUrl = new URL(`${SITE_URL}/`);
+  siteUrl.hostname = `${subdomain}.${siteUrl.hostname}`;
+  siteUrl.pathname = '/';
+  siteUrl.search = '';
+  siteUrl.hash = '';
+
+  return siteUrl.toString();
 }
 
 export const SITE_HOST_LABEL = new URL(SITE_URL).host;
