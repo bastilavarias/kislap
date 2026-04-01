@@ -236,3 +236,15 @@ pm run dev in pps/web-builder, pps/web-sites, and pps/web-marketing in parall
 - Added a live unsaved-data preview to the portfolio builder form: introduced Form / Preview tabs above the content/design area, added portfolio-form-preview.tsx that renders the shared portfolio template from current form values plus layout/theme (no save required), and wired the form to swap the editing UI with the live preview (pps/web-builder/app/(private)/dashboard/builder/portfolio/[slug]/components/form.tsx, pps/web-builder/app/(private)/dashboard/builder/portfolio/[slug]/components/portfolio-form-preview.tsx).
 
 - Extended live unsaved-data preview tabs to linktree and menu builder forms: added Form / Preview tabs above the editing area, introduced linktree-form-preview.tsx and menu-form-preview.tsx, and wired both forms to render shared-template previews from current unsaved form values plus layout/theme (including temporary object URLs for unsaved logo/cover/item/gallery/category images in the menu preview).
+
+- Extended ThemeControlPanel with a separate Swap palettes action that swaps 	heme.styles.light and 	heme.styles.dark without changing the active editing mode, and fixed the non-stateless update path to call updateSettings(newSettings) instead of sending stale settings (pps/web-builder/components/customizer/theme-control-panel.tsx).
+
+- Refined ThemeControlPanel UX by combining the active mode toggle and palette swap action into one compact Mode section, with the mode toggle as the primary control and Swap palettes as a secondary action in the same cluster (pps/web-builder/components/customizer/theme-control-panel.tsx).
+
+- Softened the combined mode/swap UI in ThemeControlPanel by removing the extra boxed card treatment, switching it to a divider-based row, and making Swap palettes a quieter secondary action (pps/web-builder/components/customizer/theme-control-panel.tsx).
+
+- Refined the combined mode/swap UX again in ThemeControlPanel: removed the divider line, moved Swap palettes below the mode toggle, and changed it into a flatter ghost-style utility action with an ArrowUpDown icon (pps/web-builder/components/customizer/theme-control-panel.tsx).
+
+- Highlighted the active theme editing state in ThemeControlPanel by changing Editing light/dark into a small pill-style status chip so the current editing bucket is easier to notice (pps/web-builder/components/customizer/theme-control-panel.tsx).
+
+- Adjusted the active theme editing state styling in ThemeControlPanel again: replaced the pill chip with a lighter underlined text treatment for Editing light/dark (pps/web-builder/components/customizer/theme-control-panel.tsx).
