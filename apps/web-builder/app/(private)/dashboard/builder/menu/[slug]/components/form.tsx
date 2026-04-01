@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { UseFieldArrayReturn, UseFormReturn } from 'react-hook-form';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Card, CardContent } from '@/components/ui/card';
@@ -20,6 +20,8 @@ import { GalleryUploader } from './gallery-uploader';
 import { ImageUploadField } from './image-upload-field';
 import { ItemsEditor } from './items-editor';
 import { SocialLinksEditor } from './social-links-editor';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { MenuFormPreview } from './menu-form-preview';
 
 interface Props {
   formMethods: UseFormReturn<MenuFormValues>;
@@ -49,6 +51,8 @@ export function Form({
   applyParsedMenu,
 }: Props) {
   const { register, watch, setValue, reset } = formMethods;
+  const previewValues = watch();
+  const [builderTab, setBuilderTab] = useState<'form' | 'preview'>('form');
 
   useEffect(() => {
     setValue('layout_name', layout);
@@ -98,47 +102,70 @@ export function Form({
   };
 
   return (
-    <div className="grid grid-cols-1 gap-6 pb-20 lg:grid-cols-12 lg:pb-0">
-      <div className="space-y-6 lg:col-span-8">
-        <Card className="border-border shadow-none">
-          <CardContent className="p-6">
-            <div className="mb-6 flex items-center justify-between gap-4">
-              <div className="flex items-center gap-2">
-                <UtensilsCrossed className="h-6 w-6" />
-                <h1 className="text-2xl font-bold">Menu Editor</h1>
-              </div>
-              <Button type="button" variant="outline" className="shadow-none" onClick={handleClearContent}>
-                Clear content
-              </Button>
-            </div>
+    <div className="w-full relative">
+      <div className="mb-6">
+        <Tabs value={builderTab} onValueChange={(value) => setBuilderTab(value as 'form' | 'preview')}>
+          <TabsList className="grid h-12 w-full max-w-md grid-cols-2 rounded-none border border-border/70 bg-background p-1">
+            <TabsTrigger
+              value="form"
+              className="rounded-none shadow-none data-[state=active]:bg-background"
+            >
+              Form
+            </TabsTrigger>
+            <TabsTrigger
+              value="preview"
+              className="rounded-none shadow-none data-[state=active]:bg-background"
+            >
+              Preview
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+      </div>
 
-            <div className="flex items-center justify-between rounded-xl border bg-muted/20 p-4">
-              <div>
-                <h3 className="text-sm font-semibold">Menu Parser</h3>
-                <p className="text-xs text-muted-foreground">
-                  Upload a menu PDF to prefill your categories and items.
-                </p>
-              </div>
-              <Button
-                type="button"
-                onClick={() => setIsParserOpen(true)}
-                className="shadow-none flex items-center gap-2
+      {builderTab === 'preview' ? (
+        <MenuFormPreview values={previewValues} layout={layout} themeSettings={localThemeSettings} />
+      ) : (
+        <div className="grid grid-cols-1 gap-6 pb-20 lg:grid-cols-12 lg:pb-0">
+          <div className="space-y-6 lg:col-span-8">
+            <Card className="border-border shadow-none">
+              <CardContent className="p-6">
+                <div className="mb-6 flex items-center justify-between gap-4">
+                  <div className="flex items-center gap-2">
+                    <UtensilsCrossed className="h-6 w-6" />
+                    <h1 className="text-2xl font-bold">Menu Editor</h1>
+                  </div>
+                  <Button type="button" variant="outline" className="shadow-none" onClick={handleClearContent}>
+                    Clear content
+                  </Button>
+                </div>
+
+                <div className="flex items-center justify-between rounded-xl border bg-muted/20 p-4">
+                  <div>
+                    <h3 className="text-sm font-semibold">Menu Parser</h3>
+                    <p className="text-xs text-muted-foreground">
+                      Upload a menu PDF to prefill your categories and items.
+                    </p>
+                  </div>
+                  <Button
+                    type="button"
+                    onClick={() => setIsParserOpen(true)}
+                    className="shadow-none flex items-center gap-2
                 bg-gradient-to-r from-amber-500 to-rose-500 
                 hover:from-amber-600 hover:to-rose-600 
                 text-white border-0 transition-all"
-                size="sm"
-              >
-                Parse Menus
-              </Button>
-            </div>
+                    size="sm"
+                  >
+                    Parse Menus
+                  </Button>
+                </div>
 
-            <div className="mt-6 flex flex-col gap-8">
-              <Accordion type="single" defaultValue="business" collapsible>
-                <AccordionItem value="business" className="rounded-lg border px-4">
-                  <AccordionTrigger className="py-3 text-base font-medium hover:no-underline">
-                    Business
-                  </AccordionTrigger>
-                  <AccordionContent className="space-y-6 px-1 pb-4 pt-4">
+                <div className="mt-6 flex flex-col gap-8">
+                  <Accordion type="single" defaultValue="business" collapsible>
+                    <AccordionItem value="business" className="rounded-lg border px-4">
+                      <AccordionTrigger className="py-3 text-base font-medium hover:no-underline">
+                        Business
+                      </AccordionTrigger>
+                      <AccordionContent className="space-y-6 px-1 pb-4 pt-4">
                     <div className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-primary">
                       <Store className="h-4 w-4" />
                       Business Profile
@@ -211,85 +238,87 @@ export function Form({
                       <BusinessHoursEditor formMethods={formMethods} />
                       <SocialLinksEditor formMethods={formMethods} />
                     </div>
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
 
-              <Accordion type="single" defaultValue="categories" collapsible>
-                <AccordionItem value="categories" className="rounded-lg border px-4">
-                  <AccordionTrigger className="py-3 text-base font-medium hover:no-underline">
-                    Categories
-                  </AccordionTrigger>
-                  <AccordionContent className="px-1 pb-4 pt-4">
-                    <div className="mb-4 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-primary">
-                      <Tags className="h-4 w-4" />
-                      Categories
-                    </div>
-                    <CategoriesEditor formMethods={formMethods} fieldArray={categoriesFieldArray} />
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
+                  <Accordion type="single" defaultValue="categories" collapsible>
+                    <AccordionItem value="categories" className="rounded-lg border px-4">
+                      <AccordionTrigger className="py-3 text-base font-medium hover:no-underline">
+                        Categories
+                      </AccordionTrigger>
+                      <AccordionContent className="px-1 pb-4 pt-4">
+                        <div className="mb-4 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-primary">
+                          <Tags className="h-4 w-4" />
+                          Categories
+                        </div>
+                        <CategoriesEditor formMethods={formMethods} fieldArray={categoriesFieldArray} />
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
 
-              <Accordion type="single" defaultValue="items" collapsible>
-                <AccordionItem value="items" className="rounded-lg border px-4">
-                  <AccordionTrigger className="py-3 text-base font-medium hover:no-underline">
-                    Items
-                  </AccordionTrigger>
-                  <AccordionContent className="px-1 pb-4 pt-4">
-                    <div className="mb-4 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-primary">
-                      <UtensilsCrossed className="h-4 w-4" />
-                      Menu Items
-                    </div>
-                    <ItemsEditor formMethods={formMethods} fieldArray={itemsFieldArray} />
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
+                  <Accordion type="single" defaultValue="items" collapsible>
+                    <AccordionItem value="items" className="rounded-lg border px-4">
+                      <AccordionTrigger className="py-3 text-base font-medium hover:no-underline">
+                        Items
+                      </AccordionTrigger>
+                      <AccordionContent className="px-1 pb-4 pt-4">
+                        <div className="mb-4 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-primary">
+                          <UtensilsCrossed className="h-4 w-4" />
+                          Menu Items
+                        </div>
+                        <ItemsEditor formMethods={formMethods} fieldArray={itemsFieldArray} />
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
 
-              <Accordion type="single" defaultValue="gallery" collapsible>
-                <AccordionItem value="gallery" className="rounded-lg border px-4">
-                  <AccordionTrigger className="py-3 text-base font-medium hover:no-underline">
-                    Gallery
-                  </AccordionTrigger>
-                  <AccordionContent className="px-1 pb-4 pt-4">
-                    <div className="mb-4 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-primary">
-                      <Store className="h-4 w-4" />
-                      Gallery
-                    </div>
-                    <div className="rounded-lg border bg-muted/20 p-4">
-                      <GalleryUploader
-                        files={galleryImages.map((item) => item.image as File | null)}
-                        urls={galleryImages.map((item) => item.image_url || null)}
-                        onChange={handleGalleryChange}
-                        maxFiles={8}
-                      />
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
+                  <Accordion type="single" defaultValue="gallery" collapsible>
+                    <AccordionItem value="gallery" className="rounded-lg border px-4">
+                      <AccordionTrigger className="py-3 text-base font-medium hover:no-underline">
+                        Gallery
+                      </AccordionTrigger>
+                      <AccordionContent className="px-1 pb-4 pt-4">
+                        <div className="mb-4 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-primary">
+                          <Store className="h-4 w-4" />
+                          Gallery
+                        </div>
+                        <div className="rounded-lg border bg-muted/20 p-4">
+                          <GalleryUploader
+                            files={galleryImages.map((item) => item.image as File | null)}
+                            urls={galleryImages.map((item) => item.image_url || null)}
+                            onChange={handleGalleryChange}
+                            maxFiles={8}
+                          />
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="relative lg:col-span-4">
+            <div className="sticky top-6 space-y-4">
+              <DesignPanel
+                layout={layout}
+                setLayout={setLayout}
+                localThemeSettings={localThemeSettings}
+                setLocalThemeSettings={setLocalThemeSettings}
+                menuURL={menuURL}
+                qrForegroundColor={watch('qr_settings.foreground_color')}
+                qrBackgroundColor={watch('qr_settings.background_color')}
+                setQRForegroundColor={(value) =>
+                  setValue('qr_settings.foreground_color', value, { shouldDirty: true })
+                }
+                setQRBackgroundColor={(value) =>
+                  setValue('qr_settings.background_color', value, { shouldDirty: true })
+                }
+              />
             </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      <div className="relative lg:col-span-4">
-        <div className="sticky top-6 space-y-4">
-          <DesignPanel
-            layout={layout}
-            setLayout={setLayout}
-            localThemeSettings={localThemeSettings}
-            setLocalThemeSettings={setLocalThemeSettings}
-            menuURL={menuURL}
-            qrForegroundColor={watch('qr_settings.foreground_color')}
-            qrBackgroundColor={watch('qr_settings.background_color')}
-            setQRForegroundColor={(value) =>
-              setValue('qr_settings.foreground_color', value, { shouldDirty: true })
-            }
-            setQRBackgroundColor={(value) =>
-              setValue('qr_settings.background_color', value, { shouldDirty: true })
-            }
-          />
+          </div>
         </div>
-      </div>
+      )}
 
       <ParsedFileDialog
         open={isParserOpen}
