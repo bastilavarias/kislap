@@ -257,3 +257,7 @@ ormalizeMenuShareUrl in packages/templates/src/components/menu/menu-types.ts and
 - 2026-04-01: Fixed the menu-default logo overlay bug in packages/templates/src/components/menu/menu-default.tsx. The diagonal slash element inside the circular logo shell was being rendered even when a real logo_url image existed, causing a visible white/foreground line across uploaded logos. It now renders only for the fallback logo mark.
 
 - 2026-04-01: Fixed marketing showcase/public project URL generation in pps/web-marketing/src/lib/site-config.ts. getPublicProjectUrl now builds real subdomain-based public URLs (subdomain.kislap.app / subdomain.localhost:3001) instead of the old /sites/{subdomain} path pattern, so showcase cards and live previews point at the correct public host style again.
+
+- 2026-04-01: Fixed mojibake in packages/templates/src/components/shared/kislap-share-footer.tsx. Restored proper ©, ♥, and ✨ characters so shared footers no longer render question-mark/garbled symbols in the ‘Made with’ and ‘Powered by Kislap’ lines.
+
+- 2026-04-01: Fixed placeholder ? symbols in the menu-default template footer (packages/templates/src/components/menu/menu-default.tsx). Replaced the hardcoded question marks with ♥ for 'Made with' and ✨ for 'Powered by Kislap'. This was separate from the shared footer mojibake cleanup.

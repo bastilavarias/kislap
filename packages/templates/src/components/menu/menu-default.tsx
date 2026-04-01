@@ -957,7 +957,7 @@ export function MenuDefault({
                   }}
                 >
                   All rights reserved. Made with{" "}
-                  <span className="text-red-500">?</span>
+                  <span className="text-red-500">♥</span>
                 </p>
               </div>
 
@@ -972,7 +972,7 @@ export function MenuDefault({
                     className="flex items-center gap-1.5 text-xs font-black uppercase tracking-widest"
                     style={{ color: tokens.foregroundColor, fontFamily: tokens.headingFont }}
                   >
-                    <span className="text-amber-400">?</span> Powered by Kislap
+                    <span className="text-amber-400">✨</span> Powered by Kislap
                   </span>
                   <p
                     className="text-[10px] uppercase tracking-widest"
