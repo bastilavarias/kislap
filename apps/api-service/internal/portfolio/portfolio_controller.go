@@ -54,12 +54,18 @@ func (controller Controller) Save(context *gin.Context) {
 		if files, ok := form.File["avatar"]; ok && len(files) > 0 {
 			request.AvatarURL = nil
 		}
+		if files, ok := form.File["resume"]; ok && len(files) > 0 {
+			request.ResumeURL = nil
+		}
 	}
 
 	payload := request.ToServicePayload()
 	if form := context.Request.MultipartForm; form != nil {
 		if files, ok := form.File["avatar"]; ok && len(files) > 0 {
 			payload.Avatar = files[0]
+		}
+		if files, ok := form.File["resume"]; ok && len(files) > 0 {
+			payload.Resume = files[0]
 		}
 	}
 

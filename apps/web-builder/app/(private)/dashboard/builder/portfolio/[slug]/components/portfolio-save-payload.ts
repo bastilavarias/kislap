@@ -19,6 +19,7 @@ export function buildPortfolioSaveFormData(
     name: values.name || '',
     job_title: values.job_title || '',
     avatar_url: values.avatar ? null : values.avatar_url || null,
+    resume_url: values.resume ? null : values.resume_url || null,
     location: values.location || '',
     introduction: values.introduction || '',
     about: values.about || '',
@@ -48,6 +49,9 @@ export function buildPortfolioSaveFormData(
   const formData = new FormData();
   if (values.avatar instanceof File) {
     formData.append('avatar', values.avatar);
+  }
+  if (values.resume instanceof File) {
+    formData.append('resume', values.resume);
   }
 
   formData.append('json_body', JSON.stringify(payload));

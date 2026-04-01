@@ -18,6 +18,7 @@ import {
   MenuData,
   MenuItem as MenuItemData,
   MenuSocialLink,
+  normalizeMenuShareUrl,
 } from "./menu-types";
 
 interface Props {
@@ -298,7 +299,7 @@ function MenuItemBlock({
           {badge ? (
             <div>
               <span
-                className="inline-flex rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em]"
+                className="inline-flex max-w-full break-words rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] [overflow-wrap:anywhere]"
                 style={{
                   fontFamily: tokens.headingFont,
                   borderColor: tokens.borderColor,
@@ -326,10 +327,10 @@ function MenuItemBlock({
             {sortedVariants.map((variant) => (
               <span
                 key={`${name}-${variant.name}-${variant.placement_order ?? 0}`}
-                className="inline-flex items-center gap-2 rounded-full border px-3 py-1"
+                className="inline-flex max-w-full flex-wrap items-center gap-2 rounded-full border px-3 py-1 [overflow-wrap:anywhere]"
                 style={{ borderColor: tokens.borderColor }}
               >
-                <span className="font-semibold uppercase tracking-[0.08em]">
+                <span className="font-semibold uppercase tracking-[0.08em] break-words [overflow-wrap:anywhere]">
                   {variant.name}
                 </span>
                 <span style={{ color: tokens.mutedColor }}>
@@ -544,7 +545,7 @@ export function MenuDefault({
 }: Props) {
   const [shareLabel, setShareLabel] = React.useState("Share");
   const [currentUrl, setCurrentUrl] = React.useState(
-    menu?.website_url?.trim() || KISLAP_LINKS.website,
+    normalizeMenuShareUrl(menu?.website_url) || KISLAP_LINKS.website,
   );
   const source =
     menu && (menu.categories?.length || menu.items?.length)
@@ -608,7 +609,7 @@ export function MenuDefault({
   const handleShare = React.useCallback(async () => {
     if (typeof window === "undefined") return;
 
-    const url = window.location.href;
+    const url = normalizeMenuShareUrl(window.location.href) || window.location.href;
     const title = source.name?.trim() || "Menu";
 
     try {
@@ -627,7 +628,7 @@ export function MenuDefault({
 
   React.useEffect(() => {
     if (typeof window === "undefined") return;
-    setCurrentUrl(window.location.href);
+    setCurrentUrl(normalizeMenuShareUrl(window.location.href) || window.location.href);
   }, []);
 
   return (
@@ -712,10 +713,12 @@ export function MenuDefault({
                 ) : (
                   <LogoMark />
                 )}
-                <div
-                  className="absolute h-1 w-full -rotate-45 transform"
-                  style={{ backgroundColor: tokens.foregroundColor }}
-                />
+                {!source.logo_url ? (
+                  <div
+                    className="absolute h-1 w-full -rotate-45 transform"
+                    style={{ backgroundColor: tokens.foregroundColor }}
+                  />
+                ) : null}
               </div>
 
               <div className="mt-4">
@@ -919,14 +922,16 @@ export function MenuDefault({
                   copy the link and share it with your customers.
                 </p>
                 <div
-                  className="mt-4 inline-flex max-w-full items-center gap-2 rounded-full border px-4 py-2 text-sm"
+                  className="mt-4 flex w-full max-w-full items-start gap-2 rounded-2xl border px-4 py-2 text-sm"
                   style={{
                     borderColor: tokens.borderColor,
                     color: tokens.foregroundColor,
                   }}
                 >
-                  <Globe className="h-4 w-4 flex-shrink-0" />
-                  <span className="truncate">{currentUrl}</span>
+                  <Globe className="mt-0.5 h-4 w-4 flex-shrink-0" />
+                  <span className="min-w-0 break-all [overflow-wrap:anywhere]">
+                    {currentUrl}
+                  </span>
                 </div>
               </div>
             </div>
@@ -952,7 +957,7 @@ export function MenuDefault({
                   }}
                 >
                   All rights reserved. Made with{" "}
-                  <span className="text-red-500">?</span>
+                  <span className="text-red-500">♥</span>
                 </p>
               </div>
 
@@ -967,7 +972,7 @@ export function MenuDefault({
                     className="flex items-center gap-1.5 text-xs font-black uppercase tracking-widest"
                     style={{ color: tokens.foregroundColor, fontFamily: tokens.headingFont }}
                   >
-                    <span className="text-amber-400">?</span> Powered by Kislap
+                    <span className="text-amber-400">✨</span> Powered by Kislap
                   </span>
                   <p
                     className="text-[10px] uppercase tracking-widest"

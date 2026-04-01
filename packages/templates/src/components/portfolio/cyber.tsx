@@ -50,6 +50,7 @@ import { Project } from "@/types/project";
 import { Portfolio } from "@/types/portfolio";
 import { getPortfolioAvatarUrl } from "./avatar";
 import { KislapShareFooter } from "../shared/kislap-share-footer";
+import { PortfolioResumeButton } from "./portfolio-resume-button";
 
 // --- Types ---
 interface Props {
@@ -143,8 +144,8 @@ const HeroSection = ({
       </div>
 
       <div className="flex flex-col items-end gap-4">
-        {socialLinks.length > 0 && (
-          <div className="flex gap-2">
+        {(socialLinks.length > 0 || portfolio.resume_url) && (
+          <div className="flex flex-wrap justify-end gap-2">
             {socialLinks.map((link, i) => (
               <Link key={i} href={link.url!} target="_blank">
                 <Button
@@ -157,6 +158,10 @@ const HeroSection = ({
                 </Button>
               </Link>
             ))}
+            <PortfolioResumeButton
+              resumeUrl={portfolio.resume_url}
+              className="border-primary/60 text-primary hover:bg-primary/10"
+            />
           </div>
         )}
       </div>

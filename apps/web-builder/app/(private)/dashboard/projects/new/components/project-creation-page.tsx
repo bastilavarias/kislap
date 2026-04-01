@@ -26,6 +26,7 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { useProject } from '@/hooks/api/use-project';
 import { cn } from '@/lib/utils';
@@ -162,6 +163,7 @@ export function ProjectCreationPage() {
   const [subDomain, setSubDomain] = useState('');
   const [subDomainTouched, setSubDomainTouched] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
+  const [mobileTab, setMobileTab] = useState<'form' | 'preview'>('form');
 
   const typeCopy = PROJECT_TYPE_COPY[projectType];
   const starters = STARTERS[projectType];
@@ -230,8 +232,27 @@ export function ProjectCreationPage() {
   };
 
   return (
-    <div className="grid gap-8 xl:grid-cols-[460px_minmax(0,1fr)]">
-      <section className="space-y-8">
+    <div className="space-y-6">
+      <div className="xl:hidden">
+        <Tabs value={mobileTab} onValueChange={(value) => setMobileTab(value as 'form' | 'preview')}>
+          <TabsList className="grid h-12 w-full grid-cols-2 rounded-xl border border-border/70 bg-card p-1">
+            <TabsTrigger value="form" className="rounded-lg">
+              Form
+            </TabsTrigger>
+            <TabsTrigger value="preview" className="rounded-lg">
+              Preview
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+      </div>
+
+      <div className="grid min-w-0 gap-8 xl:grid-cols-[460px_minmax(0,1fr)]">
+      <section
+        className={cn(
+          'min-w-0 space-y-8',
+          mobileTab === 'preview' ? 'hidden xl:block' : 'block'
+        )}
+      >
         <div className="space-y-4">
           <Button asChild variant="ghost" className="w-fit px-0 text-muted-foreground">
             <Link href="/dashboard">
@@ -479,7 +500,12 @@ export function ProjectCreationPage() {
         </div>
       </section>
 
-      <section className="xl:sticky xl:top-24 xl:h-[calc(100vh-8rem)]">
+      <section
+        className={cn(
+          'min-w-0 max-w-full xl:sticky xl:top-24 xl:h-[calc(100vh-8rem)]',
+          mobileTab === 'form' ? 'hidden xl:block' : 'block'
+        )}
+      >
         <ProjectTemplatePreview
           type={projectType}
           starterId={starterId}
@@ -495,6 +521,7 @@ export function ProjectCreationPage() {
           }
         />
       </section>
+      </div>
     </div>
   );
 }

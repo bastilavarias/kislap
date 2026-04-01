@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -28,6 +28,8 @@ import { SimpleRichTextEditor } from '@/components/simple-rich-text-editor';
 import { SectionsEditor } from './sections-editor';
 import { ImageUploadField } from './image-upload-field';
 import { DesignPanel } from './design-panel';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { LinktreeFormPreview } from './linktree-form-preview';
 
 interface Props {
   formMethods: UseFormReturn<LinktreeFormValues>;
@@ -56,6 +58,8 @@ export function Form({
     reset,
     formState: { errors },
   } = formMethods;
+  const previewValues = watch();
+  const [builderTab, setBuilderTab] = useState<'form' | 'preview'>('form');
 
   useEffect(() => {
     //@ts-ignore
@@ -85,26 +89,48 @@ export function Form({
 
   return (
     <div className="w-full relative">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start pb-20 lg:pb-0">
-        <div className="lg:col-span-8 space-y-6">
-          <Card className="shadow-none border-border">
-            <CardContent className="p-6">
-              <div className="flex justify-between items-center mb-6 gap-4">
-                <h1 className="text-2xl font-bold flex items-center gap-2">
-                  <LinkIcon className="w-6 h-6" /> Linktree Content
-                </h1>
-                <Button type="button" variant="outline" className="shadow-none" onClick={handleClearContent}>
-                  Clear content
-                </Button>
-              </div>
+      <div className="mb-6">
+        <Tabs value={builderTab} onValueChange={(value) => setBuilderTab(value as 'form' | 'preview')}>
+          <TabsList className="grid h-12 w-full max-w-md grid-cols-2 rounded-none border border-border/70 bg-background p-1">
+            <TabsTrigger
+              value="form"
+              className="rounded-none shadow-none data-[state=active]:bg-background"
+            >
+              Form
+            </TabsTrigger>
+            <TabsTrigger
+              value="preview"
+              className="rounded-none shadow-none data-[state=active]:bg-background"
+            >
+              Preview
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+      </div>
 
-              <div className="flex flex-col gap-10">
-                <Accordion type="single" defaultValue="details" collapsible>
-                  <AccordionItem value="details" className="rounded-lg border px-4 shadow-none">
-                    <AccordionTrigger className="cursor-pointer py-3 text-base font-medium hover:no-underline">
-                      Identity & Branding
-                    </AccordionTrigger>
-                    <AccordionContent className="pt-4 pb-4 space-y-8 px-1">
+      {builderTab === 'preview' ? (
+        <LinktreeFormPreview values={previewValues} layout={layout} themeSettings={localThemeSettings} />
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start pb-20 lg:pb-0">
+          <div className="lg:col-span-8 space-y-6">
+            <Card className="shadow-none border-border">
+              <CardContent className="p-6">
+                <div className="flex justify-between items-center mb-6 gap-4">
+                  <h1 className="text-2xl font-bold flex items-center gap-2">
+                    <LinkIcon className="w-6 h-6" /> Linktree Content
+                  </h1>
+                  <Button type="button" variant="outline" className="shadow-none" onClick={handleClearContent}>
+                    Clear content
+                  </Button>
+                </div>
+
+                <div className="flex flex-col gap-10">
+                  <Accordion type="single" defaultValue="details" collapsible>
+                    <AccordionItem value="details" className="rounded-lg border px-4 shadow-none">
+                      <AccordionTrigger className="cursor-pointer py-3 text-base font-medium hover:no-underline">
+                        Identity & Branding
+                      </AccordionTrigger>
+                      <AccordionContent className="pt-4 pb-4 space-y-8 px-1">
                       <div className="space-y-4">
                         <div className="flex items-center gap-2 text-sm text-primary font-semibold uppercase tracking-wider">
                           <Palette className="w-4 h-4" /> Branding
@@ -177,44 +203,45 @@ export function Form({
                           </div>
                         </div>
                       </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                </Accordion>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
 
-                <Accordion type="single" defaultValue="sections" collapsible>
-                  <AccordionItem value="sections" className="rounded-lg border px-4 shadow-none">
-                    <AccordionTrigger className="cursor-pointer py-3 text-base font-medium hover:no-underline">
-                      Links & Custom Sections
-                    </AccordionTrigger>
-                    <AccordionContent className="pt-2 pb-4 px-1">
-                      <SectionsEditor
-                        formMethods={formMethods}
-                        sectionsFieldArray={sectionsFieldArray}
-                        onAddSection={onAddSection}
-                      />
-                    </AccordionContent>
-                  </AccordionItem>
-                </Accordion>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+                  <Accordion type="single" defaultValue="sections" collapsible>
+                    <AccordionItem value="sections" className="rounded-lg border px-4 shadow-none">
+                      <AccordionTrigger className="cursor-pointer py-3 text-base font-medium hover:no-underline">
+                        Links & Custom Sections
+                      </AccordionTrigger>
+                      <AccordionContent className="pt-2 pb-4 px-1">
+                        <SectionsEditor
+                          formMethods={formMethods}
+                          sectionsFieldArray={sectionsFieldArray}
+                          onAddSection={onAddSection}
+                        />
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
 
-        <div className="hidden lg:col-span-4 lg:block relative">
-          <div className="sticky top-6 space-y-4">
-            <DesignPanel
-              layout={layout}
-              setLayout={setLayout}
-              backgroundStyle={backgroundStyle}
-              setBackgroundStyle={(style) =>
-                setValue('background_style', style, { shouldDirty: true })
-              }
-              localThemeSettings={localThemeSettings}
-              setLocalThemeSettings={setLocalThemeSettings}
-            />
+          <div className="hidden lg:col-span-4 lg:block relative">
+            <div className="sticky top-6 space-y-4">
+              <DesignPanel
+                layout={layout}
+                setLayout={setLayout}
+                backgroundStyle={backgroundStyle}
+                setBackgroundStyle={(style) =>
+                  setValue('background_style', style, { shouldDirty: true })
+                }
+                localThemeSettings={localThemeSettings}
+                setLocalThemeSettings={setLocalThemeSettings}
+              />
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       <div className="lg:hidden fixed bottom-6 right-6 z-50">
         <Sheet>

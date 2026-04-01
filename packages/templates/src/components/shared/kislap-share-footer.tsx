@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Github, Globe } from "lucide-react";
 import { FaFacebookF } from "react-icons/fa6";
@@ -51,3 +51,4 @@ export function KislapShareFooter({ name, className }: Props) {
     </footer>
   );
 }
+

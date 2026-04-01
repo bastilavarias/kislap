@@ -215,3 +215,53 @@ ext build, webpack surfaced real missing shared-template deps from the iz templ
 ode_modules/@kislap/templates.
 
 - 2026-03-31: Updated root package.json workspaces to include pps/web-builder. This aligns the monorepo workspace graph with the actual apps consuming shared packages like @kislap/templates, and should improve local-package resolution/linking behavior in CI/Vercel for web-builder.
+
+- 2026-04-01: Added root dev-clients.sh for Windows/Git Bash-friendly local frontend development. It launches 
+pm run dev in pps/web-builder, pps/web-sites, and pps/web-marketing in parallel and traps Ctrl+C to stop all three together.
+
+- 2026-04-01: Wired the root dev launcher into package.json with dev:clients, which runs ash ./dev-clients.sh from the repo root to start web-builder, web-sites, and web-marketing together.
+
+- 2026-04-01: Updated root dev-clients.sh to launch frontend apps on fixed dev ports: web-builder on 3000, web-sites on 3001, and web-marketing on 4321. Next apps use -p, Astro marketing uses --port.
+
+- 2026-04-01: Added responsive mobile/tablet switching to the new project creation page in pps/web-builder/app/(private)/dashboard/projects/new/components/project-creation-page.tsx. Desktop (xl) still uses the split form/preview layout. Below xl, a Form / Preview tab switch is shown and only one pane is rendered at a time to keep the preview readable on smaller screens.
+
+- 2026-04-01: Tightened pps/web-builder/app/(private)/dashboard/projects/new/components/project-template-preview.tsx to prevent horizontal scrollbars in the preview shell. Changed the scroll area to overflow-y-auto overflow-x-hidden and constrained the scaled preview wrapper with maxWidth: '100%' plus overflow-x-hidden, so desktop preview scaling cannot spill beyond the container width.
+
+- 2026-04-01: Rolled back the preview-shell overflow clamp in pps/web-builder/app/(private)/dashboard/projects/new/components/project-template-preview.tsx. The attempt to force overflow-x-hidden and maxWidth: '100%' on the scaled preview wrapper caused broader preview breakage, so the shell was restored to the prior overflow-auto / plain wrapper behavior.
+
+- 2026-04-01: Adjusted pps/web-builder/app/(private)/dashboard/projects/new/components/project-template-preview.tsx so Desktop preview mode on narrow screens uses a true wide canvas with horizontal scrolling instead of forced scaling/clipping. Added useHorizontalDesktopScroll condition: when iewport === 'desktop' and the available preview width is under 1024 and narrower than the desktop canvas, scale is pinned to 1 and the preview shell becomes overflow-x-auto overflow-y-auto. Tablet/mobile preview modes still use the fit-to-pane scaling behavior.
+
+- Tightened mobile create-project preview containment: added min-w-0/max-w-full to the project creation grid and preview column, and updated the preview shell so desktop-mode horizontal scrolling stays inside the preview area instead of expanding the whole page (pps/web-builder/app/(private)/dashboard/projects/new/components/project-creation-page.tsx, pps/web-builder/app/(private)/dashboard/projects/new/components/project-template-preview.tsx).
+
+- Added a live unsaved-data preview to the portfolio builder form: introduced Form / Preview tabs above the content/design area, added portfolio-form-preview.tsx that renders the shared portfolio template from current form values plus layout/theme (no save required), and wired the form to swap the editing UI with the live preview (pps/web-builder/app/(private)/dashboard/builder/portfolio/[slug]/components/form.tsx, pps/web-builder/app/(private)/dashboard/builder/portfolio/[slug]/components/portfolio-form-preview.tsx).
+
+- Extended live unsaved-data preview tabs to linktree and menu builder forms: added Form / Preview tabs above the editing area, introduced linktree-form-preview.tsx and menu-form-preview.tsx, and wired both forms to render shared-template previews from current unsaved form values plus layout/theme (including temporary object URLs for unsaved logo/cover/item/gallery/category images in the menu preview).
+
+- Extended ThemeControlPanel with a separate Swap palettes action that swaps 	heme.styles.light and 	heme.styles.dark without changing the active editing mode, and fixed the non-stateless update path to call updateSettings(newSettings) instead of sending stale settings (pps/web-builder/components/customizer/theme-control-panel.tsx).
+
+- Refined ThemeControlPanel UX by combining the active mode toggle and palette swap action into one compact Mode section, with the mode toggle as the primary control and Swap palettes as a secondary action in the same cluster (pps/web-builder/components/customizer/theme-control-panel.tsx).
+
+- Softened the combined mode/swap UI in ThemeControlPanel by removing the extra boxed card treatment, switching it to a divider-based row, and making Swap palettes a quieter secondary action (pps/web-builder/components/customizer/theme-control-panel.tsx).
+
+- Refined the combined mode/swap UX again in ThemeControlPanel: removed the divider line, moved Swap palettes below the mode toggle, and changed it into a flatter ghost-style utility action with an ArrowUpDown icon (pps/web-builder/components/customizer/theme-control-panel.tsx).
+
+- Highlighted the active theme editing state in ThemeControlPanel by changing Editing light/dark into a small pill-style status chip so the current editing bucket is easier to notice (pps/web-builder/components/customizer/theme-control-panel.tsx).
+
+- Adjusted the active theme editing state styling in ThemeControlPanel again: replaced the pill chip with a lighter underlined text treatment for Editing light/dark (pps/web-builder/components/customizer/theme-control-panel.tsx).
+
+- 2026-04-01: Hardened template overflow handling for mobile/shared links. Updated the menu template family (packages/templates/src/components/menu/menu-default.tsx, menu-editorial.tsx, menu-bistro.tsx, menu-showcase.tsx, menu-runway.tsx, menu-mosaic.tsx) so QR/share URL blocks use full-width wrapping containers instead of truncating pill rows, which fixes long social-app URLs like ?fbclid=... from blowing out the layout. Also loosened a few badge/variant/date chips in portfolio/menu templates (packages/templates/src/components/portfolio/default.tsx, minimal.tsx, ento.tsx, glass.tsx) by removing nowrap assumptions and allowing word wrapping.
+
+- 2026-04-01: Normalized menu QR/share links to canonical page URLs. Added 
+ormalizeMenuShareUrl in packages/templates/src/components/menu/menu-types.ts and updated the menu template family (menu-default.tsx, menu-editorial.tsx, menu-bistro.tsx, menu-showcase.tsx, menu-runway.tsx, menu-mosaic.tsx) so displayed share URLs, copied links, and QR code data use origin + pathname instead of full tracked URLs with query strings like ?fbclid=....
+
+- 2026-04-01: Fixed the menu-default logo overlay bug in packages/templates/src/components/menu/menu-default.tsx. The diagonal slash element inside the circular logo shell was being rendered even when a real logo_url image existed, causing a visible white/foreground line across uploaded logos. It now renders only for the fallback logo mark.
+
+- 2026-04-01: Fixed marketing showcase/public project URL generation in pps/web-marketing/src/lib/site-config.ts. getPublicProjectUrl now builds real subdomain-based public URLs (subdomain.kislap.app / subdomain.localhost:3001) instead of the old /sites/{subdomain} path pattern, so showcase cards and live previews point at the correct public host style again.
+
+- 2026-04-01: Fixed mojibake in packages/templates/src/components/shared/kislap-share-footer.tsx. Restored proper ©, ♥, and ✨ characters so shared footers no longer render question-mark/garbled symbols in the ‘Made with’ and ‘Powered by Kislap’ lines.
+
+- 2026-04-01: Fixed placeholder ? symbols in the menu-default template footer (packages/templates/src/components/menu/menu-default.tsx). Replaced the hardcoded question marks with ♥ for 'Made with' and ✨ for 'Powered by Kislap'. This was separate from the shared footer mojibake cleanup.
+
+- 2026-04-01: Added optional PDF-only resume upload to the portfolio stack. Backend: added resume_url to portfolios and extended the existing portfolio multipart upload flow to accept a resume file and store it under the same object-storage path pattern using a dedicated resume folder (apps/api-service/models/portfolio.go, apps/api-service/internal/portfolio/portfolio_dto.go, portfolio_controller.go, portfolio_service.go). Builder: extended portfolio schema/types/API response types with resume and resume_url, updated the provider/save payload to persist and hydrate resume state, and added an inline PDF uploader to the Header & Bio section of the portfolio form using the existing Dropzone component (apps/web-builder/lib/schemas/portfolio.ts, apps/web-builder/types/portfolio.ts, apps/web-builder/types/api-response.ts, apps/web-builder/app/(private)/dashboard/builder/portfolio/[slug]/components/portfolio-provider.tsx, portfolio-save-payload.ts, form.tsx). Preview: portfolio form preview now creates an object URL for an unsaved resume file and passes resume_url into the live preview project (portfolio-form-preview.tsx, apps/web-builder/lib/project-preview-data.ts). Templates: added a shared PortfolioResumeButton helper and rendered it across the portfolio template family so a download CTA only appears when resume_url exists (packages/templates/src/components/portfolio/portfolio-resume-button.tsx plus default.tsx, neo-brutalist.tsx, newspaper.tsx, minimal.tsx, glass.tsx, bento.tsx, cyber.tsx, kinetic.tsx, vaporware.tsx). Also updated web-sites shared types with resume_url (apps/web-sites/types/portfolio.ts, apps/web-sites/types/api-response.ts).
+
+- 2026-04-01: Added the missing schema migration for portfolio resumes in the repo’s real migration layer: apps/web-admin/database/migrations/2026_04_01_180000_add_resume_url_to_portfolios_table.php. This adds a nullable resume_url column to portfolios after avatar_url and drops it on rollback. The Go API itself does not have a migration runner, so web-admin migrations remain the schema source of truth.

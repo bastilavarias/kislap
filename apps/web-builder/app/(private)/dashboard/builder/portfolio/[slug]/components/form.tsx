@@ -32,6 +32,8 @@ import {
   Phone,
   Globe,
   User,
+  FileText,
+  UploadCloud,
   Linkedin,
   Github,
   Twitter,
@@ -67,6 +69,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Settings } from '@/contexts/settings-context';
 import { cn } from '@/lib/utils';
 import { SortableList } from '@/components/sortable-list';
+import { PortfolioFormPreview } from './portfolio-form-preview';
+import { Dropzone, DropzoneContent, DropzoneEmptyState } from '@/components/ui/shadcn-io/dropzone';
 
 const LAYOUT_OPTIONS = [
   { id: 'default', name: 'Default', icon: LayoutTemplate, description: 'Clean & Standard' },
@@ -299,6 +303,7 @@ export function Form({
     reset,
     formState: { errors },
   } = formMethods;
+  const previewValues = watch();
 
   const { fields: workFields, remove: removeWork, move: moveWork } = workFieldArray;
   const {
@@ -313,6 +318,7 @@ export function Form({
     type: 'work' | 'education' | 'project' | null;
     index: number | null;
   }>({ type: null, index: null });
+  const [builderTab, setBuilderTab] = useState<'form' | 'preview'>('form');
 
   const closeDialog = () => setEditState({ type: null, index: null });
 
@@ -334,6 +340,8 @@ export function Form({
       job_title: '',
       avatar: null,
       avatar_url: '',
+      resume: null,
+      resume_url: '',
       location: '',
       introduction: '',
       about: '',
@@ -353,43 +361,70 @@ export function Form({
 
   return (
     <div className="w-full relative">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start pb-20 lg:pb-0">
-        <div className="lg:col-span-8 space-y-6">
-          <Card className="shadow-none lg:border-border lg:bg-card lg:border">
-            <CardContent className="p-3 lg:p-6">
-              <div className="flex justify-between items-center mb-6 px-1 lg:px-0 gap-4">
-                <h1 className="text-2xl font-bold">Content</h1>
-                <Button type="button" variant="outline" className="shadow-none" onClick={handleClearContent}>
-                  Clear content
-                </Button>
-              </div>
+      <div className="mb-6">
+        <Tabs value={builderTab} onValueChange={(value) => setBuilderTab(value as 'form' | 'preview')}>
+          <TabsList className="grid h-12 w-full max-w-md grid-cols-2 rounded-none border border-border/70 bg-background p-1">
+            <TabsTrigger
+              value="form"
+              className="rounded-none shadow-none data-[state=active]:bg-background"
+            >
+              Form
+            </TabsTrigger>
+            <TabsTrigger
+              value="preview"
+              className="rounded-none shadow-none data-[state=active]:bg-background"
+            >
+              Preview
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+      </div>
 
-              <div className="flex items-center justify-between mb-8 bg-muted/20 p-4 rounded-xl border">
-                <div>
-                  <h3 className="text-sm font-semibold">Resume Parser</h3>
-                  <p className="text-xs text-muted-foreground">
-                    Auto-fill your portfolio using AI.
-                  </p>
+      {builderTab === 'preview' ? (
+        <PortfolioFormPreview
+          values={previewValues}
+          layout={layout}
+          themeSettings={localThemeSettings}
+          fallbackAvatarUrl={fallbackAvatarUrl}
+        />
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start pb-20 lg:pb-0">
+          <div className="lg:col-span-8 space-y-6">
+            <Card className="shadow-none lg:border-border lg:bg-card lg:border">
+              <CardContent className="p-3 lg:p-6">
+                <div className="flex justify-between items-center mb-6 px-1 lg:px-0 gap-4">
+                  <h1 className="text-2xl font-bold">Content</h1>
+                  <Button type="button" variant="outline" className="shadow-none" onClick={handleClearContent}>
+                    Clear content
+                  </Button>
                 </div>
-                <Button
-                  size="sm"
-                  className="shadow-none flex items-center gap-2
+
+                <div className="flex items-center justify-between mb-8 bg-muted/20 p-4 rounded-xl border">
+                  <div>
+                    <h3 className="text-sm font-semibold">Resume Parser</h3>
+                    <p className="text-xs text-muted-foreground">
+                      Auto-fill your portfolio using AI.
+                    </p>
+                  </div>
+                  <Button
+                    size="sm"
+                    className="shadow-none flex items-center gap-2
                   bg-gradient-to-r from-blue-500 to-purple-500 
                   hover:from-blue-600 hover:to-purple-600 
                   text-white border-0 transition-all"
-                  onClick={() => setIsParserOpen(true)}
-                >
-                  Parse Resume
-                </Button>
-              </div>
+                    onClick={() => setIsParserOpen(true)}
+                  >
+                    Parse Resume
+                  </Button>
+                </div>
 
-              <div className="flex flex-col gap-6 lg:gap-10">
-                <Accordion type="single" defaultValue="details" collapsible>
-                  <AccordionItem value="details" className={accordionItemClass}>
-                    <AccordionTrigger className="cursor-pointer py-3 text-base font-medium hover:no-underline">
-                      Header & Bio
-                    </AccordionTrigger>
-                    <AccordionContent className="space-y-6 pt-2 pb-4 px-1 lg:px-2">
+                <div className="flex flex-col gap-6 lg:gap-10">
+                  <Accordion type="single" defaultValue="details" collapsible>
+                    <AccordionItem value="details" className={accordionItemClass}>
+                      <AccordionTrigger className="cursor-pointer py-3 text-base font-medium hover:no-underline">
+                        Header & Bio
+                      </AccordionTrigger>
+                      <AccordionContent className="space-y-6 pt-2 pb-4 px-1 lg:px-2">
                       {/* Identity Group */}
                       <div className="space-y-4">
                         <div className="flex items-center gap-2 text-sm text-primary font-semibold uppercase tracking-wider">
@@ -413,8 +448,8 @@ export function Form({
                               }}
                             />
                           </div>
-                          <div className="grid flex-1 grid-cols-1 gap-4 md:grid-cols-12">
-                            <div className="col-span-1 md:col-span-8">
+                          <div className="grid flex-1 grid-cols-1 gap-4">
+                            <div>
                               <Label className="mb-2 block">Name</Label>
                               <Input
                                 {...register('name')}
@@ -425,7 +460,7 @@ export function Form({
                                 <p className="text-destructive text-sm mt-1">{errors.name.message}</p>
                               )}
                             </div>
-                            <div className="col-span-1 md:col-span-4">
+                            <div>
                               <Label className="mb-2 block">Job Title</Label>
                               <Input
                                 {...register('job_title')}
@@ -434,6 +469,88 @@ export function Form({
                               />
                             </div>
                           </div>
+                        </div>
+                        <div className="space-y-3">
+                          <div className="flex items-start justify-between gap-3">
+                            <div>
+                              <Label className="mb-1 block">Resume / CV</Label>
+                              <p className="text-xs text-muted-foreground">
+                                Optional. Upload a PDF so visitors can download it from your portfolio.
+                              </p>
+                            </div>
+                            {(watch('resume') || watch('resume_url')) && (
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                className="h-8 px-2 text-xs shadow-none"
+                                onClick={() => {
+                                  setValue('resume', null, {
+                                    shouldDirty: true,
+                                    shouldValidate: true,
+                                  });
+                                  setValue('resume_url', '', {
+                                    shouldDirty: true,
+                                    shouldValidate: true,
+                                  });
+                                }}
+                              >
+                                Remove PDF
+                              </Button>
+                            )}
+                          </div>
+
+                          <Dropzone
+                            className="min-h-[136px] rounded-lg border border-dashed border-border bg-muted/20 transition-colors hover:bg-muted/30"
+                            accept={{ 'application/pdf': ['.pdf'] }}
+                            maxFiles={1}
+                            maxSize={1024 * 1024 * 10}
+                            onDrop={(files) => {
+                              const file = files[0] ?? null;
+                              setValue('resume', file, {
+                                shouldDirty: true,
+                                shouldValidate: true,
+                              });
+                              if (file) {
+                                setValue('resume_url', '', {
+                                  shouldDirty: true,
+                                  shouldValidate: true,
+                                });
+                              }
+                            }}
+                          >
+                            <DropzoneEmptyState>
+                              <div className="flex flex-col items-center justify-center gap-3 px-6 py-8 text-center">
+                                <div className="rounded-full border border-border bg-background p-3">
+                                  <UploadCloud className="h-5 w-5 text-primary" />
+                                </div>
+                                <div className="space-y-1">
+                                  <p className="text-sm font-medium">Drop a PDF here or click to upload</p>
+                                  <p className="text-xs text-muted-foreground">PDF only, up to 10MB.</p>
+                                </div>
+                              </div>
+                            </DropzoneEmptyState>
+                            <DropzoneContent files={watch('resume') ? [watch('resume') as File] : []} />
+                          </Dropzone>
+
+                          {(watch('resume') || watch('resume_url')) && (
+                            <div className="flex items-center gap-3 rounded-lg border bg-background px-3 py-3 text-sm">
+                              <div className="rounded-md bg-muted p-2">
+                                <FileText className="h-4 w-4 text-primary" />
+                              </div>
+                              <div className="min-w-0 flex-1">
+                                <p className="truncate font-medium">
+                                  {watch('resume') instanceof File
+                                    ? (watch('resume') as File).name
+                                    : 'Current resume on file'}
+                                </p>
+                                <p className="text-xs text-muted-foreground">
+                                  {watch('resume') instanceof File
+                                    ? `${Math.max(1, Math.round((watch('resume') as File).size / 1024))} KB • PDF`
+                                    : 'This will appear as a download button on your public portfolio.'}
+                                </p>
+                              </div>
+                            </div>
+                          )}
                         </div>
                         <div>
                           <Label className="mb-2 block">Short Introduction</Label>
@@ -534,9 +651,9 @@ export function Form({
                           </div>
                         </div>
                       </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                </Accordion>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
 
                 <Accordion type="single" defaultValue="work" collapsible>
                   <AccordionItem value="work" className={accordionItemClass}>
@@ -600,8 +717,8 @@ export function Form({
                   </AccordionItem>
                 </Accordion>
 
-                {/* 3. EDUCATION */}
-                <Accordion type="single" defaultValue="edu" collapsible>
+                  {/* 3. EDUCATION */}
+                  <Accordion type="single" defaultValue="edu" collapsible>
                   <AccordionItem value="edu" className={accordionItemClass}>
                     <AccordionTrigger className="cursor-pointer py-3 text-base font-medium hover:no-underline">
                       Education
@@ -661,10 +778,10 @@ export function Form({
                       </Button>
                     </AccordionContent>
                   </AccordionItem>
-                </Accordion>
+                  </Accordion>
 
-                {/* 4. PROJECTS */}
-                <Accordion type="single" defaultValue="projects" collapsible>
+                  {/* 4. PROJECTS */}
+                  <Accordion type="single" defaultValue="projects" collapsible>
                   <AccordionItem value="projects" className={accordionItemClass}>
                     <AccordionTrigger className="cursor-pointer py-3 text-base font-medium hover:no-underline">
                       Projects
@@ -720,10 +837,10 @@ export function Form({
                       </Button>
                     </AccordionContent>
                   </AccordionItem>
-                </Accordion>
+                  </Accordion>
 
-                {/* 5. SKILLS */}
-                <Accordion type="single" defaultValue="skills" collapsible>
+                  {/* 5. SKILLS */}
+                  <Accordion type="single" defaultValue="skills" collapsible>
                   <AccordionItem value="skills" className={accordionItemClass}>
                     <AccordionTrigger className="cursor-pointer py-3 text-base font-medium hover:no-underline">
                       Skills
@@ -755,24 +872,25 @@ export function Form({
                       />
                     </AccordionContent>
                   </AccordionItem>
-                </Accordion>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+                  </Accordion>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
 
-        {/* --- RIGHT COLUMN: DESIGN PANEL --- */}
-        <div className="hidden lg:col-span-4 lg:block relative">
-          <div className="sticky top-6 space-y-4">
-            <DesignPanel
-              layout={layout}
-              setLayout={setLayout}
-              localThemeSettings={localThemeSettings}
-              setLocalThemeSettings={setLocalThemeSettings}
-            />
+          {/* --- RIGHT COLUMN: DESIGN PANEL --- */}
+          <div className="hidden lg:col-span-4 lg:block relative">
+            <div className="sticky top-6 space-y-4">
+              <DesignPanel
+                layout={layout}
+                setLayout={setLayout}
+                localThemeSettings={localThemeSettings}
+                setLocalThemeSettings={setLocalThemeSettings}
+              />
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       <Dialog open={editState.type !== null} onOpenChange={(open) => !open && closeDialog()}>
         <DialogContent className="sm:max-w-[500px]">

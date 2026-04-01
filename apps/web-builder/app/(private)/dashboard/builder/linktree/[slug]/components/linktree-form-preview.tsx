@@ -2,17 +2,10 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Laptop, Smartphone, Tablet } from 'lucide-react';
-import { type StarterProjectType } from '@/lib/project-starters';
-import { createMockProject } from '@/lib/project-preview-data';
-import { PreviewSiteBuilder } from './preview-site-builder';
-
-type PreviewProps = {
-  type: StarterProjectType;
-  starterId: string;
-  layoutName: string;
-  themePreset: string;
-  projectName: string;
-};
+import { defaultThemeState } from '@/config/theme';
+import { Settings } from '@/contexts/settings-context';
+import { LinktreeFormValues } from '@/lib/schemas/linktree';
+import { PreviewSiteBuilder } from '@/app/(private)/dashboard/projects/new/components/preview-site-builder';
 
 type PreviewViewport = 'desktop' | 'tablet' | 'mobile';
 
@@ -26,20 +19,126 @@ const VIEWPORT_OPTIONS: Array<{
   { id: 'mobile', label: 'Mobile', icon: Smartphone },
 ];
 
-function getViewportWidth(type: StarterProjectType, viewport: PreviewViewport) {
-  if (viewport === 'mobile') return type === 'menu' ? 430 : 390;
-  if (viewport === 'tablet') return type === 'menu' ? 960 : 900;
-  return type === 'menu' ? 1440 : 1280;
+function getViewportWidth(viewport: PreviewViewport) {
+  if (viewport === 'mobile') return 390;
+  if (viewport === 'tablet') return 900;
+  return 1280;
 }
 
-export function ProjectTemplatePreview(props: PreviewProps) {
+function createLinktreePreviewProject({
+  values,
+  layout,
+  themeSettings,
+  projectName,
+  logoUrl,
+}: {
+  values: LinktreeFormValues;
+  layout: string;
+  themeSettings: Settings | null;
+  projectName: string;
+  logoUrl: string;
+}) {
+  const now = new Date().toISOString();
+  const slug =
+    projectName
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, '')
+      .trim()
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-') || 'link-preview';
+  const themeObject = themeSettings?.theme || { preset: null, styles: defaultThemeState };
+
+  const sections =
+    values.sections?.map((section, index) => ({
+      id: index + 1,
+      linktree_id: 1,
+      type: section.type || 'link',
+      title: section.title || '',
+      url: section.url || '',
+      description: section.description || '',
+      app_url: section.app_url || '',
+      image_url: section.image_url || '',
+      icon_key: section.icon_key || '',
+      accent_color: section.accent_color || '',
+      quote_text: section.quote_text || '',
+      quote_author: section.quote_author || '',
+      banner_text: section.banner_text || '',
+      support_note: section.support_note || '',
+      support_qr_image_url: section.support_qr_image_url || '',
+      cta_label: section.cta_label || '',
+      placement_order: index,
+    })) || [];
+
+  return {
+    id: 1,
+    name: projectName,
+    description: values.about || '',
+    slug,
+    sub_domain: slug,
+    type: 'linktree' as const,
+    published: 0,
+    created_at: now,
+    updated_at: now,
+    linktree: {
+      id: 1,
+      project_id: 1,
+      user_id: 1,
+      name: values.name || projectName,
+      tagline: values.tagline || '',
+      about: values.about || '',
+      phone: values.phone || '',
+      email: values.email || '',
+      logo_url: logoUrl || '',
+      background_style: values.background_style || 'grid',
+      theme_object: themeObject,
+      layout_name: layout || 'linktree-default',
+      links: sections.filter((section) => section.type === 'link'),
+      sections: sections.filter((section) => section.type !== 'link'),
+    },
+  };
+}
+
+export function LinktreeFormPreview({
+  values,
+  layout,
+  themeSettings,
+}: {
+  values: LinktreeFormValues;
+  layout: string;
+  themeSettings: Settings | null;
+}) {
   const [viewport, setViewport] = useState<PreviewViewport>('desktop');
-  const viewportWidth = getViewportWidth(props.type, viewport);
+  const [logoPreviewUrl, setLogoPreviewUrl] = useState<string | null>(null);
+  const viewportWidth = getViewportWidth(viewport);
   const scrollAreaRef = useRef<HTMLDivElement | null>(null);
   const contentRef = useRef<HTMLDivElement | null>(null);
   const [availableWidth, setAvailableWidth] = useState(viewportWidth);
   const [contentHeight, setContentHeight] = useState(960);
-  const previewProject = useMemo(() => createMockProject(props), [props]);
+
+  useEffect(() => {
+    const logoFile = values.logo instanceof File ? values.logo : null;
+    if (!logoFile) {
+      setLogoPreviewUrl(null);
+      return;
+    }
+
+    const objectUrl = URL.createObjectURL(logoFile);
+    setLogoPreviewUrl(objectUrl);
+
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [values.logo]);
+
+  const previewProject = useMemo(
+    () =>
+      createLinktreePreviewProject({
+        values,
+        layout,
+        themeSettings,
+        projectName: values.name?.trim() || 'Link Preview',
+        logoUrl: logoPreviewUrl || values.logo_url || '',
+      }),
+    [layout, logoPreviewUrl, themeSettings, values]
+  );
 
   useEffect(() => {
     const scrollArea = scrollAreaRef.current;
@@ -61,15 +160,14 @@ export function ProjectTemplatePreview(props: PreviewProps) {
     resizeObserver.observe(contentNode);
 
     return () => resizeObserver.disconnect();
-  }, [previewProject, props.layoutName, props.projectName, props.starterId, props.themePreset, props.type]);
+  }, [previewProject, layout, themeSettings, viewport]);
 
   useEffect(() => {
     const scrollArea = scrollAreaRef.current;
     if (!scrollArea) return;
-
     scrollArea.scrollTop = 0;
     scrollArea.scrollLeft = 0;
-  }, [props.type, props.starterId, props.layoutName, props.themePreset, viewport]);
+  }, [layout, themeSettings, viewport]);
 
   const useHorizontalDesktopScroll =
     viewport === 'desktop' && availableWidth < 1024 && availableWidth < viewportWidth;
@@ -81,7 +179,7 @@ export function ProjectTemplatePreview(props: PreviewProps) {
   const previewShellHeight = useHorizontalDesktopScroll ? contentHeight : scaledHeight;
 
   return (
-    <div className="flex h-full min-w-0 max-w-full flex-col overflow-hidden border border-border/70 bg-card/60 shadow-[0_24px_80px_rgba(15,23,42,0.12)] backdrop-blur-sm">
+    <div className="flex min-w-0 max-w-full flex-col overflow-hidden border border-border/70 bg-card/60 shadow-[0_24px_80px_rgba(15,23,42,0.12)] backdrop-blur-sm">
       <div className="border-b border-border/60 px-5 py-4">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
@@ -89,7 +187,7 @@ export function ProjectTemplatePreview(props: PreviewProps) {
               Live preview
             </p>
             <p className="mt-2 text-sm text-muted-foreground">
-              Sample content only. You can edit everything after the project is created.
+              Based on your current form values, layout, and theme. No save needed.
             </p>
           </div>
 

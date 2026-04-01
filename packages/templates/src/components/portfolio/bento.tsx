@@ -53,6 +53,7 @@ import { Portfolio } from "@/types/portfolio";
 import { cn } from "@/lib/utils";
 import { getPortfolioAvatarUrl } from "./avatar";
 import { KislapShareFooter } from "../shared/kislap-share-footer";
+import { PortfolioResumeButton } from "./portfolio-resume-button";
 
 interface Props {
   project: Project;
@@ -94,7 +95,7 @@ const HeroCard = ({ portfolio, className, style }: SectionProps) => {
           {portfolio.location && (
             <Badge
               variant="secondary"
-              className="text-[10px] @sm:text-xs py-1 px-2 @sm:py-1.5 @sm:px-3 gap-1 backdrop-blur shadow-sm whitespace-nowrap"
+              className="max-w-full break-words text-[10px] @sm:text-xs py-1 px-2 @sm:py-1.5 @sm:px-3 gap-1 backdrop-blur shadow-sm [overflow-wrap:anywhere]"
             >
               <MapPin className="w-3 h-3" />
               {portfolio.location}
@@ -174,7 +175,7 @@ const SocialsCard = ({ portfolio, className, style }: SectionProps) => {
     ].filter((link) => link.url);
   }, [portfolio]);
 
-  if (socialLinks.length === 0) return null;
+  if (socialLinks.length === 0 && !portfolio.resume_url) return null;
 
   return (
     <Card
@@ -199,6 +200,7 @@ const SocialsCard = ({ portfolio, className, style }: SectionProps) => {
             </Button>
           </Link>
         ))}
+        <PortfolioResumeButton resumeUrl={portfolio.resume_url} />
       </div>
     </Card>
   );

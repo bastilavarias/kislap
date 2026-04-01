@@ -120,3 +120,15 @@ export function formatMenuEyebrow(menu: Pick<MenuData, 'city'>, categories: Menu
   const location = [menu.city?.trim()].filter(Boolean).join(', ');
   return location || 'Restaurant Menu';
 }
+
+export function normalizeMenuShareUrl(url?: string | null) {
+  const trimmed = url?.trim();
+  if (!trimmed) return '';
+
+  try {
+    const parsed = new URL(trimmed);
+    return `${parsed.origin}${parsed.pathname}`;
+  } catch {
+    return trimmed.split('?')[0]?.split('#')[0] || trimmed;
+  }
+}

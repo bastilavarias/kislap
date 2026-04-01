@@ -6,7 +6,7 @@ import Link from 'next/link';
 
 // Third-party Imports
 import { useTheme } from 'next-themes';
-import { Copy, RotateCcw, Sun, Moon, AlertCircle, Monitor } from 'lucide-react';
+import { Copy, RotateCcw, Sun, Moon, AlertCircle, Monitor, ArrowUpDown } from 'lucide-react';
 
 // Type Imports
 import type { ThemeStyleProps } from '@/types/theme';
@@ -113,7 +113,7 @@ const ThemeControlPanel = ({
       mergeLocalSettings(newSettings);
       return;
     }
-    updateSettings(settings);
+    updateSettings(newSettings);
   };
 
   const onLocalApplyThemePreset = (preset: string) => {
@@ -151,6 +151,24 @@ const ThemeControlPanel = ({
       // If you want the actual app theme to switch as well (for preview):
       // if (!stateless) setTheme(newMode);
     }
+  };
+
+  const handleSwapPalettes = () => {
+    const currentTheme = localSettings?.theme || settings.theme;
+    const currentStyles = currentTheme?.styles;
+
+    if (!currentStyles?.light || !currentStyles?.dark) return;
+
+    onLocalUpdateSettings({
+      theme: {
+        ...currentTheme,
+        styles: {
+          ...currentStyles,
+          light: { ...currentStyles.dark },
+          dark: { ...currentStyles.light },
+        },
+      },
+    });
   };
 
   // Helper function to ensure both themes are updated together
@@ -288,31 +306,49 @@ const ThemeControlPanel = ({
         </div>
       )}
 
-      <div className="flex items-center justify-between border-none">
-        <div className="flex flex-col">
-          <span className="text-sm font-semibold text-foreground">Active Mode</span>
-          <span className="text-[10px] text-muted-foreground uppercase tracking-wider">
-            Editing {localSettings?.mode || 'light'}
-          </span>
-        </div>
+      <div>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div className="space-y-1">
+            <span className="text-sm font-semibold text-foreground">Mode</span>
+            <p className="text-xs text-muted-foreground">
+              Edit the light or dark palette, or swap which one is used for each mode.
+            </p>
+            <span className="inline-flex w-fit items-center text-[10px] font-medium uppercase tracking-[0.14em] text-foreground underline decoration-primary decoration-2 underline-offset-4">
+              Editing {localSettings?.mode || 'light'}
+            </span>
+          </div>
 
-        <div className="flex items-center rounded-lg border bg-background p-1 shadow-sm">
-          <Button
-            variant={localSettings?.mode === 'light' ? 'secondary' : 'ghost'}
-            size="sm"
-            onClick={() => handleModeChange('light')}
-            className="h-7 px-3 text-xs font-medium"
-          >
-            Light
-          </Button>
-          <Button
-            variant={localSettings?.mode === 'dark' ? 'secondary' : 'ghost'}
-            size="sm"
-            onClick={() => handleModeChange('dark')}
-            className="h-7 px-3 text-xs font-medium"
-          >
-            Dark
-          </Button>
+          <div className="flex flex-col items-start gap-2 sm:items-end">
+            <div className="flex items-center rounded-lg border bg-background p-1 shadow-sm">
+              <Button
+                variant={localSettings?.mode === 'light' ? 'secondary' : 'ghost'}
+                size="sm"
+                onClick={() => handleModeChange('light')}
+                className="h-7 px-3 text-xs font-medium"
+              >
+                Light
+              </Button>
+              <Button
+                variant={localSettings?.mode === 'dark' ? 'secondary' : 'ghost'}
+                size="sm"
+                onClick={() => handleModeChange('dark')}
+                className="h-7 px-3 text-xs font-medium"
+              >
+                Dark
+              </Button>
+            </div>
+
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="h-8 shrink-0 px-0 text-xs text-muted-foreground shadow-none hover:bg-transparent hover:text-foreground"
+              onClick={handleSwapPalettes}
+            >
+              <ArrowUpDown className="mr-2 h-3.5 w-3.5" />
+              Swap palettes
+            </Button>
+          </div>
         </div>
       </div>
 

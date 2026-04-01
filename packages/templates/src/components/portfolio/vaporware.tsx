@@ -49,6 +49,7 @@ import { Portfolio } from "@/types/portfolio";
 import { cn } from "@/lib/utils";
 import { getPortfolioAvatarUrl } from "./avatar";
 import { KislapShareFooter } from "../shared/kislap-share-footer";
+import { PortfolioResumeButton } from "./portfolio-resume-button";
 
 interface Props {
   project: Project;
@@ -331,6 +332,10 @@ const HeroSection = ({ portfolio }: { portfolio: Portfolio }) => {
               </Button>
             </Link>
           ))}
+          <PortfolioResumeButton
+            resumeUrl={portfolio.resume_url}
+            className="rounded-none border-primary/60 bg-background/70 text-primary hover:bg-primary/10"
+          />
         </div>
       </VwReveal>
     </section>

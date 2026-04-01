@@ -49,6 +49,7 @@ import { Portfolio } from "@/types/portfolio";
 import { cn } from "@/lib/utils";
 import { getPortfolioAvatarUrl } from "./avatar";
 import { KISLAP_LINKS } from "../shared/kislap-links";
+import { PortfolioResumeButton } from "./portfolio-resume-button";
 
 // --- Types ---
 interface Props {
@@ -133,6 +134,15 @@ const HeroSection = ({
               </>
             )}
           </div>
+          {portfolio.resume_url && (
+            <div className="pt-2">
+              <PortfolioResumeButton
+                resumeUrl={portfolio.resume_url}
+                label="Download Resume"
+                className={brutalButtonClass + " bg-primary text-primary-foreground hover:bg-primary"}
+              />
+            </div>
+          )}
         </div>
       </div>
 
@@ -142,7 +152,7 @@ const HeroSection = ({
           onSetThemeMode={onSetThemeMode}
         />
         {socialLinks.length > 0 && (
-          <div className="flex gap-2">
+          <div className="flex flex-wrap justify-end gap-2">
             {socialLinks.map((link, i) => (
               <Link key={i} href={link.url!} target="_blank">
                 <Button

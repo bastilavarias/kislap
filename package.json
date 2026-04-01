@@ -1,6 +1,9 @@
 {
   "name": "kislap",
   "private": true,
+  "scripts": {
+    "dev:clients": "bash ./dev-clients.sh"
+  },
   "workspaces": [
     "apps/web-builder",
     "apps/web-sites",

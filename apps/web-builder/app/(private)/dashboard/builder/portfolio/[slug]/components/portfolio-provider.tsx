@@ -65,6 +65,8 @@ function mapToFormValues(
     job_title: source.job_title || '',
     avatar: null,
     avatar_url: 'avatar_url' in source ? (source.avatar_url as string) || '' : '',
+    resume: null,
+    resume_url: 'resume_url' in source ? (source.resume_url as string) || '' : '',
     location: source.location || '',
     introduction: source.introduction || '',
     about: source.about || '',
@@ -137,6 +139,8 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
       job_title: '',
       avatar: null,
       avatar_url: '',
+      resume: null,
+      resume_url: '',
       introduction: '',
       about: '',
       email: '',
@@ -212,6 +216,8 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
           if (savedPortfolio) {
             setValue('avatar', null, { shouldDirty: false });
             setValue('avatar_url', savedPortfolio.avatar_url || '', { shouldDirty: false });
+            setValue('resume', null, { shouldDirty: false });
+            setValue('resume_url', savedPortfolio.resume_url || '', { shouldDirty: false });
             setProject((prev) =>
               prev
                 ? {
@@ -250,6 +256,8 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
     const mapped = mapToFormValues(data as APIResponseDocumentResume);
     mapped.avatar = formMethods.getValues('avatar');
     mapped.avatar_url = formMethods.getValues('avatar_url');
+    mapped.resume = formMethods.getValues('resume');
+    mapped.resume_url = formMethods.getValues('resume_url');
     Object.entries(mapped).forEach(([key, val]) => setValue(key as any, val));
     toast.success('Resume parsed!');
   };
