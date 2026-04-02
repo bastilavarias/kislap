@@ -2,7 +2,7 @@
 import { ArrowRight, CheckCircle2, Search, Sparkles } from '@lucide/astro';
 import { builderPages, type BuilderFeaturePageConfig } from '@/data/builder-pages';
 import { BuilderPageFaq } from '@/components/builder-pages/builder-page-faq';
-import { BUILDER_URL, getBuilderProjectCreateUrl } from '@/lib/site-config';
+import { BUILDER_URL, getBuilderProjectCreateUrl, getFeaturePagePath } from '@/lib/site-config';
 
 interface Props {
   page: BuilderFeaturePageConfig;
@@ -44,6 +44,23 @@ const schema = {
           "text": item.answer,
         },
       })),
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Features",
+          "item": new URL("/features", Astro.url.origin).toString(),
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": page.eyebrow,
+          "item": Astro.url.href,
+        },
+      ],
     },
   ],
 };
@@ -321,7 +338,7 @@ const schema = {
     <div class="mt-10 grid gap-6 md:grid-cols-2">
       {relatedPages.map((entry) => (
         <a
-          href={`/${entry.slug}`}
+          href={getFeaturePagePath(entry.slug)}
           class="group rounded-[1.75rem] border border-border bg-card p-8 transition hover:border-primary/40 hover:shadow-lg"
         >
           <p class="text-sm font-semibold uppercase tracking-[0.24em] text-primary">{entry.eyebrow}</p>

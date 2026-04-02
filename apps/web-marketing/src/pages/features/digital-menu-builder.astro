@@ -2,17 +2,10 @@
 import Layout from '@/layouts/main.astro';
 import BuilderFeaturePage from '@/components/builder-pages/BuilderFeaturePage.astro';
 import { builderPages } from '@/data/builder-pages';
-import { getFeaturePagePath } from '@/lib/site-config';
 
 const page = builderPages["menu-builder"];
 ---
 
-<Layout
-  title={page.title}
-  description={page.description}
-  image={page.image}
-  canonical={getFeaturePagePath(page.slug)}
-  noindex={true}
->
+<Layout title={page.title} description={page.description} image={page.image}>
   <BuilderFeaturePage page={page} />
 </Layout>
