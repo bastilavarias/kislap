@@ -18,7 +18,11 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { getBuilderProjectCreateUrl, SITE_HOST_LABEL } from "@/lib/site-config";
+import {
+  getBuilderProjectCreateUrl,
+  getFeaturePagePath,
+  SITE_HOST_LABEL,
+} from "@/lib/site-config";
 import {
   Accordion,
   AccordionContent,
@@ -569,7 +573,7 @@ export function LandingPageContent() {
                 Best for job seekers, freelancers, and creative professionals
               </span>
               <Button asChild variant="outline" className="rounded-full">
-                <a href="/portfolio-builder">
+                <a href={getFeaturePagePath("portfolio-builder")}>
                   Explore more <ArrowRight className="ml-2 h-4 w-4" />
                 </a>
               </Button>
@@ -612,7 +616,7 @@ export function LandingPageContent() {
                 Best for creators, founders, and speakers
               </span>
               <Button asChild variant="outline" className="rounded-full">
-                <a href="/linktree-builder">
+                <a href={getFeaturePagePath("linktree-builder")}>
                   Explore more <ArrowRight className="ml-2 h-4 w-4" />
                 </a>
               </Button>
@@ -653,7 +657,7 @@ export function LandingPageContent() {
                 Best for cafes, restaurants, and food brands
               </span>
               <Button asChild variant="outline" className="rounded-full">
-                <a href="/menu-builder">
+                <a href={getFeaturePagePath("menu-builder")}>
                   Explore more <ArrowRight className="ml-2 h-4 w-4" />
                 </a>
               </Button>

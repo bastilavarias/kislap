@@ -1,0 +1,98 @@
+---
+export const prerender = false;
+import Layout from '@/layouts/main.astro';
+import { ArrowRight, Sparkles } from '@lucide/astro';
+import { builderPages } from '@/data/builder-pages';
+import { getFeaturePagePath } from '@/lib/site-config';
+
+const title = "Features | Kislap";
+const description =
+  "Explore Kislap's portfolio builder, link page builder, and digital menu builder. Choose the right publishing flow for the page you actually need.";
+
+const pages = Object.values(builderPages);
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "CollectionPage",
+      "name": title,
+      "description": description,
+      "url": Astro.url.href,
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Features",
+          "item": Astro.url.href,
+        },
+      ],
+    },
+  ],
+};
+---
+
+<Layout title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+  <section class="relative overflow-hidden px-4 pb-24 pt-20 md:pt-24">
+    <div class="pointer-events-none absolute inset-x-0 top-0 mx-auto h-[380px] max-w-6xl rounded-full bg-primary/8 blur-[120px]"></div>
+    <div class="container relative z-10 mx-auto max-w-6xl">
+      <div class="mx-auto max-w-3xl text-center">
+        <div class="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-2 text-sm font-semibold text-primary">
+          <Sparkles class="h-4 w-4" />
+          Features
+        </div>
+        <h1 class="mt-6 text-4xl font-bold tracking-tight text-foreground md:text-6xl">
+          Pick the builder that matches the page you want to publish.
+        </h1>
+        <p class="mt-6 text-lg leading-relaxed text-muted-foreground md:text-xl">
+          Kislap is not trying to be a bloated all-purpose builder. These feature pages show the three focused publishing flows we support best.
+        </p>
+      </div>
+
+      <div class="mt-14 grid gap-6 lg:grid-cols-3">
+        {pages.map((page) => (
+          <a
+            href={getFeaturePagePath(page.slug)}
+            class="group overflow-hidden rounded-[2rem] border border-border bg-card transition hover:border-primary/30 hover:shadow-xl"
+          >
+            <div class="aspect-[16/10] overflow-hidden border-b border-border bg-muted">
+              <img
+                src={page.image}
+                alt={`${page.eyebrow} preview`}
+                class="h-full w-full object-cover object-top transition duration-500 group-hover:scale-[1.02]"
+                loading="lazy"
+              />
+            </div>
+            <div class="space-y-4 p-7">
+              <p class="text-sm font-semibold uppercase tracking-[0.24em] text-primary">
+                {page.eyebrow}
+              </p>
+              <h2 class="text-2xl font-bold tracking-tight text-foreground">
+                {page.heroTitle}
+              </h2>
+              <p class="text-base leading-relaxed text-muted-foreground">
+                {page.description}
+              </p>
+              <div class="flex flex-wrap gap-2">
+                {page.keywords.slice(0, 3).map((keyword) => (
+                  <span class="rounded-full border border-border bg-background px-3 py-1 text-xs font-medium text-foreground/80">
+                    {keyword}
+                  </span>
+                ))}
+              </div>
+              <span class="inline-flex items-center text-sm font-semibold text-primary">
+                Explore feature page
+                <ArrowRight class="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</Layout>
