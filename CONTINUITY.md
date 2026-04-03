@@ -320,3 +320,7 @@ ormalizeMenuShareUrl in packages/templates/src/components/menu/menu-types.ts and
 - Exposed port 3000 on kislap_web_server and added nginx server block to route :3000 to kislap_admin fastcgi.
 - Switched kislap_admin to internal expose only in prod compose.
 
+
+## 2026-04-03 Admin Port 3000 404 Fix
+- Updated nginx :3000 server block to pass all requests to Laravel index.php via fastcgi (no local try_files).
+
