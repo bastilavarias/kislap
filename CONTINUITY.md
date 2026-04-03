@@ -306,3 +306,8 @@ ormalizeMenuShareUrl in packages/templates/src/components/menu/menu-types.ts and
 ## 2026-04-03 Web Admin Prod Build Fix 2
 - Moved composer install to run after full app copy so artisan is available for package:discover.
 
+
+## 2026-04-03 Web Admin Prod Build Fix 3
+- Disabled composer scripts in prod build to avoid Filament bootstrapping before vendor is ready.
+- Moved package discovery to container startup command.
+
