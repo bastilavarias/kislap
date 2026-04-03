@@ -4,6 +4,7 @@ services:
     container_name: kislap_web_server
     ports:
       - "2000:2000"
+      - "3000:3000"
     restart: always
     volumes:
       - ./apps/api-service:/app
@@ -41,11 +42,8 @@ services:
     restart: always
     env_file:
       - ./apps/web-admin/.env
-    environment:
-      - HOST=0.0.0.0
-      - PORT=3000
-    ports:
-      - "3000:3000"
+    expose:
+      - "3000"
     depends_on:
       kislap_database:
         condition: service_healthy

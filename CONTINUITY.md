@@ -315,3 +315,8 @@ ormalizeMenuShareUrl in packages/templates/src/components/menu/menu-types.ts and
 ## 2026-04-03 Web Admin Prod Cache Cleanup
 - Clear bootstrap/cache/*.php before package discovery to avoid stale dev providers (e.g. Pail) in prod.
 
+
+## 2026-04-03 Admin Port 3000 via Nginx
+- Exposed port 3000 on kislap_web_server and added nginx server block to route :3000 to kislap_admin fastcgi.
+- Switched kislap_admin to internal expose only in prod compose.
+
