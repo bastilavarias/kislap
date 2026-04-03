@@ -43,7 +43,7 @@ services:
     env_file:
       - ./apps/web-admin/.env
     expose:
-      - "3000"
+      - "9000"
     depends_on:
       kislap_database:
         condition: service_healthy

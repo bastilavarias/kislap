@@ -37,8 +37,6 @@ RUN echo "* * * * * www-data /usr/local/bin/php /var/www/html/artisan schedule:r
     && crontab /etc/cron.d/laravel-cron \
     && touch /var/log/cron.log
 
-RUN sed -i 's/listen = .*/listen = 0.0.0.0:3000/' /usr/local/etc/php-fpm.d/zz-docker.conf
-
-EXPOSE 3000
+EXPOSE 9000
 
 CMD ["sh", "-c", "rm -f bootstrap/cache/*.php && php artisan package:discover --ansi && cron && php-fpm"]

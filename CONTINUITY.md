@@ -328,3 +328,7 @@ ormalizeMenuShareUrl in packages/templates/src/components/menu/menu-types.ts and
 ## 2026-04-03 Admin FastCGI Params
 - Expanded :3000 nginx fastcgi params (index, PATH_INFO, PATH_TRANSLATED) to avoid 404s from PHP-FPM.
 
+
+## 2026-04-03 Admin FastCGI Port Standardization
+- Reverted web-admin PHP-FPM to default port 9000 and updated nginx/admin compose to target 9000.
+
