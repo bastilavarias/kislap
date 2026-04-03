@@ -324,3 +324,7 @@ ormalizeMenuShareUrl in packages/templates/src/components/menu/menu-types.ts and
 ## 2026-04-03 Admin Port 3000 404 Fix
 - Updated nginx :3000 server block to pass all requests to Laravel index.php via fastcgi (no local try_files).
 
+
+## 2026-04-03 Admin FastCGI Params
+- Expanded :3000 nginx fastcgi params (index, PATH_INFO, PATH_TRANSLATED) to avoid 404s from PHP-FPM.
+
