@@ -22,13 +22,13 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
+ENV COMPOSER_ALLOW_SUPERUSER=1
+
 COPY composer.json composer.lock ./
 
-RUN composer install --no-dev --no-interaction --no-plugins --no-scripts --no-autoloader
+RUN composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
 
 COPY --chown=www-data:www-data . .
-
-RUN composer dump-autoload --optimize
 
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html/storage \
