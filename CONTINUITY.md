@@ -302,3 +302,7 @@ ormalizeMenuShareUrl in packages/templates/src/components/menu/menu-types.ts and
 ## 2026-04-03 Web Admin Prod Build Fix
 - Simplified web-admin prod Dockerfile composer install to run scripts with COMPOSER_ALLOW_SUPERUSER and removed separate dump-autoload step.
 
+
+## 2026-04-03 Web Admin Prod Build Fix 2
+- Moved composer install to run after full app copy so artisan is available for package:discover.
+
