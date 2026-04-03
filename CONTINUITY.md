@@ -298,3 +298,7 @@ ormalizeMenuShareUrl in packages/templates/src/components/menu/menu-types.ts and
 - Updated web-admin production Dockerfile to install intl and set ownership for storage/cache.
 - Hardened prod compose to use kislap_admin internal expose only and removed dev-only volume mounts.
 
+
+## 2026-04-03 Web Admin Prod Build Fix
+- Simplified web-admin prod Dockerfile composer install to run scripts with COMPOSER_ALLOW_SUPERUSER and removed separate dump-autoload step.
+
