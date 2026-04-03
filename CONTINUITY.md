@@ -332,3 +332,7 @@ ormalizeMenuShareUrl in packages/templates/src/components/menu/menu-types.ts and
 ## 2026-04-03 Admin FastCGI Port Standardization
 - Reverted web-admin PHP-FPM to default port 9000 and updated nginx/admin compose to target 9000.
 
+
+## 2026-04-03 Admin Nginx Root Mount
+- Mounted web-admin public assets into nginx and switched :3000 to standard Laravel try_files + php handler.
+

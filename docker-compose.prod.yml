@@ -10,6 +10,7 @@ services:
       - ./apps/api-service:/app
       - ./.docker/nginx/conf/prod:/etc/nginx/conf.d
       - ./.docker/nginx/log:/var/log/nginx
+      - ./apps/web-admin/public:/var/www/html/public:ro
     depends_on:
       - kislap_database
       - kislap_flash
