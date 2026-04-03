@@ -4,6 +4,7 @@ RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg62-turbo-dev \
     libfreetype6-dev \
+    libicu-dev \
     zip \
     unzip \
     curl \
@@ -15,7 +16,7 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install pdo_mysql mbstring zip exif pcntl gd
+    && docker-php-ext-install pdo_mysql mbstring zip exif pcntl gd intl
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
@@ -29,7 +30,8 @@ COPY --chown=www-data:www-data . .
 
 RUN composer dump-autoload --optimize
 
-RUN chmod -R 775 /var/www/html/storage \
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 775 /var/www/html/storage \
     && chmod -R 775 /var/www/html/bootstrap/cache
 
 RUN echo "* * * * * www-data /usr/local/bin/php /var/www/html/artisan schedule:run >> /var/log/cron.log 2>&1" > /etc/cron.d/laravel-cron \

@@ -266,3 +266,35 @@ ormalizeMenuShareUrl in packages/templates/src/components/menu/menu-types.ts and
 
 - 2026-04-01: Added the missing schema migration for portfolio resumes in the repo’s real migration layer: apps/web-admin/database/migrations/2026_04_01_180000_add_resume_url_to_portfolios_table.php. This adds a nullable resume_url column to portfolios after avatar_url and drops it on rollback. The Go API itself does not have a migration runner, so web-admin migrations remain the schema source of truth.
 - 2026-04-02: Reworked web-marketing information architecture for sitelink-friendly SEO without inventing a pricing page. Added a real /features hub plus canonical child pages at /features/portfolio-builder, /features/link-page-builder, and /features/digital-menu-builder (apps/web-marketing/src/pages/features.astro and features/*). Updated the main layout nav/footer/schema to treat Features as the product parent, added cleaner WebSite + Organization structured data, removed the old SearchAction markup, and switched internal marketing links/homepage feature cards to the /features/... paths (apps/web-marketing/src/layouts/main.astro, apps/web-marketing/src/components/landing-page-content.tsx, apps/web-marketing/src/lib/site-config.ts). Kept the legacy /portfolio-builder, /linktree-builder, and /menu-builder routes alive as noindex canonical aliases pointing to the new /features/... pages.
+- 2026-04-02: Implemented web-admin Phase 1 with Filament 4. Installed filament/filament into apps/web-admin, ran the panel installer, and added the Admin panel provider with Kislap Admin branding (apps/web-admin/composer.json, composer.lock, app/Providers/Filament/AdminPanelProvider.php, bootstrap/providers.php, public/filament assets). Added core Eloquent models for Project, Layout, ReservedSubDomain, and ParsedFile plus upgraded User to match the actual schema: first_name/last_name, role, booleans, projects relation, parsedFiles relation, full_name accessor, SoftDeletes, and FilamentUser access control that allows all users locally but requires admin/super_admin outside local (apps/web-admin/app/Models/*). Scaffolded and filled Phase 1 Filament resources for Users, Projects, Layouts, and ReservedSubDomains with practical forms, tables, filters, soft-delete handling, and navigation groups (apps/web-admin/app/Filament/Resources/**). Also changed the web-admin root route to redirect to /admin so the app behaves like an admin tool instead of showing the default Laravel welcome page (apps/web-admin/routes/web.php).
+- 2026-04-02: Wired web-admin into the local Docker dev flow for actual browser access. Updated docker-compose.yml so kislap_admin runs `php artisan serve --host=0.0.0.0 --port=8000` instead of only php-fpm, and added an nginx local virtual host for admin.kislap.test that proxies to kislap_admin:8000 (.docker/nginx/conf/local/default.conf). This makes the Filament admin reachable through the local nginx layer instead of only exposing an otherwise non-HTTP PHP-FPM port.
+- 2026-04-02: Moved the local web-admin HTTP startup into the image itself. Updated apps/web-admin/Dockerfile so the container default command is `cron && php artisan serve --host=0.0.0.0 --port=8000`, and removed the matching command override from docker-compose.yml. This keeps the service behavior inside the image definition instead of splitting it across Dockerfile and compose.
+- 2026-04-02: Fixed web-admin Docker build failure caused by missing PHP intl extension required by the Filament/Laravel dependency set. Updated apps/web-admin/Dockerfile to install libicu-dev and enable the intl extension via docker-php-ext-install intl before composer install.
+- 2026-04-02: Simplified local access to web-admin by mapping the container's Laravel server to a dedicated host port. Updated docker-compose.yml so kislap_admin exposes 8010:8000, making the Filament panel reachable directly at http://localhost:8010/admin without relying on local hostname routing.
+- 2026-04-02: Switched web-admin port mapping back to a simple 1:1 host mapping. Updated docker-compose.yml so kislap_admin exposes 8000:8000, making the Filament admin reachable at http://localhost:8000/admin.
+- 2026-04-02: Added a default admin seeder for the Filament panel in web-admin. Created AdminUserSeeder to upsert admin@kislap.test / password with role super_admin, and wired it into DatabaseSeeder before ReservedSubDomainsSeeder (apps/web-admin/database/seeders/AdminUserSeeder.php, apps/web-admin/database/seeders/DatabaseSeeder.php).
+- 2026-04-02: Switched web-admin back to php-fpm for better Docker performance. Updated apps/web-admin/Dockerfile to run php-fpm instead of php artisan serve. The nginx local vhost (admin.kislap.test) already proxies to kislap_admin:8000 so this path remains valid; localhost:8000 now serves PHP-FPM behind the nginx proxy.
+- 2026-04-02: Routed localhost:8000 through nginx instead of php-fpm. Updated docker-compose.yml so kislap_web_server exposes 8000:80, and removed the direct 8000 mapping from kislap_admin. Admin should now be reachable at http://localhost:8000/admin via nginx vhost routing, while php-fpm stays behind the proxy.
+- 2026-04-02: Phase 2 step 1: Added Project-level relation managers for portfolio, linktree, menu, and page activities so admins can inspect the content attached to each project without adding new top-level resources. Implemented missing content models (Portfolio, Linktree, Menu, PageActivity, MenuCategory, MenuItem, LinktreeSection) with key fillable fields, casts, and relations; expanded Project model with hasOne/hasMany relations for portfolio/linktree/menu/pageActivities. Added relation manager classes under app/Filament/Resources/Projects/RelationManagers and wired them into ProjectResource::getRelations.
+
+## 2026-04-02 Phase 2 Admin Expansion
+- Added Portfolio, Linktree, and Menu Filament resources with full CRUD pages, forms, and tables.
+- Added relation managers for portfolio work experiences, education, showcases, showcase technologies, and skills.
+- Added relation managers for linktree sections and links.
+- Added relation managers for menu categories and menu items (with category picker filtered by menu).
+- Added missing portfolio/linktree/linktree-link models and portfolio relations for nested records.
+- Added admin dashboard widgets: stats overview and recent projects; updated panel widgets list.
+
+
+## 2026-04-03 Admin Phase 2 (Ops + Moderation + Roles)
+- Added support role to user roles and panel access; support is read-only in admin UI actions.
+- Added BaseResource to centralize read-only rules for support users.
+- Added read-only resources for Parsed Files and Page Activities under Operations.
+- Added Showcase moderation fields migration and moderation resource with approve/feature actions.
+- Updated portfolio showcase relation manager to include moderation flags and placement order.
+
+
+## 2026-04-03 Web Admin Prod Docker
+- Updated web-admin production Dockerfile to install intl and set ownership for storage/cache.
+- Hardened prod compose to use kislap_admin internal expose only and removed dev-only volume mounts.
+
