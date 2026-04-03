@@ -41,11 +41,8 @@ services:
     restart: always
     env_file:
       - ./apps/web-admin/.env
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./apps/web-admin:/var/www/html
-      - ./.docker/php/local.ini:/usr/local/etc/php/local.ini
+    expose:
+      - "3000"
     depends_on:
       kislap_database:
         condition: service_healthy

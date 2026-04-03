@@ -88,11 +88,11 @@ services:
     networks:
       - kislap_subnet
 
-networks:
-  kislap_subnet:
-    driver: bridge
-
 volumes:
   kislap_flash_go_mod:
   kislap_flash_go_build:
   database_data:
+
+networks:
+  kislap_subnet:
+    driver: bridge

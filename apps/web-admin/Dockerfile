@@ -5,6 +5,7 @@ RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg62-turbo-dev \
     libfreetype6-dev \
+    libicu-dev \
     locales \
     zip \
     jpegoptim optipng pngquant gifsicle \
@@ -20,7 +21,7 @@ RUN apt-get update && apt-get install -y \
 
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
-RUN docker-php-ext-install pdo_mysql mbstring zip exif pcntl
+RUN docker-php-ext-install pdo_mysql mbstring zip exif pcntl intl
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg
 RUN docker-php-ext-install gd
 
@@ -44,8 +45,6 @@ RUN crontab /etc/cron.d/my-crontab
 
 RUN touch /var/log/cron.log
 
-RUN sed -i 's/listen = .*/listen = 0.0.0.0:8000/' /usr/local/etc/php-fpm.d/zz-docker.conf
-
 EXPOSE 8000
 
-CMD ["sh", "-c", "cron && php-fpm"]
+CMD ["sh", "-c", "cron && php artisan serve --host=0.0.0.0 --port=8000"]
