@@ -311,3 +311,7 @@ ormalizeMenuShareUrl in packages/templates/src/components/menu/menu-types.ts and
 - Disabled composer scripts in prod build to avoid Filament bootstrapping before vendor is ready.
 - Moved package discovery to container startup command.
 
+
+## 2026-04-03 Web Admin Prod Cache Cleanup
+- Clear bootstrap/cache/*.php before package discovery to avoid stale dev providers (e.g. Pail) in prod.
+

@@ -41,4 +41,4 @@ RUN sed -i 's/listen = .*/listen = 0.0.0.0:3000/' /usr/local/etc/php-fpm.d/zz-do
 
 EXPOSE 3000
 
-CMD ["sh", "-c", "php artisan package:discover --ansi && cron && php-fpm"]
+CMD ["sh", "-c", "rm -f bootstrap/cache/*.php && php artisan package:discover --ansi && cron && php-fpm"]
