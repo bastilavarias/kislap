@@ -71,6 +71,10 @@ class User extends Authenticatable implements FilamentUser, FilamentHasName
 
     public function canAccessPanel(Panel $panel): bool
     {
+        if (session()->has('impersonator_id')) {
+            return true;
+        }
+
         if (app()->environment('local')) {
             return ! $this->is_banned;
         }

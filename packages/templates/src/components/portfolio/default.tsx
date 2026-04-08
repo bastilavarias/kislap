@@ -170,11 +170,11 @@ const ExperienceSection = ({ portfolio }: { portfolio: Portfolio }) => {
                 {exp.role}
               </h3>
               <span className="text-sm text-muted-foreground font-medium break-words [overflow-wrap:anywhere]">
-                {exp.start_date || "N/A"} â€” {exp.end_date || "Present"}
+                {exp.start_date || "N/A"} - {exp.end_date || "Present"}
               </span>
             </div>
             <div className="text-sm text-muted-foreground mb-3 font-medium">
-              {[exp.company, exp.location].filter(Boolean).join(" â€¢ ")}
+              {[exp.company, exp.location].filter(Boolean).join(" - ")}
             </div>
             {exp.about && (
               <p className="text-muted-foreground leading-relaxed text-sm @sm:text-base">

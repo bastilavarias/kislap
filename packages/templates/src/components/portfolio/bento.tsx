@@ -243,7 +243,7 @@ const SkillsCard = ({ portfolio, className, style }: SectionProps) => {
       style={style}
     >
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">âš¡ Tech Stack</CardTitle>
+        <CardTitle className="flex items-center gap-2">Tech Stack</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="flex flex-wrap gap-2">
@@ -374,7 +374,7 @@ const ExperienceEducationSection = ({
                     {exp.role}
                   </span>
                   <span className="text-xs text-muted-foreground mb-2 font-mono mt-1">
-                    {exp.start_date || "N/A"} â€” {exp.end_date || "Present"}
+                    {exp.start_date || "N/A"} - {exp.end_date || "Present"}
                   </span>
                   {exp.about && (
                     <p className="text-sm text-muted-foreground line-clamp-3 leading-relaxed">
@@ -413,7 +413,7 @@ const ExperienceEducationSection = ({
                     </span>
                   )}
                   <span className="text-xs text-muted-foreground mb-2 font-mono mt-1">
-                    {edu.year_start || "N/A"} â€” {edu.year_end || "Present"}
+                    {edu.year_start || "N/A"} - {edu.year_end || "Present"}
                   </span>
                   {edu.location && (
                     <p className="text-sm text-muted-foreground">

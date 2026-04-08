@@ -565,7 +565,7 @@ const FooterSection = ({ portfolio }: { portfolio: Portfolio }) => {
           </p>
           <p className="text-xs font-mono text-muted-foreground">
             All rights reserved. Made with{" "}
-            <span className="text-red-500 animate-pulse">â¤ï¸</span>
+            <span className="text-red-500 animate-pulse">love</span>
           </p>
         </div>
 
@@ -575,7 +575,7 @@ const FooterSection = ({ portfolio }: { portfolio: Portfolio }) => {
         <div className="flex flex-col items-center gap-3">
           <div className="flex flex-col items-center gap-1">
             <span className="text-xs font-black tracking-widest text-foreground uppercase flex items-center gap-1.5">
-              <span className="text-amber-400">âœ¨</span> Powered by Kislap
+              <span className="text-amber-400">*</span> Powered by Kislap
             </span>
             <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-mono">
               Transform your forms into beautiful websites

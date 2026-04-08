@@ -282,7 +282,7 @@ const ExperienceSection = ({ portfolio }: { portfolio: Portfolio }) => {
                   variant="secondary"
                   className="font-mono text-xs font-normal"
                 >
-                  {exp.start_date || "N/A"} â€” {exp.end_date || "Present"}
+                  {exp.start_date || "N/A"} - {exp.end_date || "Present"}
                 </Badge>
               </div>
 

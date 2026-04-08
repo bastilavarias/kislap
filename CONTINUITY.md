@@ -336,3 +336,10 @@ ormalizeMenuShareUrl in packages/templates/src/components/menu/menu-types.ts and
 ## 2026-04-03 Admin Nginx Root Mount
 - Mounted web-admin public assets into nginx and switched :3000 to standard Laravel try_files + php handler.
 
+
+## 2026-04-06 Admin Enhancements (No Showcase Queue)
+- Added project content inspector with content status + issues and a project health dashboard table.
+- Added admin audit log model, migration, logger, and read-only resource.
+- Added user support actions (verify email, reset password, impersonate/stop) and audit logging.
+- Added project publish/unpublish actions + bulk actions with audit logs.
+

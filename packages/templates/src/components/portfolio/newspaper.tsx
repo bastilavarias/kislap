@@ -211,9 +211,9 @@ const MainContent = ({ portfolio }: { portfolio: Portfolio }) => {
         </h2>
         <div className="flex items-center gap-2 text-[10px] font-sans uppercase text-muted-foreground">
           <span>By {portfolio.name}</span>
-          <span>â€¢</span>
+          <span>-</span>
           <span>{portfolio.location || "Remote"}</span>
-          <span>â€¢</span>
+          <span>-</span>
           <span>2 Min Read</span>
         </div>
         {(portfolio.introduction || portfolio.about) && (
@@ -258,7 +258,7 @@ const MainContent = ({ portfolio }: { portfolio: Portfolio }) => {
                     </span>
                     {exp.location && (
                       <span className="text-[10px] font-sans uppercase text-muted-foreground">
-                        â€¢ {exp.location}
+                        - {exp.location}
                       </span>
                     )}
                   </div>

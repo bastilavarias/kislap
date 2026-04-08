@@ -11,6 +11,7 @@ use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use App\Filament\Widgets\AdminStatsOverview;
+use App\Filament\Widgets\ProjectHealthTable;
 use App\Filament\Widgets\RecentProjects;
 use Filament\Widgets\AccountWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -43,6 +44,7 @@ class AdminPanelProvider extends PanelProvider
                 AccountWidget::class,
                 AdminStatsOverview::class,
                 RecentProjects::class,
+                ProjectHealthTable::class,
             ])
             ->middleware([
                 EncryptCookies::class,
