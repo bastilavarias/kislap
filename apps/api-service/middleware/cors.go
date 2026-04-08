@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"log" // Added for logging
+	"net/url"
 	"strings"
 	"time"
 
@@ -18,9 +19,20 @@ func CORSMiddleware() gin.HandlerFunc {
 
 			log.Printf("[CORS] Checking Origin: %s", origin)
 
-			allowed := strings.HasSuffix(origin, "localhost:3000") ||
-				strings.HasSuffix(origin, ".localhost:3001") ||
-				strings.HasSuffix(origin, ".kislap.app")
+			parsedOrigin, err := url.Parse(origin)
+			if err != nil || parsedOrigin.Hostname() == "" {
+				log.Printf("[CORS] BLOCKED invalid origin: %s", origin)
+				return false
+			}
+
+			host := strings.ToLower(parsedOrigin.Hostname())
+
+			allowed := host == "localhost" ||
+				host == "kislap.app" ||
+				host == "builder.kislap.app" ||
+				host == "api.kislap.app" ||
+				strings.HasSuffix(host, ".localhost") ||
+				strings.HasSuffix(host, ".kislap.app")
 
 			if allowed {
 				log.Printf("[CORS] Allowed: %s", origin)
