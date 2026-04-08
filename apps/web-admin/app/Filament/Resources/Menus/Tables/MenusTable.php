@@ -2,6 +2,9 @@
 
 namespace App\Filament\Resources\Menus\Tables;
 
+use App\Models\Menu;
+use App\Support\HostedSiteUrl;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -51,6 +54,11 @@ class MenusTable
                 TrashedFilter::make(),
             ])
             ->recordActions([
+                Action::make('visitSite')
+                    ->label('Visit site')
+                    ->icon('heroicon-o-arrow-top-right-on-square')
+                    ->url(fn (Menu $record): ?string => HostedSiteUrl::fromSubdomain($record->project?->sub_domain), shouldOpenInNewTab: true)
+                    ->visible(fn (Menu $record): bool => filled(HostedSiteUrl::fromSubdomain($record->project?->sub_domain))),
                 EditAction::make()
                     ->visible(fn (): bool => auth()->user()?->role !== 'support'),
             ])

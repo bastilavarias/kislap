@@ -19,6 +19,16 @@ class ParsedFileResource extends BaseResource
 
     protected static string | UnitEnum | null $navigationGroup = 'Operations';
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return false;
+    }
+
+    public static function canViewAny(): bool
+    {
+        return false;
+    }
+
     public static function canCreate(): bool
     {
         return false;

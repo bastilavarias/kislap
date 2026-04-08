@@ -3,6 +3,10 @@
 namespace App\Filament\Resources\Projects\Schemas;
 
 use App\Models\User;
+use App\Support\HostedSiteUrl;
+use App\Support\FormUrlPreviewAction;
+use Filament\Actions\Action;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -34,6 +38,20 @@ class ProjectForm
                             ->unique(ignoreRecord: true),
                         TextInput::make('sub_domain')
                             ->maxLength(255),
+                        Placeholder::make('hosted_site_url')
+                            ->label('Hosted site')
+                            ->content(fn ($record, $get): string => HostedSiteUrl::fromSubdomain($get('sub_domain') ?: $record?->sub_domain) ?? 'Add a subdomain to generate the hosted URL.')
+                            ->hintAction(
+                                Action::make('visitSite')
+                                    ->label('Visit site')
+                                    ->icon('heroicon-o-arrow-top-right-on-square')
+                                    ->url(
+                                        fn ($record, $get): ?string => HostedSiteUrl::fromSubdomain($get('sub_domain') ?: $record?->sub_domain),
+                                        shouldOpenInNewTab: true,
+                                    )
+                                    ->visible(fn ($record, $get): bool => filled(HostedSiteUrl::fromSubdomain($get('sub_domain') ?: $record?->sub_domain)))
+                            )
+                            ->columnSpanFull(),
                         Select::make('type')
                             ->options([
                                 'portfolio' => 'Portfolio',
@@ -48,6 +66,7 @@ class ProjectForm
                         TextInput::make('og_image_url')
                             ->url()
                             ->maxLength(255)
+                            ->suffixAction(FormUrlPreviewAction::make('previewOgImage'))
                             ->columnSpanFull(),
                         Textarea::make('description')
                             ->rows(4)

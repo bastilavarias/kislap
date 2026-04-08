@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Projects\RelationManagers;
 
+use App\Support\FormUrlPreviewAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\DeleteAction;
 use Filament\Forms\Components\Select;
@@ -41,6 +42,7 @@ class LinktreeRelationManager extends RelationManager
                         TextInput::make('logo_url')
                             ->url()
                             ->maxLength(255)
+                            ->suffixAction(FormUrlPreviewAction::make('previewLogo'))
                             ->columnSpanFull(),
                         Select::make('background_style')
                             ->options([

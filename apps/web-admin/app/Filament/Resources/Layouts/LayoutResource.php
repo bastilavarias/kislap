@@ -22,6 +22,16 @@ class LayoutResource extends BaseResource
 
     protected static string | UnitEnum | null $navigationGroup = 'Publishing';
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return false;
+    }
+
+    public static function canViewAny(): bool
+    {
+        return false;
+    }
+
     public static function form(Schema $schema): Schema
     {
         return LayoutForm::configure($schema);

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Projects\RelationManagers;
 
+use App\Support\FormUrlPreviewAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\DeleteAction;
 use Filament\Forms\Components\Select;
@@ -37,7 +38,8 @@ class PortfolioRelationManager extends RelationManager
                             ->maxLength(50),
                         TextInput::make('website')
                             ->url()
-                            ->maxLength(255),
+                            ->maxLength(255)
+                            ->suffixAction(FormUrlPreviewAction::make('previewWebsite')),
                         TextInput::make('layout_name')
                             ->maxLength(100),
                         TextInput::make('theme_name')
@@ -45,10 +47,12 @@ class PortfolioRelationManager extends RelationManager
                         TextInput::make('avatar_url')
                             ->url()
                             ->maxLength(255)
+                            ->suffixAction(FormUrlPreviewAction::make('previewAvatar'))
                             ->columnSpanFull(),
                         TextInput::make('resume_url')
                             ->url()
                             ->maxLength(255)
+                            ->suffixAction(FormUrlPreviewAction::make('previewResume'))
                             ->columnSpanFull(),
                         Textarea::make('introduction')
                             ->rows(3)

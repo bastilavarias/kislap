@@ -24,6 +24,8 @@ class LinktreeResource extends BaseResource
 
     protected static string | UnitEnum | null $navigationGroup = 'Publishing';
 
+    protected static ?string $navigationParentItem = 'Projects';
+
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
@@ -45,7 +47,6 @@ class LinktreeResource extends BaseResource
     public static function getRelations(): array
     {
         return [
-            RelationManagers\LinktreeSectionsRelationManager::class,
             RelationManagers\LinktreeLinksRelationManager::class,
         ];
     }

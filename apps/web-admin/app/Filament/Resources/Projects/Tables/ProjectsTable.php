@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Projects\Tables;
 
 use App\Support\AdminAuditLogger;
+use App\Support\HostedSiteUrl;
 use App\Support\ProjectContentInspector;
 use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
@@ -83,6 +84,12 @@ class ProjectsTable
                 TrashedFilter::make(),
             ])
             ->recordActions([
+                Action::make('visitSite')
+                    ->label('Visit site')
+                    ->icon('heroicon-o-arrow-top-right-on-square')
+                    ->color('gray')
+                    ->url(fn ($record): ?string => HostedSiteUrl::fromSubdomain($record->sub_domain), shouldOpenInNewTab: true)
+                    ->visible(fn ($record): bool => filled(HostedSiteUrl::fromSubdomain($record->sub_domain))),
                 Action::make('publish')
                     ->label('Publish')
                     ->color('success')

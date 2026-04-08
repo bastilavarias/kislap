@@ -54,6 +54,8 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
+    'site_url' => env('SITE_URL', 'https://*.kislap.app'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone

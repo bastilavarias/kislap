@@ -343,3 +343,17 @@ ormalizeMenuShareUrl in packages/templates/src/components/menu/menu-types.ts and
 - Added user support actions (verify email, reset password, impersonate/stop) and audit logging.
 - Added project publish/unpublish actions + bulk actions with audit logs.
 
+
+## 2026-04-08 Admin Nav Cleanup
+- Hid Parsed Files, Page Activities, and Showcase resources from Filament navigation and blocked view access without deleting resource files yet.
+- Hid Layouts resource from Filament navigation and blocked direct access for now so layout management can return later as a separate feature.
+
+## 2026-04-08 Admin Hosted Site Shortcut
+- Added env-driven hosted-site URL support in web-admin via config('app.site_url') / SITE_URL, with wildcard replacement for project subdomains.
+- Added a Visit site action to the Projects table that opens the hosted public page in a new tab using the project's sub_domain.
+
+## 2026-04-08 Linktree Admin Simplification
+- Removed the Sections relation manager from the Linktree edit page for now, leaving only Links in the lower relation area.
+- Added reusable small URL preview actions for active admin forms and dialogs, covering hosted/public site-related website and image URL fields without adding extra card chrome.
+- Applied the same centered single-form pattern from Linktree to Portfolio and Menu: root schema forced to one column, main details live in one primary section, theme JSON moved into collapsed accordions, and edit/create pages now use a large centered content width.
+

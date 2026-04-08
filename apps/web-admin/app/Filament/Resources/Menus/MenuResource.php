@@ -24,6 +24,8 @@ class MenuResource extends BaseResource
 
     protected static string | UnitEnum | null $navigationGroup = 'Publishing';
 
+    protected static ?string $navigationParentItem = 'Projects';
+
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()

@@ -2,6 +2,9 @@
 
 namespace App\Filament\Resources\Portfolios\Tables;
 
+use App\Models\Portfolio;
+use App\Support\HostedSiteUrl;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -44,6 +47,11 @@ class PortfoliosTable
                 TrashedFilter::make(),
             ])
             ->recordActions([
+                Action::make('visitSite')
+                    ->label('Visit site')
+                    ->icon('heroicon-o-arrow-top-right-on-square')
+                    ->url(fn (Portfolio $record): ?string => HostedSiteUrl::fromSubdomain($record->project?->sub_domain), shouldOpenInNewTab: true)
+                    ->visible(fn (Portfolio $record): bool => filled(HostedSiteUrl::fromSubdomain($record->project?->sub_domain))),
                 EditAction::make()
                     ->visible(fn (): bool => auth()->user()?->role !== 'support'),
             ])

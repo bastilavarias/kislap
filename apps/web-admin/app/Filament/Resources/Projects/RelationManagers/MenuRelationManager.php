@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Projects\RelationManagers;
 
+use App\Support\FormUrlPreviewAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\DeleteAction;
 use Filament\Forms\Components\Select;
@@ -40,7 +41,8 @@ class MenuRelationManager extends RelationManager
                             ->maxLength(255),
                         TextInput::make('website_url')
                             ->url()
-                            ->maxLength(255),
+                            ->maxLength(255)
+                            ->suffixAction(FormUrlPreviewAction::make('previewWebsiteUrl')),
                         TextInput::make('layout_name')
                             ->maxLength(100),
                         TextInput::make('theme_name')
@@ -50,10 +52,12 @@ class MenuRelationManager extends RelationManager
                         TextInput::make('logo_url')
                             ->url()
                             ->maxLength(255)
+                            ->suffixAction(FormUrlPreviewAction::make('previewLogo'))
                             ->columnSpanFull(),
                         TextInput::make('cover_image_url')
                             ->url()
                             ->maxLength(255)
+                            ->suffixAction(FormUrlPreviewAction::make('previewCoverImage'))
                             ->columnSpanFull(),
                     ])
                     ->columns(2),
