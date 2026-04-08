@@ -10,10 +10,20 @@ use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use App\Filament\Widgets\AdminActionBreakdownChart;
+use App\Filament\Widgets\AdminActivityChart;
 use App\Filament\Widgets\AdminStatsOverview;
-use App\Filament\Widgets\ProjectHealthTable;
-use App\Filament\Widgets\RecentProjects;
-use Filament\Widgets\AccountWidget;
+use App\Filament\Widgets\AttentionByTypeChart;
+use App\Filament\Widgets\ContentHealthChart;
+use App\Filament\Widgets\MarketingEventsChart;
+use App\Filament\Widgets\MarketingSourceChart;
+use App\Filament\Widgets\MarketingTopPagesChart;
+use App\Filament\Widgets\MarketingTrafficChart;
+use App\Filament\Widgets\ProjectTypeChart;
+use App\Filament\Widgets\ProjectStatusChart;
+use App\Filament\Widgets\TopProjectsChart;
+use App\Filament\Widgets\TrafficTrendChart;
+use App\Filament\Widgets\UserGrowthChart;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -39,12 +49,21 @@ class AdminPanelProvider extends PanelProvider
             ->pages([
                 Dashboard::class,
             ])
-            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
-                AccountWidget::class,
                 AdminStatsOverview::class,
-                RecentProjects::class,
-                ProjectHealthTable::class,
+                TrafficTrendChart::class,
+                UserGrowthChart::class,
+                ProjectStatusChart::class,
+                ProjectTypeChart::class,
+                ContentHealthChart::class,
+                AttentionByTypeChart::class,
+                MarketingTrafficChart::class,
+                MarketingTopPagesChart::class,
+                MarketingSourceChart::class,
+                MarketingEventsChart::class,
+                TopProjectsChart::class,
+                AdminActivityChart::class,
+                AdminActionBreakdownChart::class,
             ])
             ->middleware([
                 EncryptCookies::class,

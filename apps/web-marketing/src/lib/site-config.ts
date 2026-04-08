@@ -1,5 +1,6 @@
 const fallbackSiteUrl = 'https://kislap.app';
 const fallbackBuilderUrl = 'https://builder.kislap.app';
+const fallbackContactEmail = 'sebastiancurtislavarias@gmail.com';
 
 function normalizeBaseUrl(value: string | undefined, fallback: string) {
   const candidate = value?.trim() || fallback;
@@ -8,6 +9,7 @@ function normalizeBaseUrl(value: string | undefined, fallback: string) {
 
 export const SITE_URL = normalizeBaseUrl(import.meta.env.SITE_URL, fallbackSiteUrl);
 export const BUILDER_URL = normalizeBaseUrl(import.meta.env.BUILDER_URL, fallbackBuilderUrl);
+export const CONTACT_EMAIL = (import.meta.env.CONTACT_EMAIL?.trim() || fallbackContactEmail);
 
 export const FEATURE_PAGE_PATHS = {
   "portfolio-builder": "/features/portfolio-builder",

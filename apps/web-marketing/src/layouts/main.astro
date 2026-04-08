@@ -1,6 +1,6 @@
 ---
 import { LogoVersion } from '@/components/logo-version';
-import { BUILDER_URL, getFeaturePagePath, getSiteUrl } from '@/lib/site-config';
+import { BUILDER_URL, CONTACT_EMAIL, getFeaturePagePath, getSiteUrl } from '@/lib/site-config';
 import '@fontsource/poppins/400.css';
 import '@fontsource/poppins/600.css';
 import '@fontsource/poppins/700.css';
@@ -12,6 +12,7 @@ import {
   Github, 
   Heart, 
   MessageCircle, 
+  Mail,
   ArrowUpRight,
   ChevronDown
 } from '@lucide/astro';
@@ -42,10 +43,12 @@ const builderUrl = BUILDER_URL;
 const showcaseUrl = getSiteUrl('/showcase');
 const aboutUrl = getSiteUrl('/about');
 const featuresUrl = getSiteUrl('/features');
+const helpUrl = getSiteUrl('/help');
 
 const PUBLIC_LINKS = [
   { title: 'Showcase', url: '/showcase' },
   { title: 'About us', url: '/about' },
+  { title: 'Help', url: '/help' },
 ];
 
 const BUILDER_LINKS = [
@@ -282,6 +285,12 @@ const BUILDER_LINKS = [
               About Us
             </a>
             <a
+              href={helpUrl}
+              class="text-sm text-muted-foreground hover:text-primary transition-colors w-fit"
+            >
+              Help
+            </a>
+            <a
               href="https://github.com/bastilavarias/kislap"
               target="_blank"
               rel="noreferrer"
@@ -294,8 +303,15 @@ const BUILDER_LINKS = [
 
           <div class="flex flex-col space-y-4">
             <h4 class="font-bold text-sm uppercase tracking-wider text-foreground">
-              Community
+              Contact
             </h4>
+            <a
+              href={`mailto:${CONTACT_EMAIL}`}
+              class="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-2 w-fit"
+            >
+              <Mail class="h-4 w-4" />
+              <span>{CONTACT_EMAIL}</span>
+            </a>
             <div class="flex gap-2">
               <Button variant="outline" size="icon" className="h-9 w-9 rounded-full" asChild>
                 <a href="https://github.com/bastilavarias/kislap" target="_blank" rel="noreferrer">
@@ -311,7 +327,7 @@ const BUILDER_LINKS = [
               </Button>
             </div>
             <p class="text-xs text-muted-foreground mt-4">
-              Join our discord to get help with your portfolio.
+              Reach out by email or drop into Discord if you need help with your page.
             </p>
           </div>
         </div>

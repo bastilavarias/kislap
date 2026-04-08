@@ -4,8 +4,11 @@ import (
 	"flash/internal/appointment"
 	"flash/internal/auth"
 	"flash/internal/biz"
+	"flash/internal/dashboard"
 	"flash/internal/document"
+	"flash/internal/help_inquiry"
 	"flash/internal/linktree"
+	"flash/internal/marketing_analytics"
 	"flash/internal/menu"
 	"flash/internal/page_activity"
 	"flash/internal/parsed_file"
@@ -32,6 +35,9 @@ func RegisterRoutes(router *gin.Engine, db *gorm.DB, llm llm.Provider, objectSto
 		authController := auth.NewController(db)
 		userController := user.NewController(db)
 		projectController := project.NewController(db, objectStorage)
+		dashboardController := dashboard.NewController(db)
+		helpInquiryController := help_inquiry.NewController(db)
+		marketingAnalyticsController := marketing_analytics.NewController(db)
 		documentController := document.NewController(db, llm, objectStorage)
 		parsedFileService := parsed_file.NewService(db, documentController.Service)
 		parsedFileController := parsed_file.NewController(parsedFileService)
@@ -55,6 +61,9 @@ func RegisterRoutes(router *gin.Engine, db *gorm.DB, llm llm.Provider, objectSto
 		api.GET("/projects/list", middleware.AccessTokenValidatorMiddleware(db), projectController.List)
 		api.GET("/projects/list/public", projectController.PublicList)
 		api.GET("/projects/stats/public", projectController.PublicStats)
+		api.GET("/dashboard/public", dashboardController.PublicMetrics)
+		api.POST("/help-inquiries", helpInquiryController.Create)
+		api.GET("/marketing-analytics/overview", marketingAnalyticsController.Overview)
 		api.GET("/projects/show/:id", projectController.ShowByID)
 		api.GET("/projects/show/slug/:slug", middleware.AccessTokenValidatorMiddleware(db), projectController.ShowBySlug)
 		api.GET("/projects/show/sub-domain/:sub-domain", projectController.ShowBySubDomain)
@@ -79,6 +88,10 @@ func RegisterRoutes(router *gin.Engine, db *gorm.DB, llm llm.Provider, objectSto
 		api.PUT("/appointments/:id", middleware.AccessTokenValidatorMiddleware(db), appointmentController.Update)
 		api.DELETE("/appointments/:id", middleware.AccessTokenValidatorMiddleware(db), appointmentController.Delete)
 		api.POST("/page-activities", pageActivityController.Create)
+		api.POST("/marketing-analytics/session/start", marketingAnalyticsController.StartSession)
+		api.POST("/marketing-analytics/event", marketingAnalyticsController.TrackEvent)
+		api.POST("/marketing-analytics/session/heartbeat", marketingAnalyticsController.Heartbeat)
+		api.POST("/marketing-analytics/session/end", marketingAnalyticsController.EndSession)
 		api.GET("/page-activities/:id", middleware.AccessTokenValidatorMiddleware(db), pageActivityController.GetStats)
 		api.GET("/page-activities/:id/top-links", middleware.AccessTokenValidatorMiddleware(db), pageActivityController.GetTopLinks)
 		api.GET("/page-activities/:id/visits", middleware.AccessTokenValidatorMiddleware(db), pageActivityController.GetVisits)

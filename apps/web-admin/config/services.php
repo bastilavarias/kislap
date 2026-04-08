@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'api_service' => [
+        'base_url' => env('API_URL', 'http://localhost:5000'),
+    ],
+
 ];

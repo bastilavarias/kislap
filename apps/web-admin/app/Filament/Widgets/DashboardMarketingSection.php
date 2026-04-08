@@ -1,0 +1,12 @@
+<?php
+
+namespace App\Filament\Widgets;
+
+use Filament\Widgets\Widget;
+
+class DashboardMarketingSection extends Widget
+{
+    protected string $view = 'filament.widgets.dashboard-marketing-section';
+
+    protected int|string|array $columnSpan = 'full';
+}

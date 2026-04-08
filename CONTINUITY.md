@@ -357,3 +357,28 @@ ormalizeMenuShareUrl in packages/templates/src/components/menu/menu-types.ts and
 - Added reusable small URL preview actions for active admin forms and dialogs, covering hosted/public site-related website and image URL fields without adding extra card chrome.
 - Applied the same centered single-form pattern from Linktree to Portfolio and Menu: root schema forced to one column, main details live in one primary section, theme JSON moved into collapsed accordions, and edit/create pages now use a large centered content width.
 
+
+## 2026-04-08 Admin Dashboard Foundation
+- Added AdminDashboardService to centralize overview metrics, traffic trend data, publishing status buckets, top projects, and needs-attention project ranking for Filament widgets.
+- Expanded the admin dashboard from basic totals into a fuller command-center layout: overview stats, traffic chart, publishing snapshot chart, top projects table, recent admin activity, and a focused needs-attention projects table.
+- Kept dashboard implementation inside web-admin only for now; any future shared/public dashboard APIs should be created in api-service (Go), not here.
+
+
+## 2026-04-08 Dashboard Visual Structure + Public Metrics API
+- Reduced the admin dashboard's box-heavy feel by removing dashboard tables, trimming the top stat cards, and adding lightweight section header widgets for overview, content/product mix, and operations.
+- Added more chart-led widgets: top projects by traffic, needs-attention by type, and admin action breakdown.
+- Added a reusable public metrics endpoint in api-service at GET /api/dashboard/public for marketing/builder-friendly aggregate stats (published sites, active builders, total views, total clicks, CTR, and published project type mix).
+
+
+## 2026-04-08 Marketing Analytics Foundation
+- Added shared marketing analytics tables via Laravel migration: marketing_sessions and marketing_events in the shared database.
+- Added marketing analytics APIs in api-service for session start, event tracking, heartbeat, session end, and overview reporting at /api/marketing-analytics/overview.
+- Wired web-admin to consume marketing analytics from api-service through MarketingDashboardClient and added a dedicated Marketing website section with chart widgets for trend, top pages, sources, and event mix.
+- Kept builder project analytics (page_activities) separate from marketing website analytics by design.
+
+## 2026-04-08 Marketing Help Inbox
+- Added a shared `help_inquiries` table via Laravel migration for marketing-site support requests, including IP address, admin status/notes, and resolution timestamp fields.
+- Added a public api-service endpoint at `POST /api/help-inquiries` backed by a new help inquiry service/model, with server-side spam protection capped at 3 submissions per day per IP.
+- Added a new `/help` page in `web-marketing` with a compact support form that posts to api-service, plus a footer/header Help touchpoint and env-driven contact email support.
+- Added a new `Help Inquiries` Filament resource in `web-admin` under `Support` so marketing submissions can be reviewed and marked in progress/resolved.
+
