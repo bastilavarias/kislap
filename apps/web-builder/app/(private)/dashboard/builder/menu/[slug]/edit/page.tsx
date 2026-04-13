@@ -16,6 +16,7 @@ export default function MenuEditPage() {
       localThemeSettings={builder.localThemeSettings}
       setLocalThemeSettings={builder.setLocalThemeSettings}
       project={builder.project}
+      generateDisplayPoster={builder.generateDisplayPoster}
       isParserOpen={builder.isParserOpen}
       setIsParserOpen={builder.setIsParserOpen}
       applyParsedMenu={builder.applyParsedMenu}

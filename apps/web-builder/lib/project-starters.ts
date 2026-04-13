@@ -746,6 +746,18 @@ function createMenuBase(name: string): MenuFormValues {
       background_color: '#ffffff',
       show_logo: false,
     },
+    display_poster_settings: {
+      template: 'clean',
+      size: 'a4',
+      color_mode: 'light',
+      headline: 'Scan to view our menu',
+      subtext: 'Browse our latest dishes, drinks, and prices on your phone.',
+      footer_note: 'Updated live for dine-in and takeaway.',
+      show_logo: true,
+      show_address: false,
+      show_url: true,
+    },
+    display_poster_image_url: '',
     categories: [
       {
         id: null,

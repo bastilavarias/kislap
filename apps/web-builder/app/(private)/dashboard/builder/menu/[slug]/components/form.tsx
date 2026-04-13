@@ -10,7 +10,11 @@ import { Button } from '@/components/ui/button';
 import { Store, Tags, UtensilsCrossed } from 'lucide-react';
 import { Settings } from '@/contexts/settings-context';
 import { APIResponseProject } from '@/types/api-response';
-import { createDefaultBusinessHours, createDefaultSocialLinks } from '@/lib/menu-defaults';
+import {
+  createDefaultBusinessHours,
+  createDefaultDisplayPosterSettings,
+  createDefaultSocialLinks,
+} from '@/lib/menu-defaults';
 import { MenuFormValues } from '@/lib/schemas/menu';
 import { ParsedFileDialog } from '@/components/parsed-file-dialog';
 import { BusinessHoursEditor } from './business-hours-editor';
@@ -32,6 +36,7 @@ interface Props {
   layout: string;
   setLayout: (layout: string) => void;
   project: APIResponseProject | null;
+  generateDisplayPoster: () => Promise<void>;
   isParserOpen: boolean;
   setIsParserOpen: React.Dispatch<React.SetStateAction<boolean>>;
   applyParsedMenu: (data: Record<string, any>) => void;
@@ -46,6 +51,7 @@ export function Form({
   layout,
   setLayout,
   project,
+  generateDisplayPoster,
   isParserOpen,
   setIsParserOpen,
   applyParsedMenu,
@@ -96,6 +102,8 @@ export function Form({
         background_color: '#ffffff',
         show_logo: false,
       },
+      display_poster_settings: createDefaultDisplayPosterSettings(),
+      display_poster_image_url: '',
       categories: [],
       items: [],
     });
@@ -306,6 +314,13 @@ export function Form({
                 localThemeSettings={localThemeSettings}
                 setLocalThemeSettings={setLocalThemeSettings}
                 menuURL={menuURL}
+                posterSettings={watch('display_poster_settings')}
+                posterImageURL={watch('display_poster_image_url') || ''}
+                businessName={watch('name')}
+                setPosterField={(field, value) =>
+                  setValue(`display_poster_settings.${field}`, value, { shouldDirty: true })
+                }
+                generateDisplayPoster={generateDisplayPoster}
                 qrForegroundColor={watch('qr_settings.foreground_color')}
                 qrBackgroundColor={watch('qr_settings.background_color')}
                 setQRForegroundColor={(value) =>

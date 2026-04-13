@@ -1,5 +1,9 @@
 import { z } from 'zod';
-import { createDefaultBusinessHours, createDefaultSocialLinks } from '../menu-defaults';
+import {
+  createDefaultBusinessHours,
+  createDefaultDisplayPosterSettings,
+  createDefaultSocialLinks,
+} from '../menu-defaults';
 
 export const menuCategorySchema = z.object({
   id: z.number().optional().nullable(),
@@ -84,6 +88,18 @@ export const menuFormSchema = z.object({
     background_color: z.string().default('#ffffff'),
     show_logo: z.boolean().default(false),
   }),
+  display_poster_settings: z.object({
+    template: z.enum(['clean', 'brand', 'reference-copy']).default('clean'),
+    size: z.enum(['a4', 'a5', 'a6']).default('a4'),
+    color_mode: z.enum(['light', 'dark']).default('light'),
+    headline: z.string().default('Scan to view our menu'),
+    subtext: z.string().default('Browse our latest dishes, drinks, and prices on your phone.'),
+    footer_note: z.string().default('Updated live for dine-in and takeaway.'),
+    show_logo: z.boolean().default(true),
+    show_address: z.boolean().default(false),
+    show_url: z.boolean().default(true),
+  }).default(createDefaultDisplayPosterSettings()),
+  display_poster_image_url: z.string().optional().nullable(),
   categories: z.array(menuCategorySchema).default([]),
   items: z.array(menuItemSchema).default([]),
 });

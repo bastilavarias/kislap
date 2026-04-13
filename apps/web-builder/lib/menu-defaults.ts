@@ -30,3 +30,17 @@ export function createDefaultSocialLinks() {
     url: '',
   }));
 }
+
+export function createDefaultDisplayPosterSettings() {
+  return {
+    template: 'clean',
+    size: 'a4',
+    color_mode: 'light',
+    headline: 'Scan to view our menu',
+    subtext: 'Browse our latest dishes, drinks, and prices on your phone.',
+    footer_note: 'Updated live for dine-in and takeaway.',
+    show_logo: true,
+    show_address: false,
+    show_url: true,
+  };
+}

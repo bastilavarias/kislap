@@ -108,5 +108,6 @@ func RegisterRoutes(router *gin.Engine, db *gorm.DB, llm llm.Provider, objectSto
 		// Menu
 		api.GET("/menu/:id", middleware.AccessTokenValidatorMiddleware(db), menuController.Get)
 		api.POST("/menu", middleware.AccessTokenValidatorMiddleware(db), menuController.Save)
+		api.POST("/menu/display-poster", middleware.AccessTokenValidatorMiddleware(db), menuController.GenerateDisplayPoster)
 	}
 }

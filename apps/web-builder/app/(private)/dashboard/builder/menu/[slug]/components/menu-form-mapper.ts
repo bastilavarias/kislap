@@ -1,5 +1,9 @@
 import { MenuFormValues } from '@/lib/schemas/menu';
-import { createDefaultBusinessHours, createDefaultSocialLinks } from '@/lib/menu-defaults';
+import {
+  createDefaultBusinessHours,
+  createDefaultDisplayPosterSettings,
+  createDefaultSocialLinks,
+} from '@/lib/menu-defaults';
 import { APIResponseMenu } from '@/types/api-response';
 
 function createKey(seed?: string | number) {
@@ -76,6 +80,11 @@ export function mapToFormValues(source: APIResponseMenu): MenuFormValues {
       background_color: source.qr_settings?.background_color || '#ffffff',
       show_logo: source.qr_settings?.show_logo || false,
     },
+    display_poster_settings: {
+      ...createDefaultDisplayPosterSettings(),
+      ...(source.display_poster_settings || {}),
+    },
+    display_poster_image_url: source.display_poster_image_url || '',
     categories,
     items: (source.items || []).map((item, index) => ({
       id: item.id,
@@ -143,6 +152,8 @@ export function mapParsedMenuToFormValues(
     background_color: '#ffffff',
     show_logo: false,
   };
+  const displayPosterSettings =
+    current?.display_poster_settings ?? createDefaultDisplayPosterSettings();
 
   const categories = (source.categories || []).map((category, index) => ({
     id: undefined,
@@ -204,6 +215,8 @@ export function mapParsedMenuToFormValues(
     gallery_images: baseGallery,
     layout_name: layoutName,
     qr_settings: qrSettings,
+    display_poster_settings: displayPosterSettings,
+    display_poster_image_url: current?.display_poster_image_url || '',
     categories,
     items,
   };

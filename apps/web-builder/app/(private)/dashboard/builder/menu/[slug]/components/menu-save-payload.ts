@@ -31,6 +31,8 @@ export function buildMenuSaveFormData(
     layout_name: context.layout,
     theme: { ...(context.theme || {}) },
     qr_settings: values.qr_settings,
+    display_poster_settings: values.display_poster_settings,
+    display_poster_image_url: values.display_poster_image_url || null,
     business_hours: values.business_hours,
     social_links: values.social_links.filter((link) => link.url?.trim()),
     gallery_images: values.gallery_images.map((image) => ({

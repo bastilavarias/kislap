@@ -44,6 +44,7 @@ func (s *Service) Save(payload Payload) (*models.Menu, error) {
 
 	themeRaw, themeName := marshalTheme(payload.Theme)
 	qrRaw := marshalJSON(payload.QRSettings)
+	displayPosterRaw := marshalJSON(payload.DisplayPosterSettings)
 	hoursRaw := marshalJSON(payload.BusinessHours)
 	socialRaw := marshalJSON(payload.SocialLinks)
 	galleryRaw, err := s.resolveGalleryImages(payload.GalleryImages, payload.ProjectID)
@@ -63,6 +64,8 @@ func (s *Service) Save(payload Payload) (*models.Menu, error) {
 	menu.ThemeName = themeName
 	menu.ThemeObject = themeRaw
 	menu.QRSettings = qrRaw
+	menu.DisplayPosterSettings = displayPosterRaw
+	menu.DisplayPosterImageURL = payload.DisplayPosterImageURL
 	menu.SearchEnabled = payload.SearchEnabled
 	menu.HoursEnabled = payload.HoursEnabled
 	menu.BusinessHours = hoursRaw
