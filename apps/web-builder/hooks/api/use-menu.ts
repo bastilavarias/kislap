@@ -8,8 +8,10 @@ interface GenerateDisplayPosterPayload {
   project_id?: number;
   menu_url: string;
   name: string;
+  phone?: string | null;
   logo_url?: string | null;
   cover_image_url?: string | null;
+  gallery_images?: string[];
   address?: string | null;
   city?: string | null;
   website_url?: string | null;

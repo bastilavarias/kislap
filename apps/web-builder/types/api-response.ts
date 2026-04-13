@@ -455,7 +455,7 @@ export interface APIResponseMenuQRSettings {
 }
 
 export interface APIResponseMenuDisplayPosterSettings {
-  template?: 'clean' | 'brand' | 'reference-copy';
+  template?: 'clean';
   size?: 'a4' | 'a5' | 'a6';
   color_mode?: 'light' | 'dark';
   headline?: string;

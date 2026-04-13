@@ -16,7 +16,7 @@ import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 
 interface PosterSettings {
-  template: 'clean' | 'brand' | 'reference-copy';
+  template: 'clean';
   size: 'a4' | 'a5' | 'a6';
   color_mode: 'light' | 'dark';
   headline: string;
@@ -74,15 +74,13 @@ export function PosterPanel({
           <Label>Template</Label>
           <Select
             value={posterSettings.template}
-            onValueChange={(value: 'clean' | 'brand' | 'reference-copy') => setPosterField('template', value)}
+            onValueChange={(value: 'clean') => setPosterField('template', value)}
           >
             <SelectTrigger>
               <SelectValue placeholder="Select template" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="clean">Clean</SelectItem>
-              <SelectItem value="brand">Brand</SelectItem>
-              <SelectItem value="reference-copy">Reference Copy (Test)</SelectItem>
             </SelectContent>
           </Select>
         </div>

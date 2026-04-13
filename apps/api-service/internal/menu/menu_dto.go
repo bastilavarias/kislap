@@ -175,8 +175,10 @@ type GenerateDisplayPosterRequest struct {
 	ProjectID             int64                        `json:"project_id" binding:"required"`
 	MenuURL               string                       `json:"menu_url" binding:"required"`
 	Name                  string                       `json:"name" binding:"required"`
+	Phone                 *string                      `json:"phone"`
 	LogoURL               *string                      `json:"logo_url"`
 	CoverImageURL         *string                      `json:"cover_image_url"`
+	GalleryImages         []string                     `json:"gallery_images"`
 	Address               *string                      `json:"address"`
 	City                  *string                      `json:"city"`
 	WebsiteURL            *string                      `json:"website_url"`

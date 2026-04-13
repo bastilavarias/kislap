@@ -89,7 +89,7 @@ export const menuFormSchema = z.object({
     show_logo: z.boolean().default(false),
   }),
   display_poster_settings: z.object({
-    template: z.enum(['clean', 'brand', 'reference-copy']).default('clean'),
+    template: z.enum(['clean']).default('clean'),
     size: z.enum(['a4', 'a5', 'a6']).default('a4'),
     color_mode: z.enum(['light', 'dark']).default('light'),
     headline: z.string().default('Scan to view our menu'),

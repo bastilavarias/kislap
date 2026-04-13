@@ -311,8 +311,13 @@ export function MenuProvider({ children }: { children: ReactNode }) {
       project_id: project.id,
       menu_url: menuURL,
       name: currentValues.name,
+      phone: currentValues.phone || null,
       logo_url: currentValues.logo_url || null,
       cover_image_url: currentValues.cover_image_url || null,
+      gallery_images: (currentValues.gallery_images || [])
+        .map((entry) => entry.image_url || '')
+        .filter(Boolean)
+        .slice(0, 8),
       address: currentValues.address || null,
       city: currentValues.city || null,
       website_url: currentValues.website_url || null,
