@@ -6,6 +6,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"html"
+	"image/color"
 	"io"
 	"net/http"
 	"strings"
@@ -48,7 +49,7 @@ func (s *Service) GenerateDisplayPoster(request GenerateDisplayPosterRequest) (*
 		settings.Size = "a4"
 	}
 
-	qrPNG, err := qrcode.Encode(request.MenuURL, qrcode.Medium, 400)
+	qrPNG, err := generatePosterQRCode(request.MenuURL, request.QRSettings)
 	if err != nil {
 		return nil, fmt.Errorf("failed to generate QR code: %w", err)
 	}
@@ -148,7 +149,12 @@ func renderPosterHTML(
 ) string {
 	qrDataURL := "data:image/png;base64," + base64.StdEncoding.EncodeToString(qrPNG)
 
-	return renderCleanPosterHTML(request, settings, size, palette, qrDataURL, logoDataURL, coverDataURL)
+	switch strings.TrimSpace(settings.Template) {
+	case "", "clean":
+		return renderCleanPosterHTML(request, settings, size, palette, qrDataURL, logoDataURL, coverDataURL)
+	default:
+		return renderCleanPosterHTML(request, settings, size, palette, qrDataURL, logoDataURL, coverDataURL)
+	}
 }
 
 func renderCleanPosterHTML(
@@ -158,39 +164,14 @@ func renderCleanPosterHTML(
 	palette posterPalette,
 	qrDataURL, logoDataURL, coverDataURL string,
 ) string {
-	fontSans := posterThemeFont(themeFontValue(request.Theme, settings.ColorMode, "font-sans"), `"Montserrat", Arial, Helvetica, sans-serif`)
-	fontDisplay := posterThemeFont(themeFontValue(request.Theme, settings.ColorMode, "font-serif"), fontSans)
+	_ = request
+	_ = settings
+	_ = palette
+	_ = logoDataURL
 
-	businessName := strings.TrimSpace(request.Name)
-	if businessName == "" {
-		businessName = "Your Restaurant"
-	}
-
-	headline := formatPosterHTMLLines(firstNonEmpty(strings.TrimSpace(settings.Headline), "Scan QR code for menu"), 18, 3, true)
-	footerNote := formatPosterHTMLLines(firstNonEmpty(strings.TrimSpace(settings.FooterNote), "Updated live for dine-in and takeaway."), 34, 2, false)
-	displayURL := posterDisplayURL(request.WebsiteURL, request.MenuURL)
-	addressLine := strings.TrimSpace(composePosterAddress(request.Address, request.City))
-	contactGroupMarkup := buildPosterContactGroupHTML(request.Phone, request.WebsiteURL, request.MenuURL)
-	tableLabel := html.EscapeString(strings.ToUpper(firstNonEmpty(strings.TrimSpace(settings.FooterNote), "Table 1")))
-
-	logoMarkup := fmt.Sprintf(`<div class="brand-wordmark">%s</div>`, html.EscapeString(businessName))
-	if settings.ShowLogo && logoDataURL != "" {
-		logoMarkup = fmt.Sprintf(`<img src="%s" alt="Business logo" class="poster-logo-image" />`, html.EscapeString(logoDataURL))
-	}
-
-	addressMarkup := ""
-	if settings.ShowAddress && addressLine != "" {
-		addressMarkup = fmt.Sprintf(`<div class="detail-box"><div class="detail-label">Address</div><div class="detail-value">%s</div></div>`, html.EscapeString(addressLine))
-	}
-
-	urlMarkup := ""
-	if settings.ShowURL && displayURL != "" {
-		urlMarkup = fmt.Sprintf(`<div class="detail-box"><div class="detail-label">Menu URL</div><div class="detail-value">%s</div></div>`, html.EscapeString(displayURL))
-	}
-
-	backgroundLayer := ""
+	coverMarkup := ""
 	if coverDataURL != "" {
-		backgroundLayer = fmt.Sprintf(`<div class="bg-photo"><img src="%s" alt="Poster background" /></div>`, html.EscapeString(coverDataURL))
+		coverMarkup = fmt.Sprintf(`<div class="cover-wrap"><div class="cover-photo"><img src="%s" alt="Cover photo" /></div></div>`, html.EscapeString(coverDataURL))
 	}
 
 	template := `<!DOCTYPE html>
@@ -204,160 +185,215 @@ func renderCleanPosterHTML(
       width: {{WIDTH}}px;
       height: {{HEIGHT}}px;
       overflow: hidden;
-      font-family: {{FONT_SANS}};
-      background: {{PAGE_BG}};
-      color: {{TEXT_COLOR}};
+      font-family: Arial, Helvetica, sans-serif;
+      background: #b3142b;
+      color: #ffffff;
     }
     #poster-root {
       width: 100%;
       height: 100%;
-      padding: 20px;
-      display: block;
+      position: relative;
+      overflow: hidden;
+      background: #b3142b;
+    }
+    .poster-shell {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
     }
     .poster {
       position: relative;
       width: 100%;
       height: 100%;
-      border-radius: 10px;
-      background: linear-gradient(180deg, color-mix(in srgb, {{ACCENT_COLOR}} 92%, #ffffff 8%), color-mix(in srgb, {{ACCENT_COLOR}} 84%, #000000 16%));
-      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
+      background: #b3142b;
       overflow: hidden;
-      isolation: isolate;
     }
-    .bg-photo {
+    .poster::before {
+      content: "";
       position: absolute;
       inset: 0;
-      opacity: 0.18;
-      filter: blur(12px) saturate(0.8);
-      transform: scale(1.12);
+      background:
+        radial-gradient(circle at 50% 58%, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 20%, rgba(255,255,255,0.00) 42%),
+        radial-gradient(circle at 50% 58%, rgba(255,177,177,0.10) 0%, rgba(255,177,177,0.00) 52%);
       z-index: 0;
+      pointer-events: none;
     }
-    .bg-photo img {
+    .poster::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(rgba(255,255,255,0.05) 0.6px, transparent 0.6px),
+        radial-gradient(rgba(0,0,0,0.035) 0.6px, transparent 0.6px);
+      background-position: 0 0, 1.5px 1.5px;
+      background-size: 3px 3px;
+      opacity: 0.18;
+      mix-blend-mode: soft-light;
+      z-index: 1;
+      pointer-events: none;
+    }
+    .cover-wrap {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: {{COVER_HEIGHT}}px;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .cover-photo {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+    .cover-photo img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       display: block;
+      filter: saturate(0.88) contrast(0.9) brightness(0.82);
+      transform: scale(1.04);
     }
-    .overlay {
+    .cover-wrap::before {
+      content: "";
       position: absolute;
       inset: 0;
       background:
-        linear-gradient(180deg, color-mix(in srgb, {{ACCENT_COLOR}} 92%, transparent), color-mix(in srgb, {{ACCENT_COLOR}} 88%, #000 12%)),
-        radial-gradient(circle at 50% 28%, rgba(255,255,255,0.08), transparent 34%);
+        linear-gradient(180deg, rgba(17, 10, 10, 0.42) 0%, rgba(17, 10, 10, 0.18) 24%, rgba(179, 20, 43, 0.18) 44%, rgba(179, 20, 43, 0.84) 82%, #b3142b 100%),
+        linear-gradient(180deg, rgba(179, 20, 43, 0.12), rgba(179, 20, 43, 0.45)),
+        linear-gradient(90deg, rgba(179, 20, 43, 0.18), rgba(179, 20, 43, 0.02) 18%, rgba(179, 20, 43, 0.02) 82%, rgba(179, 20, 43, 0.18));
       z-index: 1;
     }
-    .content {
-      position: relative;
-      z-index: 2;
-      width: 100%;
-      height: 100%;
-      padding: 34px 30px 24px;
-      display: grid;
-      grid-template-rows: auto auto 1fr auto;
-      justify-items: center;
-      text-align: center;
-    }
-    .logo-wrap {
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      margin-bottom: 10px;
-    }
-    .logo-card {
-      min-width: 168px;
-      min-height: 86px;
-      border-radius: 24px;
-      background: rgba(255,255,255,0.12);
-      border: 2px solid rgba(255,255,255,0.2);
-      box-shadow: 0 12px 28px rgba(0,0,0,0.16);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 10px 20px;
-      backdrop-filter: blur(6px);
-    }
-    .poster-logo-image {
-      width: 100%;
-      max-width: 150px;
-      height: 68px;
-      object-fit: contain;
-      display: block;
-    }
-    .brand-wordmark {
-      font-family: {{FONT_DISPLAY}};
-      font-size: 58px;
-      line-height: 1;
-      color: {{ON_PRIMARY}};
-      font-weight: 700;
-      letter-spacing: -0.04em;
-      text-transform: none;
-    }
-    .title-block {
-      width: 100%;
-      display: grid;
-      gap: 10px;
-      justify-items: center;
-      color: {{ON_PRIMARY}};
-      margin-bottom: 20px;
-    }
-    .headline {
-      font-family: {{FONT_DISPLAY}};
-      font-size: 34px;
-      line-height: 1.04;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: -0.03em;
-      max-width: 90%;
-    }
-    .divider {
-      width: 100%;
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      align-items: center;
-      gap: 16px;
-      font-size: 16px;
-      line-height: 1;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: {{ON_PRIMARY}};
-    }
-    .divider::before,
-    .divider::after {
+    .cover-wrap::after {
       content: "";
-      height: 2px;
-      background: color-mix(in srgb, {{SECONDARY_COLOR}} 72%, #fff 28%);
-      border-radius: 999px;
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 38%;
+      background: linear-gradient(180deg, rgba(179, 20, 43, 0) 0%, rgba(179, 20, 43, 0.7) 58%, #b3142b 100%);
+      z-index: 2;
     }
-    .table-label {
-      color: {{ON_PRIMARY}};
-      font-weight: 700;
-      font-size: 18px;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
+    .cover-vignette {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 50% 8%, rgba(0,0,0,0.10), rgba(0,0,0,0) 38%),
+        linear-gradient(90deg, rgba(0,0,0,0.18) 0%, rgba(0,0,0,0.02) 16%, rgba(0,0,0,0.02) 84%, rgba(0,0,0,0.18) 100%);
+      z-index: 2;
+      pointer-events: none;
     }
-    .qr-section {
-      width: 100%;
-      display: grid;
-      justify-items: center;
-      align-content: center;
-      gap: 18px;
-      min-height: 0;
+    .title {
+      position: absolute;
+      left: 50%;
+      top: 4.4%;
+      transform: translateX(-50%);
+      font-size: {{TITLE_SIZE}}px;
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -0.045em;
+      color: #ffffff;
+      text-shadow:
+        0 {{TITLE_SHADOW_Y}}px {{TITLE_SHADOW_BLUR}}px rgba(0,0,0,0.42),
+        0 0 {{TITLE_GLOW}}px rgba(0,0,0,0.20);
+      z-index: 3;
+    }
+    .pill {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+      background: #ffffff;
+      color: #c12033;
+      border: {{PILL_BORDER}}px solid #ead9d9;
+      border-radius: {{PILL_RADIUS}}px;
+      box-shadow: 0 {{PILL_SHADOW_Y}}px {{PILL_SHADOW_BLUR}}px rgba(0,0,0,0.16);
+      font-weight: 800;
+      line-height: 1;
+      z-index: 3;
+    }
+    .pill-top {
+      top: 21.2%;
+      width: 64%;
+      height: 7.9%;
+      font-size: {{PILL_TOP_SIZE}}px;
+    }
+    .pill-bottom {
+      top: 30.0%;
+      width: 44%;
+      height: 7.6%;
+      font-size: {{PILL_BOTTOM_SIZE}}px;
+    }
+    .qr-brackets {
+      position: absolute;
+      left: 50%;
+      top: 39.6%;
+      width: 75%;
+      height: 45.8%;
+      transform: translateX(-50%);
+      pointer-events: none;
+    }
+    .qr-brackets::before,
+    .qr-brackets::after,
+    .qr-bracket-bottom-left,
+    .qr-bracket-bottom-right {
+      content: "";
+      position: absolute;
+      width: 29%;
+      height: 22%;
+      border-color: #ffffff;
+      border-style: solid;
+      border-width: {{BRACKET_STROKE}}px;
+      border-radius: {{BRACKET_RADIUS}}px;
+    }
+    .qr-brackets::before {
+      right: 0;
+      top: 0;
+      border-left: 0;
+      border-bottom: 0;
+    }
+    .qr-brackets::after {
+      left: 0;
+      bottom: 0;
+      border-right: 0;
+      border-top: 0;
+    }
+    .qr-arrow {
+      position: absolute;
+      left: 17.4%;
+      top: 33.6%;
+      width: 14%;
+      height: 11%;
+      overflow: visible;
+      pointer-events: none;
+      z-index: 3;
+      filter: drop-shadow(0 3px 8px rgba(0,0,0,0.18));
     }
     .qr-card {
-      width: min(74vw, 520px);
-      height: min(74vw, 520px);
-      max-width: 58%;
-      max-height: 58%;
-      min-width: 320px;
-      min-height: 320px;
-      background: #fff;
-      border: 4px solid rgba(255,255,255,0.84);
-      box-shadow: 0 18px 38px rgba(0,0,0,0.18);
-      padding: 20px;
+      position: absolute;
+      left: 50%;
+      top: 43.2%;
+      transform: translateX(-50%);
+      width: 54.8%;
+      aspect-ratio: 1 / 1;
+      background: #ffffff;
+      border: {{QR_FRAME}}px solid #efefef;
+      box-shadow:
+        0 {{QR_SHADOW_Y}}px {{QR_SHADOW_BLUR}}px rgba(0,0,0,0.16),
+        0 0 {{QR_GLOW}}px rgba(255,255,255,0.18),
+        0 0 {{QR_GLOW_WARM}}px rgba(255,176,176,0.12);
+      padding: {{QR_PAD}}px;
       display: flex;
       align-items: center;
       justify-content: center;
+      z-index: 3;
     }
     .qr-card img {
       width: 100%;
@@ -365,122 +401,64 @@ func renderCleanPosterHTML(
       object-fit: contain;
       display: block;
     }
-    .info-strip {
-      width: min(74vw, 520px);
-      max-width: 58%;
-      display: grid;
-      gap: 10px;
-      justify-items: stretch;
-    }
-    .detail-box {
-      background: rgba(255,255,255,0.12);
-      border: 1px solid rgba(255,255,255,0.2);
-      color: {{ON_PRIMARY}};
-      border-radius: 16px;
-      padding: 12px 16px;
-      text-align: left;
-      backdrop-filter: blur(6px);
-    }
-    .detail-label {
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: color-mix(in srgb, {{SECONDARY_COLOR}} 82%, #fff 18%);
-      margin-bottom: 4px;
-    }
-    .detail-value {
-      font-size: 16px;
-      line-height: 1.3;
-      font-weight: 600;
-      word-break: break-word;
-    }
-    .contact-group {
-      justify-self: center;
-      background: color-mix(in srgb, {{SECONDARY_COLOR}} 90%, transparent);
+    .footer-accent {
+      position: absolute;
+      left: 50%;
+      bottom: 12.4%;
+      transform: translateX(-50%);
+      width: 18%;
+      height: {{FOOTER_LINE}}px;
       border-radius: 999px;
-      padding: 10px 18px;
-      display: inline-flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: center;
-      gap: 10px 18px;
-      color: {{ON_SECONDARY}};
-      font-size: 14px;
-      font-weight: 700;
-      max-width: 100%;
+      background: rgba(255,255,255,0.65);
+      box-shadow: 0 0 10px rgba(255,255,255,0.08);
+      z-index: 3;
     }
-    .contact-item {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .contact-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: currentColor;
-      opacity: 0.9;
-      flex: 0 0 auto;
-    }
-    .footer {
-      width: 100%;
-      display: grid;
-      gap: 10px;
-      justify-items: center;
-      margin-top: 16px;
-      color: {{ON_PRIMARY}};
-    }
-    .footer-note {
-      font-size: 18px;
-      line-height: 1.25;
-      font-weight: 600;
-      max-width: 80%;
-    }
-    .powered {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 14px;
-      color: color-mix(in srgb, {{ON_PRIMARY}} 88%, transparent);
-    }
-    .powered-brand {
-      font-family: {{FONT_DISPLAY}};
-      font-size: 34px;
+    .brand {
+      position: absolute;
+      left: 50%;
+      bottom: 6.0%;
+      transform: translateX(-50%);
+      font-size: {{BRAND_SIZE}}px;
+      font-weight: 900;
       line-height: 1;
-      color: {{ON_PRIMARY}};
-      letter-spacing: -0.04em;
+      letter-spacing: -0.03em;
+      color: #ffffff;
+      z-index: 3;
     }
   </style>
 </head>
 <body>
   <div id="poster-root">
-    <div class="poster">
-      {{BACKGROUND_LAYER}}
-      <div class="overlay"></div>
-      <div class="content">
-        <div class="logo-wrap">
-          <div class="logo-card">{{LOGO}}</div>
+    <div class="poster-shell">
+      <div class="poster">
+        {{COVER}}
+        <div class="cover-vignette"></div>
+        <div class="title">MENÜ</div>
+        <div class="pill pill-top">Menüyü görmek için</div>
+        <div class="pill pill-bottom">kodu okutun</div>
+        <svg class="qr-arrow" viewBox="0 0 100 100" aria-hidden="true">
+          <path
+            d="M72 10 C46 18, 33 39, 35 62"
+            fill="none"
+            stroke="#ffffff"
+            stroke-width="{{ARROW_STROKE}}"
+            stroke-linecap="round"
+          />
+          <path
+            d="M24 52 L35 66 L49 54"
+            fill="none"
+            stroke="#ffffff"
+            stroke-width="{{ARROW_STROKE}}"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+        <div class="qr-brackets"></div>
+        <div class="qr-card">
+          <img src="{{QR_URL}}" alt="QR code" />
         </div>
-        <div class="title-block">
-          <div class="headline">{{HEADLINE}}</div>
-          <div class="divider">MENU</div>
-          <div class="table-label">@{{TABLE_LABEL}}</div>
-        </div>
-        <div class="qr-section">
-          <div class="qr-card">
-            <img src="{{QR_URL}}" alt="QR code" />
-          </div>
-          <div class="info-strip">
-            {{CONTACT_GROUP}}
-            {{ADDRESS}}
-            {{URL}}
-          </div>
-        </div>
-        <div class="footer">
-          <div class="footer-note">{{FOOTER_NOTE}}</div>
-          <div class="powered">Powered by <span class="powered-brand">{{BRAND}}</span></div>
-        </div>
+        <div class="footer-accent"></div>
+        <div class="brand">OBLOMOV</div>
       </div>
     </div>
   </div>
@@ -490,24 +468,30 @@ func renderCleanPosterHTML(
 	replacements := []string{
 		"{{WIDTH}}", fmt.Sprintf("%d", size.Width),
 		"{{HEIGHT}}", fmt.Sprintf("%d", size.Height),
-		"{{FONT_SANS}}", fontSans,
-		"{{FONT_DISPLAY}}", fontDisplay,
-		"{{PAGE_BG}}", palette.Background,
-		"{{TEXT_COLOR}}", palette.Foreground,
-		"{{ACCENT_COLOR}}", palette.Accent,
-		"{{SECONDARY_COLOR}}", palette.Highlight,
-		"{{ON_PRIMARY}}", contrastColor(palette.Accent),
-		"{{ON_SECONDARY}}", contrastColor(palette.Highlight),
-		"{{BRAND}}", html.EscapeString(businessName),
-		"{{HEADLINE}}", headline,
-		"{{FOOTER_NOTE}}", footerNote,
-		"{{LOGO}}", logoMarkup,
+		"{{COVER_HEIGHT}}", fmt.Sprintf("%d", chooseFontSize(size, 560, 394, 278)),
+		"{{TITLE_SIZE}}", fmt.Sprintf("%d", chooseFontSize(size, 126, 88, 60)),
+		"{{TITLE_SHADOW_Y}}", fmt.Sprintf("%d", chooseFontSize(size, 4, 3, 2)),
+		"{{TITLE_SHADOW_BLUR}}", fmt.Sprintf("%d", chooseFontSize(size, 10, 7, 5)),
+		"{{TITLE_GLOW}}", fmt.Sprintf("%d", chooseFontSize(size, 20, 14, 9)),
+		"{{PILL_BORDER}}", fmt.Sprintf("%d", chooseFontSize(size, 3, 2, 2)),
+		"{{PILL_RADIUS}}", fmt.Sprintf("%d", chooseFontSize(size, 3, 3, 2)),
+		"{{PILL_SHADOW_Y}}", fmt.Sprintf("%d", chooseFontSize(size, 4, 3, 2)),
+		"{{PILL_SHADOW_BLUR}}", fmt.Sprintf("%d", chooseFontSize(size, 8, 6, 4)),
+		"{{PILL_TOP_SIZE}}", fmt.Sprintf("%d", chooseFontSize(size, 40, 28, 19)),
+		"{{PILL_BOTTOM_SIZE}}", fmt.Sprintf("%d", chooseFontSize(size, 35, 24, 17)),
+		"{{BRACKET_STROKE}}", fmt.Sprintf("%d", chooseFontSize(size, 9, 6, 4)),
+		"{{BRACKET_RADIUS}}", fmt.Sprintf("%d", chooseFontSize(size, 4, 3, 2)),
+		"{{ARROW_STROKE}}", fmt.Sprintf("%d", chooseFontSize(size, 8, 6, 4)),
+		"{{QR_FRAME}}", fmt.Sprintf("%d", chooseFontSize(size, 7, 5, 4)),
+		"{{QR_SHADOW_Y}}", fmt.Sprintf("%d", chooseFontSize(size, 8, 5, 4)),
+		"{{QR_SHADOW_BLUR}}", fmt.Sprintf("%d", chooseFontSize(size, 18, 12, 8)),
+		"{{QR_GLOW}}", fmt.Sprintf("%d", chooseFontSize(size, 32, 22, 14)),
+		"{{QR_PAD}}", fmt.Sprintf("%d", chooseFontSize(size, 2, 2, 1)),
+		"{{QR_GLOW_WARM}}", fmt.Sprintf("%d", chooseFontSize(size, 52, 34, 22)),
+		"{{FOOTER_LINE}}", fmt.Sprintf("%d", chooseFontSize(size, 5, 4, 3)),
+		"{{BRAND_SIZE}}", fmt.Sprintf("%d", chooseFontSize(size, 58, 40, 28)),
+		"{{COVER}}", coverMarkup,
 		"{{QR_URL}}", html.EscapeString(qrDataURL),
-		"{{CONTACT_GROUP}}", contactGroupMarkup,
-		"{{ADDRESS}}", addressMarkup,
-		"{{URL}}", urlMarkup,
-		"{{BACKGROUND_LAYER}}", backgroundLayer,
-		"{{TABLE_LABEL}}", tableLabel,
 	}
 
 	return strings.NewReplacer(replacements...).Replace(template)
@@ -601,6 +585,52 @@ func posterThemeFont(value, fallback string) string {
 	}
 
 	return value
+}
+
+func generatePosterQRCode(menuURL string, settings *QRSettingsRequest) ([]byte, error) {
+	code, err := qrcode.New(menuURL, qrcode.Medium)
+	if err != nil {
+		return nil, err
+	}
+
+	code.BackgroundColor = parsePosterHexColor(qrBackgroundColor(settings), color.White)
+	code.ForegroundColor = parsePosterHexColor(qrForegroundColor(settings), color.Black)
+	code.DisableBorder = true
+
+	return code.PNG(400)
+}
+
+func qrForegroundColor(settings *QRSettingsRequest) string {
+	if settings == nil {
+		return ""
+	}
+
+	return strings.TrimSpace(settings.ForegroundColor)
+}
+
+func qrBackgroundColor(settings *QRSettingsRequest) string {
+	if settings == nil {
+		return ""
+	}
+
+	return strings.TrimSpace(settings.BackgroundColor)
+}
+
+func parsePosterHexColor(value string, fallback color.Color) color.Color {
+	value = strings.TrimSpace(strings.TrimPrefix(value, "#"))
+	if len(value) == 3 {
+		value = fmt.Sprintf("%c%c%c%c%c%c", value[0], value[0], value[1], value[1], value[2], value[2])
+	}
+	if len(value) != 6 {
+		return fallback
+	}
+
+	var r, g, b uint8
+	if _, err := fmt.Sscanf(value, "%02x%02x%02x", &r, &g, &b); err != nil {
+		return fallback
+	}
+
+	return color.RGBA{R: r, G: g, B: b, A: 255}
 }
 
 func resolvePosterGalleryImages(coverDataURL string, gallery []string) []string {

@@ -17,7 +17,7 @@ import { Textarea } from '@/components/ui/textarea';
 
 interface PosterSettings {
   template: 'clean';
-  size: 'a4' | 'a5' | 'a6';
+  size: 'a6';
   color_mode: 'light' | 'dark';
   headline: string;
   subtext: string;
@@ -87,19 +87,7 @@ export function PosterPanel({
 
         <div className="space-y-2">
           <Label>Size</Label>
-          <Select
-            value={posterSettings.size}
-            onValueChange={(value: 'a4' | 'a5' | 'a6') => setPosterField('size', value)}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Select size" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="a4">A4</SelectItem>
-              <SelectItem value="a5">A5</SelectItem>
-              <SelectItem value="a6">A6</SelectItem>
-            </SelectContent>
-          </Select>
+          <Input value="A6" readOnly />
         </div>
       </div>
 

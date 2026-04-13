@@ -83,6 +83,7 @@ export function mapToFormValues(source: APIResponseMenu): MenuFormValues {
     display_poster_settings: {
       ...createDefaultDisplayPosterSettings(),
       ...(source.display_poster_settings || {}),
+      size: 'a6',
     },
     display_poster_image_url: source.display_poster_image_url || '',
     categories,
@@ -153,7 +154,10 @@ export function mapParsedMenuToFormValues(
     show_logo: false,
   };
   const displayPosterSettings =
-    current?.display_poster_settings ?? createDefaultDisplayPosterSettings();
+    {
+      ...(current?.display_poster_settings ?? createDefaultDisplayPosterSettings()),
+      size: 'a6' as const,
+    };
 
   const categories = (source.categories || []).map((category, index) => ({
     id: undefined,

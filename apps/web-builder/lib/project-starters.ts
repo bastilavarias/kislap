@@ -748,7 +748,7 @@ function createMenuBase(name: string): MenuFormValues {
     },
     display_poster_settings: {
       template: 'clean',
-      size: 'a4',
+      size: 'a6',
       color_mode: 'light',
       headline: 'Scan to view our menu',
       subtext: 'Browse our latest dishes, drinks, and prices on your phone.',

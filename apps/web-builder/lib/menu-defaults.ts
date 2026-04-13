@@ -34,7 +34,7 @@ export function createDefaultSocialLinks() {
 export function createDefaultDisplayPosterSettings() {
   return {
     template: 'clean',
-    size: 'a4',
+    size: 'a6',
     color_mode: 'light',
     headline: 'Scan to view our menu',
     subtext: 'Browse our latest dishes, drinks, and prices on your phone.',

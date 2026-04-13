@@ -334,6 +334,7 @@ export function MenuProvider({ children }: { children: ReactNode }) {
     setValue('display_poster_settings', {
       ...createDefaultDisplayPosterSettings(),
       ...(response.data.display_poster_settings || {}),
+      size: 'a6',
     }, { shouldDirty: true });
     setValue('display_poster_image_url', response.data.image_url, { shouldDirty: true });
     toast.success('Display poster generated');

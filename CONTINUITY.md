@@ -10,6 +10,7 @@
 - Now: Menu design polish is underway: layout cards now support visual thumbnails, theme preset/light-dark handling was corrected in the stateless customizer path, and the menu editor now includes an in-page live preview with desktop/tablet/mobile toggles inspired by la.menu. [2026-03-20][CODE]
 
 ## Done (recent)
+- Rebuilt the `clean` menu display-poster generator to match a hardcoded screenshot-style reference: solid red background, `MENÜ` heading, two white instruction pills, corner-bracket QR framing, arrow accent, and `OBLOMOV` footer wordmark. The layout now ignores dynamic poster copy/colors and only keeps the live QR while scaling cleanly for A4/A5/A6. [2026-04-14][CODE]
 - Added Phase 1 `menu` backend: new `menus`, `menu_categories`, and `menu_items` tables/migrations; `menu` API module with multipart save/get; project hydration in `ShowBySlug`/`ShowBySubDomain`; and `menu` enum support in `projects`/`layouts`. [2026-03-20][CODE]
 - Added Phase 1 `menu` builder routes under `apps/web-builder/app/(private)/dashboard/builder/menu/[slug]` with provider, editor form, dashboard, design/QR panel, and save payload mapping. [2026-03-20][CODE]
 - Added Phase 1 public menu rendering: `packages/templates/src/components/menu/menu-default.tsx`, template exports, `web-sites` menu resolver support, and theme-object selection for menu projects. [2026-03-20][CODE]
@@ -253,6 +254,8 @@ pm run dev in pps/web-builder, pps/web-sites, and pps/web-marketing in parall
 
 - 2026-04-01: Normalized menu QR/share links to canonical page URLs. Added 
 ormalizeMenuShareUrl in packages/templates/src/components/menu/menu-types.ts and updated the menu template family (menu-default.tsx, menu-editorial.tsx, menu-bistro.tsx, menu-showcase.tsx, menu-runway.tsx, menu-mosaic.tsx) so displayed share URLs, copied links, and QR code data use origin + pathname instead of full tracked URLs with query strings like ?fbclid=....
+- 2026-04-14 [CODE] Replaced the previous generic `clean` poster composition in `apps/api-service/internal/menu/menu_display_poster.go` with a screenshot-matched static reference layout. Current `clean` intentionally hardcodes the red palette, Turkish instruction text, and `OBLOMOV` footer wordmark while keeping the QR live and scaling the composition across A4/A5/A6.
+- 2026-04-14 [TOOL] `go test ./internal/menu` passed in `apps/api-service` after the `clean` display-poster update.
 
 - 2026-04-01: Fixed the menu-default logo overlay bug in packages/templates/src/components/menu/menu-default.tsx. The diagonal slash element inside the circular logo shell was being rendered even when a real logo_url image existed, causing a visible white/foreground line across uploaded logos. It now renders only for the fallback logo mark.
 
