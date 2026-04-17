@@ -455,12 +455,13 @@ export interface APIResponseMenuQRSettings {
 }
 
 export interface APIResponseMenuDisplayPosterSettings {
-  template?: 'clean';
+  template?: 'clean' | 'brand';
   size?: 'a6';
   color_mode?: 'light' | 'dark';
-  headline?: string;
-  subtext?: string;
-  footer_note?: string;
+  headline?: string | null;
+  subtext?: string | null;
+  footer_note?: string | null;
+  preferred_images?: string[] | null;
   show_logo?: boolean;
   show_address?: boolean;
   show_url?: boolean;

@@ -10,8 +10,6 @@ use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
-use App\Filament\Widgets\AdminActionBreakdownChart;
-use App\Filament\Widgets\AdminActivityChart;
 use App\Filament\Widgets\AdminStatsOverview;
 use App\Filament\Widgets\AttentionByTypeChart;
 use App\Filament\Widgets\ContentHealthChart;
@@ -62,8 +60,6 @@ class AdminPanelProvider extends PanelProvider
                 MarketingSourceChart::class,
                 MarketingEventsChart::class,
                 TopProjectsChart::class,
-                AdminActivityChart::class,
-                AdminActionBreakdownChart::class,
             ])
             ->middleware([
                 EncryptCookies::class,

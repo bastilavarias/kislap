@@ -753,6 +753,7 @@ function createMenuBase(name: string): MenuFormValues {
       headline: 'Scan to view our menu',
       subtext: 'Browse our latest dishes, drinks, and prices on your phone.',
       footer_note: 'Updated live for dine-in and takeaway.',
+      preferred_images: [],
       show_logo: true,
       show_address: false,
       show_url: true,

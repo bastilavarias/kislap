@@ -2,7 +2,6 @@
 
 namespace App\Support;
 
-use App\Models\AdminAuditLog;
 use App\Models\PageActivity;
 use App\Models\Project;
 use App\Models\ReservedSubDomain;
@@ -73,7 +72,6 @@ class AdminDashboardService
             'needs_attention_total' => $this->needsAttentionProjects()->count(),
             'missing_subdomain_total' => $missingSubdomain,
             'reserved_subdomains_total' => ReservedSubDomain::query()->count(),
-            'audit_events_7d' => AdminAuditLog::query()->where('created_at', '>=', $weekStart)->count(),
         ];
     }
 
@@ -204,31 +202,6 @@ class AdminDashboardService
     }
 
     /**
-     * @return array{labels: array<int, string>, data: array<int, int>}
-     */
-    public function adminActivityTrend(int $days = 14): array
-    {
-        $start = CarbonImmutable::now()->subDays($days - 1)->startOfDay();
-        $rows = AdminAuditLog::query()
-            ->selectRaw('DATE(created_at) as created_date, COUNT(*) as total')
-            ->where('created_at', '>=', $start)
-            ->groupBy('created_date')
-            ->orderBy('created_date')
-            ->pluck('total', 'created_date');
-
-        $labels = [];
-        $data = [];
-
-        for ($cursor = $start; $cursor->lte(CarbonImmutable::now()->startOfDay()); $cursor = $cursor->addDay()) {
-            $key = $cursor->toDateString();
-            $labels[] = $cursor->format('M j');
-            $data[] = (int) ($rows[$key] ?? 0);
-        }
-
-        return compact('labels', 'data');
-    }
-
-    /**
      * @return array{labels: array<int, string>, views: array<int, int>, clicks: array<int, int>}
      */
     public function topProjectsChartData(int $limit = 6): array
@@ -278,24 +251,6 @@ class AdminDashboardService
         return [
             'labels' => array_keys($counts),
             'data' => array_values($counts),
-        ];
-    }
-
-    /**
-     * @return array{labels: array<int, string>, data: array<int, int>}
-     */
-    public function adminActionBreakdown(int $limit = 6): array
-    {
-        $rows = AdminAuditLog::query()
-            ->selectRaw('action, COUNT(*) as total')
-            ->groupBy('action')
-            ->orderByDesc('total')
-            ->limit($limit)
-            ->pluck('total', 'action');
-
-        return [
-            'labels' => $rows->keys()->map(fn ($action): string => str((string) $action)->replace('.', ' ')->title()->toString())->all(),
-            'data' => $rows->values()->map(fn ($value): int => (int) $value)->all(),
         ];
     }
 

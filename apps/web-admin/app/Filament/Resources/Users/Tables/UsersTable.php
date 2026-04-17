@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\Users\Tables;
 
-use App\Support\AdminAuditLogger;
 use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -94,9 +93,6 @@ class UsersTable
                             'ban_reason' => $data['ban_reason'],
                             'banned_by' => auth()->id(),
                         ]);
-                        AdminAuditLogger::log('user.ban', $record, $record->id, [
-                            'reason' => $data['ban_reason'],
-                        ]);
                     })
                     ->visible(fn ($record): bool => ! $record->is_banned && auth()->user()?->role !== 'support')
                     ->disabled(fn ($record): bool => in_array($record->role, ['admin', 'super_admin'], true)),
@@ -111,7 +107,6 @@ class UsersTable
                             'ban_reason' => null,
                             'banned_by' => null,
                         ]);
-                        AdminAuditLogger::log('user.unban', $record, $record->id);
                     })
                     ->visible(fn ($record): bool => $record->is_banned && auth()->user()?->role !== 'support'),
                 Action::make('verify_email')
@@ -120,7 +115,6 @@ class UsersTable
                     ->requiresConfirmation()
                     ->action(function ($record): void {
                         $record->update(['email_verified_at' => now()]);
-                        AdminAuditLogger::log('user.verify_email', $record, $record->id);
                     })
                     ->visible(fn ($record): bool => empty($record->email_verified_at) && auth()->user()?->role !== 'support'),
                 Action::make('reset_password')
@@ -142,7 +136,6 @@ class UsersTable
                     ])
                     ->action(function ($record, array $data): void {
                         $record->update(['password' => $data['password']]);
-                        AdminAuditLogger::log('user.reset_password', $record, $record->id);
                         Notification::make()
                             ->title('Password updated')
                             ->success()
@@ -156,7 +149,6 @@ class UsersTable
                     ->action(function ($record): void {
                         session(['impersonator_id' => Auth::id()]);
                         Auth::login($record);
-                        AdminAuditLogger::log('user.impersonate', $record, $record->id);
                     })
                     ->visible(fn ($record): bool => auth()->user()?->role !== 'support' && auth()->id() !== $record->id),
                 Action::make('stop_impersonation')
@@ -168,7 +160,6 @@ class UsersTable
                         if ($impersonatorId) {
                             Auth::loginUsingId($impersonatorId);
                             session()->forget('impersonator_id');
-                            AdminAuditLogger::log('user.stop_impersonate', null);
                         }
                     })
                     ->visible(fn (): bool => auth()->user()?->role !== 'support' && session()->has('impersonator_id')),
@@ -195,9 +186,6 @@ class UsersTable
                                     'ban_reason' => $data['ban_reason'],
                                     'banned_by' => auth()->id(),
                                 ]);
-                                AdminAuditLogger::log('user.ban', $record, $record->id, [
-                                    'reason' => $data['ban_reason'],
-                                ]);
                             });
                         }),
                     BulkAction::make('unban')
@@ -212,7 +200,6 @@ class UsersTable
                                     'ban_reason' => null,
                                     'banned_by' => null,
                                 ]);
-                                AdminAuditLogger::log('user.unban', $record, $record->id);
                             });
                         }),
                     DeleteBulkAction::make(),

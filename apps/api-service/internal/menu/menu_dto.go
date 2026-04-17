@@ -16,15 +16,16 @@ type QRSettingsRequest struct {
 }
 
 type DisplayPosterSettingsRequest struct {
-	Template    string `json:"template"`
-	Size        string `json:"size"`
-	ColorMode   string `json:"color_mode"`
-	Headline    string `json:"headline"`
-	Subtext     string `json:"subtext"`
-	FooterNote  string `json:"footer_note"`
-	ShowLogo    bool   `json:"show_logo"`
-	ShowAddress bool   `json:"show_address"`
-	ShowURL     bool   `json:"show_url"`
+	Template        string   `json:"template"`
+	Size            string   `json:"size"`
+	ColorMode       string   `json:"color_mode"`
+	Headline        string   `json:"headline"`
+	Subtext         string   `json:"subtext"`
+	FooterNote      string   `json:"footer_note"`
+	PreferredImages []string `json:"preferred_images"`
+	ShowLogo        bool     `json:"show_logo"`
+	ShowAddress     bool     `json:"show_address"`
+	ShowURL         bool     `json:"show_url"`
 }
 
 type BusinessHoursEntryRequest struct {
@@ -179,6 +180,8 @@ type GenerateDisplayPosterRequest struct {
 	LogoURL               *string                      `json:"logo_url"`
 	CoverImageURL         *string                      `json:"cover_image_url"`
 	GalleryImages         []string                     `json:"gallery_images"`
+	BusinessHours         []BusinessHoursEntryRequest  `json:"business_hours"`
+	SocialLinks           []SocialLinkRequest          `json:"social_links"`
 	Address               *string                      `json:"address"`
 	City                  *string                      `json:"city"`
 	WebsiteURL            *string                      `json:"website_url"`

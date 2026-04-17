@@ -12,6 +12,16 @@ interface GenerateDisplayPosterPayload {
   logo_url?: string | null;
   cover_image_url?: string | null;
   gallery_images?: string[];
+  business_hours?: {
+    day: string;
+    open: string;
+    close: string;
+    closed: boolean;
+  }[];
+  social_links?: {
+    platform: string;
+    url?: string | null;
+  }[];
   address?: string | null;
   city?: string | null;
   website_url?: string | null;

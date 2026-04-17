@@ -306,6 +306,13 @@ export function MenuProvider({ children }: { children: ReactNode }) {
       return;
     }
 
+    const availableGalleryImages = (currentValues.gallery_images || [])
+      .map((entry) => entry.image_url || '')
+      .filter(Boolean);
+    const preferredImages = (currentValues.display_poster_settings?.preferred_images || [])
+      .filter((imageURL) => availableGalleryImages.includes(imageURL))
+      .slice(0, 2);
+
     const response = await apiGenerateDisplayPoster({
       menu_id: menuID,
       project_id: project.id,
@@ -318,12 +325,17 @@ export function MenuProvider({ children }: { children: ReactNode }) {
         .map((entry) => entry.image_url || '')
         .filter(Boolean)
         .slice(0, 8),
+      business_hours: currentValues.business_hours || [],
+      social_links: (currentValues.social_links || []).filter((link) => link.url?.trim()),
       address: currentValues.address || null,
       city: currentValues.city || null,
       website_url: currentValues.website_url || null,
       theme: localThemeSettings?.theme || null,
       qr_settings: currentValues.qr_settings,
-      display_poster_settings: currentValues.display_poster_settings,
+      display_poster_settings: {
+        ...currentValues.display_poster_settings,
+        preferred_images: preferredImages,
+      },
     });
 
     if (!response.success || !response.data) {
@@ -334,6 +346,10 @@ export function MenuProvider({ children }: { children: ReactNode }) {
     setValue('display_poster_settings', {
       ...createDefaultDisplayPosterSettings(),
       ...(response.data.display_poster_settings || {}),
+      preferred_images:
+        (response.data.display_poster_settings?.preferred_images || [])
+          .filter((imageURL) => availableGalleryImages.includes(imageURL))
+          .slice(0, 2),
       size: 'a6',
     }, { shouldDirty: true });
     setValue('display_poster_image_url', response.data.image_url, { shouldDirty: true });
