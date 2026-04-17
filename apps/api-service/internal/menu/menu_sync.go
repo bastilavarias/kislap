@@ -83,10 +83,10 @@ func (s *Service) syncItems(tx *gorm.DB, menuID uint64, projectID int64, request
 		}
 
 		categoryID := uint64(0)
-		if request.CategoryID != nil {
-			categoryID = uint64(*request.CategoryID)
-		} else if request.CategoryKey != nil {
+		if request.CategoryKey != nil && *request.CategoryKey != "" {
 			categoryID = categoryIDsByKey[*request.CategoryKey]
+		} else if request.CategoryID != nil {
+			categoryID = uint64(*request.CategoryID)
 		}
 		item.MenuCategoryID = categoryID
 

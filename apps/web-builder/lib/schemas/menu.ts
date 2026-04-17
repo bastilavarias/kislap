@@ -1,5 +1,9 @@
 import { z } from 'zod';
-import { createDefaultBusinessHours, createDefaultSocialLinks } from '../menu-defaults';
+import {
+  createDefaultBusinessHours,
+  createDefaultDisplayPosterSettings,
+  createDefaultSocialLinks,
+} from '../menu-defaults';
 
 export const menuCategorySchema = z.object({
   id: z.number().optional().nullable(),
@@ -84,6 +88,19 @@ export const menuFormSchema = z.object({
     background_color: z.string().default('#ffffff'),
     show_logo: z.boolean().default(false),
   }),
+  display_poster_settings: z.object({
+    template: z.enum(['clean', 'brand']).default('clean'),
+    size: z.enum(['a6']).default('a6'),
+    color_mode: z.enum(['light', 'dark']).default('light'),
+    headline: z.string().optional().nullable().default(''),
+    subtext: z.string().optional().nullable().default(''),
+    footer_note: z.string().optional().nullable().default(''),
+    preferred_images: z.array(z.string()).max(2).default([]),
+    show_logo: z.boolean().default(true),
+    show_address: z.boolean().default(false),
+    show_url: z.boolean().default(true),
+  }).default(createDefaultDisplayPosterSettings()),
+  display_poster_image_url: z.string().optional().nullable(),
   categories: z.array(menuCategorySchema).default([]),
   items: z.array(menuItemSchema).default([]),
 });

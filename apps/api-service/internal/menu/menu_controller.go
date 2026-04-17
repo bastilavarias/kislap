@@ -107,3 +107,21 @@ func (c *Controller) Get(context *gin.Context) {
 
 	utils.APIRespondSuccess(context, http.StatusOK, gin.H{"menu": menu})
 }
+
+func (c *Controller) GenerateDisplayPoster(context *gin.Context) {
+	var req GenerateDisplayPosterRequest
+	if err := context.ShouldBindJSON(&req); err != nil {
+		utils.APIRespondError(context, http.StatusBadRequest, "Invalid request: "+err.Error())
+		context.Abort()
+		return
+	}
+
+	result, err := c.Service.GenerateDisplayPoster(req)
+	if err != nil {
+		utils.APIRespondError(context, http.StatusInternalServerError, err.Error())
+		context.Abort()
+		return
+	}
+
+	utils.APIRespondSuccess(context, http.StatusOK, result)
+}

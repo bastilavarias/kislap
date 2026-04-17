@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\Projects\Tables;
 
-use App\Support\AdminAuditLogger;
 use App\Support\HostedSiteUrl;
 use App\Support\ProjectContentInspector;
 use Filament\Actions\BulkAction;
@@ -97,7 +96,6 @@ class ProjectsTable
                     ->visible(fn ($record): bool => ! $record->published)
                     ->action(function ($record): void {
                         $record->update(['published' => true]);
-                        AdminAuditLogger::log('project.publish', $record);
                     })
                     ->disabled(fn (): bool => auth()->user()?->role === 'support'),
                 Action::make('unpublish')
@@ -107,7 +105,6 @@ class ProjectsTable
                     ->visible(fn ($record): bool => $record->published)
                     ->action(function ($record): void {
                         $record->update(['published' => false]);
-                        AdminAuditLogger::log('project.unpublish', $record);
                     })
                     ->disabled(fn (): bool => auth()->user()?->role === 'support'),
                 EditAction::make()
@@ -121,7 +118,6 @@ class ProjectsTable
                         ->action(function ($records): void {
                             $records->each(function ($record): void {
                                 $record->update(['published' => true]);
-                                AdminAuditLogger::log('project.publish', $record);
                             });
                         })
                         ->requiresConfirmation(),
@@ -131,7 +127,6 @@ class ProjectsTable
                         ->action(function ($records): void {
                             $records->each(function ($record): void {
                                 $record->update(['published' => false]);
-                                AdminAuditLogger::log('project.unpublish', $record);
                             });
                         })
                         ->requiresConfirmation(),

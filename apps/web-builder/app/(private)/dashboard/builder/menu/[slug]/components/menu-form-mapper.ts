@@ -1,9 +1,59 @@
 import { MenuFormValues } from '@/lib/schemas/menu';
-import { createDefaultBusinessHours, createDefaultSocialLinks } from '@/lib/menu-defaults';
+import {
+  createDefaultBusinessHours,
+  createDefaultDisplayPosterSettings,
+  createDefaultSocialLinks,
+} from '@/lib/menu-defaults';
 import { APIResponseMenu } from '@/types/api-response';
 
 function createKey(seed?: string | number) {
   return `category-${seed || Math.random().toString(36).slice(2, 10)}`;
+}
+
+function normalizePreferredPosterImages(
+  preferredImages: string[] | null | undefined,
+  galleryImages: Array<string | null | undefined>
+): string[] {
+  if (!preferredImages?.length) {
+    return [];
+  }
+
+  const gallerySet = new Set(galleryImages.filter((imageURL): imageURL is string => !!imageURL?.trim()));
+  const seen = new Set<string>();
+  const normalized: string[] = [];
+
+  for (const imageURL of preferredImages) {
+    const trimmed = imageURL?.trim();
+    if (!trimmed || !gallerySet.has(trimmed) || seen.has(trimmed)) {
+      continue;
+    }
+    seen.add(trimmed);
+    normalized.push(trimmed);
+    if (normalized.length === 2) {
+      break;
+    }
+  }
+
+  return normalized;
+}
+
+function normalizeDisplayPosterSettings(
+  settings: APIResponseMenu['display_poster_settings'] | MenuFormValues['display_poster_settings'] | undefined,
+  galleryImages: Array<string | null | undefined> = []
+): MenuFormValues['display_poster_settings'] {
+  const defaults = createDefaultDisplayPosterSettings();
+
+  return {
+    ...defaults,
+    ...(settings || {}),
+    template: settings?.template === 'brand' ? 'brand' : 'clean',
+    size: 'a6' as const,
+    color_mode: settings?.color_mode === 'dark' ? 'dark' : 'light',
+    headline: settings?.headline ?? '',
+    subtext: settings?.subtext ?? '',
+    footer_note: settings?.footer_note ?? '',
+    preferred_images: normalizePreferredPosterImages(settings?.preferred_images, galleryImages),
+  };
 }
 
 export function mapToFormValues(source: APIResponseMenu): MenuFormValues {
@@ -49,6 +99,8 @@ export function mapToFormValues(source: APIResponseMenu): MenuFormValues {
     };
   });
 
+  const galleryImages = (source.gallery_images || []).map((imageURL) => imageURL || '');
+
   return {
     name: source.name || '',
     description: source.description || '',
@@ -66,7 +118,7 @@ export function mapToFormValues(source: APIResponseMenu): MenuFormValues {
     hours_enabled: source.hours_enabled ?? false,
     business_hours: businessHours,
     social_links: socialLinks,
-    gallery_images: (source.gallery_images || []).map((imageURL) => ({
+    gallery_images: galleryImages.map((imageURL) => ({
       image: null,
       image_url: imageURL || '',
     })),
@@ -76,6 +128,8 @@ export function mapToFormValues(source: APIResponseMenu): MenuFormValues {
       background_color: source.qr_settings?.background_color || '#ffffff',
       show_logo: source.qr_settings?.show_logo || false,
     },
+    display_poster_settings: normalizeDisplayPosterSettings(source.display_poster_settings, galleryImages),
+    display_poster_image_url: source.display_poster_image_url || '',
     categories,
     items: (source.items || []).map((item, index) => ({
       id: item.id,
@@ -111,11 +165,13 @@ interface ParsedMenuItem {
   description?: string | null;
   price?: string | null;
   badge?: string | null;
-  variants?: {
-    name?: string | null;
-    price?: string | null;
-    is_default?: boolean | null;
-  }[] | null;
+  variants?:
+    | {
+        name?: string | null;
+        price?: string | null;
+        is_default?: boolean | null;
+      }[]
+    | null;
 }
 
 interface ParsedMenuResponse {
@@ -143,6 +199,10 @@ export function mapParsedMenuToFormValues(
     background_color: '#ffffff',
     show_logo: false,
   };
+  const displayPosterSettings = normalizeDisplayPosterSettings(
+    current?.display_poster_settings,
+    baseGallery.map((entry) => entry.image_url || '')
+  );
 
   const categories = (source.categories || []).map((category, index) => ({
     id: undefined,
@@ -204,6 +264,8 @@ export function mapParsedMenuToFormValues(
     gallery_images: baseGallery,
     layout_name: layoutName,
     qr_settings: qrSettings,
+    display_poster_settings: displayPosterSettings,
+    display_poster_image_url: current?.display_poster_image_url || '',
     categories,
     items,
   };

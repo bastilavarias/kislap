@@ -454,6 +454,19 @@ export interface APIResponseMenuQRSettings {
   show_logo?: boolean;
 }
 
+export interface APIResponseMenuDisplayPosterSettings {
+  template?: 'clean' | 'brand';
+  size?: 'a6';
+  color_mode?: 'light' | 'dark';
+  headline?: string | null;
+  subtext?: string | null;
+  footer_note?: string | null;
+  preferred_images?: string[] | null;
+  show_logo?: boolean;
+  show_address?: boolean;
+  show_url?: boolean;
+}
+
 export interface APIResponseMenuBusinessHour {
   day: string;
   open: string;
@@ -515,6 +528,8 @@ export interface APIResponseMenu {
   theme_name?: string | null;
   theme_object: APIResponseThemeObject;
   qr_settings?: APIResponseMenuQRSettings | null;
+  display_poster_settings?: APIResponseMenuDisplayPosterSettings | null;
+  display_poster_image_url?: string | null;
   search_enabled: boolean;
   hours_enabled: boolean;
   business_hours?: APIResponseMenuBusinessHour[] | null;

@@ -1,7 +1,43 @@
 'use client';
 
 import { useApi } from '@/lib/api';
-import { APIResponseMenu } from '@/types/api-response';
+import { APIResponseMenu, APIResponseMenuDisplayPosterSettings } from '@/types/api-response';
+
+interface GenerateDisplayPosterPayload {
+  menu_id?: number | null;
+  project_id?: number;
+  menu_url: string;
+  name: string;
+  phone?: string | null;
+  logo_url?: string | null;
+  cover_image_url?: string | null;
+  gallery_images?: string[];
+  business_hours?: {
+    day: string;
+    open: string;
+    close: string;
+    closed: boolean;
+  }[];
+  social_links?: {
+    platform: string;
+    url?: string | null;
+  }[];
+  address?: string | null;
+  city?: string | null;
+  website_url?: string | null;
+  theme?: Record<string, unknown> | null;
+  qr_settings?: {
+    foreground_color?: string;
+    background_color?: string;
+    show_logo?: boolean;
+  } | null;
+  display_poster_settings: APIResponseMenuDisplayPosterSettings;
+}
+
+interface GenerateDisplayPosterResponse {
+  image_url: string;
+  display_poster_settings: APIResponseMenuDisplayPosterSettings;
+}
 
 export function useMenu() {
   const { apiPost } = useApi();
@@ -10,7 +46,12 @@ export function useMenu() {
     return await apiPost<APIResponseMenu>('api/menu', form);
   };
 
+  const generateDisplayPoster = async (payload: GenerateDisplayPosterPayload) => {
+    return await apiPost<GenerateDisplayPosterResponse>('api/menu/display-poster', payload);
+  };
+
   return {
     create,
+    generateDisplayPoster,
   };
 }

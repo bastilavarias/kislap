@@ -91,16 +91,16 @@ export function Form({
     <div className="w-full relative">
       <div className="mb-6">
         <Tabs value={builderTab} onValueChange={(value) => setBuilderTab(value as 'form' | 'preview')}>
-          <TabsList className="grid h-12 w-full max-w-md grid-cols-2 rounded-none border border-border/70 bg-background p-1">
+          <TabsList className="grid h-12 w-full max-w-md grid-cols-2 rounded-xl border border-border/70 bg-muted/50 p-1 shadow-sm">
             <TabsTrigger
               value="form"
-              className="rounded-none shadow-none data-[state=active]:bg-background"
+              className="cursor-pointer rounded-lg"
             >
               Form
             </TabsTrigger>
             <TabsTrigger
               value="preview"
-              className="rounded-none shadow-none data-[state=active]:bg-background"
+              className="cursor-pointer rounded-lg"
             >
               Preview
             </TabsTrigger>

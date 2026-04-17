@@ -36,6 +36,7 @@ export function QRPanel({
   const qrURL = `https://api.qrserver.com/v1/create-qr-code/?size=320x320&data=${encodeURIComponent(
     menuURL
   )}&color=${normalizeHex(foregroundColor)}&bgcolor=${normalizeHex(backgroundColor)}`;
+  const downloadURL = `/api/poster-download?url=${encodeURIComponent(qrURL)}&filename=${encodeURIComponent('menu-qr.png')}`;
   const activePreset = useMemo(
     () =>
       QR_PRESETS.find(
@@ -148,7 +149,7 @@ export function QRPanel({
       </div>
 
       <Button asChild className="w-full">
-        <a href={qrURL} target="_blank" rel="noreferrer">
+        <a href={downloadURL}>
           <Download className="mr-2 h-4 w-4" />
           Download QR
         </a>

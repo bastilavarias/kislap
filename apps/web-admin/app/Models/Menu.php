@@ -32,6 +32,8 @@ class Menu extends Model
         'theme_name',
         'theme_object',
         'qr_settings',
+        'display_poster_settings',
+        'display_poster_image_url',
         'search_enabled',
         'hours_enabled',
         'business_hours',
@@ -44,6 +46,7 @@ class Menu extends Model
         return [
             'theme_object' => 'array',
             'qr_settings' => 'array',
+            'display_poster_settings' => 'array',
             'business_hours' => 'array',
             'social_links' => 'array',
             'gallery_images' => 'array',
@@ -70,5 +73,10 @@ class Menu extends Model
     public function items(): HasMany
     {
         return $this->hasMany(MenuItem::class);
+    }
+
+    public function displayPosters(): HasMany
+    {
+        return $this->hasMany(MenuDisplayPoster::class);
     }
 }

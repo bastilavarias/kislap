@@ -10,6 +10,7 @@
 - Now: Menu design polish is underway: layout cards now support visual thumbnails, theme preset/light-dark handling was corrected in the stateless customizer path, and the menu editor now includes an in-page live preview with desktop/tablet/mobile toggles inspired by la.menu. [2026-03-20][CODE]
 
 ## Done (recent)
+- Rebuilt the `clean` menu display-poster generator to match a hardcoded screenshot-style reference: solid red background, `MENÜ` heading, two white instruction pills, corner-bracket QR framing, arrow accent, and `OBLOMOV` footer wordmark. The layout now ignores dynamic poster copy/colors and only keeps the live QR while scaling cleanly for A4/A5/A6. [2026-04-14][CODE]
 - Added Phase 1 `menu` backend: new `menus`, `menu_categories`, and `menu_items` tables/migrations; `menu` API module with multipart save/get; project hydration in `ShowBySlug`/`ShowBySubDomain`; and `menu` enum support in `projects`/`layouts`. [2026-03-20][CODE]
 - Added Phase 1 `menu` builder routes under `apps/web-builder/app/(private)/dashboard/builder/menu/[slug]` with provider, editor form, dashboard, design/QR panel, and save payload mapping. [2026-03-20][CODE]
 - Added Phase 1 public menu rendering: `packages/templates/src/components/menu/menu-default.tsx`, template exports, `web-sites` menu resolver support, and theme-object selection for menu projects. [2026-03-20][CODE]
@@ -253,6 +254,8 @@ pm run dev in pps/web-builder, pps/web-sites, and pps/web-marketing in parall
 
 - 2026-04-01: Normalized menu QR/share links to canonical page URLs. Added 
 ormalizeMenuShareUrl in packages/templates/src/components/menu/menu-types.ts and updated the menu template family (menu-default.tsx, menu-editorial.tsx, menu-bistro.tsx, menu-showcase.tsx, menu-runway.tsx, menu-mosaic.tsx) so displayed share URLs, copied links, and QR code data use origin + pathname instead of full tracked URLs with query strings like ?fbclid=....
+- 2026-04-14 [CODE] Replaced the previous generic `clean` poster composition in `apps/api-service/internal/menu/menu_display_poster.go` with a screenshot-matched static reference layout. Current `clean` intentionally hardcodes the red palette, Turkish instruction text, and `OBLOMOV` footer wordmark while keeping the QR live and scaling the composition across A4/A5/A6.
+- 2026-04-14 [TOOL] `go test ./internal/menu` passed in `apps/api-service` after the `clean` display-poster update.
 
 - 2026-04-01: Fixed the menu-default logo overlay bug in packages/templates/src/components/menu/menu-default.tsx. The diagonal slash element inside the circular logo shell was being rendered even when a real logo_url image existed, causing a visible white/foreground line across uploaded logos. It now renders only for the fallback logo mark.
 
@@ -381,4 +384,242 @@ ormalizeMenuShareUrl in packages/templates/src/components/menu/menu-types.ts and
 - Added a public api-service endpoint at `POST /api/help-inquiries` backed by a new help inquiry service/model, with server-side spam protection capped at 3 submissions per day per IP.
 - Added a new `/help` page in `web-marketing` with a compact support form that posts to api-service, plus a footer/header Help touchpoint and env-driven contact email support.
 - Added a new `Help Inquiries` Filament resource in `web-admin` under `Support` so marketing submissions can be reviewed and marked in progress/resolved.
+
+## 2026-04-13 Menu Display Poster Redesign Plan
+- Current state: the display-poster generator now uses HTML/CSS rendered to PNG in `apps/api-service/internal/menu/menu_display_poster.go`, and the latest `brand` output is structurally better but still feels too boxy, too dashboard-like, and not yet compelling as a real in-store asset. [2026-04-13][USER]
+- Direction locked: stop treating the poster like a promo flyer or admin card stack. The visual basis should come from the existing menu template family (`menu-showcase`, `menu-editorial`, `menu-runway`, `menu-default`) and then be elevated with stronger poster composition, not random decorative blocks. [2026-04-13][USER]
+- Product framing locked: this feature is `Generate Display Poster`, not literal printing. The output should feel like a polished asset a restaurant would actually place in an acrylic stand or counter display. [2026-04-13][USER]
+
+### Redesign goals
+- Blend the strongest qualities of the menu templates with poster-specific visual drama:
+  - menu-template strengths: cover-led hero, refined typography, cleaner information hierarchy, believable hospitality styling
+  - poster strengths: bolder CTA, scannable QR prominence, stronger vertical flow, faster distance readability
+- Reduce the “box inside box inside box” feeling by introducing more asymmetry, overlap, soft transitions, and fewer equally weighted panels.
+- Make the poster feel designed for physical use:
+  - the QR block should read as the primary interaction target
+  - the hero should sell the venue mood
+  - business/location/menu link details should support, not dominate
+- Keep theme-derived colors, but use them more artfully:
+  - stronger tonal layering
+  - better surface contrast
+  - less flat card-grid behavior
+
+### Design problems to solve in the next pass
+- Too boxy:
+  - every region currently has similar card treatment, which makes the poster feel like a dashboard, not a branded display asset
+- Weak visual rhythm:
+  - the current layout still reads as a 2x2 information grid rather than a deliberate poster composition
+- QR hierarchy needs refinement:
+  - QR is present but not yet treated as the hero interaction moment
+- Not enough artistic tension:
+  - poster needs stronger interplay between photography, copy, and accent color
+- Menu DNA is present but not yet fully absorbed:
+  - current result borrows structure, but not enough of the mood and sophistication from the public menu templates
+
+### Design principles for the next implementation
+- One dominant visual anchor:
+  - either the hero image or the QR block must lead immediately, with the other clearly secondary
+- One clear CTA zone:
+  - headline + QR + short instruction should work together as one cohesive scan invitation
+- Soft composition over rigid panels:
+  - use fewer hard-bordered rectangles
+  - prefer layered surfaces, tinted overlays, embedded badges, and sectional contrast
+- Poster-first typography:
+  - headlines should be shorter, tighter, and composed for distance readability
+  - support copy should be quieter and constrained
+- Real hospitality mood:
+  - image treatment, spacing, and copy blocks should feel more like a menu brand and less like a dashboard report
+- Print-aware layout:
+  - preserve generous breathing room at A4/A5/A6 without overfilling small sizes
+
+### Proposed visual architecture for `brand`
+- Hero strip:
+  - large mood image as the top or upper-left visual anchor
+  - venue name and small kicker integrated into the hero, not floating as an unrelated block
+  - logo treated as a compact premium badge, not a dominant tile
+- CTA/scan area:
+  - larger QR presence with better framing
+  - “Scan to view our menu” / “Scan here” copy should feel like one design unit
+  - reduce competing red/info cards near the QR
+- Secondary detail area:
+  - address, menu URL, and size note should become a quieter support band or footer cluster
+  - avoid giving metadata equal visual weight with the CTA
+- Accent treatment:
+  - use accent color as a ribbon, band, overlay, highlight chip, or CTA emphasis
+  - avoid filling many separate boxes with the accent color
+
+### Concrete implementation plan
+1. Recompose the `brand` template around three visual zones instead of four equal cards:
+   - hero/media zone
+   - scan/CTA zone
+   - support/details zone
+2. Reduce border-heavy styling:
+   - fewer outlined cards
+   - more tonal surfaces and nested contrast
+3. Introduce controlled overlap:
+   - allow the QR section or headline band to visually tuck into the hero/image area where appropriate
+4. Refine typography scale rules by size:
+   - A4 can support stronger display typography
+   - A5/A6 need tighter headline clamping and fewer support lines
+5. Rework spacing system:
+   - larger macro spacing between zones
+   - tighter micro spacing within copy groups
+6. Simplify support content:
+   - address and URL should collapse gracefully when absent
+   - footer note should stay small and non-competing
+7. Keep HTML/CSS renderer:
+   - do not revert to hand-built SVG
+   - continue using `utils.CaptureHTML(...)` and Chromium PNG generation
+
+### Poster-template evolution path
+- Phase A: refine `brand` into a compelling default poster with stronger menu-template influence
+- Phase B: refine `clean` so it becomes a practical “safe for any restaurant” option
+- Phase C: add more expressive template variants only after `brand` and `clean` are actually strong enough to ship
+
+### Guardrails for the next implementation pass
+- Do not chase a literal flyer clone again.
+- Do not add more decorative blocks just to make the poster look “busy”.
+- Do not increase information density unless it improves scan intent or venue clarity.
+- Do not let theme colors overpower QR readability or text contrast.
+- Keep the build focused on composition, hierarchy, and realism rather than feature creep.
+
+## 2026-04-13 Menu Display Poster Next Iteration Plan
+- Current visual status: the `brand` display poster is now materially better after the HTML/CSS redesign pass. It has stronger structure, better atmosphere, and better menu-template influence, but it still feels like a promising draft rather than a polished, desirable in-store asset. [2026-04-13][USER]
+- User feedback: “much better but not that yet”; continue later. The next pass should be planned deliberately, not improvised. [2026-04-13][USER]
+
+### What improved
+- The poster no longer looks like the old promo-flyer clone.
+- The overall structure is clearer:
+  - hero image/mood area
+  - CTA / scan block
+  - support details
+- The dark stage and softer tonal surfaces are stronger than the previous rigid card stack.
+- The QR zone feels more purposeful and less random than earlier versions.
+
+### What still feels off
+- Still too componentized:
+  - even though the boxes are softer, the poster still reads as assembled UI modules rather than one cohesive composition
+- Hero and CTA are not fully “talking” to each other:
+  - they coexist, but they do not yet feel like one designed flow
+- The right-side support/meta stack still feels product-UI-ish:
+  - useful, but not elegant enough for a print/display asset
+- Typography hierarchy is improved but still not memorable:
+  - the headline is readable, but not yet premium or iconic
+- The current composition is safe:
+  - cleaner than before, but still not “sellable” enough for future physical display products
+
+### Core objective for the next visual pass
+- Move the poster from:
+  - “well-structured UI poster”
+- toward:
+  - “brand-led display piece that still happens to contain QR and info”
+
+### Deep design direction for the next pass
+1. Unify the poster into one composition
+- Reduce the feeling that each major block has equal autonomy.
+- Hero image, headline, QR, and meta should feel like parts of one orchestrated layout.
+- Introduce more visual dependency between zones:
+  - overlap
+  - alignment rhythm
+  - shared background surfaces
+  - repeated shape language
+
+2. Refine the visual hierarchy
+- First read should be:
+  - venue mood
+  - scan CTA
+  - QR
+- Second read should be:
+  - menu purpose / supporting copy
+  - restaurant name
+  - practical details
+- Third read should be:
+  - address, URL, size note
+
+3. Make the poster less “admin UI”, more “hospitality graphic”
+- Reduce the number of equally bordered cards.
+- Replace some card containers with:
+  - integrated bands
+  - inset overlays
+  - floating chips
+  - quieter footer clusters
+- Keep only the surfaces that truly help readability.
+
+4. Improve the QR interaction moment
+- The QR should feel like a central invitation, not just a technical block.
+- Explore:
+  - stronger QR framing
+  - better CTA text alignment
+  - tighter relationship between CTA and QR
+  - more deliberate breathing room around the scan area
+
+5. Make the hero more emotionally useful
+- The hero image should sell venue mood and brand tone, not just occupy space.
+- The overlay copy inside the hero should feel more refined:
+  - less “card over image”
+  - more like editorial caption / venue signature
+
+6. Tone down support details without losing utility
+- Restaurant / format / address / URL are still useful, but they should not read as equal to the scan CTA.
+- These should become:
+  - quieter support modules
+  - likely closer to a footer/info rail than a dominant right-side stack
+
+7. Push the typography further
+- Headline:
+  - more intentional line breaks
+  - cleaner rhythm
+  - less generic “template display text”
+- Support copy:
+  - shorter
+  - calmer
+  - more restrained
+- Kicker/labels:
+  - smaller and more precise
+
+### Candidate layout directions for the next pass
+- Direction A: Editorial asymmetry
+  - larger dominant hero
+  - QR partially anchored into the lower edge of the hero zone
+  - details compressed into a cleaner bottom rail
+- Direction B: Centered scan emphasis
+  - QR becomes the compositional center
+  - hero and details support it from top and bottom
+- Direction C: Split-stage premium
+  - left side mood / venue
+  - right side CTA / QR / essential support
+  - but with far fewer boxed separations than the current version
+
+### Recommended next choice
+- Start with Direction A: Editorial asymmetry
+- Reason:
+  - it best combines menu-template DNA with poster/art direction
+  - it can feel more premium and less dashboard-like
+  - it gives the QR a more natural “featured but integrated” role
+
+### Implementation priorities for the next pass
+1. Recompose the layout first before touching color or typography details.
+2. Reduce support-card emphasis and move details toward a calmer footer/info treatment.
+3. Integrate the QR block more tightly with the hero/CTA relationship.
+4. Refine headline line breaks and spacing after the composition settles.
+5. Only then revisit minor polish:
+  - chip styling
+  - micro-copy
+  - shadow softness
+  - gradient tuning
+
+### Explicit non-goals for the next pass
+- Do not add more decorative shapes just to make it feel “designed”.
+- Do not add more text fields or feature options.
+- Do not add more templates before `brand` is genuinely strong.
+- Do not fall back to the earlier flyer/reference composition.
+
+## 2026-04-13 Display Poster Reference-Copy Test Template
+- Added a dedicated poster template option for controlled renderer testing: `reference-copy`.
+- Purpose: validate whether the HTML/CSS -> PNG pipeline can reproduce a near-literal poster reference more tightly than the earlier SVG and freestyle HTML attempts.
+- Wired end to end:
+  - API branch in `apps/api-service/internal/menu/menu_display_poster.go`
+  - builder schema/type support in `apps/web-builder/lib/schemas/menu.ts` and `apps/web-builder/types/api-response.ts`
+  - builder template selector in `apps/web-builder/app/(private)/dashboard/builder/menu/[slug]/components/poster-panel.tsx`
+- Current intent: this template is not the product direction for the main poster system; it is a visual fidelity experiment to test how closely we can copy a supplied reference using the new HTML/CSS renderer.
 

@@ -10,7 +10,11 @@ import { useAuthContext } from '@/contexts/auth-context';
 import { defaultThemeState } from '@/config/theme';
 import { useMenu } from '@/hooks/api/use-menu';
 import { useProject } from '@/hooks/api/use-project';
-import { createDefaultBusinessHours, createDefaultSocialLinks } from '@/lib/menu-defaults';
+import {
+  createDefaultBusinessHours,
+  createDefaultDisplayPosterSettings,
+  createDefaultSocialLinks,
+} from '@/lib/menu-defaults';
 import { MenuFormValues, menuFormSchema } from '@/lib/schemas/menu';
 import { APIResponseProject } from '@/types/api-response';
 import { buildMenuSaveFormData } from './menu-save-payload';
@@ -140,6 +144,7 @@ interface MenuContextType {
   hasItems: boolean;
   hasLayout: boolean;
   hasTheme: boolean;
+  generateDisplayPoster: () => Promise<void>;
 }
 
 const MenuContext = createContext<MenuContextType | undefined>(undefined);
@@ -150,7 +155,7 @@ export function MenuProvider({ children }: { children: ReactNode }) {
   const slug = Array.isArray(params.slug) ? params.slug[0] : (params.slug as string | undefined);
   const { authUser } = useAuthContext();
   const { getBySlug, publish: apiPublish } = useProject();
-  const { create } = useMenu();
+  const { create, generateDisplayPoster: apiGenerateDisplayPoster } = useMenu();
   const [project, setProject] = useState<APIResponseProject | null>(null);
   const [localThemeSettings, setLocalThemeSettings] = useState<Settings | null>(defaultMenuThemeSettings);
   const [layout, setLayout] = useState('menu-default');
@@ -186,12 +191,14 @@ export function MenuProvider({ children }: { children: ReactNode }) {
         background_color: '#ffffff',
         show_logo: false,
       },
+      display_poster_settings: createDefaultDisplayPosterSettings(),
+      display_poster_image_url: '',
       categories: [],
       items: [],
     },
   });
 
-  const { control, handleSubmit, watch, reset } = formMethods;
+  const { control, handleSubmit, watch, reset, setValue } = formMethods;
   const categoriesFieldArray = useFieldArray({ control, name: 'categories' });
   const itemsFieldArray = useFieldArray({ control, name: 'items' });
   const values = watch();
@@ -283,6 +290,72 @@ export function MenuProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const generateDisplayPoster = async () => {
+    if (!project?.id) {
+      toast.error('Save the project first before generating a display poster.');
+      return;
+    }
+
+    const currentValues = formMethods.getValues();
+    const rootDomain = process.env.NEXT_PUBLIC_SHINE_SUFFIX_URL || 'kislap.test';
+    const urlPrefix = process.env.NEXT_PUBLIC_URL_PREFIX || 'http://';
+    const menuURL = project?.sub_domain ? `${urlPrefix}${project.sub_domain}.${rootDomain}` : '';
+
+    if (!menuURL) {
+      toast.error('Set a subdomain first so the poster can point to the live menu.');
+      return;
+    }
+
+    const availableGalleryImages = (currentValues.gallery_images || [])
+      .map((entry) => entry.image_url || '')
+      .filter(Boolean);
+    const preferredImages = (currentValues.display_poster_settings?.preferred_images || [])
+      .filter((imageURL) => availableGalleryImages.includes(imageURL))
+      .slice(0, 2);
+
+    const response = await apiGenerateDisplayPoster({
+      menu_id: menuID,
+      project_id: project.id,
+      menu_url: menuURL,
+      name: currentValues.name,
+      phone: currentValues.phone || null,
+      logo_url: currentValues.logo_url || null,
+      cover_image_url: currentValues.cover_image_url || null,
+      gallery_images: (currentValues.gallery_images || [])
+        .map((entry) => entry.image_url || '')
+        .filter(Boolean)
+        .slice(0, 8),
+      business_hours: currentValues.business_hours || [],
+      social_links: (currentValues.social_links || []).filter((link) => link.url?.trim()),
+      address: currentValues.address || null,
+      city: currentValues.city || null,
+      website_url: currentValues.website_url || null,
+      theme: localThemeSettings?.theme || null,
+      qr_settings: currentValues.qr_settings,
+      display_poster_settings: {
+        ...currentValues.display_poster_settings,
+        preferred_images: preferredImages,
+      },
+    });
+
+    if (!response.success || !response.data) {
+      toast.error(response.message || 'Failed to generate display poster');
+      return;
+    }
+
+    setValue('display_poster_settings', {
+      ...createDefaultDisplayPosterSettings(),
+      ...(response.data.display_poster_settings || {}),
+      preferred_images:
+        (response.data.display_poster_settings?.preferred_images || [])
+          .filter((imageURL) => availableGalleryImages.includes(imageURL))
+          .slice(0, 2),
+      size: 'a6',
+    }, { shouldDirty: true });
+    setValue('display_poster_image_url', response.data.image_url, { shouldDirty: true });
+    toast.success('Display poster generated');
+  };
+
   const applyParsedMenu = (data: Record<string, any>) => {
     const current = formMethods.getValues();
     const mapped = mapParsedMenuToFormValues(data, current);
@@ -319,6 +392,7 @@ export function MenuProvider({ children }: { children: ReactNode }) {
         hasItems,
         hasLayout,
         hasTheme,
+        generateDisplayPoster,
       }}
     >
       {children}

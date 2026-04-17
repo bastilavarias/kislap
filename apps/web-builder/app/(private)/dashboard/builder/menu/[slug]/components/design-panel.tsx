@@ -43,7 +43,8 @@ const LAYOUT_OPTIONS = [
     id: 'menu-mosaic',
     name: 'Mosaic',
     icon: Newspaper,
-    description: 'A layered visual layout mixing cover imagery, gallery moments, and menu sections.',
+    description:
+      'A layered visual layout mixing cover imagery, gallery moments, and menu sections.',
   },
 ];
 
@@ -79,48 +80,50 @@ export function DesignPanel(props: Props) {
           <Card className="border-border shadow-none">
             <CardHeader className="pb-3">
               <CardTitle className="text-lg">Choose Layout</CardTitle>
-              <CardDescription>Choose the menu layout that fits your food, photos, and brand tone.</CardDescription>
+              <CardDescription>
+                Choose the menu layout that fits your food, photos, and brand tone.
+              </CardDescription>
             </CardHeader>
             <CardContent className="grid grid-cols-2 gap-3 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
-                {LAYOUT_OPTIONS.map((option) => {
-                  const isSelected = props.layout === option.id;
-                  return (
+              {LAYOUT_OPTIONS.map((option) => {
+                const isSelected = props.layout === option.id;
+                return (
+                  <div
+                    key={option.id}
+                    onClick={() => props.setLayout(option.id)}
+                    className={cn(
+                      'group relative flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 p-4 text-center transition-all duration-200',
+                      isSelected
+                        ? 'border-primary bg-primary/5'
+                        : 'border-muted hover:border-muted-foreground/30 hover:bg-muted/30'
+                    )}
+                  >
+                    {isSelected ? (
+                      <div className="absolute right-2 top-2 text-primary">
+                        <CheckCircle2 className="h-4 w-4" />
+                      </div>
+                    ) : null}
                     <div
-                      key={option.id}
-                      onClick={() => props.setLayout(option.id)}
                       className={cn(
-                        'group relative flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 p-4 text-center transition-all duration-200',
+                        'mb-3 rounded-full p-3 transition-colors',
                         isSelected
-                          ? 'border-primary bg-primary/5'
-                          : 'border-muted hover:border-muted-foreground/30 hover:bg-muted/30'
+                          ? 'bg-background text-primary'
+                          : 'bg-muted text-muted-foreground group-hover:bg-background'
                       )}
                     >
-                      {isSelected ? (
-                        <div className="absolute right-2 top-2 text-primary">
-                          <CheckCircle2 className="h-4 w-4" />
-                        </div>
-                      ) : null}
-                      <div
-                        className={cn(
-                          'mb-3 rounded-full p-3 transition-colors',
-                          isSelected
-                            ? 'bg-background text-primary'
-                            : 'bg-muted text-muted-foreground group-hover:bg-background'
-                        )}
-                      >
-                        <option.icon className="h-6 w-6" />
-                      </div>
-                      <div>
-                        <p className={cn('text-sm font-semibold', isSelected && 'text-primary')}>
-                          {option.name}
-                        </p>
-                        <p className="mt-1 line-clamp-2 text-[10px] text-muted-foreground">
-                          {option.description}
-                        </p>
-                      </div>
+                      <option.icon className="h-6 w-6" />
                     </div>
-                  );
-                })}
+                    <div>
+                      <p className={cn('text-sm font-semibold', isSelected && 'text-primary')}>
+                        {option.name}
+                      </p>
+                      <p className="mt-1 line-clamp-2 text-[10px] text-muted-foreground">
+                        {option.description}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
             </CardContent>
           </Card>
         </TabsContent>
@@ -154,7 +157,9 @@ export function DesignPanel(props: Props) {
                 <QrCode className="h-4 w-4" />
                 QR Code
               </CardTitle>
-              <CardDescription>Basic now, isolated and customization-ready for later.</CardDescription>
+              <CardDescription>
+                Basic now, isolated and customization-ready for later.
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <QRPanel

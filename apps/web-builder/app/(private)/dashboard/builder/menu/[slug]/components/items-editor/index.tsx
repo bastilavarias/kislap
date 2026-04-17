@@ -162,7 +162,13 @@ export function ItemsEditor({ formMethods, fieldArray }: Props) {
                     name={`items.${editIndex}.category_key`}
                     control={control}
                     render={({ field }) => (
-                      <Select value={field.value || ''} onValueChange={field.onChange}>
+                      <Select
+                        value={field.value || ''}
+                        onValueChange={(value) => {
+                          field.onChange(value);
+                          setValue(`items.${editIndex}.category_id`, null, { shouldDirty: true });
+                        }}
+                      >
                         <SelectTrigger className="w-full shadow-none">
                           <SelectValue placeholder="Select a category" />
                         </SelectTrigger>

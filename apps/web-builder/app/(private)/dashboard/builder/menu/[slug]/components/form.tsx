@@ -2,7 +2,12 @@
 
 import { useEffect, useState } from 'react';
 import { UseFieldArrayReturn, UseFormReturn } from 'react-hook-form';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -10,7 +15,11 @@ import { Button } from '@/components/ui/button';
 import { Store, Tags, UtensilsCrossed } from 'lucide-react';
 import { Settings } from '@/contexts/settings-context';
 import { APIResponseProject } from '@/types/api-response';
-import { createDefaultBusinessHours, createDefaultSocialLinks } from '@/lib/menu-defaults';
+import {
+  createDefaultBusinessHours,
+  createDefaultDisplayPosterSettings,
+  createDefaultSocialLinks,
+} from '@/lib/menu-defaults';
 import { MenuFormValues } from '@/lib/schemas/menu';
 import { ParsedFileDialog } from '@/components/parsed-file-dialog';
 import { BusinessHoursEditor } from './business-hours-editor';
@@ -19,6 +28,7 @@ import { DesignPanel } from './design-panel';
 import { GalleryUploader } from './gallery-uploader';
 import { ImageUploadField } from './image-upload-field';
 import { ItemsEditor } from './items-editor';
+import { PosterPanel, PosterPreviewCard } from './poster-panel';
 import { SocialLinksEditor } from './social-links-editor';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { MenuFormPreview } from './menu-form-preview';
@@ -32,6 +42,7 @@ interface Props {
   layout: string;
   setLayout: (layout: string) => void;
   project: APIResponseProject | null;
+  generateDisplayPoster: () => Promise<void>;
   isParserOpen: boolean;
   setIsParserOpen: React.Dispatch<React.SetStateAction<boolean>>;
   applyParsedMenu: (data: Record<string, any>) => void;
@@ -46,13 +57,14 @@ export function Form({
   layout,
   setLayout,
   project,
+  generateDisplayPoster,
   isParserOpen,
   setIsParserOpen,
   applyParsedMenu,
 }: Props) {
   const { register, watch, setValue, reset } = formMethods;
   const previewValues = watch();
-  const [builderTab, setBuilderTab] = useState<'form' | 'preview'>('form');
+  const [builderTab, setBuilderTab] = useState<'form' | 'preview' | 'poster'>('form');
 
   useEffect(() => {
     setValue('layout_name', layout);
@@ -62,13 +74,23 @@ export function Form({
   const urlPrefix = process.env.NEXT_PUBLIC_URL_PREFIX || 'http://';
   const menuURL = project?.sub_domain ? `${urlPrefix}${project.sub_domain}.${rootDomain}` : '';
   const galleryImages = watch('gallery_images') || [];
+  const posterSettings = watch('display_poster_settings');
 
   const handleGalleryChange = (items: Array<{ image: File | null; image_url: string | null }>) => {
     setValue('gallery_images', items, { shouldDirty: true });
+    const validImageURLs = items.map((item) => item.image_url || '').filter(Boolean);
+    const preferredImages = (watch('display_poster_settings.preferred_images') || [])
+      .filter((imageURL) => validImageURLs.includes(imageURL))
+      .slice(0, 2);
+    setValue('display_poster_settings.preferred_images', preferredImages, { shouldDirty: true });
   };
 
   const handleClearContent = () => {
-    if (!window.confirm('Clear the current menu form content? Layout and theme will stay as they are.')) {
+    if (
+      !window.confirm(
+        'Clear the current menu form content? Layout and theme will stay as they are.'
+      )
+    ) {
       return;
     }
 
@@ -96,6 +118,8 @@ export function Form({
         background_color: '#ffffff',
         show_logo: false,
       },
+      display_poster_settings: createDefaultDisplayPosterSettings(),
+      display_poster_image_url: '',
       categories: [],
       items: [],
     });
@@ -104,26 +128,62 @@ export function Form({
   return (
     <div className="w-full relative">
       <div className="mb-6">
-        <Tabs value={builderTab} onValueChange={(value) => setBuilderTab(value as 'form' | 'preview')}>
-          <TabsList className="grid h-12 w-full max-w-md grid-cols-2 rounded-none border border-border/70 bg-background p-1">
-            <TabsTrigger
-              value="form"
-              className="rounded-none shadow-none data-[state=active]:bg-background"
-            >
+        <Tabs
+          value={builderTab}
+          onValueChange={(value) => setBuilderTab(value as 'form' | 'preview' | 'poster')}
+        >
+          <TabsList className="grid h-12 w-full max-w-lg grid-cols-3 rounded-xl border border-border/70 bg-muted/50 p-1 shadow-sm">
+            <TabsTrigger value="form" className="cursor-pointer rounded-lg">
               Form
             </TabsTrigger>
-            <TabsTrigger
-              value="preview"
-              className="rounded-none shadow-none data-[state=active]:bg-background"
-            >
+            <TabsTrigger value="preview" className="cursor-pointer rounded-lg">
               Preview
+            </TabsTrigger>
+            <TabsTrigger value="poster" className="cursor-pointer rounded-lg">
+              Poster
             </TabsTrigger>
           </TabsList>
         </Tabs>
       </div>
 
       {builderTab === 'preview' ? (
-        <MenuFormPreview values={previewValues} layout={layout} themeSettings={localThemeSettings} />
+        <MenuFormPreview
+          values={previewValues}
+          layout={layout}
+          themeSettings={localThemeSettings}
+        />
+      ) : builderTab === 'poster' ? (
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+          <div className="lg:col-span-6">
+            <Card className="border-border shadow-none">
+              <CardContent className="p-6 pt-0">
+                <div className="mb-6">
+                  <h2 className="text-lg font-semibold">Poster Settings</h2>
+                  <p className="text-sm text-muted-foreground">
+                    Configure the A6 display poster and generate the latest export.
+                  </p>
+                </div>
+                <PosterPanel
+                  menuURL={menuURL}
+                  posterSettings={posterSettings}
+                  galleryImages={galleryImages}
+                  businessName={watch('name')}
+                  generateDisplayPoster={generateDisplayPoster}
+                  setPosterField={(field, value) =>
+                    setValue(`display_poster_settings.${field}` as never, value as never, {
+                      shouldDirty: true,
+                    })
+                  }
+                />
+              </CardContent>
+            </Card>
+          </div>
+          <div className="lg:col-span-6">
+            <div className="lg:sticky lg:top-6">
+              <PosterPreviewCard posterImageURL={watch('display_poster_image_url') || ''} />
+            </div>
+          </div>
+        </div>
       ) : (
         <div className="grid grid-cols-1 gap-6 pb-20 lg:grid-cols-12 lg:pb-0">
           <div className="space-y-6 lg:col-span-8">
@@ -134,7 +194,12 @@ export function Form({
                     <UtensilsCrossed className="h-6 w-6" />
                     <h1 className="text-2xl font-bold">Menu Editor</h1>
                   </div>
-                  <Button type="button" variant="outline" className="shadow-none" onClick={handleClearContent}>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="shadow-none"
+                    onClick={handleClearContent}
+                  >
                     Clear content
                   </Button>
                 </div>
@@ -166,78 +231,108 @@ export function Form({
                         Business
                       </AccordionTrigger>
                       <AccordionContent className="space-y-6 px-1 pb-4 pt-4">
-                    <div className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-primary">
-                      <Store className="h-4 w-4" />
-                      Business Profile
-                    </div>
-                    <div className="space-y-4">
-                      <div className="grid gap-4 md:grid-cols-2">
-                        <div className="rounded-lg border bg-muted/20 p-4">
-                          <Label className="mb-3 block text-sm font-medium">Logo</Label>
-                          <ImageUploadField
-                            id="menu-logo"
-                            previewUrl={watch('logo_url')}
-                            currentFile={watch('logo') as File}
-                            onFileSelect={(file) => setValue('logo', file, { shouldDirty: true })}
-                          />
+                        <div className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-primary">
+                          <Store className="h-4 w-4" />
+                          Business Profile
                         </div>
-                        <div className="rounded-lg border bg-muted/20 p-4">
-                          <Label className="mb-3 block text-sm font-medium">Cover Image</Label>
-                          <ImageUploadField
-                            id="menu-cover"
-                            previewUrl={watch('cover_image_url')}
-                            currentFile={watch('cover_image') as File}
-                            onFileSelect={(file) =>
-                              setValue('cover_image', file, { shouldDirty: true })
-                            }
-                          />
-                        </div>
-                      </div>
+                        <div className="space-y-4">
+                          <div className="grid gap-4 md:grid-cols-2">
+                            <div className="rounded-lg border bg-muted/20 p-4">
+                              <Label className="mb-3 block text-sm font-medium">Logo</Label>
+                              <ImageUploadField
+                                id="menu-logo"
+                                previewUrl={watch('logo_url')}
+                                currentFile={watch('logo') as File}
+                                onFileSelect={(file) =>
+                                  setValue('logo', file, { shouldDirty: true })
+                                }
+                              />
+                            </div>
+                            <div className="rounded-lg border bg-muted/20 p-4">
+                              <Label className="mb-3 block text-sm font-medium">Cover Image</Label>
+                              <ImageUploadField
+                                id="menu-cover"
+                                previewUrl={watch('cover_image_url')}
+                                currentFile={watch('cover_image') as File}
+                                onFileSelect={(file) =>
+                                  setValue('cover_image', file, { shouldDirty: true })
+                                }
+                              />
+                            </div>
+                          </div>
 
-                      <div>
-                        <Label className="mb-2 block">Business Name</Label>
-                        <Input {...register('name')} placeholder="Cookie Dokey" className="shadow-none" />
-                      </div>
-                      <div>
-                        <Label className="mb-2 block">Description</Label>
-                        <Input
-                          {...register('description')}
-                          placeholder="Wood-fired pizza, pasta, and house specials."
-                          className="shadow-none"
-                        />
-                      </div>
-                      <div className="grid gap-4 md:grid-cols-2">
-                        <div>
-                          <Label className="mb-2 block">Phone</Label>
-                          <Input {...register('phone')} placeholder="+63 997 221 7704" className="shadow-none" />
-                        </div>
-                        <div>
-                          <Label className="mb-2 block">Email</Label>
-                          <Input {...register('email')} placeholder="hello@restaurant.com" className="shadow-none" />
-                        </div>
-                      </div>
-                      <div className="grid gap-4 md:grid-cols-2">
-                        <div>
-                          <Label className="mb-2 block">Website</Label>
-                          <Input {...register('website_url')} placeholder="https://restaurant.com" className="shadow-none" />
-                        </div>
-                        <div>
-                          <Label className="mb-2 block">City</Label>
-                          <Input {...register('city')} placeholder="Manila" className="shadow-none" />
-                        </div>
-                      </div>
-                      <div>
-                        <Label className="mb-2 block">Address</Label>
-                        <Input {...register('address')} placeholder="123 Main Street" className="shadow-none" />
-                      </div>
-                      <div>
-                        <Label className="mb-2 block">Google Maps URL</Label>
-                        <Input {...register('google_maps_url')} placeholder="https://maps.google.com/..." className="shadow-none" />
-                      </div>
+                          <div>
+                            <Label className="mb-2 block">Business Name</Label>
+                            <Input
+                              {...register('name')}
+                              placeholder="Cookie Dokey"
+                              className="shadow-none"
+                            />
+                          </div>
+                          <div>
+                            <Label className="mb-2 block">Description</Label>
+                            <Input
+                              {...register('description')}
+                              placeholder="Wood-fired pizza, pasta, and house specials."
+                              className="shadow-none"
+                            />
+                          </div>
+                          <div className="grid gap-4 md:grid-cols-2">
+                            <div>
+                              <Label className="mb-2 block">Phone</Label>
+                              <Input
+                                {...register('phone')}
+                                placeholder="+63 997 221 7704"
+                                className="shadow-none"
+                              />
+                            </div>
+                            <div>
+                              <Label className="mb-2 block">Email</Label>
+                              <Input
+                                {...register('email')}
+                                placeholder="hello@restaurant.com"
+                                className="shadow-none"
+                              />
+                            </div>
+                          </div>
+                          <div className="grid gap-4 md:grid-cols-2">
+                            <div>
+                              <Label className="mb-2 block">Website</Label>
+                              <Input
+                                {...register('website_url')}
+                                placeholder="https://restaurant.com"
+                                className="shadow-none"
+                              />
+                            </div>
+                            <div>
+                              <Label className="mb-2 block">City</Label>
+                              <Input
+                                {...register('city')}
+                                placeholder="Manila"
+                                className="shadow-none"
+                              />
+                            </div>
+                          </div>
+                          <div>
+                            <Label className="mb-2 block">Address</Label>
+                            <Input
+                              {...register('address')}
+                              placeholder="123 Main Street"
+                              className="shadow-none"
+                            />
+                          </div>
+                          <div>
+                            <Label className="mb-2 block">Google Maps URL</Label>
+                            <Input
+                              {...register('google_maps_url')}
+                              placeholder="https://maps.google.com/..."
+                              className="shadow-none"
+                            />
+                          </div>
 
-                      <BusinessHoursEditor formMethods={formMethods} />
-                      <SocialLinksEditor formMethods={formMethods} />
-                    </div>
+                          <BusinessHoursEditor formMethods={formMethods} />
+                          <SocialLinksEditor formMethods={formMethods} />
+                        </div>
                       </AccordionContent>
                     </AccordionItem>
                   </Accordion>
@@ -252,7 +347,10 @@ export function Form({
                           <Tags className="h-4 w-4" />
                           Categories
                         </div>
-                        <CategoriesEditor formMethods={formMethods} fieldArray={categoriesFieldArray} />
+                        <CategoriesEditor
+                          formMethods={formMethods}
+                          fieldArray={categoriesFieldArray}
+                        />
                       </AccordionContent>
                     </AccordionItem>
                   </Accordion>
