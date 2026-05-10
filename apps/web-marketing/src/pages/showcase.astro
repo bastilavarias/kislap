@@ -55,9 +55,8 @@ const schema = {
 <Layout title={title} description={description}>
   <script type="application/ld+json" set:html={JSON.stringify(schema)} />
 
-  <section class="relative overflow-hidden pb-32 pt-20">
-    <div class="pointer-events-none absolute left-1/2 top-0 h-[500px] w-full max-w-6xl -translate-x-1/2 rounded-full bg-primary/5 opacity-50 blur-[120px]"></div>
-    <div class="container relative z-10 mx-auto max-w-6xl px-4">
+  <section class="overflow-hidden border-b-4 border-black bg-white pb-32 pt-20">
+    <div class="container mx-auto max-w-7xl px-4">
       <ShowcaseFeed
         client:load
         projects={initialProjects}
