@@ -43,6 +43,11 @@ services:
     restart: always
     env_file:
       - ./apps/web-admin/.env
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+      APP_URL: http://localhost:3000
+      API_URL: http://localhost:2000
     expose:
       - "9000"
     depends_on:
