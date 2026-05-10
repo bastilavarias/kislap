@@ -9,13 +9,6 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -26,190 +19,10 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { ProjectFormDialog } from '@/components/project-form-dialog';
-import { cn } from '@/lib/utils';
+import { builderSecondaryButtonClass } from '@/components/builder/builder-ui';
+import { ProjectCard } from './project-card';
 
-import {
-  MoreHorizontal,
-  Layout,
-  BarChart3,
-  ExternalLink,
-  Zap,
-  Globe,
-  CalendarDays,
-  Pencil,
-  Trash2,
-  Loader2,
-  Plus,
-  ArrowUpRight,
-  UtensilsCrossed,
-} from 'lucide-react';
-
-const typeConfig: Record<string, { label: string; color: string; icon: any; projectName: string }> =
-  {
-    portfolio: {
-      label: 'Portfolio',
-      color: 'text-blue-600 bg-blue-50 border-blue-200',
-      icon: Layout,
-      projectName: 'portfolio',
-    },
-    biz: {
-      label: 'Business',
-      color: 'text-purple-600 bg-purple-50 border-purple-200',
-      icon: BarChart3,
-      projectName: 'biz',
-    },
-    linktree: {
-      label: 'Link-in-Bio',
-      color: 'text-pink-600 bg-pink-50 border-pink-200',
-      icon: ExternalLink,
-      projectName: 'linktree',
-    },
-    menu: {
-      label: 'Menu',
-      color: 'text-emerald-600 bg-emerald-50 border-emerald-200',
-      icon: UtensilsCrossed,
-      projectName: 'menu',
-    },
-    waitlist: {
-      label: 'Waitlist',
-      color: 'text-orange-600 bg-orange-50 border-orange-200',
-      icon: Zap,
-      projectName: 'waitlist',
-    },
-  };
-
-interface ProjectCardProps {
-  project: APIResponseProject;
-  onEdit: (project: APIResponseProject) => void;
-  onDelete: (id: number) => void;
-}
-
-function ProjectCard({ project, onEdit, onDelete }: ProjectCardProps) {
-  const urlPrefix = process.env.NEXT_PUBLIC_URL_PREFIX || 'http://';
-  const rootDomain = process.env.NEXT_PUBLIC_SHINE_SUFFIX_URL || 'kislap.test';
-  const liveUrl = project?.sub_domain ? `${urlPrefix}${project.sub_domain}.${rootDomain}` : '#';
-
-  const typeInfo = typeConfig[project.type] || typeConfig.portfolio;
-
-  const createdDate = new Date(project.created_at).toLocaleDateString('en-US', {
-    month: 'short',
-    year: 'numeric',
-  });
-
-  return (
-    <div className="group relative flex flex-col bg-card hover:bg-muted/20 border border-border/60 hover:border-primary/20 rounded-xl transition-all duration-200 hover:shadow-lg hover:shadow-primary/5">
-      <div className="relative h-32 w-full overflow-hidden rounded-t-xl bg-muted/30 border-b border-border/40">
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="absolute inset-0 opacity-[0.03] bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
-          <div
-            className={cn(
-              'h-12 w-12 rounded-xl flex items-center justify-center shadow-sm border bg-background/50 backdrop-blur-sm',
-              typeInfo.color
-            )}
-          >
-            <typeInfo.icon className="w-6 h-6 opacity-90" />
-          </div>
-        </div>
-
-        <div className="absolute top-3 right-3">
-          <Badge
-            variant="secondary"
-            className={cn(
-              'px-2 py-0.5 text-[10px] uppercase tracking-wider font-semibold border backdrop-blur-md',
-              project.published
-                ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20'
-                : 'bg-zinc-500/10 text-zinc-500 border-zinc-500/20'
-            )}
-          >
-            {project.published ? 'Published' : 'Draft'}
-          </Badge>
-        </div>
-      </div>
-
-      <div className="p-5 flex flex-col flex-grow">
-        <div className="flex justify-between items-start mb-3">
-          <div className="space-y-1">
-            <Link
-              href={`/dashboard/builder/${typeInfo.projectName}/${project.slug}`}
-              className="block font-semibold text-lg tracking-tight text-foreground group-hover:text-primary transition-colors"
-            >
-              {project.name}
-            </Link>
-
-            {project.sub_domain && (
-              <a
-                href={liveUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors group/link"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <Globe className="w-3 h-3" />
-                <span>{liveUrl}</span>
-                <ArrowUpRight className="w-2.5 h-2.5 opacity-0 -translate-y-0.5 translate-x-0.5 group-hover/link:opacity-100 transition-all" />
-              </a>
-            )}
-          </div>
-
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 -mr-2 text-muted-foreground/50"
-              >
-                <MoreHorizontal className="w-4 h-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuItem asChild>
-                <Link
-                  href={`/dashboard/builder/${project.type}/${project.slug}`}
-                  className="cursor-pointer"
-                >
-                  <Layout className="mr-2 h-4 w-4 text-muted-foreground" /> Open Builder
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onEdit(project)} className="cursor-pointer">
-                <Pencil className="mr-2 h-4 w-4 text-muted-foreground" /> Edit Details
-              </DropdownMenuItem>
-              {project.sub_domain && (
-                <DropdownMenuItem asChild>
-                  <a href={liveUrl} target="_blank" rel="noreferrer" className="cursor-pointer">
-                    <ExternalLink className="mr-2 h-4 w-4 text-muted-foreground" /> View Live Site
-                  </a>
-                </DropdownMenuItem>
-              )}
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={() => onDelete(project.id)}
-                className="text-destructive cursor-pointer"
-              >
-                <Trash2 className="mr-2 h-4 w-4" /> Delete Project
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-
-        <p className="text-sm text-muted-foreground/80 line-clamp-2 leading-relaxed mb-6">
-          {project.description || 'No description provided.'}
-        </p>
-
-        <div className="mt-auto pt-4 border-t border-border/40 flex items-center justify-between text-xs text-muted-foreground">
-          <div className="flex items-center gap-2">
-            <CalendarDays className="w-3.5 h-3.5 opacity-70" />
-            <span>{createdDate}</span>
-          </div>
-
-          <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity text-primary font-medium">
-            <span>Manage</span>
-            <ArrowUpRight className="w-3 h-3" />
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
+import { Loader2, Plus, Trash2 } from 'lucide-react';
 
 export function ProjectList() {
   const { getList, remove } = useProject();
@@ -272,11 +85,11 @@ export function ProjectList() {
 
   if (!booted || loading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {[...Array(6)].map((_, i) => (
           <div
             key={i}
-            className="h-[280px] rounded-xl border border-border/40 bg-muted/10 animate-pulse"
+            className="h-[340px] animate-pulse border-4 border-black bg-white shadow-[6px_6px_0_#000]"
           />
         ))}
       </div>
@@ -285,12 +98,12 @@ export function ProjectList() {
 
   if (booted && projects.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-24 text-center rounded-2xl border border-dashed border-border/60 bg-muted/5">
-        <h3 className="text-xl font-semibold tracking-tight mb-2">Create your first project</h3>
-        <p className="text-muted-foreground max-w-sm mx-auto mb-8 leading-relaxed">
+      <div className="flex flex-col items-center justify-center border-4 border-black bg-white px-6 py-24 text-center shadow-[8px_8px_0_#000]">
+        <h3 className="mb-2 text-3xl font-black uppercase tracking-normal">Create your first project</h3>
+        <p className="mx-auto mb-8 max-w-sm font-semibold leading-relaxed text-muted-foreground">
           Start with a portfolio, link page, or digital menu and we will give you a stronger first draft to build from.
         </p>
-        <Button asChild className="rounded-full">
+        <Button asChild className={builderSecondaryButtonClass}>
           <Link href="/dashboard/projects/new">Choose a starter</Link>
         </Button>
       </div>
@@ -299,7 +112,7 @@ export function ProjectList() {
 
   return (
     <>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-20">
+      <div className="grid grid-flow-dense grid-cols-1 gap-6 pb-20 md:grid-cols-2 lg:grid-cols-3">
         {projects.map((project) => (
           <ProjectCard
             key={project.id}
@@ -311,28 +124,28 @@ export function ProjectList() {
 
         <Link
           href="/dashboard/projects/new"
-          className="group relative flex min-h-[300px] flex-col overflow-hidden rounded-xl border border-dashed border-border/60 bg-card/30 p-6 transition-colors hover:bg-muted/30"
+          className="group relative flex min-h-[340px] flex-col overflow-hidden border-4 border-dashed border-black bg-secondary p-6 shadow-[6px_6px_0_#000] transition hover:-translate-y-1 hover:shadow-[10px_10px_0_#000]"
         >
-          <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-full bg-muted transition-transform group-hover:scale-110">
-            <Plus className="h-6 w-6 text-muted-foreground" />
+          <div className="mb-6 flex h-14 w-14 items-center justify-center border-4 border-black bg-white shadow-[4px_4px_0_#000] transition-transform group-hover:scale-105">
+            <Plus className="h-6 w-6 text-black" />
           </div>
           <div className="space-y-3">
-            <h3 className="text-xl font-semibold tracking-tight text-foreground">
+            <h3 className="text-2xl font-black uppercase tracking-normal text-black">
               Start something new
             </h3>
-            <p className="text-sm leading-relaxed text-muted-foreground">
+            <p className="text-sm font-semibold leading-relaxed text-black/75">
               Pick the right builder, preview the layout and theme, then create the project with
               a stronger first draft.
             </p>
           </div>
           <div className="mt-auto flex flex-wrap gap-2 pt-8">
-            <Badge variant="secondary" className="rounded-full px-3 py-1 text-xs font-medium shadow-none">
+            <Badge variant="secondary" className="rounded-none border-2 border-black bg-white px-3 py-1 font-mono text-xs font-black uppercase shadow-none">
               Portfolio
             </Badge>
-            <Badge variant="secondary" className="rounded-full px-3 py-1 text-xs font-medium shadow-none">
+            <Badge variant="secondary" className="rounded-none border-2 border-black bg-white px-3 py-1 font-mono text-xs font-black uppercase shadow-none">
               Linktree
             </Badge>
-            <Badge variant="secondary" className="rounded-full px-3 py-1 text-xs font-medium shadow-none">
+            <Badge variant="secondary" className="rounded-none border-2 border-black bg-white px-3 py-1 font-mono text-xs font-black uppercase shadow-none">
               Menu
             </Badge>
           </div>

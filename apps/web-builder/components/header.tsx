@@ -29,6 +29,11 @@ import { useSettings } from '@/hooks/use-settings';
 import { getPresetThemeStyles, presets } from '@/lib/theme-presets';
 import { defaultThemeState } from '@/config/theme';
 import { ThemeStyleProps } from '@/types/theme';
+import {
+  builderOutlineButtonClass,
+  builderSecondaryButtonClass,
+  builderTabsListClass,
+} from '@/components/builder/builder-ui';
 
 const DASHBOARD_LINKS = [
   { title: 'Projects', url: '/dashboard', icon: Home },
@@ -64,9 +69,11 @@ const ThemeSelector = () => {
 
   return (
     <div className="px-2 py-1.5">
-      <label className="mb-1.5 block text-xs font-medium text-muted-foreground">Theme</label>
+      <label className="mb-1.5 block font-mono text-xs font-black uppercase tracking-[0.18em] text-muted-foreground">
+        Theme
+      </label>
       <Select value={currentPreset} onValueChange={onPresetChange}>
-        <SelectTrigger className="h-8 w-full bg-muted/50 text-xs">
+        <SelectTrigger className="h-9 w-full rounded-none border-2 border-black bg-white text-xs font-bold">
           <SelectValue placeholder="Select theme" />
         </SelectTrigger>
         <SelectContent>
@@ -99,10 +106,7 @@ const ModeToggle = () => {
         variant="outline"
         size="sm"
         onClick={() => setMode('light')}
-        className={cn(
-          'h-8 justify-start px-3',
-          settings.mode === 'light' && 'border-primary bg-primary/5 text-primary'
-        )}
+        className={cn('h-8 justify-start rounded-none border-2 border-black px-3 font-bold', settings.mode === 'light' && 'bg-secondary text-black')}
       >
         <Sun className="mr-2 h-4 w-4" />
         Light
@@ -111,10 +115,7 @@ const ModeToggle = () => {
         variant="outline"
         size="sm"
         onClick={() => setMode('dark')}
-        className={cn(
-          'h-8 justify-start px-3',
-          settings.mode === 'dark' && 'border-primary bg-primary/5 text-primary'
-        )}
+        className={cn('h-8 justify-start rounded-none border-2 border-black px-3 font-bold', settings.mode === 'dark' && 'bg-secondary text-black')}
       >
         <Moon className="mr-2 h-4 w-4" />
         Dark
@@ -138,15 +139,15 @@ export function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-md">
-      <div className="container mx-auto flex h-16 items-center justify-between px-4">
+    <header className="sticky top-0 z-50 w-full border-b-4 border-black bg-secondary">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 lg:px-6">
         <div className="flex items-center gap-8">
           <LogoVersion url={hasUser ? '/dashboard' : '/'} />
         </div>
 
         {hasUser && (
           <div className="absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 md:block">
-            <nav className="flex items-center rounded-full border bg-background p-1 shadow-sm">
+            <nav className={cn('flex items-center', builderTabsListClass)}>
               {DASHBOARD_LINKS.map((item) => {
                 const isActive = pathname.startsWith(item.url);
                 const Icon = item.icon;
@@ -155,20 +156,14 @@ export function Header() {
                     key={item.url}
                     href={item.url}
                     className={cn(
-                      'relative flex items-center gap-2 rounded-full px-5 py-2 text-sm font-medium transition-all duration-200',
+                      'relative flex items-center gap-2 border-r-2 border-black px-5 py-2 text-sm font-black uppercase transition-all duration-200 last:border-r-0',
                       isActive
-                        ? 'bg-primary text-background shadow-md'
-                        : 'text-muted-foreground hover:bg-muted hover:text-primary'
+                        ? 'bg-black text-white'
+                        : 'bg-white text-black hover:bg-primary hover:text-white'
                     )}
                   >
                     <Icon className="h-4 w-4" />
                     <span>{item.title}</span>
-                    {isActive && (
-                      <span className="absolute -right-0.5 -top-0.5 flex h-2.5 w-2.5">
-                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-destructive opacity-75"></span>
-                        <span className="relative inline-flex h-2.5 w-2.5 rounded-full border-2 border-background bg-destructive"></span>
-                      </span>
-                    )}
                   </Link>
                 );
               })}
@@ -182,20 +177,20 @@ export function Header() {
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
-                  className="relative h-9 w-9 rounded-full ring-offset-2 hover:ring-2 hover:ring-border transition-all"
+                  className="relative h-10 w-10 rounded-none border-2 border-black bg-white p-0 shadow-[3px_3px_0_#000] transition-all hover:-translate-y-0.5"
                 >
-                  <Avatar className="h-9 w-9 border shadow-sm">
+                  <Avatar className="h-full w-full rounded-none border-0">
                     <AvatarImage src={authUser?.image_url} alt="User" />
-                    <AvatarFallback className="bg-primary/10 text-primary font-bold">
+                    <AvatarFallback className="rounded-none bg-primary text-white font-black">
                       {authUser?.first_name?.[0]}
                     </AvatarFallback>
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>
 
-              <DropdownMenuContent align="end" className="w-64 p-0" forceMount>
+              <DropdownMenuContent align="end" className="w-64 rounded-none border-2 border-black p-0 shadow-[6px_6px_0_#000]" forceMount>
                 <div className="flex items-center gap-2 p-3 pb-2">
-                  <Avatar className="h-8 w-8">
+                  <Avatar className="h-8 w-8 rounded-none border-2 border-black">
                     <AvatarImage src={authUser?.image_url} />
                     <AvatarFallback>{authUser?.first_name?.[0] || 'U'}</AvatarFallback>
                   </Avatar>
@@ -244,7 +239,7 @@ export function Header() {
               <div className="md:hidden">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon">
+                    <Button variant="ghost" size="icon" className={builderOutlineButtonClass}>
                       <Menu className="h-5 w-5" />
                     </Button>
                   </DropdownMenuTrigger>
@@ -252,7 +247,7 @@ export function Header() {
                     {PUBLIC_LINKS.map((link) => (
                       <DropdownMenuItem key={link.url} asChild>
                         <Link href={link.url} className="w-full cursor-pointer py-2 font-medium">
-                          {link.icon && <link.icon className="mr-2 h-4 w-4" />}
+                          <link.icon className="mr-2 h-4 w-4" />
                           {link.title}
                         </Link>
                       </DropdownMenuItem>
@@ -263,11 +258,7 @@ export function Header() {
                         asChild
                         variant="default"
                         size="lg"
-                        className="border-2 border-black dark:border-white 
-                 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] 
-                 transition-all 
-                 hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none 
-                 active:translate-x-[3px] active:translate-y-[3px] active:shadow-none"
+                        className={builderSecondaryButtonClass}
                       >
                         <Link href="https://kislap.app">Home</Link>
                       </Button>
@@ -278,7 +269,7 @@ export function Header() {
 
               <div className="hidden md:flex items-center gap-3">
                 {PUBLIC_LINKS.map((link) => (
-                  <Button key={link.url} variant="ghost" size="sm" asChild>
+                  <Button key={link.url} variant="ghost" size="sm" asChild className="rounded-none font-black uppercase text-black hover:bg-black hover:text-white">
                     <Link href={link.url}>{link.title}</Link>
                   </Button>
                 ))}
@@ -286,11 +277,7 @@ export function Header() {
                   asChild
                   variant="default"
                   size="lg"
-                  className="border-2 border-black dark:border-white 
-                 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] 
-                 transition-all 
-                 hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none 
-                 active:translate-x-[3px] active:translate-y-[3px] active:shadow-none"
+                  className={builderSecondaryButtonClass}
                 >
                   <Link href="https://kislap.app">Home</Link>
                 </Button>

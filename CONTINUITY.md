@@ -67,6 +67,9 @@
 - `packages/templates/src/components/menu/menu-default-sample-data.ts`
 
 ## Receipts
+- 2026-05-10 [CODE] Began web-builder redesign foundation using the Kislap neo-brutalist language: added shared builder UI primitives, rebuilt authenticated header/logo/app shell, redesigned dashboard project cards, and restyled the project creation flow/live preview workbench.
+- 2026-05-10 [CODE] Split dashboard project card and project creation helper/basic panels into focused components so the touched builder files stay under the 300 LOC cap.
+- 2026-05-10 [TOOL] `npm.cmd run build` passed in `apps/web-builder` after the builder visual foundation pass; dev server started and responded 200 at `http://127.0.0.1:3000`.
 - 2026-05-10 [CODE] Fixed Showcase filters by turning project-type controls into real `/showcase?type=...` links so filtering uses Astro server-rendered API results instead of relying on fragile browser-side cross-origin fetches.
 - 2026-05-10 [TOOL] `npm.cmd run build` passed in `apps/web-marketing`; verified `/showcase?type=portfolio` only serialized portfolio projects and `/showcase?type=menu` only serialized menu projects.
 - 2026-05-10 [CODE] Fixed blank About/Showcase rendering by changing Framer Motion SSR hidden variants to render visible content by default; verified `/about` and `/showcase` HTML now ships `opacity:1` for main content.
