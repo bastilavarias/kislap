@@ -1,22 +1,22 @@
 ---
 import { LogoVersion } from '@/components/logo-version';
-import { BUILDER_URL, CONTACT_EMAIL, getFeaturePagePath, getSiteUrl } from '@/lib/site-config';
-import '@fontsource/poppins/400.css';
-import '@fontsource/poppins/600.css';
-import '@fontsource/poppins/700.css';
+import { BUILDER_URL, CONTACT_EMAIL, getSiteUrl } from '@/lib/site-config';
+import { HOME_SEO } from '@/lib/seo';
+import '@fontsource/outfit/400.css';
+import '@fontsource/outfit/600.css';
+import '@fontsource/outfit/700.css';
+import '@fontsource/outfit/900.css';
 import '@fontsource/jetbrains-mono';
 import '@/styles/global.css';
 import { 
   Menu, 
   X, 
   Github, 
-  Heart, 
   MessageCircle, 
   Mail,
   ArrowUpRight,
-  ChevronDown
 } from '@lucide/astro';
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 
 interface Props {
   title?: string;
@@ -25,15 +25,17 @@ interface Props {
   type?: 'website' | 'article';
   canonical?: string;
   noindex?: boolean;
+  keywords?: string[];
 }
 
 const { 
-  title = "Kislap - Turn forms into websites",
-  description = "No drag and drop chaos. No design skills needed. Just fill in the blanks, and Kislap generates a high-performance site instantly.",
+  title = HOME_SEO.title,
+  description = HOME_SEO.description,
   image = "/og-image.jpeg",
   type = "website",
   canonical,
   noindex = false,
+  keywords = HOME_SEO.keywords,
 } = Astro.props;
 
 const site = Astro.site ? Astro.site : Astro.url.origin;
@@ -42,8 +44,12 @@ const currentYear = new Date().getFullYear();
 const builderUrl = BUILDER_URL;
 const showcaseUrl = getSiteUrl('/showcase');
 const aboutUrl = getSiteUrl('/about');
-const featuresUrl = getSiteUrl('/features');
 const helpUrl = getSiteUrl('/help');
+const schemaBuilderUrl =
+  builderUrl.includes('localhost') || builderUrl.includes('127.0.0.1')
+    ? 'https://builder.kislap.app'
+    : builderUrl;
+const schemaSiteUrl = (path: string) => new URL(path, site).toString();
 
 const PUBLIC_LINKS = [
   { title: 'Showcase', url: '/showcase' },
@@ -51,11 +57,6 @@ const PUBLIC_LINKS = [
   { title: 'Help', url: '/help' },
 ];
 
-const BUILDER_LINKS = [
-  { title: 'Portfolio Builder', url: getFeaturePagePath('portfolio-builder') },
-  { title: 'Link Page Builder', url: getFeaturePagePath('linktree-builder') },
-  { title: 'Digital Menu Builder', url: getFeaturePagePath('menu-builder') },
-];
 ---
 
 <!doctype html>
@@ -68,6 +69,7 @@ const BUILDER_LINKS = [
 
     <title>{title}</title>
     <meta name="description" content={description} />
+    {keywords.length > 0 && <meta name="keywords" content={keywords.join(', ')} />}
     <link rel="canonical" href={canonicalURL} />
     {noindex && <meta name="robots" content="noindex,follow" />}
 
@@ -77,12 +79,14 @@ const BUILDER_LINKS = [
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={new URL(image, site)} />
+    <meta property="og:image:alt" content={description} />
 
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content={canonicalURL} />
-    <meta property="twitter:title" content={title} />
-    <meta property="twitter:description" content={description} />
-    <meta property="twitter:image" content={new URL(image, site)} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={canonicalURL} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={new URL(image, site)} />
+    <meta name="twitter:image:alt" content={description} />
 
     <script type="application/ld+json" set:html={JSON.stringify({
   "@context": "https://schema.org",
@@ -96,7 +100,7 @@ const BUILDER_LINKS = [
   "@type": "Organization",
   "name": "Kislap",
   "url": site,
-  "logo": new URL('/og-image.jpeg', site).toString(),
+  "logo": new URL('/assets/logo.png', site).toString(),
   "sameAs": [
     "https://github.com/bastilavarias/kislap",
     "https://discord.gg/YcmUebEWhT"
@@ -106,119 +110,66 @@ const BUILDER_LINKS = [
 <script type="application/ld+json" set:html={JSON.stringify({
   "@context": "https://schema.org",
   "@type": "SiteNavigationElement",
-  "name": ["Features", ...PUBLIC_LINKS.map(l => l.title), ...BUILDER_LINKS.map(l => l.title), "Builder"],
+  "name": [...PUBLIC_LINKS.map(l => l.title), "Builder"],
   "url": [
-    featuresUrl,
-    ...PUBLIC_LINKS.map(l => new URL(l.url, site).toString()),
-    ...BUILDER_LINKS.map(l => new URL(l.url, site).toString()),
-    builderUrl
+    ...PUBLIC_LINKS.map(l => schemaSiteUrl(l.url)),
+    schemaBuilderUrl
   ]
 })} />
   </head>
-  <body class="min-h-screen bg-background grid-background text-foreground font-sans antialiased flex flex-col">
+  <body class="min-h-screen bg-white text-black font-sans antialiased flex flex-col">
     
-    <header class="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-md">
-      <div class="container mx-auto flex h-16 items-center justify-between px-4">
+    <header class="sticky top-0 z-50 w-full border-b-4 border-black bg-secondary">
+      <div class="mx-auto flex min-h-20 max-w-7xl items-center justify-between gap-4 px-4 py-3 md:px-6">
         
         <div class="flex items-center gap-8">
           <LogoVersion url="/" />
         </div>
 
-      <nav class="hidden md:flex items-center gap-6" aria-label="Main Navigation">
-  <ul class="flex items-center gap-6 m-0 p-0 list-none">
-    <li class="relative group">
-      <button
-        type="button"
-        class="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-        aria-haspopup="true"
-      >
-        Features
-        <ChevronDown class="h-4 w-4 transition-transform group-hover:rotate-180" />
-      </button>
+        <nav class="hidden items-center gap-3 md:flex" aria-label="Main Navigation">
+          <ul class="m-0 flex list-none items-center gap-3 p-0">
+            {PUBLIC_LINKS.map((link) => (
+              <li>
+                <a 
+                  href={link.url} 
+                  class="inline-flex h-12 items-center border-4 border-black bg-white px-4 font-mono text-sm font-black uppercase text-black shadow-[4px_4px_0_#000] transition-all hover:-translate-y-0.5 hover:bg-secondary"
+                >
+                  {link.title}
+                </a>
+              </li>
+            ))}
+            <li>
+              <a 
+                href={builderUrl} 
+                class={`${buttonVariants({ variant: "default", size: "lg" })} h-12 rounded-none border-4 border-black bg-primary px-5 font-mono text-sm font-black uppercase text-white shadow-[5px_5px_0_#000] transition-all hover:translate-x-1 hover:translate-y-1 hover:bg-primary/90 hover:shadow-[2px_2px_0_#000]`}
+              >
+                Visit Builder
+              </a>
+            </li>
+          </ul>
+        </nav>
 
-      <div class="invisible absolute right-0 top-full z-50 mt-3 min-w-[220px] translate-y-2 rounded-2xl border border-border bg-background/95 p-2 opacity-0 shadow-xl backdrop-blur-md transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
-        {BUILDER_LINKS.map((link) => (
-          <a
-            href={link.url}
-            class="flex items-center justify-between rounded-xl px-4 py-3 text-sm font-medium text-foreground transition hover:bg-accent hover:text-primary"
-          >
-            <span>{link.title}</span>
-            <ArrowUpRight class="h-4 w-4 opacity-50" />
-          </a>
-        ))}
-      </div>
-    </li>
-    {PUBLIC_LINKS.map((link) => (
-      <li>
-        <a 
-          href={link.url} 
-          class="text-sm font-medium text-muted-foreground hover:text-primary transition-colors flex items-center gap-2"
-        >
-          {link.title}
-        </a>
-      </li>
-    ))}
-    <li>
-      <a 
-        href={builderUrl} 
-        class={`${buttonVariants({ variant: "default", size: "lg" })} 
-          border-2 border-black dark:border-white
-          shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)]
-          transition-all
-          hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none
-          active:translate-x-[3px] active:translate-y-[3px] active:shadow-none
-        `}
-      >
-        Visit Builder
-      </a>
-    </li>
-  </ul>
-</nav>
-
-        <button id="mobile-menu-btn" class="md:hidden p-2 text-muted-foreground hover:text-foreground">
+        <button id="mobile-menu-btn" class="border-4 border-black bg-white p-2 text-black shadow-[4px_4px_0_#000] md:hidden">
           <Menu class="w-6 h-6" id="menu-icon" />
           <X class="w-6 h-6 hidden" id="close-icon" />
         </button>
       </div>
 
-      <div id="mobile-menu" class="hidden md:hidden border-t bg-background px-4 py-4 space-y-4 shadow-lg text-center">
+      <div id="mobile-menu" class="hidden space-y-3 border-t-4 border-black bg-white px-4 py-5 text-center shadow-[0_8px_0_#000] md:hidden">
         {PUBLIC_LINKS.map((link) => (
           <a 
             href={link.url} 
-            class="flex items-center justify-center gap-3 py-2 text-sm font-medium text-muted-foreground hover:text-primary"
+            class="flex items-center justify-center border-4 border-black bg-white px-4 py-3 font-mono text-sm font-black uppercase text-black shadow-[5px_5px_0_#000]"
           >
             {link.title}
           </a>
         ))}
-        <details class="rounded-2xl border border-border bg-card/60 px-4 py-3 text-left">
-          <summary class="flex cursor-pointer list-none items-center justify-between text-sm font-medium text-foreground">
-            <span>Features</span>
-            <ChevronDown class="h-4 w-4 text-muted-foreground" />
-          </summary>
-          <div class="mt-3 space-y-2">
-            {BUILDER_LINKS.map((link) => (
-              <a
-                href={link.url}
-                class="flex items-center justify-between rounded-xl px-3 py-2 text-sm font-medium text-muted-foreground transition hover:bg-accent hover:text-primary"
-              >
-                <span>{link.title}</span>
-                <ArrowUpRight class="h-4 w-4 opacity-50" />
-              </a>
-            ))}
-          </div>
-        </details>
-		        <a 
-        href={builderUrl} 
-        class={`${buttonVariants({ variant: "default", size: "lg" })} 
-          border-2 border-black dark:border-white
-          shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)]
-          transition-all
-          hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none
-          active:translate-x-[3px] active:translate-y-[3px] active:shadow-none
-        `}
-      >
-        Visit Builder
-      </a>
+        <a 
+          href={builderUrl} 
+          class={`${buttonVariants({ variant: "default", size: "lg" })} h-14 w-full rounded-none border-4 border-black bg-primary font-mono text-sm font-black uppercase text-white shadow-[5px_5px_0_#000]`}
+        >
+          Visit Builder
+        </a>
       </div>
     </header>
 
@@ -226,128 +177,131 @@ const BUILDER_LINKS = [
       <slot />
     </main>
 
-    <footer class="border-t border-border bg-background/50 backdrop-blur-xl">
-      <div class="container mx-auto max-w-7xl px-4 md:px-6 py-16">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-8 mb-16">
-          <div class="md:col-span-1 space-y-4">
-            <LogoVersion url="/" />
-            <p class="text-muted-foreground text-sm leading-relaxed max-w-xs">
-              Turn your forms into polished public websites. Kislap helps you build
-              portfolio pages, link-in-bio sites, and digital menus without drag-and-drop chaos.
-            </p>
-          </div>
-
-          <div class="flex flex-col space-y-4">
-            <h4 class="font-bold text-sm uppercase tracking-wider text-foreground">Product</h4>
-            <a
-              href={builderUrl}
-              class="text-sm text-muted-foreground hover:text-primary transition-colors w-fit"
-            >
-              Builder
-            </a>
-            <a
-              href={featuresUrl}
-              class="text-sm text-muted-foreground hover:text-primary transition-colors w-fit"
-            >
-              Features
-            </a>
-            <a
-              href={showcaseUrl}
-              class="text-sm text-muted-foreground hover:text-primary transition-colors w-fit"
-            >
-              Showcase
-            </a>
-            <a
-              href={getFeaturePagePath('portfolio-builder')}
-              class="text-sm text-muted-foreground hover:text-primary transition-colors w-fit"
-            >
-              Portfolio Builder
-            </a>
-            <a
-              href={getFeaturePagePath('linktree-builder')}
-              class="text-sm text-muted-foreground hover:text-primary transition-colors w-fit"
-            >
-              Link Page Builder
-            </a>
-            <a
-              href={getFeaturePagePath('menu-builder')}
-              class="text-sm text-muted-foreground hover:text-primary transition-colors w-fit"
-            >
-              Digital Menu Builder
-            </a>
-          </div>
-
-          <div class="flex flex-col space-y-4">
-            <a
-              href={aboutUrl}
-              class="text-sm text-muted-foreground hover:text-primary transition-colors w-fit"
-            >
-              About Us
-            </a>
-            <a
-              href={helpUrl}
-              class="text-sm text-muted-foreground hover:text-primary transition-colors w-fit"
-            >
-              Help
-            </a>
-            <a
-              href="https://github.com/bastilavarias/kislap"
-              target="_blank"
-              rel="noreferrer"
-              class="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center w-fit"
-            >
-              Open Source
-              <ArrowUpRight class="ml-1 w-3 h-3 opacity-50" />
-            </a>
-          </div>
-
-          <div class="flex flex-col space-y-4">
-            <h4 class="font-bold text-sm uppercase tracking-wider text-foreground">
-              Contact
-            </h4>
-            <a
-              href={`mailto:${CONTACT_EMAIL}`}
-              class="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-2 w-fit"
-            >
-              <Mail class="h-4 w-4" />
-              <span>{CONTACT_EMAIL}</span>
-            </a>
-            <div class="flex gap-2">
-              <Button variant="outline" size="icon" className="h-9 w-9 rounded-full" asChild>
-                <a href="https://github.com/bastilavarias/kislap" target="_blank" rel="noreferrer">
-                  <Github class="h-4 w-4" />
-                  <span class="sr-only">GitHub</span>
-                </a>
-              </Button>
-              <Button variant="outline" size="icon" className="h-9 w-9 rounded-full" asChild>
-                <a href="https://discord.gg/YcmUebEWhT" target="_blank" rel="noreferrer">
-                  <MessageCircle class="h-4 w-4" />
-                  <span class="sr-only">Discord</span>
-                </a>
-              </Button>
+    <footer class="border-t-4 border-black bg-black px-4 py-16 text-white md:py-24">
+      <div class="mx-auto max-w-7xl">
+        <div class="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+          <div class="border-4 border-white bg-primary p-7 shadow-[12px_12px_0_#fff] md:p-10">
+            <div class="w-fit">
+              <LogoVersion url="/" showVersion />
             </div>
-            <p class="text-xs text-muted-foreground mt-4">
-              Reach out by email or drop into Discord if you need help with your page.
+            <h2 class="mt-10 max-w-3xl text-5xl font-black uppercase leading-[0.88] md:text-7xl">
+              Forms in. Public pages out.
+            </h2>
+            <p class="mt-7 max-w-2xl text-xl font-semibold leading-relaxed text-white/90">
+              Kislap helps people publish portfolios, link pages, and QR-ready menus without dragging blocks around an empty canvas.
             </p>
+            <div class="mt-8 flex flex-col gap-4 sm:flex-row">
+              <a
+                href={builderUrl}
+                class={`${buttonVariants({ variant: "secondary", size: "lg" })} h-14 rounded-none border-4 border-black bg-white px-6 font-black uppercase text-black shadow-[6px_6px_0_#000] hover:bg-secondary`}
+              >
+                Open Builder
+                <ArrowUpRight class="h-4 w-4" />
+              </a>
+              <a
+                href="https://github.com/bastilavarias/kislap"
+                target="_blank"
+                rel="noreferrer"
+                class={`${buttonVariants({ variant: "outline", size: "lg" })} h-14 rounded-none border-4 border-white bg-black px-6 font-black uppercase text-white shadow-[6px_6px_0_#fff] hover:bg-zinc-900`}
+              >
+                <Github class="h-4 w-4" />
+                GitHub
+              </a>
+            </div>
+          </div>
+
+          <div class="border-4 border-white bg-white text-black shadow-[10px_10px_0_#ef4444]">
+            <div class="border-b-4 border-black bg-secondary p-6">
+              <p class="font-mono text-xs font-black uppercase tracking-[0.2em] text-black/70">
+                Explore Kislap
+              </p>
+              <h3 class="mt-3 text-3xl font-black uppercase leading-none">
+                Pick a builder or get help.
+              </h3>
+            </div>
+
+            <div class="grid md:grid-cols-[0.82fr_1.18fr]">
+              <div class="border-b-4 border-black p-6 md:border-b-0 md:border-r-4">
+                <h4 class="font-mono text-sm font-black uppercase tracking-[0.18em]">
+                  Product
+                </h4>
+                <div class="mt-6 flex flex-col gap-3">
+                  {[
+                    { title: 'Open Builder', url: builderUrl },
+                    { title: 'Showcase', url: showcaseUrl },
+                  ].map((link) => (
+                    <a
+                      href={link.url}
+                      class="flex items-center justify-between border-b-2 border-black pb-2 text-sm font-black uppercase transition hover:text-primary"
+                    >
+                      <span>{link.title}</span>
+                      <ArrowUpRight class="h-4 w-4" />
+                    </a>
+                  ))}
+                </div>
+              </div>
+
+              <div class="p-6">
+                <h4 class="font-mono text-sm font-black uppercase tracking-[0.18em]">
+                  Company
+                </h4>
+                <div class="mt-6 flex flex-col gap-3">
+                  <a
+                    href={aboutUrl}
+                    class="flex items-center justify-between border-b-2 border-black pb-2 text-sm font-black uppercase transition hover:text-primary"
+                  >
+                    <span>About Us</span>
+                    <ArrowUpRight class="h-4 w-4" />
+                  </a>
+                  <a
+                    href={helpUrl}
+                    class="flex items-center justify-between border-b-2 border-black pb-2 text-sm font-black uppercase transition hover:text-primary"
+                  >
+                    <span>Help</span>
+                    <ArrowUpRight class="h-4 w-4" />
+                  </a>
+                  <a
+                    href={`mailto:${CONTACT_EMAIL}`}
+                    class="flex min-w-0 items-center gap-3 border-b-2 border-black pb-2 text-sm font-black uppercase transition hover:text-primary"
+                  >
+                    <Mail class="h-4 w-4 shrink-0" />
+                    <span class="min-w-0 [overflow-wrap:anywhere]">{CONTACT_EMAIL}</span>
+                  </a>
+                </div>
+
+                <div class="mt-6 flex gap-3">
+                  <a
+                    href="https://github.com/bastilavarias/kislap"
+                    target="_blank"
+                    rel="noreferrer"
+                    class="flex h-12 w-12 items-center justify-center border-4 border-black bg-white shadow-[4px_4px_0_#000] transition hover:-translate-y-0.5"
+                  >
+                    <Github class="h-5 w-5" />
+                    <span class="sr-only">GitHub</span>
+                  </a>
+                  <a
+                    href="https://discord.gg/YcmUebEWhT"
+                    target="_blank"
+                    rel="noreferrer"
+                    class="flex h-12 w-12 items-center justify-center border-4 border-black bg-white shadow-[4px_4px_0_#000] transition hover:-translate-y-0.5"
+                  >
+                    <MessageCircle class="h-5 w-5" />
+                    <span class="sr-only">Discord</span>
+                  </a>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div class="pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4">
-          <p class="text-sm text-muted-foreground">
-            &copy; {currentYear} Kislap. All rights reserved.
-          </p>
-
-          <div class="flex items-center gap-1 text-sm text-muted-foreground">
-            <span>Made with</span>
-            <Heart class="h-4 w-4 text-red-500 fill-red-500 animate-pulse" />
-            <span>by</span>
-            <a
-              href="https://github.com/bastilavarias"
-              class="font-medium text-foreground hover:underline underline-offset-4"
-            >
-              bastilavarias
-            </a>
-          </div>
+        <div class="mt-10 flex flex-col gap-4 border-4 border-white bg-secondary px-5 py-4 font-mono text-sm font-black uppercase text-black shadow-[8px_8px_0_#fff] md:flex-row md:items-center md:justify-between">
+          <p>&copy; {currentYear} Kislap. All rights reserved.</p>
+          <a
+            href="https://github.com/bastilavarias"
+            class="w-fit underline decoration-4 underline-offset-4 transition hover:text-primary"
+          >
+            Built by bastilavarias
+          </a>
         </div>
       </div>
     </footer>

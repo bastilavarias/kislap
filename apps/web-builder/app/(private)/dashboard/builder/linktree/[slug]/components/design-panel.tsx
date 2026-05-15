@@ -6,6 +6,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import ThemeControlPanel from '@/components/customizer/theme-control-panel';
 import { cn } from '@/lib/utils';
 import { Settings } from '@/contexts/settings-context';
+import {
+  builderTabsListClass,
+  builderTabsTriggerClass,
+} from '@/components/builder/builder-ui';
 
 const LAYOUT_OPTIONS = [
   {
@@ -41,27 +45,27 @@ export function DesignPanel({
 }: DesignPanelProps) {
   return (
     <Card className="border-none shadow-none bg-transparent">
-      <h2 className="text-xl font-bold mb-4 hidden lg:block">Design & Style</h2>
+      <h2 className="text-xl font-black uppercase mb-4 hidden lg:block">Design & Style</h2>
       <Tabs defaultValue="layout" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 h-12 mb-4 p-1 bg-muted/50 rounded-xl">
+        <TabsList className={`${builderTabsListClass} mb-4 grid h-12 w-full grid-cols-2`}>
           <TabsTrigger
             value="layout"
-            className="rounded-lg shadow-none data-[state=active]:bg-background"
+            className={builderTabsTriggerClass}
           >
             Layout
           </TabsTrigger>
           <TabsTrigger
             value="theme"
-            className="rounded-lg shadow-none data-[state=active]:bg-background"
+            className={builderTabsTriggerClass}
           >
             Theme
           </TabsTrigger>
         </TabsList>
         <TabsContent value="layout" className="mt-0">
-          <Card className="shadow-none border-border">
+          <Card>
             <CardHeader className="pb-3">
               <CardTitle className="text-lg">Choose Layout</CardTitle>
-              <CardDescription>Select a structure for your linktree page.</CardDescription>
+              <CardDescription>Select a structure for your link page.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-5 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
               <div>
@@ -75,7 +79,7 @@ export function DesignPanel({
                         type="button"
                         onClick={() => setBackgroundStyle(option)}
                         className={cn(
-                          'rounded-xl border px-3 py-2 text-sm capitalize text-left transition-colors',
+                          'border-2 border-black px-3 py-2 text-left text-sm font-black uppercase transition-colors',
                           isSelected
                             ? 'border-primary bg-primary/5 text-primary'
                             : 'border-muted hover:border-muted-foreground/30'
@@ -96,7 +100,7 @@ export function DesignPanel({
                     key={option.id}
                     onClick={() => setLayout(option.id)}
                     className={cn(
-                      'cursor-pointer group relative flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all duration-200',
+                      'cursor-pointer group relative flex flex-col items-center justify-center p-4 border-2 transition-all duration-200',
                       isSelected
                         ? 'border-primary bg-primary/5'
                         : 'border-muted hover:border-muted-foreground/30 hover:bg-muted/30'
@@ -109,7 +113,7 @@ export function DesignPanel({
                     )}
                     <div
                       className={cn(
-                        'p-3 rounded-full mb-3 transition-colors',
+                        'p-3 border-2 border-black mb-3 transition-colors',
                         isSelected
                           ? 'bg-background text-primary'
                           : 'bg-muted text-muted-foreground group-hover:bg-background'
@@ -118,7 +122,7 @@ export function DesignPanel({
                       <option.icon className="w-6 h-6" />
                     </div>
                     <div className="text-center">
-                      <p className={cn('font-semibold text-sm', isSelected && 'text-primary')}>
+                      <p className={cn('font-black uppercase text-sm', isSelected && 'text-primary')}>
                         {option.name}
                       </p>
                       <p className="text-[10px] text-muted-foreground mt-1 line-clamp-1">
@@ -133,7 +137,7 @@ export function DesignPanel({
           </Card>
         </TabsContent>
         <TabsContent value="theme" className="mt-0">
-          <Card className="shadow-none border-border">
+          <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-lg">Choose Theme</CardTitle>
               <CardDescription>Customize colors, fonts, and radius.</CardDescription>

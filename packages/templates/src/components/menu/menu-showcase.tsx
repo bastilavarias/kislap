@@ -1,12 +1,13 @@
 ﻿"use client";
 
 import React from "react";
-import { Globe, Github, Mail, MapPin, Phone, Share2 } from "lucide-react";
+import { Globe, Mail, MapPin, Phone, Share2 } from "lucide-react";
 import { FaFacebookF, FaInstagram, FaTiktok } from "react-icons/fa6";
 import { Mode } from "@/contexts/settings-context";
 import { ThemeStyles } from "@/types/theme";
 import { ThemeSwitchToggle } from "../theme-switch-toggle";
 import { KISLAP_LINKS } from "../shared/kislap-links";
+import { MenuFooter } from "./menu-footer";
 import { formatHoursLabel, formatMenuLocation, MenuData, MenuSocialLink, normalizeMenuShareUrl } from "./menu-types";
 
 interface Props {
@@ -309,20 +310,14 @@ export function MenuShowcase({ menu, themeMode, themeStyles, onSetThemeMode }: P
           </div>
         </section>
 
-        <footer className="mt-12 border-t pt-8 text-center" style={{ borderColor }}>
-          <p className="text-sm font-semibold" style={{ fontFamily: headingFont }}>
-            © {new Date().getFullYear()} {source.name || "Menu"}
-          </p>
-          <p className="mt-1 text-xs" style={{ color: mutedColor }}>
-            Share-ready pages powered by Kislap
-          </p>
-          <div className="mt-4 flex items-center justify-center gap-4">
-            <a href={KISLAP_LINKS.github} target="_blank" rel="noreferrer"><Github className="h-4 w-4" /></a>
-            <a href={KISLAP_LINKS.website} target="_blank" rel="noreferrer"><Globe className="h-4 w-4" /></a>
-            <a href={KISLAP_LINKS.facebook} target="_blank" rel="noreferrer"><FaFacebookF className="h-4 w-4" /></a>
-          </div>
-          <p className="mt-4 text-xs break-all [overflow-wrap:anywhere]" style={{ color: mutedColor }}>{currentUrl}</p>
-        </footer>
+        <MenuFooter
+          menu={source}
+          borderColor={borderColor}
+          foregroundColor={foregroundColor}
+          mutedColor={mutedColor}
+          headingFont={headingFont}
+          metaFont={bodyFont}
+        />
       </div>
     </div>
   );

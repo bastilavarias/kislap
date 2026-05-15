@@ -2,10 +2,21 @@
 export const prerender = false;
 import Layout from '@/layouts/main.astro';
 import { LandingPageContent } from '@/components/landing-page-content';
+import { HOME_SEO } from '@/lib/seo';
+import { getBuilderProjectCreateUrl } from '@/lib/site-config';
+
+const buildPaths = {
+  portfolio: getBuilderProjectCreateUrl({ type: "portfolio" }),
+  linktree: getBuilderProjectCreateUrl({ type: "linktree" }),
+  menu: getBuilderProjectCreateUrl({ type: "menu" }),
+  default: getBuilderProjectCreateUrl(),
+};
 ---
 
 <Layout 
-  title="Kislap - Turn simple forms into stunning websites." 
-  description="No drag and drop chaos. No design skills needed. Just fill in the blanks, and Kislap generates a high performance site instantly.">
-  <LandingPageContent client:load />
+  title={HOME_SEO.title}
+  description={HOME_SEO.description}
+  keywords={HOME_SEO.keywords}
+>
+  <LandingPageContent client:load buildPaths={buildPaths} />
 </Layout>

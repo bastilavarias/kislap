@@ -2,16 +2,16 @@
 
 import type React from 'react';
 import { useState } from 'react';
-import { cn } from '@/lib/utils';
+import Link from 'next/link';
+import { ArrowRight, Github, Mail } from 'lucide-react';
+
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Checkbox } from '@/components/ui/checkbox';
 import { useLocalStorage } from '@/hooks/use-local-storage';
-import Link from 'next/link';
-import { Github } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
-// 1. Restored ComingSoonWrapper
 function ComingSoonWrapper({
   children,
   className,
@@ -20,10 +20,10 @@ function ComingSoonWrapper({
   className?: string;
 }) {
   return (
-    <div className={cn('relative overflow-hidden rounded-md', className)}>
-      <div className="opacity-60 pointer-events-none select-none filter blur-[1px]">{children}</div>
-      <div className="absolute inset-0 bg-background/10 backdrop-blur-[1px] flex items-center justify-center z-10 select-none">
-        <span className="bg-muted px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border shadow-sm text-muted-foreground">
+    <div className={cn('relative overflow-hidden border-y-4 border-black bg-white/70', className)}>
+      <div className="pointer-events-none select-none opacity-45 blur-[1px]">{children}</div>
+      <div className="absolute inset-0 z-10 flex select-none items-center justify-center bg-white/55">
+        <span className="border-4 border-black bg-secondary px-4 py-2 font-mono text-xs font-black uppercase tracking-[0.2em] text-black shadow-[4px_4px_0_#000]">
           Coming Soon
         </span>
       </div>
@@ -31,7 +31,6 @@ function ComingSoonWrapper({
   );
 }
 
-// Helper: Official Google Icon
 const GoogleIcon = ({ className }: { className?: string }) => (
   <svg className={className} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
     <path
@@ -55,7 +54,7 @@ const GoogleIcon = ({ className }: { className?: string }) => (
 
 export default function Form({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
   const [termsAccepted, setTermsAccepted] = useState(true);
-  const [_, setNewsletter] = useLocalStorage<boolean>('newsletter_opt_in', true);
+  const [, setNewsletter] = useLocalStorage<boolean>('newsletter_opt_in', true);
 
   const githubClientId = process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID;
   const githubRedirectUri = process.env.NEXT_PUBLIC_GITHUB_REDIRECT_URI;
@@ -66,35 +65,43 @@ export default function Form({ className, ...props }: React.ComponentPropsWithou
   const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${googleClientId}&redirect_uri=${googleRedirectUri}&response_type=code&scope=openid%20email%20profile`;
 
   return (
-    <div className={cn('grid gap-8', className)} {...props}>
-      {/* Header Section */}
-      <div className="flex flex-col space-y-2 text-center">
-        <h1 className="text-3xl font-bold tracking-tight text-foreground">Welcome to Kislap</h1>
-        <p className="text-base text-muted-foreground">Sign in to access your projects</p>
-      </div>
+    <div className={cn('w-full text-left lg:justify-self-end', className)} {...props}>
+      <div className="grid max-w-md gap-7 lg:ml-auto">
+        <div className="grid gap-4">
+          <h2 className="text-4xl font-black uppercase leading-[0.95] tracking-normal text-foreground sm:text-5xl">
+            Welcome back
+          </h2>
+          <p className="text-base font-semibold leading-relaxed text-zinc-700">
+            Use your account to continue to the builder.
+          </p>
+        </div>
 
-      <div className="grid gap-6">
-        {/* 1. Active Social Buttons */}
         <div className="grid gap-4">
           <Button
             variant="outline"
             size="lg"
             className={cn(
-              'h-12 w-full text-base relative border-zinc-200',
-              !termsAccepted && 'opacity-50 cursor-not-allowed'
+              'relative h-16 w-full justify-between rounded-none border-4 border-black bg-black px-5 text-base font-black uppercase text-white shadow-[6px_6px_0_#ff3132] hover:translate-x-1 hover:translate-y-1 hover:bg-black hover:text-white hover:shadow-[2px_2px_0_#ff3132]',
+              !termsAccepted && 'cursor-not-allowed opacity-50'
             )}
             asChild={termsAccepted}
             disabled={!termsAccepted}
           >
             {termsAccepted ? (
-              <Link href={githubAuthUrl} className="flex items-center justify-center gap-3">
-                <Github className="h-5 w-5" />
-                <span className="font-medium">Continue with GitHub</span>
+              <Link href={githubAuthUrl} className="flex items-center justify-between gap-3">
+                <span className="flex items-center gap-3">
+                  <Github className="h-5 w-5" />
+                  <span>Continue with GitHub</span>
+                </span>
+                <ArrowRight className="h-5 w-5" />
               </Link>
             ) : (
-              <span className="flex items-center justify-center gap-3">
-                <Github className="h-5 w-5" />
-                <span className="font-medium">Continue with GitHub</span>
+              <span className="flex items-center justify-between gap-3">
+                <span className="flex items-center gap-3">
+                  <Github className="h-5 w-5" />
+                  <span>Continue with GitHub</span>
+                </span>
+                <ArrowRight className="h-5 w-5" />
               </span>
             )}
           </Button>
@@ -103,39 +110,47 @@ export default function Form({ className, ...props }: React.ComponentPropsWithou
             variant="outline"
             size="lg"
             className={cn(
-              'h-12 w-full text-base relative border-zinc-200',
-              !termsAccepted && 'opacity-50 cursor-not-allowed'
+              'relative h-16 w-full justify-between rounded-none border-4 border-black bg-secondary px-5 text-base font-black uppercase text-black shadow-[6px_6px_0_#000] hover:translate-x-1 hover:translate-y-1 hover:bg-[#ff5aa5] hover:text-black hover:shadow-[2px_2px_0_#000]',
+              !termsAccepted && 'cursor-not-allowed opacity-50'
             )}
             asChild={termsAccepted}
             disabled={!termsAccepted}
           >
             {termsAccepted ? (
-              <Link href={googleAuthUrl} className="flex items-center justify-center gap-3">
-                <GoogleIcon className="h-5 w-5" />
-                <span className="font-medium">Continue with Google</span>
+              <Link href={googleAuthUrl} className="flex items-center justify-between gap-3">
+                <span className="flex items-center gap-3">
+                  <GoogleIcon className="h-5 w-5" />
+                  <span>Continue with Google</span>
+                </span>
+                <ArrowRight className="h-5 w-5" />
               </Link>
             ) : (
-              <span className="flex items-center justify-center gap-3">
-                <GoogleIcon className="h-5 w-5" />
-                <span className="font-medium">Continue with Google</span>
+              <span className="flex items-center justify-between gap-3">
+                <span className="flex items-center gap-3">
+                  <GoogleIcon className="h-5 w-5" />
+                  <span>Continue with Google</span>
+                </span>
+                <ArrowRight className="h-5 w-5" />
               </span>
             )}
           </Button>
         </div>
 
-        <div className="relative">
-          <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t border-muted" />
-          </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-background px-3 text-muted-foreground">Or continue with email</span>
-          </div>
+        <div className="flex items-center gap-3 font-mono text-xs font-black uppercase tracking-[0.14em] text-black">
+          <span className="h-1 flex-1 bg-black" />
+          Or continue with email
+          <span className="h-1 flex-1 bg-black" />
         </div>
 
-        <ComingSoonWrapper>
-          <div className="grid gap-4">
+        <ComingSoonWrapper className="px-0">
+          <div className="grid gap-4 py-5">
             <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
+              <Label
+                htmlFor="email"
+                className="font-mono text-xs font-black uppercase tracking-[0.16em]"
+              >
+                Email
+              </Label>
               <Input
                 id="email"
                 placeholder="name@example.com"
@@ -143,49 +158,57 @@ export default function Form({ className, ...props }: React.ComponentPropsWithou
                 autoCapitalize="none"
                 autoComplete="email"
                 autoCorrect="off"
-                className="h-11 bg-background"
+                className="h-12 rounded-none border-4 border-black bg-background"
               />
             </div>
             <div className="grid gap-2">
               <div className="flex items-center justify-between">
-                <Label htmlFor="password">Password</Label>
+                <Label
+                  htmlFor="password"
+                  className="font-mono text-xs font-black uppercase tracking-[0.16em]"
+                >
+                  Password
+                </Label>
                 <Link
                   href="/forgot-password"
-                  className="text-sm font-medium text-primary hover:underline"
+                  className="text-sm font-black text-primary underline decoration-2 underline-offset-4 hover:text-black"
                 >
                   Forgot password?
                 </Link>
               </div>
-              <Input id="password" type="password" className="h-11 bg-background" />
+              <Input id="password" type="password" className="h-12 rounded-none border-4 border-black bg-background" />
             </div>
-            <Button className="h-11 w-full font-medium" type="submit">
-              Sign In
+            <Button className="h-12 w-full justify-between rounded-none px-4" type="submit">
+              <span className="flex items-center gap-2">
+                <Mail className="h-5 w-5" />
+                Sign In
+              </span>
+              <ArrowRight className="h-5 w-5" />
             </Button>
           </div>
         </ComingSoonWrapper>
 
-        {/* 4. Footer & Terms */}
-        <div className="space-y-4 pt-2">
-          <div className="flex items-start space-x-3">
+        <div className="grid gap-4 border-t-4 border-black pt-6">
+          <div className="flex items-start gap-3">
             <Checkbox
               id="terms"
               checked={termsAccepted}
               onCheckedChange={(checked) => setTermsAccepted(checked as boolean)}
-              className="mt-0.5"
+              className="mt-0.5 size-5 rounded-none border-2 border-black bg-white shadow-none data-[state=checked]:bg-primary data-[state=checked]:text-white"
             />
             <div className="grid gap-1.5 leading-none">
               <Label
                 htmlFor="terms"
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                className="text-sm font-black uppercase leading-none text-black peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
                 Accept terms and conditions
               </Label>
-              <p className="text-xs text-muted-foreground leading-snug">
+              <p className="text-xs font-semibold leading-snug text-black/75">
                 You agree to our{' '}
                 <Link
                   href="/terms"
                   target="_blank"
-                  className="underline underline-offset-4 hover:text-primary transition-colors"
+                  className="font-black underline decoration-2 underline-offset-4 transition-colors hover:text-primary"
                 >
                   Terms of Service
                 </Link>{' '}
@@ -193,7 +216,7 @@ export default function Form({ className, ...props }: React.ComponentPropsWithou
                 <Link
                   href="/privacy"
                   target="_blank"
-                  className="underline underline-offset-4 hover:text-primary transition-colors"
+                  className="font-black underline decoration-2 underline-offset-4 transition-colors hover:text-primary"
                 >
                   Privacy Policy
                 </Link>
@@ -202,14 +225,15 @@ export default function Form({ className, ...props }: React.ComponentPropsWithou
             </div>
           </div>
 
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center gap-3 border-t-2 border-black pt-4">
             <Checkbox
               id="newsletter"
               onCheckedChange={(checked) => setNewsletter(checked as boolean)}
+              className="size-5 rounded-none border-2 border-black bg-white shadow-none data-[state=checked]:bg-primary data-[state=checked]:text-white"
             />
             <Label
               htmlFor="newsletter"
-              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              className="text-sm font-black uppercase leading-none text-black peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
             >
               Sign up for our newsletter
             </Label>

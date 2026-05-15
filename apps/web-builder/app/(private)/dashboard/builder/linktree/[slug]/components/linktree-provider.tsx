@@ -141,7 +141,7 @@ export function LinktreeProvider({ children }: { children: ReactNode }) {
           setLinktreeID(response?.data?.linktree?.id || null);
           toast.success('Saved successfully');
         } else {
-          toast.error(response.message || 'Error saving linktree');
+          toast.error(response.message || 'Error saving link page');
         }
       },
       (errors) => {

@@ -29,6 +29,7 @@ kislap-flash
 # Other general ignores
 # -----------------
 .DS_Store
+.cache/
 
 flash/.env
 flash/tmp

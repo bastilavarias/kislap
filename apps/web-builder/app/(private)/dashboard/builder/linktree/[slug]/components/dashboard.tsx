@@ -26,6 +26,10 @@ import {
 const VISITS_PER_PAGE = 8;
 const ACTIVITIES_PER_PAGE = 6;
 
+function asArray<T>(value: T[] | null | undefined): T[] {
+  return Array.isArray(value) ? value : [];
+}
+
 function formatTargetLabel(target: string) {
   if (!target || target === '/') return 'Homepage';
   if (target.startsWith('mailto:')) return target.replace('mailto:', '');
@@ -43,7 +47,7 @@ function formatActivityLabel(activity: APIResponsePageActivity) {
   if (activity.type === 'click') {
     return `Clicked ${formatTargetLabel(activity.page_url)}`;
   }
-  return 'Viewed linktree page';
+  return 'Viewed link page';
 }
 
 function Pagination({
@@ -61,7 +65,13 @@ function Pagination({
         Page {page} of {Math.max(totalPages, 1)}
       </p>
       <div className="flex items-center gap-2">
-        <Button variant="outline" size="icon" className="h-8 w-8" disabled={page <= 1} onClick={() => onChange(page - 1)}>
+        <Button
+          variant="outline"
+          size="icon"
+          className="h-8 w-8"
+          disabled={page <= 1}
+          onClick={() => onChange(page - 1)}
+        >
           <ChevronLeft className="h-4 w-4" />
         </Button>
         <Button
@@ -108,22 +118,22 @@ export function Dashboard({ projectID }: { projectID?: number }) {
     if (!projectID) return;
     const { success, data } = await getVisits(page, VISITS_PER_PAGE, projectID);
     if (!success || !data) return;
-    setVisits(data.data);
-    setVisitsTotalPages(data.meta.last_page || 1);
+    setVisits(asArray(data.data));
+    setVisitsTotalPages(data.meta?.last_page || 1);
   };
 
   const loadRecentActivities = async (page: number) => {
     if (!projectID) return;
     const { success, data } = await getRecentActivities(page, ACTIVITIES_PER_PAGE, projectID);
     if (!success || !data) return;
-    setActivities(data.data);
-    setActivitiesTotalPages(data.meta.last_page || 1);
+    setActivities(asArray(data.data));
+    setActivitiesTotalPages(data.meta?.last_page || 1);
   };
 
   const loadTopClicks = async () => {
     if (!projectID) return;
     const { success, data } = await getTopLinks(projectID, 5);
-    if (success && data) setTopClickedLinks(data);
+    if (success) setTopClickedLinks(asArray(data));
   };
 
   useEffect(() => {
@@ -168,13 +178,18 @@ export function Dashboard({ projectID }: { projectID?: number }) {
           <CardContent className="space-y-3">
             {topClickedLinks.length > 0 ? (
               topClickedLinks.map((item, index) => (
-                <div key={item.page_url} className="flex items-center justify-between rounded-lg border bg-muted/20 px-4 py-3">
+                <div
+                  key={item.page_url}
+                  className="flex items-center justify-between rounded-lg border bg-muted/20 px-4 py-3"
+                >
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
                       <Badge variant="secondary" className="h-5 px-1.5 text-[10px]">
                         #{index + 1}
                       </Badge>
-                      <p className="truncate text-sm font-medium">{formatTargetLabel(item.page_url)}</p>
+                      <p className="truncate text-sm font-medium">
+                        {formatTargetLabel(item.page_url)}
+                      </p>
                     </div>
                     <p className="mt-1 text-xs text-muted-foreground">
                       Last clicked {new Date(item.last_clicked_at).toLocaleString()}
@@ -183,14 +198,18 @@ export function Dashboard({ projectID }: { projectID?: number }) {
                   <div className="text-right">
                     <p className="text-lg font-bold">{item.click_count}</p>
                     <p className="text-xs text-muted-foreground">
-                      {stats.total_clicks ? Math.round((item.click_count / stats.total_clicks) * 100) : 0}% of clicks
+                      {stats.total_clicks
+                        ? Math.round((item.click_count / stats.total_clicks) * 100)
+                        : 0}
+                      % of clicks
                     </p>
                   </div>
                 </div>
               ))
             ) : (
               <div className="rounded-lg border border-dashed p-6 text-sm text-muted-foreground">
-                No link click data yet. New clicks from the active Linktree templates will start showing here.
+                No link click data yet. New clicks from the active Link Page templates will start
+                showing here.
               </div>
             )}
           </CardContent>
@@ -224,7 +243,10 @@ export function Dashboard({ projectID }: { projectID?: number }) {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan={2} className="px-4 py-8 text-center text-sm text-muted-foreground">
+                      <td
+                        colSpan={2}
+                        className="px-4 py-8 text-center text-sm text-muted-foreground"
+                      >
                         No visitor data yet.
                       </td>
                     </tr>
@@ -255,7 +277,10 @@ export function Dashboard({ projectID }: { projectID?: number }) {
           <div className="divide-y divide-border/60">
             {activities.length > 0 ? (
               activities.map((activity, index) => (
-                <div key={`${activity.created_at}-${index}`} className="flex items-start justify-between gap-4 px-4 py-4 hover:bg-muted/20">
+                <div
+                  key={`${activity.created_at}-${index}`}
+                  className="flex items-start justify-between gap-4 px-4 py-4 hover:bg-muted/20"
+                >
                   <div className="min-w-0">
                     <p className="text-sm font-medium">{formatActivityLabel(activity)}</p>
                     <p className="mt-1 text-xs text-muted-foreground">
@@ -270,7 +295,9 @@ export function Dashboard({ projectID }: { projectID?: number }) {
                 </div>
               ))
             ) : (
-              <div className="px-4 py-8 text-center text-sm text-muted-foreground">No activity yet.</div>
+              <div className="px-4 py-8 text-center text-sm text-muted-foreground">
+                No activity yet.
+              </div>
             )}
           </div>
           <Pagination

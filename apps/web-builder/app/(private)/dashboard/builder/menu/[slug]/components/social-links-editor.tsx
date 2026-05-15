@@ -19,9 +19,9 @@ export function SocialLinksEditor({ formMethods }: Props) {
   const socialLinks = watch('social_links') || [];
 
   return (
-    <div className="space-y-4 rounded-lg border bg-muted/10 p-4">
+    <div className="space-y-4 border-2 border-black bg-white p-4">
       <div>
-        <div className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-primary">
+        <div className="flex items-center gap-2 text-sm font-black uppercase tracking-wider text-primary">
           <Globe2 className="h-4 w-4" />
           Social Links
         </div>

@@ -81,19 +81,19 @@ export function ProjectTemplatePreview(props: PreviewProps) {
   const previewShellHeight = useHorizontalDesktopScroll ? contentHeight : scaledHeight;
 
   return (
-    <div className="flex h-full min-w-0 max-w-full flex-col overflow-hidden border border-border/70 bg-card/60 shadow-[0_24px_80px_rgba(15,23,42,0.12)] backdrop-blur-sm">
-      <div className="border-b border-border/60 px-5 py-4">
+    <div className="flex h-full min-w-0 max-w-full flex-col overflow-hidden border-4 border-black bg-white shadow-[8px_8px_0_#000]">
+      <div className="border-b-4 border-black bg-secondary px-5 py-4">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">
+            <p className="font-mono text-xs font-black uppercase tracking-[0.24em] text-black">
               Live preview
             </p>
-            <p className="mt-2 text-sm text-muted-foreground">
+            <p className="mt-2 text-sm font-semibold text-black/70">
               Sample content only. You can edit everything after the project is created.
             </p>
           </div>
 
-          <div className="inline-flex border border-border/70 bg-background">
+          <div className="inline-flex border-2 border-black bg-white shadow-[4px_4px_0_#000]">
             {VIEWPORT_OPTIONS.map((option) => {
               const Icon = option.icon;
               const isActive = viewport === option.id;
@@ -104,10 +104,10 @@ export function ProjectTemplatePreview(props: PreviewProps) {
                   type="button"
                   onClick={() => setViewport(option.id)}
                   className={[
-                    'inline-flex items-center gap-2 border-r border-border/70 px-3 py-2 text-xs font-medium transition last:border-r-0',
+                    'inline-flex items-center gap-2 border-r-2 border-black px-3 py-2 text-xs font-black uppercase transition last:border-r-0',
                     isActive
-                      ? 'bg-primary text-primary-foreground shadow-sm'
-                      : 'text-muted-foreground hover:bg-muted hover:text-foreground',
+                      ? 'bg-black text-white'
+                      : 'text-muted-foreground hover:bg-secondary hover:text-black',
                   ].join(' ')}
                 >
                   <Icon className="h-3.5 w-3.5" />
@@ -122,7 +122,7 @@ export function ProjectTemplatePreview(props: PreviewProps) {
       <div
         ref={scrollAreaRef}
         className={[
-          'min-h-0 flex-1 bg-muted/10',
+          'min-h-0 flex-1 bg-zinc-200',
           useHorizontalDesktopScroll ? 'overflow-x-auto overflow-y-auto' : 'overflow-auto',
         ].join(' ')}
       >

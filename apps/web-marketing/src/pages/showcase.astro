@@ -3,6 +3,7 @@ export const prerender = false;
 import Layout from '@/layouts/main.astro';
 import { ShowcaseFeed } from '@/components/showcase-feed';
 import { getPublicProjectUrl } from '@/lib/site-config';
+import { PAGE_SEO } from '@/lib/seo';
 
 const allowedTypes = new Set(["all", "portfolio", "linktree", "menu"]);
 const rawSelectedType = (Astro.url.searchParams.get("type") || "all").toLowerCase();
@@ -18,6 +19,7 @@ if (selectedType !== "all") {
 }
 
 let initialProjects = [];
+let initialMeta = null;
 
 try {
   const response = await fetch(apiUrl);
@@ -26,14 +28,15 @@ try {
     console.error("API Error:", response.statusText);
   } else {
     const result = await response.json();
-    initialProjects = result.data || result;
+    const payload = result.data || result;
+    initialProjects = Array.isArray(payload) ? payload : payload.data || [];
+    initialMeta = Array.isArray(payload) ? null : payload.meta || null;
   }
 } catch (error) {
   console.error("Network/Fetch Error:", error);
 }
 
-const title = "Kislap - Showcase";
-const description = "Explore portfolios, link-in-bio pages, menus, and websites built with Kislap.";
+const { title, description, keywords } = PAGE_SEO.showcase;
 
 const schema = {
   "@context": "https://schema.org",
@@ -52,17 +55,18 @@ const schema = {
 };
 ---
 
-<Layout title={title} description={description}>
+<Layout title={title} description={description} keywords={keywords}>
   <script type="application/ld+json" set:html={JSON.stringify(schema)} />
 
-  <section class="relative overflow-hidden pb-32 pt-20">
-    <div class="pointer-events-none absolute left-1/2 top-0 h-[500px] w-full max-w-6xl -translate-x-1/2 rounded-full bg-primary/5 opacity-50 blur-[120px]"></div>
-    <div class="container relative z-10 mx-auto max-w-6xl px-4">
+  <section class="relative overflow-hidden border-b-4 border-black bg-white pb-32 pt-20">
+    <div class="absolute inset-0 bg-[linear-gradient(#000_1px,transparent_1px),linear-gradient(90deg,#000_1px,transparent_1px)] bg-[size:44px_44px] opacity-[0.045]"></div>
+    <div class="container relative mx-auto max-w-7xl px-4">
       <ShowcaseFeed
         client:load
         projects={initialProjects}
         apiBaseUrl={import.meta.env.API_URL}
         initialType={selectedType}
+        initialMeta={initialMeta}
       />
     </div>
   </section>

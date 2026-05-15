@@ -85,6 +85,47 @@ func (service Service) List(userID *uint64, page int, limit int, projectType str
 
 }
 
+func (service Service) PublicList(page int, limit int, projectType string) (*[]models.Project, int64, error) {
+	var projects []models.Project
+	var total int64
+
+	if limit <= 0 {
+		limit = 5
+	}
+
+	if page <= 0 {
+		page = 1
+	}
+
+	offset := (page - 1) * limit
+	projectType = strings.TrimSpace(strings.ToLower(projectType))
+
+	baseQuery := func() *gorm.DB {
+		query := service.DB.Model(&models.Project{}).
+			Where("published = ?", 1)
+
+		if projectType != "" {
+			query = query.Where("type = ?", projectType)
+		}
+
+		return query
+	}
+
+	if err := baseQuery().Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+
+	if err := baseQuery().
+		Order("created_at DESC").
+		Limit(limit).
+		Offset(offset).
+		Find(&projects).Error; err != nil {
+		return nil, 0, err
+	}
+
+	return &projects, total, nil
+}
+
 func (service Service) PublicStats() (*PublicStats, error) {
 	stats := &PublicStats{
 		TemplateCount: 17,
@@ -122,7 +163,9 @@ func (service Service) Create(userID uint64, payload Payload) (*models.Project, 
 		SubDomain:   &payload.SubDomain,
 		Slug:        slug,
 		Type:        payload.Type,
-		Published:   payload.Published,
+	}
+	if payload.Published != nil {
+		newProj.Published = *payload.Published
 	}
 
 	if err := service.DB.Create(&newProj).Error; err != nil {
@@ -152,7 +195,9 @@ func (service Service) Update(projectID int, payload Payload) (*models.Project, 
 	existingProj.SubDomain = &payload.SubDomain
 	existingProj.Slug = utils.Slugify(payload.Name, 0)
 	existingProj.Type = payload.Type
-	existingProj.Published = payload.Published
+	if payload.Published != nil {
+		existingProj.Published = *payload.Published
+	}
 
 	if err := service.DB.Save(&existingProj).Error; err != nil {
 		return nil, err

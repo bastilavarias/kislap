@@ -9,8 +9,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <Suspense fallback={null}>
         <ClientAuthGuard>
           <Header />
-          <main className="bg-background grid-background py-8 px-4 lg:px-6 flex flex-1 flex-col gap-2">
-            <div className="container mx-auto">{children}</div>
+          <main className="grid-background flex flex-1 flex-col gap-2 bg-secondary/20 px-4 py-8 lg:px-6">
+            <div className="mx-auto w-full max-w-7xl">{children}</div>
           </main>
         </ClientAuthGuard>
       </Suspense>

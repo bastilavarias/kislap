@@ -230,7 +230,7 @@ export function SettingsForm() {
             </Card>
           </div>
           <div className="space-y-6">
-            <Card className="shadow-none border-zinc-200 dark:border-zinc-800">
+            <Card className="border-border text-foreground shadow-none">
               <CardHeader className="pb-4">
                 <CardTitle className="text-base">Connected Accounts</CardTitle>
                 <CardDescription className="text-xs">
@@ -240,50 +240,50 @@ export function SettingsForm() {
               <CardContent className="space-y-5">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-zinc-100 dark:bg-zinc-800 rounded-full">
-                      <Github className="w-4 h-4" />
+                    <div className="rounded-full bg-muted p-2 text-foreground">
+                      <Github className="h-4 w-4" />
                     </div>
                     <div className="flex flex-col">
-                      <span className="text-sm font-medium leading-none">GitHub</span>
-                      <span className="text-[10px] text-muted-foreground mt-1">Authentication</span>
+                      <span className="text-sm font-medium leading-none text-foreground">GitHub</span>
+                      <span className="mt-1 text-[10px] text-muted-foreground">Authentication</span>
                     </div>
                   </div>
 
                   {user?.github ? (
-                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20">
-                      <CheckCircle2 className="w-3 h-3" />
+                    <div className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-100 px-2.5 py-1 text-[10px] font-semibold text-emerald-700 dark:border-emerald-500/20 dark:bg-emerald-500/15 dark:text-emerald-400">
+                      <CheckCircle2 className="h-3 w-3" />
                       LINKED
                     </div>
                   ) : (
-                    <Button variant="outline" size="sm" className="h-7 text-xs gap-2 rounded-full">
-                      <LinkIcon className="w-3 h-3" />
+                    <Button variant="outline" size="sm" className="h-7 gap-2 rounded-full text-xs">
+                      <LinkIcon className="h-3 w-3" />
                       Connect
                     </Button>
                   )}
                 </div>
 
-                <div className="h-px bg-zinc-100 dark:bg-zinc-800 w-full" />
+                <div className="h-px w-full bg-border" />
 
                 {/* Google Row */}
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-zinc-100 dark:bg-zinc-800 rounded-full">
-                      <Globe className="w-4 h-4" />
+                    <div className="rounded-full bg-muted p-2 text-foreground">
+                      <Globe className="h-4 w-4" />
                     </div>
                     <div className="flex flex-col">
-                      <span className="text-sm font-medium leading-none">Google</span>
-                      <span className="text-[10px] text-muted-foreground mt-1">Authentication</span>
+                      <span className="text-sm font-medium leading-none text-foreground">Google</span>
+                      <span className="mt-1 text-[10px] text-muted-foreground">Authentication</span>
                     </div>
                   </div>
 
                   {user?.google ? (
-                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20">
-                      <CheckCircle2 className="w-3 h-3" />
+                    <div className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-100 px-2.5 py-1 text-[10px] font-semibold text-emerald-700 dark:border-emerald-500/20 dark:bg-emerald-500/15 dark:text-emerald-400">
+                      <CheckCircle2 className="h-3 w-3" />
                       LINKED
                     </div>
                   ) : (
-                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-medium bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-700">
-                      <CircleOff className="w-3 h-3" />
+                    <div className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted px-2.5 py-1 text-[10px] font-medium text-muted-foreground">
+                      <CircleOff className="h-3 w-3" />
                       NOT LINKED
                     </div>
                   )}

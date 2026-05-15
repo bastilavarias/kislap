@@ -1,12 +1,13 @@
 ﻿"use client";
 
 import React from "react";
-import { Globe, Mail, MapPin, Phone, Share2, Github } from "lucide-react";
+import { Globe, Mail, MapPin, Phone, Share2 } from "lucide-react";
 import { FaFacebookF, FaInstagram, FaTiktok } from "react-icons/fa6";
 import { Mode } from "@/contexts/settings-context";
 import { ThemeStyles } from "@/types/theme";
 import { ThemeSwitchToggle } from "../theme-switch-toggle";
 import { KISLAP_LINKS } from "../shared/kislap-links";
+import { MenuFooter } from "./menu-footer";
 import { formatHoursLabel, formatMenuLocation, MenuData, MenuItem, MenuSocialLink, normalizeMenuShareUrl } from "./menu-types";
 
 interface Props {
@@ -259,16 +260,15 @@ export function MenuRunway({ menu, themeMode, themeStyles, onSetThemeMode }: Pro
             </div>
           </section>
 
-          <footer className="border-t pt-10 pb-10" style={{ borderColor }}>
-            <div className="flex flex-col gap-4 @md:flex-row @md:items-center @md:justify-between">
-              <p className="text-sm" style={{ color: mutedColor }}>© {new Date().getFullYear()} {source.name || "Runway Kitchen"}. All rights reserved.</p>
-              <div className="flex items-center gap-4">
-                <a href={KISLAP_LINKS.github} target="_blank" rel="noreferrer" className="transition-opacity hover:opacity-80"><Github className="h-4 w-4" /></a>
-                <a href={KISLAP_LINKS.website} target="_blank" rel="noreferrer" className="transition-opacity hover:opacity-80"><Globe className="h-4 w-4" /></a>
-                <a href={KISLAP_LINKS.facebook} target="_blank" rel="noreferrer" className="transition-opacity hover:opacity-80"><FaFacebookF className="h-4 w-4" /></a>
-              </div>
-            </div>
-          </footer>
+          <MenuFooter
+            menu={source}
+            borderColor={borderColor}
+            foregroundColor={foregroundColor}
+            mutedColor={mutedColor}
+            headingFont={headingFont}
+            metaFont={bodyFont}
+            className="mt-0"
+          />
         </main>
       </div>
     </div>

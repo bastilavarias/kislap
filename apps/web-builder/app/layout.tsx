@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-import { Geist, Geist_Mono } from 'next/font/google';
+import { JetBrains_Mono, Outfit } from 'next/font/google';
 import type { Metadata, Viewport } from 'next';
 
 import NextProvider from '@/providers/NextProvider';
@@ -15,12 +15,13 @@ import './globals.css';
 
 import NextTopLoader from 'nextjs-toploader';
 
-const fontSans = Geist({
+const fontSans = Outfit({
   subsets: ['latin'],
+  weight: ['400', '600', '700', '900'],
   variable: '--font-sans',
 });
 
-const fontMono = Geist_Mono({
+const fontMono = JetBrains_Mono({
   subsets: ['latin'],
   variable: '--font-mono',
 });
@@ -39,22 +40,26 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL(APP_URL),
   title: {
-    default: 'Kislap - Turn Forms into Stunning Websites',
+    default: 'Kislap - Portfolio, Link Page, and Digital Menu Builder',
     template: '%s | Kislap',
   },
   description:
-    'The open-source website builder for developers. Transform simple forms and JSON into professional portfolios, landing pages, and waitlists in seconds.',
+    'Build and publish focused public pages from structured forms: portfolios, branded link pages, and QR-ready digital menus.',
   applicationName: 'Kislap',
+  icons: {
+    icon: '/favicon.svg',
+    shortcut: '/favicon.svg',
+    apple: '/favicon.svg',
+  },
   authors: [{ name: '@bastilavarias', url: APP_URL }],
   keywords: [
     'website builder',
     'portfolio builder',
+    'link page builder',
+    'digital menu builder',
     'form to website',
-    'json to website',
     'resume builder',
-    'developer portfolio',
     'open source website builder',
-    'shadcn ui builder',
   ],
   referrer: 'origin-when-cross-origin',
   creator: 'Kislap',
@@ -78,23 +83,23 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: APP_URL,
     siteName: 'Kislap',
-    title: 'Kislap - Turn Forms into Stunning Websites',
+    title: 'Kislap - Portfolio, Link Page, and Digital Menu Builder',
     description:
-      'No drag and drop chaos. No design skills needed. Just fill in the blanks, and Kislap generates a high-performance site instantly.',
+      'Build portfolios, branded link pages, and QR-ready digital menus from focused forms.',
     images: [
       {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'Kislap - AI Powered Website Builder',
+        alt: 'Kislap public page builder',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Kislap - Turn Forms into Stunning Websites',
+    title: 'Kislap - Portfolio, Link Page, and Digital Menu Builder',
     description:
-      'No drag and drop chaos. No design skills needed. Just fill in the blanks, and Kislap generates a high-performance site instantly.',
+      'Build portfolios, branded link pages, and QR-ready digital menus from focused forms.',
     images: ['/og-image.png'],
     creator: '@bastilavarias',
   },

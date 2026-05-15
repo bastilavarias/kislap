@@ -226,6 +226,12 @@ export interface APIResponseProject {
   biz?: APIResponseBiz;
   menu?: APIResponseMenu;
 }
+
+export interface APIResponseProjectList {
+  data: APIResponseProject[];
+  meta: APIResponsePaginationMeta;
+}
+
 export interface APIResponseAppoinment {
   id: number;
   name: string;

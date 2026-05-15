@@ -6,6 +6,16 @@ import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
 import node from "@astrojs/node";
 
+const disabledMarketingRoutes = new Set([
+  "/features/",
+  "/features/digital-menu-builder/",
+  "/features/link-page-builder/",
+  "/features/portfolio-builder/",
+  "/linktree-builder/",
+  "/menu-builder/",
+  "/portfolio-builder/",
+]);
+
 // https://astro.build/config
 export default defineConfig({
   site: process.env.SITE_URL || "https://kislap.app",
@@ -19,7 +29,15 @@ export default defineConfig({
     plugins: [tailwindcss()],
   },
 
-  integrations: [react(), sitemap()],
+  integrations: [
+    react(),
+    sitemap({
+      filter(page) {
+        const pathname = new URL(page).pathname;
+        return !disabledMarketingRoutes.has(pathname);
+      },
+    }),
+  ],
 
   env: {
     schema: {

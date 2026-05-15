@@ -32,6 +32,13 @@ import { PosterPanel, PosterPreviewCard } from './poster-panel';
 import { SocialLinksEditor } from './social-links-editor';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { MenuFormPreview } from './menu-form-preview';
+import {
+  BuilderPanel,
+  builderButtonClass,
+  builderOutlineButtonClass,
+  builderTabsListClass,
+  builderTabsTriggerClass,
+} from '@/components/builder/builder-ui';
 
 interface Props {
   formMethods: UseFormReturn<MenuFormValues>;
@@ -132,14 +139,14 @@ export function Form({
           value={builderTab}
           onValueChange={(value) => setBuilderTab(value as 'form' | 'preview' | 'poster')}
         >
-          <TabsList className="grid h-12 w-full max-w-lg grid-cols-3 rounded-xl border border-border/70 bg-muted/50 p-1 shadow-sm">
-            <TabsTrigger value="form" className="cursor-pointer rounded-lg">
+          <TabsList className={`${builderTabsListClass} grid h-12 w-full max-w-lg grid-cols-3`}>
+            <TabsTrigger value="form" className={builderTabsTriggerClass}>
               Form
             </TabsTrigger>
-            <TabsTrigger value="preview" className="cursor-pointer rounded-lg">
+            <TabsTrigger value="preview" className={builderTabsTriggerClass}>
               Preview
             </TabsTrigger>
-            <TabsTrigger value="poster" className="cursor-pointer rounded-lg">
+            <TabsTrigger value="poster" className={builderTabsTriggerClass}>
               Poster
             </TabsTrigger>
           </TabsList>
@@ -155,7 +162,7 @@ export function Form({
       ) : builderTab === 'poster' ? (
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
           <div className="lg:col-span-6">
-            <Card className="border-border shadow-none">
+            <Card>
               <CardContent className="p-6 pt-0">
                 <div className="mb-6">
                   <h2 className="text-lg font-semibold">Poster Settings</h2>
@@ -187,47 +194,44 @@ export function Form({
       ) : (
         <div className="grid grid-cols-1 gap-6 pb-20 lg:grid-cols-12 lg:pb-0">
           <div className="space-y-6 lg:col-span-8">
-            <Card className="border-border shadow-none">
+            <Card>
               <CardContent className="p-6">
                 <div className="mb-6 flex items-center justify-between gap-4">
                   <div className="flex items-center gap-2">
                     <UtensilsCrossed className="h-6 w-6" />
-                    <h1 className="text-2xl font-bold">Menu Editor</h1>
+                    <h1 className="text-2xl font-black uppercase">Menu Editor</h1>
                   </div>
                   <Button
                     type="button"
                     variant="outline"
-                    className="shadow-none"
+                    className={builderOutlineButtonClass}
                     onClick={handleClearContent}
                   >
                     Clear content
                   </Button>
                 </div>
 
-                <div className="flex items-center justify-between rounded-xl border bg-muted/20 p-4">
+                <BuilderPanel className="flex items-center justify-between gap-4 p-4 shadow-[4px_4px_0_#000]">
                   <div>
-                    <h3 className="text-sm font-semibold">Menu Parser</h3>
-                    <p className="text-xs text-muted-foreground">
+                    <h3 className="text-sm font-black uppercase">Menu Parser</h3>
+                    <p className="text-xs font-semibold text-muted-foreground">
                       Upload a menu PDF to prefill your categories and items.
                     </p>
                   </div>
                   <Button
                     type="button"
                     onClick={() => setIsParserOpen(true)}
-                    className="shadow-none flex items-center gap-2
-                bg-gradient-to-r from-amber-500 to-rose-500 
-                hover:from-amber-600 hover:to-rose-600 
-                text-white border-0 transition-all"
+                    className={builderButtonClass}
                     size="sm"
                   >
                     Parse Menus
                   </Button>
-                </div>
+                </BuilderPanel>
 
                 <div className="mt-6 flex flex-col gap-8">
                   <Accordion type="single" defaultValue="business" collapsible>
-                    <AccordionItem value="business" className="rounded-lg border px-4">
-                      <AccordionTrigger className="py-3 text-base font-medium hover:no-underline">
+                    <AccordionItem value="business" className="border-2 border-black px-4">
+                      <AccordionTrigger className="py-3 text-base">
                         Business
                       </AccordionTrigger>
                       <AccordionContent className="space-y-6 px-1 pb-4 pt-4">
@@ -237,8 +241,8 @@ export function Form({
                         </div>
                         <div className="space-y-4">
                           <div className="grid gap-4 md:grid-cols-2">
-                            <div className="rounded-lg border bg-muted/20 p-4">
-                              <Label className="mb-3 block text-sm font-medium">Logo</Label>
+                            <div className="border-2 border-black bg-white p-4">
+                              <Label className="mb-3 block text-sm font-black uppercase">Logo</Label>
                               <ImageUploadField
                                 id="menu-logo"
                                 previewUrl={watch('logo_url')}
@@ -248,8 +252,8 @@ export function Form({
                                 }
                               />
                             </div>
-                            <div className="rounded-lg border bg-muted/20 p-4">
-                              <Label className="mb-3 block text-sm font-medium">Cover Image</Label>
+                            <div className="border-2 border-black bg-white p-4">
+                              <Label className="mb-3 block text-sm font-black uppercase">Cover Image</Label>
                               <ImageUploadField
                                 id="menu-cover"
                                 previewUrl={watch('cover_image_url')}
@@ -338,8 +342,8 @@ export function Form({
                   </Accordion>
 
                   <Accordion type="single" defaultValue="categories" collapsible>
-                    <AccordionItem value="categories" className="rounded-lg border px-4">
-                      <AccordionTrigger className="py-3 text-base font-medium hover:no-underline">
+                    <AccordionItem value="categories" className="border-2 border-black px-4">
+                      <AccordionTrigger className="py-3 text-base">
                         Categories
                       </AccordionTrigger>
                       <AccordionContent className="px-1 pb-4 pt-4">
@@ -356,8 +360,8 @@ export function Form({
                   </Accordion>
 
                   <Accordion type="single" defaultValue="items" collapsible>
-                    <AccordionItem value="items" className="rounded-lg border px-4">
-                      <AccordionTrigger className="py-3 text-base font-medium hover:no-underline">
+                    <AccordionItem value="items" className="border-2 border-black px-4">
+                      <AccordionTrigger className="py-3 text-base">
                         Items
                       </AccordionTrigger>
                       <AccordionContent className="px-1 pb-4 pt-4">
@@ -371,8 +375,8 @@ export function Form({
                   </Accordion>
 
                   <Accordion type="single" defaultValue="gallery" collapsible>
-                    <AccordionItem value="gallery" className="rounded-lg border px-4">
-                      <AccordionTrigger className="py-3 text-base font-medium hover:no-underline">
+                    <AccordionItem value="gallery" className="border-2 border-black px-4">
+                      <AccordionTrigger className="py-3 text-base">
                         Gallery
                       </AccordionTrigger>
                       <AccordionContent className="px-1 pb-4 pt-4">
@@ -380,7 +384,7 @@ export function Form({
                           <Store className="h-4 w-4" />
                           Gallery
                         </div>
-                        <div className="rounded-lg border bg-muted/20 p-4">
+                        <div className="border-2 border-black bg-white p-4">
                           <GalleryUploader
                             files={galleryImages.map((item) => item.image as File | null)}
                             urls={galleryImages.map((item) => item.image_url || null)}

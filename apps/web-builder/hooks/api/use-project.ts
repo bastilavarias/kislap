@@ -1,6 +1,6 @@
 import { useApi } from '@/lib/api';
 import { ProjectFormValues } from '@/lib/schemas/project';
-import { APIResponseProject } from '@/types/api-response';
+import { APIResponseProject, APIResponseProjectList } from '@/types/api-response';
 
 export function useProject() {
   const { apiPost, apiGet, apiPut, apiDelete } = useApi();
@@ -22,7 +22,7 @@ export function useProject() {
   };
 
   const getPublicList = async () => {
-    return await apiGet<APIResponseProject[]>('api/projects/list/public');
+    return await apiGet<APIResponseProjectList>('api/projects/list/public');
   };
 
   const publish = async (id: number, isPublished: boolean) => {

@@ -38,8 +38,8 @@ export default function Page() {
                 <div>
                   <h3 className="font-bold text-foreground">Don't be a bot.</h3>
                   <p className="text-sm text-muted-foreground">
-                    Don't scrape us, don't spam us, and don't try to crash our servers. We are
-                    developers; we will find you, and we will ban you.
+                    Don't scrape us, don't spam us, and don't try to crash our servers. Accounts
+                    that abuse the platform may be suspended.
                   </p>
                 </div>
               </div>
