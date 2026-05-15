@@ -41,7 +41,7 @@ const typeConfig: Record<string, { label: string; color: string; icon: any; proj
       projectName: 'biz',
     },
     linktree: {
-      label: 'Link-in-Bio',
+      label: 'Link Page',
       color: 'bg-fuchsia-500 text-white border-black',
       icon: ExternalLink,
       projectName: 'linktree',

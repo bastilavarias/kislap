@@ -4,12 +4,12 @@ export const prerender = false;
 import { HelpPageContent } from '@/components/help-page-content';
 import Layout from '@/layouts/main.astro';
 import { CONTACT_EMAIL } from '@/lib/site-config';
+import { PAGE_SEO } from '@/lib/seo';
 
-const title = 'Help | Kislap';
-const description = 'Need help with Kislap? Send a support request and we will route it through our admin inbox.';
+const { title, description, keywords } = PAGE_SEO.help;
 ---
 
-<Layout title={title} description={description}>
+<Layout title={title} description={description} keywords={keywords}>
   <HelpPageContent
     client:load
     apiBaseUrl={import.meta.env.API_URL}

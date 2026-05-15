@@ -1,13 +1,19 @@
 ---
 export const prerender = false;
+
 import Layout from '@/layouts/main.astro';
 import { ArrowRight } from '@lucide/astro';
 import { builderPages } from '@/data/builder-pages';
 import { getFeaturePagePath } from '@/lib/site-config';
+import { PAGE_SEO } from '@/lib/seo';
 
-const title = "Features | Kislap";
-const description =
-  "Explore Kislap's portfolio builder, link page builder, and digital menu builder. Choose the right publishing flow for the page you actually need.";
+const builderPagesEnabled = false;
+
+if (!builderPagesEnabled) {
+  return new Response("Not found", { status: 404 });
+}
+
+const { title, description, keywords } = PAGE_SEO.features;
 
 const pages = Object.values(builderPages);
 
@@ -35,7 +41,7 @@ const schema = {
 };
 ---
 
-<Layout title={title} description={description}>
+<Layout title={title} description={description} keywords={keywords}>
   <script type="application/ld+json" set:html={JSON.stringify(schema)} />
 
   <main class="w-full max-w-full overflow-x-hidden bg-white text-black">
@@ -65,10 +71,10 @@ const schema = {
           >
             <div class="grid min-h-full lg:grid-cols-[0.9fr_1.1fr]">
               <div class="flex min-h-[300px] flex-col justify-between border-b-4 border-black bg-zinc-300 p-6 lg:border-b-0 lg:border-r-4">
-                <p class="font-mono text-xs font-bold uppercase tracking-[0.24em]">Replace image: 1800 x 1200</p>
+                <p class="font-mono text-xs font-bold uppercase tracking-[0.24em]">Builder preview</p>
                 <div>
                   <p class="text-3xl font-black uppercase">{page.eyebrow}</p>
-                  <p class="mt-2 max-w-sm text-sm font-bold text-zinc-700">Builder and public-page preview placeholder</p>
+                  <p class="mt-2 max-w-sm text-sm font-bold text-zinc-700">A quick look at the workspace and public page flow.</p>
                 </div>
               </div>
               <div class="flex flex-col justify-between p-7 md:p-9">

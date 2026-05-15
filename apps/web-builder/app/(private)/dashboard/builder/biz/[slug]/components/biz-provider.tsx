@@ -259,6 +259,7 @@ export function BizProvider({ children }: { children: ReactNode }) {
           })),
           products: data.products?.map((product: any, index: any) => ({
             ...product,
+            is_active: product.is_active ?? true,
             placement_order: index,
           })),
           testimonials: data.testimonials?.map((testimonial: any, index: any) => ({

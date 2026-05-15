@@ -143,7 +143,7 @@ export function ProjectList() {
               Portfolio
             </Badge>
             <Badge variant="secondary" className="rounded-none border-2 border-black bg-white px-3 py-1 font-mono text-xs font-black uppercase shadow-none">
-              Linktree
+              Link Page
             </Badge>
             <Badge variant="secondary" className="rounded-none border-2 border-black bg-white px-3 py-1 font-mono text-xs font-black uppercase shadow-none">
               Menu

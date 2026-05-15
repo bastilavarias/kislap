@@ -25,16 +25,16 @@ const proofItems = [
 
 export function OpenSourceSection() {
   return (
-    <section className="border-b-4 border-black bg-red-500 px-4 py-28 text-white md:py-40">
-      <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[1.1fr_0.9fr]">
-        <div className="border-4 border-black bg-white p-7 text-black shadow-[12px_12px_0_#000] md:p-10">
+    <section className="border-b-4 border-black bg-red-500 py-28 text-white md:py-40">
+      <div className="mx-auto grid max-w-7xl gap-8 px-4 md:px-6 lg:grid-cols-[1.1fr_0.9fr]">
+        <div className="landing-reveal border-4 border-black bg-white p-7 text-black shadow-[12px_12px_0_#000] md:p-10">
           <Badge className="rounded-none border-4 border-black bg-secondary px-4 py-2 font-mono text-black shadow-[5px_5px_0_#000]">
             Open source
           </Badge>
           <h2 className="mt-8 max-w-4xl text-5xl font-black uppercase leading-[0.88] md:text-7xl">
             Built in public, useful in public.
           </h2>
-          <p className="mt-8 max-w-2xl text-xl font-semibold leading-relaxed text-zinc-700">
+          <p className="landing-scrub-text mt-8 max-w-2xl text-xl font-semibold leading-relaxed text-zinc-700">
             Kislap is open source because publishing tools should be easier to
             trust, easier to inspect, and easier to improve with the people who
             use them.
@@ -61,7 +61,7 @@ export function OpenSourceSection() {
           </div>
         </div>
 
-        <div className="landing-stack-card border-4 border-black bg-black p-5 shadow-[12px_12px_0_#fff]">
+        <div className="landing-stack-card landing-pop-card border-4 border-black bg-black p-5 shadow-[12px_12px_0_#fff]">
           <div className="border-4 border-white bg-zinc-950 p-4 font-mono text-sm text-green-300">
             <div className="mb-4 flex gap-2">
               <span className="h-3 w-3 border-2 border-white bg-red-500" />
@@ -83,10 +83,10 @@ export function OpenSourceSection() {
               return (
                 <div
                   key={item.title}
-                  className="group border-4 border-white bg-white p-4 text-black transition-transform duration-300 hover:-translate-y-1"
+                  className="landing-pop-card group border-4 border-white bg-white p-4 text-black transition-transform duration-300"
                 >
                   <div className="flex items-start gap-4">
-                    <div className="flex h-12 w-12 shrink-0 items-center justify-center border-4 border-black bg-secondary shadow-[4px_4px_0_#000]">
+                    <div className="landing-wiggle flex h-12 w-12 shrink-0 items-center justify-center border-4 border-black bg-secondary shadow-[4px_4px_0_#000]">
                       <Icon className="h-6 w-6" />
                     </div>
                     <div>

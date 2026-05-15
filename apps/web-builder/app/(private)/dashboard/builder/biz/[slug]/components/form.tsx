@@ -75,6 +75,10 @@ import { Settings } from '@/contexts/settings-context';
 import { cn } from '@/lib/utils';
 import { BizFormValues } from '@/lib/schemas/biz';
 import { SortableList } from '@/components/sortable-list';
+import {
+  builderTabsListClass,
+  builderTabsTriggerClass,
+} from '@/components/builder/builder-ui';
 
 const LAYOUT_OPTIONS = [
   { id: 'biz-default', name: 'Default', icon: LayoutTemplate, description: 'Clean & balanced.' },
@@ -454,24 +458,24 @@ function DesignPanel({
 }) {
   return (
     <Card className="border-none shadow-none bg-transparent">
-      <h2 className="text-xl font-bold mb-4 hidden lg:block">Design & Style</h2>
+      <h2 className="text-xl font-black uppercase mb-4 hidden lg:block">Design & Style</h2>
       <Tabs defaultValue="layout" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 h-12 mb-4 p-1 bg-muted/50 rounded-xl">
+        <TabsList className={`${builderTabsListClass} mb-4 grid h-12 w-full grid-cols-2`}>
           <TabsTrigger
             value="layout"
-            className="rounded-lg shadow-none data-[state=active]:bg-background"
+            className={builderTabsTriggerClass}
           >
             Layout
           </TabsTrigger>
           <TabsTrigger
             value="theme"
-            className="rounded-lg shadow-none data-[state=active]:bg-background"
+            className={builderTabsTriggerClass}
           >
             Theme
           </TabsTrigger>
         </TabsList>
         <TabsContent value="layout" className="mt-0">
-          <Card className="shadow-none border-border">
+          <Card>
             <CardHeader className="pb-3">
               <CardTitle className="text-lg">Choose Layout</CardTitle>
               <CardDescription>Select a structure for your business site.</CardDescription>
@@ -484,7 +488,7 @@ function DesignPanel({
                     key={option.id}
                     onClick={() => setLayout(option.id)}
                     className={cn(
-                      'cursor-pointer group relative flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all duration-200',
+                      'cursor-pointer group relative flex flex-col items-center justify-center p-4 border-2 transition-all duration-200',
                       isSelected
                         ? 'border-primary bg-primary/5'
                         : 'border-muted hover:border-muted-foreground/30 hover:bg-muted/30'
@@ -497,7 +501,7 @@ function DesignPanel({
                     )}
                     <div
                       className={cn(
-                        'p-3 rounded-full mb-3 transition-colors',
+                        'p-3 border-2 border-black mb-3 transition-colors',
                         isSelected
                           ? 'bg-background text-primary'
                           : 'bg-muted text-muted-foreground group-hover:bg-background'
@@ -506,7 +510,7 @@ function DesignPanel({
                       <option.icon className="w-6 h-6" />
                     </div>
                     <div className="text-center">
-                      <p className={cn('font-semibold text-sm', isSelected && 'text-primary')}>
+                      <p className={cn('font-black uppercase text-sm', isSelected && 'text-primary')}>
                         {option.name}
                       </p>
                       <p className="text-[10px] text-muted-foreground mt-1 line-clamp-1">
@@ -520,7 +524,7 @@ function DesignPanel({
           </Card>
         </TabsContent>
         <TabsContent value="theme" className="mt-0">
-          <Card className="shadow-none border-border">
+          <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-lg">Choose Theme</CardTitle>
               <CardDescription>Customize colors, fonts, and radius.</CardDescription>
@@ -638,23 +642,23 @@ export function Form({
     <div className="w-full relative">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start pb-20 lg:pb-0">
         <div className="lg:col-span-8 space-y-6">
-          <Card className="shadow-none border-border">
+          <Card>
             <CardContent className="p-6">
               <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-bold flex items-center gap-2">
+                <h1 className="text-2xl font-black uppercase flex items-center gap-2">
                   <Store className="w-6 h-6" /> Business Content
                 </h1>
               </div>
 
               <div className="flex flex-col gap-10">
                 <Accordion type="single" defaultValue="details" collapsible>
-                  <AccordionItem value="details" className="rounded-lg border px-4 shadow-none">
-                    <AccordionTrigger className="cursor-pointer py-3 text-base font-medium hover:no-underline">
+                  <AccordionItem value="details" className="border-2 border-black px-4">
+                    <AccordionTrigger className="py-3 text-base">
                       Identity & Branding
                     </AccordionTrigger>
                     <AccordionContent className="pt-4 pb-4 space-y-8 px-1">
                       <div className="space-y-4">
-                        <div className="flex items-center gap-2 text-sm text-primary font-semibold uppercase tracking-wider">
+                        <div className="flex items-center gap-2 text-sm text-primary font-black uppercase tracking-wider">
                           <Palette className="w-4 h-4" /> Branding
                         </div>
                         <div className="flex flex-col md:flex-row gap-6">
@@ -696,7 +700,7 @@ export function Form({
                       <Separator />
 
                       <div className="space-y-4">
-                        <div className="flex items-center gap-2 text-sm text-primary font-semibold uppercase tracking-wider">
+                        <div className="flex items-center gap-2 text-sm text-primary font-black uppercase tracking-wider">
                           <LayoutTemplate className="w-4 h-4" /> Hero Section
                         </div>
                         <div className="grid gap-4">
@@ -731,7 +735,7 @@ export function Form({
                       <Separator />
 
                       <div className="space-y-4">
-                        <div className="flex items-center gap-2 text-sm text-primary font-semibold uppercase tracking-wider">
+                        <div className="flex items-center gap-2 text-sm text-primary font-black uppercase tracking-wider">
                           <Store className="w-4 h-4" /> About Us
                         </div>
                         <div className="grid md:grid-cols-2 gap-6">
@@ -952,8 +956,8 @@ export function Form({
                     </AccordionContent>
                   </AccordionItem> */}
 
-                  <AccordionItem value="services">
-                    <AccordionTrigger className="cursor-pointer py-3 text-base font-medium hover:no-underline">
+                  <AccordionItem value="services" className="border-2 border-black px-4">
+                    <AccordionTrigger className="py-3 text-base">
                       Services
                     </AccordionTrigger>
                     <AccordionContent className="p-4 relative min-h-[200px]">
@@ -986,8 +990,8 @@ export function Form({
                 </Accordion>
 
                 <Accordion type="single" defaultValue="products" collapsible>
-                  <AccordionItem value="products" className="rounded-lg border px-4 shadow-none">
-                    <AccordionTrigger className="cursor-pointer py-3 text-base font-medium hover:no-underline">
+                  <AccordionItem value="products" className="border-2 border-black px-4">
+                    <AccordionTrigger className="py-3 text-base">
                       Products
                     </AccordionTrigger>
                     <AccordionContent className="pt-2 pb-4">
@@ -1087,8 +1091,8 @@ export function Form({
                 </Accordion>
 
                 <Accordion type="single" defaultValue="faqs" collapsible>
-                  <AccordionItem value="faqs" className="rounded-lg border px-4 shadow-none">
-                    <AccordionTrigger className="cursor-pointer py-3 text-base font-medium hover:no-underline">
+                  <AccordionItem value="faqs" className="border-2 border-black px-4">
+                    <AccordionTrigger className="py-3 text-base">
                       FAQs
                     </AccordionTrigger>
                     <AccordionContent className="pt-2 pb-4">
@@ -1160,9 +1164,9 @@ export function Form({
                 <Accordion type="single" defaultValue="testimonials" collapsible>
                   <AccordionItem
                     value="testimonials"
-                    className="rounded-lg border px-4 shadow-none"
+                    className="border-2 border-black px-4"
                   >
-                    <AccordionTrigger className="cursor-pointer py-3 text-base font-medium hover:no-underline">
+                    <AccordionTrigger className="py-3 text-base">
                       Testimonials
                     </AccordionTrigger>
                     <AccordionContent className="pt-2 pb-4">
@@ -1245,8 +1249,8 @@ export function Form({
 
                 {/* 6. SOCIAL LINKS SECTION */}
                 <Accordion type="single" defaultValue="socials" collapsible>
-                  <AccordionItem value="socials" className="rounded-lg border px-4 shadow-none">
-                    <AccordionTrigger className="cursor-pointer py-3 text-base font-medium hover:no-underline">
+                  <AccordionItem value="socials" className="border-2 border-black px-4">
+                    <AccordionTrigger className="py-3 text-base">
                       Social Links
                     </AccordionTrigger>
                     <AccordionContent className="pt-2 pb-4 px-1">
@@ -1530,12 +1534,12 @@ export function Form({
           <SheetTrigger asChild>
             <Button
               size="lg"
-              className="rounded-full h-14 w-14 shadow-xl bg-primary hover:bg-primary/90 flex items-center justify-center"
+              className="h-14 w-14 bg-secondary text-black flex items-center justify-center"
             >
               <Palette className="w-6 h-6 text-primary-foreground" />
             </Button>
           </SheetTrigger>
-          <SheetContent side="bottom" className="h-[85vh] rounded-t-[20px] pt-6 px-4">
+          <SheetContent side="bottom" className="h-[85vh] pt-6 px-4">
             <SheetHeader className="mb-4 text-left">
               <SheetTitle>Design & Style</SheetTitle>
               <SheetDescription>Switch layouts and customize your theme.</SheetDescription>

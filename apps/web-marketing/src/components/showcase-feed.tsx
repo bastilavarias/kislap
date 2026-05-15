@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import type { APIResponseProject } from "@/types/api-response";
+import type { APIResponsePaginationMeta, APIResponseProject } from "@/types/api-response";
 import {
   ChevronLeft,
   ChevronRight,
@@ -51,12 +51,14 @@ interface ShowcaseFeedProps {
   projects: APIResponseProject[];
   apiBaseUrl: string;
   initialType?: ProjectTypeFilter;
+  initialMeta?: APIResponsePaginationMeta | null;
 }
 
 export function ShowcaseFeed({
   projects,
   apiBaseUrl,
   initialType = "all",
+  initialMeta = null,
 }: ShowcaseFeedProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [currentFilter, setCurrentFilter] = useState<ProjectTypeFilter>(initialType);
@@ -78,7 +80,18 @@ export function ShowcaseFeed({
     portfolio: false,
     linktree: false,
     menu: false,
-    [initialType]: (projects?.length || 0) === PAGE_LIMIT,
+    [initialType]: initialMeta
+      ? initialMeta.page < initialMeta.last_page
+      : (projects?.length || 0) === PAGE_LIMIT,
+  });
+  const [lastPageByFilter, setLastPageByFilter] = useState<
+    Record<ProjectTypeFilter, number | null>
+  >({
+    all: null,
+    portfolio: null,
+    linktree: null,
+    menu: null,
+    [initialType]: initialMeta?.last_page ?? null,
   });
 
   const currentProjects = useMemo(
@@ -92,6 +105,27 @@ export function ShowcaseFeed({
         .sort((a, b) => a - b),
     [pageCache, currentFilter],
   );
+  const paginationPages = useMemo(() => {
+    const knownLastPage = lastPageByFilter[currentFilter];
+    const fallbackLastPage = loadedPages[loadedPages.length - 1] || 1;
+    const totalPages = Math.max(1, knownLastPage ?? fallbackLastPage);
+
+    return Array.from({ length: totalPages }, (_, index) => index + 1);
+  }, [lastPageByFilter, currentFilter, loadedPages]);
+  const canGoNext = lastPageByFilter[currentFilter]
+    ? currentPage < (lastPageByFilter[currentFilter] || 1)
+    : hasNextPageByFilter[currentFilter] || Boolean(pageCache[currentFilter]?.[currentPage + 1]);
+
+  const parseProjectListResponse = (json: any) => {
+    const payload = json?.data ?? json;
+    const items = Array.isArray(payload) ? payload : payload?.data ?? [];
+    const meta = Array.isArray(payload) ? null : payload?.meta ?? null;
+
+    return {
+      items: items as APIResponseProject[],
+      meta: meta as APIResponsePaginationMeta | null,
+    };
+  };
 
   const fetchPage = async (page: number, filter = currentFilter) => {
     if (pageCache[filter]?.[page] || isLoading || !apiBaseUrl) {
@@ -114,7 +148,7 @@ export function ShowcaseFeed({
       const res = await fetch(`${apiBaseUrl}/api/projects/list/public?${params.toString()}`);
       if (!res.ok) throw new Error(`Failed to fetch page ${page}`);
       const json = await res.json();
-      const nextItems: APIResponseProject[] = json?.data || [];
+      const { items: nextItems, meta } = parseProjectListResponse(json);
 
       setPageCache((prev) => ({
         ...prev,
@@ -126,8 +160,14 @@ export function ShowcaseFeed({
       setCurrentPage(page);
       setHasNextPageByFilter((prev) => ({
         ...prev,
-        [filter]: nextItems.length === PAGE_LIMIT,
+        [filter]: meta ? meta.page < meta.last_page : nextItems.length === PAGE_LIMIT,
       }));
+      if (meta) {
+        setLastPageByFilter((prev) => ({
+          ...prev,
+          [filter]: meta.last_page,
+        }));
+      }
     } catch {
       setLoadError("Unable to load more showcase projects right now.");
     } finally {
@@ -163,7 +203,7 @@ export function ShowcaseFeed({
 
   const goNext = async () => {
     const nextPage = currentPage + 1;
-    if (!hasNextPageByFilter[currentFilter] && !pageCache[currentFilter]?.[nextPage]) return;
+    if (!canGoNext) return;
     await fetchPage(nextPage, currentFilter);
   };
 
@@ -174,7 +214,7 @@ export function ShowcaseFeed({
       initial="hidden"
       animate="visible"
     >
-      <div className="container relative z-10 mx-auto max-w-7xl px-4">
+      <div className="container relative z-10 mx-auto max-w-7xl">
         <motion.div
           initial="hidden"
           animate="visible"
@@ -183,7 +223,7 @@ export function ShowcaseFeed({
         >
           <motion.span
             variants={itemVariants}
-            className="font-mono text-sm font-bold uppercase tracking-[0.28em] text-primary"
+            className="w-fit border-4 border-black bg-secondary px-4 py-2 font-mono text-sm font-black uppercase tracking-normal text-black shadow-[6px_6px_0_#000]"
           >
             Published with Kislap
           </motion.span>
@@ -210,9 +250,9 @@ export function ShowcaseFeed({
                 variant={option.value === currentFilter ? "default" : "outline"}
                 size="sm"
                 className={cn(
-                  "rounded-none border-2 border-black px-5 font-black uppercase",
+                  "rounded-none border-4 border-black px-5 font-black uppercase shadow-[4px_4px_0_#000]",
                   option.value === currentFilter
-                    ? "bg-secondary text-black shadow-[4px_4px_0_#000] hover:bg-secondary"
+                    ? "bg-secondary text-black hover:bg-secondary"
                     : "bg-white text-black hover:bg-black hover:text-white",
                 )}
               >
@@ -227,7 +267,7 @@ export function ShowcaseFeed({
 
       <motion.div variants={itemVariants}>
         {!currentProjects || currentProjects.length === 0 ? (
-          <div className="border-4 border-black bg-secondary px-6 py-20 text-center shadow-[8px_8px_0_#000]">
+          <div className="border-4 border-black bg-secondary px-6 py-20 text-center shadow-[10px_10px_0_#000]">
             <p className="text-3xl font-black uppercase text-black">
               No published examples in this category yet.
             </p>
@@ -248,13 +288,13 @@ export function ShowcaseFeed({
               size="sm"
               onClick={goPrev}
               disabled={currentPage === 1 || isLoading}
-              className="rounded-none border-2 border-black font-black uppercase text-black"
+              className="rounded-none border-4 border-black bg-white font-black uppercase text-black shadow-[4px_4px_0_#000]"
             >
               <ChevronLeft className="mr-1 h-4 w-4" />
               Prev
             </Button>
 
-            {loadedPages.map((page) => (
+            {paginationPages.map((page) => (
               <Button
                 key={page}
                 type="button"
@@ -263,7 +303,7 @@ export function ShowcaseFeed({
                 onClick={() => fetchPage(page, currentFilter)}
                 disabled={isLoading}
                 className={cn(
-                  "rounded-none border-2 border-black font-black uppercase",
+                  "rounded-none border-4 border-black font-black uppercase shadow-[4px_4px_0_#000]",
                   page === currentPage ? "bg-black text-white" : "bg-white text-black",
                 )}
               >
@@ -278,9 +318,9 @@ export function ShowcaseFeed({
               onClick={goNext}
               disabled={
                 isLoading ||
-                (!hasNextPageByFilter[currentFilter] && !pageCache[currentFilter]?.[currentPage + 1])
+                !canGoNext
               }
-              className="rounded-none border-2 border-black font-black uppercase text-black"
+              className="rounded-none border-4 border-black bg-white font-black uppercase text-black shadow-[4px_4px_0_#000]"
             >
               Next
               <ChevronRight className="ml-1 h-4 w-4" />

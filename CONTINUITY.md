@@ -36,6 +36,7 @@
 - D013 ACTIVE: Menu Phase 2 still excludes ordering; it focuses on stronger business presentation, item browsing UX, lightweight analytics polish, and basic-but-better QR ergonomics. [2026-03-20][USER]
 - D014 ACTIVE: `gpt-taste` is activated for frontend/marketing/public-template/rich UI work; project agents should follow the `<design_plan>` preflight, AIDA structure, wide hero typography, gapless bento, and GSAP motion rules captured in `.agents/AGENTS.md`. [2026-05-10][USER]
 - D015 ACTIVE: Kislap's base product/marketing design direction is disciplined neo-brutalist: black/white/red/yellow core palette, thick black borders, square corners, hard shadows, oversized uppercase display type, consumer-centered copy, real product media, shadcn/Radix primitive reuse, and physical GSAP motion. Builder redesigns should inherit this language while staying denser and more operational. [2026-05-10][USER]
+- D016 ACTIVE: Kislap brand identity is now documented as "fill the form, publish the site"; visual language should favor forms transforming into public pages, flat neo-brutalist image direction, real published-page media, calmer builder surfaces, and no unnecessary/nested card containers. [2026-05-15][USER][CODE]
 
 ## Working set
 - `.agents/AGENTS.md`
@@ -77,6 +78,8 @@
 - 2026-05-10 [CODE] Extended the new Kislap neo-brutalist visual language beyond the homepage into marketing pages: shared builder feature pages, features index, showcase feed/cards, about page, help page, and builder FAQ styling now use thick borders, square placeholder media with sizes, hard shadows, uppercase editorial typography, and consumer-centered labels.
 - 2026-05-10 [TOOL] `npm.cmd run build` passed in `apps/web-marketing` after the remaining marketing page redesign; existing dev server responded 200 at `http://127.0.0.1:4322/`.
 - 2026-05-10 [CODE] Added `Kislap Design Direction` to `.agents/AGENTS.md` to make the current neo-brutalist homepage language the durable baseline for future marketing and builder redesign work.
+- 2026-05-10 [CODE] Deepened the web-builder design-language rollout across form-heavy builder surfaces: shadcn primitives now default to square neo-brutalist cards, dialogs, sheets, tabs, inputs, textareas, buttons, selects, badges, switches, and accordions; portfolio/linktree/menu/biz builder forms and nested menu/linktree editors now use hard borders, uppercase labels, stronger empty states, and shared builder tab/button styling.
+- 2026-05-10 [TOOL] `npm.cmd run build` passed in `apps/web-builder` after the deeper builder form redesign pass. Attempts to start a hidden dev server did not produce a reachable `http://127.0.0.1:3000`; foreground `npm.cmd run dev` reported ready before the timed command was stopped.
 - 2026-05-10 [CODE] Cleaned homepage consumer-facing copy by replacing developer/internal labels in the bento intro, examples rail, final CTA, and open-source section while keeping placeholder media replacement notes/sizes intact as requested.
 - 2026-05-10 [TOOL] `npm.cmd run build` passed in `apps/web-marketing` after the homepage copy cleanup.
 - 2026-05-10 [CODE] Synced the web-marketing shared nav/footer with the homepage's neo-brutalist visual language: hard-bordered sticky nav, brutalist builder dropdown/mobile menu, cleaned Kislap logo/version mark, and a high-contrast footer CTA/link grid in `apps/web-marketing/src/layouts/main.astro` plus `logo-version.tsx`.
@@ -86,6 +89,7 @@
 - 2026-05-10 [CODE] Rebuilt the web-marketing homepage foundation around a disciplined neo-brutalist visual language using `gpt-taste`: modular landing components, placeholder media blocks with replacement sizes, gapless product bento, GSAP scroll/stack/rail motion, shadcn Button/Badge/Accordion reuse, and Outfit typography.
 - 2026-05-10 [TOOL] `npm.cmd run build` passed in `apps/web-marketing` after the homepage redesign foundation; dev server started at `http://127.0.0.1:4322/`.
 - 2026-05-10 [CODE] Activated `gpt-taste` project guidance by adding an Active UI Skill section to `.agents/AGENTS.md` for future frontend, marketing, public-template, landing-page, and rich UI implementation work.
+- 2026-05-15 [CODE] Added a Kislap brand identity and image/illustration language addendum to `.agents/AGENTS.md`, including the form-to-public-page metaphor, neo-brutalist art prompt, card-usage guardrails, and a root `AGENTS.md` pointer to the canonical `.agents/AGENTS.md`.
 - 2026-03-20 [CODE] Added `menu` API routes (`GET /api/menu/:id`, `POST /api/menu`) and mirrored Linktree-style multipart `json_body` save flow plus async OG regeneration.
 - 2026-03-20 [CODE] Added Laravel migrations for `menus`, `menu_categories`, `menu_items`, and enum updates to include `menu` in `projects` and `layouts`.
 - 2026-03-20 [TOOL] `go test ./internal/menu ./internal/project ./routes` passed in `apps/api-service`.

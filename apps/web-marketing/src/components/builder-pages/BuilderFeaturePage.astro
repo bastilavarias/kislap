@@ -16,6 +16,10 @@ const builderCreateLink =
     : page.slug === 'linktree-builder'
       ? getBuilderProjectCreateUrl({ type: 'linktree', starter: 'creator' })
       : getBuilderProjectCreateUrl({ type: 'menu', starter: 'cafe' });
+const schemaBuilderUrl =
+  BUILDER_URL.includes('localhost') || BUILDER_URL.includes('127.0.0.1')
+    ? 'https://builder.kislap.app'
+    : BUILDER_URL;
 const schema = {
   "@context": "https://schema.org",
   "@graph": [
@@ -32,7 +36,7 @@ const schema = {
       "applicationCategory": "BusinessApplication",
       "operatingSystem": "Web",
       "description": page.description,
-      "url": BUILDER_URL,
+      "url": schemaBuilderUrl,
     },
     {
       "@type": "FAQPage",
@@ -94,7 +98,7 @@ const schema = {
       <div class="relative lg:pl-8">
         <div class="border-4 border-black bg-zinc-300 p-5 shadow-[12px_12px_0_#000]">
           <div class="flex h-[420px] flex-col justify-between border-2 border-black bg-zinc-200 p-6 text-black">
-            <p class="font-mono text-xs font-bold uppercase tracking-[0.24em]">Replace image: 2400 x 1400</p>
+            <p class="font-mono text-xs font-bold uppercase tracking-[0.24em]">Workspace view</p>
             <div>
               <p class="text-3xl font-black uppercase">Builder screen</p>
               <p class="mt-2 max-w-sm text-sm font-semibold text-zinc-700">{page.eyebrow} workspace preview</p>
@@ -103,7 +107,7 @@ const schema = {
         </div>
         <div class="absolute -bottom-8 right-4 hidden w-[42%] border-4 border-black bg-zinc-100 p-3 shadow-[8px_8px_0_#000] md:block">
           <div class="flex h-[220px] flex-col justify-between bg-zinc-300 p-4">
-            <p class="font-mono text-[10px] font-bold uppercase tracking-[0.2em]">Replace image: 1200 x 1600</p>
+            <p class="font-mono text-[10px] font-bold uppercase tracking-[0.2em]">Live page view</p>
             <p class="text-xl font-black uppercase">Public page</p>
           </div>
         </div>

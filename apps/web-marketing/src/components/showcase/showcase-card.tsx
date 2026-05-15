@@ -48,11 +48,12 @@ export function ShowcaseCard({ project }: { project: APIResponseProject }) {
 
   return (
     <div
-      className="group relative flex min-h-[460px] flex-col border-4 border-black bg-white shadow-[8px_8px_0_#000] transition-all duration-300 hover:-translate-y-1 hover:shadow-[12px_12px_0_#000]"
+      className="group relative flex min-h-[460px] flex-col border-4 border-black bg-white shadow-[8px_8px_0_#000] transition-all duration-300 hover:-translate-y-2 hover:rotate-[-0.5deg] hover:shadow-[14px_14px_0_#000]"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       <div className={cn("relative h-[270px] w-full overflow-hidden border-b-4 border-black", styles.surface)}>
+        <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(0,0,0,0.14)_25%,transparent_25%,transparent_50%,rgba(0,0,0,0.14)_50%,rgba(0,0,0,0.14)_75%,transparent_75%,transparent)] bg-[length:30px_30px] opacity-20" />
         <div className="absolute bottom-0 left-6 right-6 top-8 overflow-hidden border-4 border-black bg-white transition-transform duration-500 group-hover:scale-[1.025]">
           <div className="absolute left-0 right-0 top-0 z-20 flex h-9 items-center gap-1.5 border-b-4 border-black bg-white px-3">
             <div className="h-3 w-3 border-2 border-black bg-primary" />
@@ -83,7 +84,7 @@ export function ShowcaseCard({ project }: { project: APIResponseProject }) {
         <div className="mb-2 flex items-center justify-between">
           <Badge
             variant="outline"
-            className={cn("rounded-none border-2 border-black px-2 py-1 font-mono text-[10px] font-black uppercase tracking-wider", styles.accent)}
+            className={cn("rounded-none border-2 border-black px-2 py-1 font-mono text-[10px] font-black uppercase tracking-wider shadow-[3px_3px_0_#000]", styles.accent)}
           >
             {styles.label}
           </Badge>

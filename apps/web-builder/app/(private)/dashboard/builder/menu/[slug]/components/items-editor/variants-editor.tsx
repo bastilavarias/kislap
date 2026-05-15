@@ -47,22 +47,22 @@ export function VariantsEditor({ formMethods, itemIndex }: Props) {
   };
 
   return (
-    <div className="rounded-lg border p-4">
+    <div className="border-2 border-black p-4">
       <div className="mb-4 flex items-center justify-between gap-3">
         <div>
-          <Label className="text-sm font-medium">Variants & Sizes</Label>
+          <Label className="text-sm font-black uppercase">Variants & Sizes</Label>
           <p className="mt-1 text-xs text-muted-foreground">
             Add flexible options like 12oz, 16oz, Hot, or Iced.
           </p>
         </div>
-        <Button type="button" size="sm" variant="outline" className="shadow-none" onClick={addVariant}>
+        <Button type="button" size="sm" variant="outline" onClick={addVariant}>
           <Plus className="mr-2 h-4 w-4" />
           Add Variant
         </Button>
       </div>
 
       {fields.length === 0 ? (
-        <div className="rounded-md border border-dashed bg-muted/20 px-4 py-6 text-center text-sm text-muted-foreground">
+        <div className="border-2 border-dashed border-black bg-secondary/40 px-4 py-6 text-center text-sm font-black uppercase text-black">
           No variants yet. Use the base price above, or add variant rows for sizes.
         </div>
       ) : (
@@ -71,7 +71,7 @@ export function VariantsEditor({ formMethods, itemIndex }: Props) {
             const variantName = watch(`items.${itemIndex}.variants.${variantIndex}.name`);
 
             return (
-              <div key={field.id} className="rounded-lg border bg-muted/20 p-3">
+              <div key={field.id} className="border-2 border-black bg-white p-3">
                 <div className="grid gap-3 md:grid-cols-[1fr_140px_120px_auto] md:items-end">
                   <div>
                     <Label className="mb-2 block">Variant Name</Label>
@@ -89,9 +89,9 @@ export function VariantsEditor({ formMethods, itemIndex }: Props) {
                       className="shadow-none"
                     />
                   </div>
-                  <div className="rounded-lg border bg-background p-3">
+                  <div className="border-2 border-black bg-background p-3">
                     <div className="flex items-center justify-between gap-3">
-                      <span className="text-sm font-medium">Default</span>
+                      <span className="text-sm font-black uppercase">Default</span>
                       <Controller
                         name={`items.${itemIndex}.variants.${variantIndex}.is_default`}
                         control={control}

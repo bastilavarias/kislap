@@ -71,6 +71,13 @@ import { cn } from '@/lib/utils';
 import { SortableList } from '@/components/sortable-list';
 import { PortfolioFormPreview } from './portfolio-form-preview';
 import { Dropzone, DropzoneContent, DropzoneEmptyState } from '@/components/ui/shadcn-io/dropzone';
+import {
+  BuilderPanel,
+  builderButtonClass,
+  builderOutlineButtonClass,
+  builderTabsListClass,
+  builderTabsTriggerClass,
+} from '@/components/builder/builder-ui';
 
 const LAYOUT_OPTIONS = [
   { id: 'default', name: 'Default', icon: LayoutTemplate, description: 'Clean & Standard' },
@@ -185,23 +192,23 @@ function DesignPanel({
       <h2 className="text-xl font-bold mb-4 hidden lg:block">Design & Style</h2>
 
       <Tabs defaultValue="layout" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 h-12 mb-4 p-1 bg-muted/50 rounded-xl">
+        <TabsList className={`${builderTabsListClass} mb-4 grid h-12 w-full grid-cols-2`}>
           <TabsTrigger
             value="layout"
-            className="rounded-lg shadow-none data-[state=active]:bg-background"
+            className={builderTabsTriggerClass}
           >
             Layout
           </TabsTrigger>
           <TabsTrigger
             value="theme"
-            className="rounded-lg shadow-none data-[state=active]:bg-background"
+            className={builderTabsTriggerClass}
           >
             Theme
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="layout" className="mt-0">
-          <Card className="shadow-none border-border">
+          <Card>
             <CardHeader className="pb-3">
               <CardTitle className="text-lg">Choose Layout</CardTitle>
               <CardDescription>Select a structure for your portfolio.</CardDescription>
@@ -251,7 +258,7 @@ function DesignPanel({
         </TabsContent>
 
         <TabsContent value="theme" className="mt-0">
-          <Card className="shadow-none border-border">
+          <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-lg">Choose Theme</CardTitle>
               <CardDescription>Customize colors, fonts, and radius.</CardDescription>
@@ -328,7 +335,7 @@ export function Form({
   }, [layout, setValue]);
 
   const accordionItemClass =
-    'border-b rounded-none px-0 shadow-none lg:border lg:rounded-lg lg:px-4 last:border-0 lg:last:border';
+    'border-2 border-black px-4 shadow-none last:border-2';
 
   const handleClearContent = () => {
     if (!window.confirm('Clear the current portfolio form content? Layout and theme will stay as they are.')) {
@@ -363,16 +370,16 @@ export function Form({
     <div className="w-full relative">
       <div className="mb-6">
         <Tabs value={builderTab} onValueChange={(value) => setBuilderTab(value as 'form' | 'preview')}>
-          <TabsList className="grid h-12 w-full max-w-md grid-cols-2 rounded-xl border border-border/70 bg-muted/50 p-1 shadow-sm">
+          <TabsList className={`${builderTabsListClass} grid h-12 w-full max-w-md grid-cols-2`}>
             <TabsTrigger
               value="form"
-              className="cursor-pointer rounded-lg"
+              className={builderTabsTriggerClass}
             >
               Form
             </TabsTrigger>
             <TabsTrigger
               value="preview"
-              className="cursor-pointer rounded-lg"
+              className={builderTabsTriggerClass}
             >
               Preview
             </TabsTrigger>
@@ -390,44 +397,46 @@ export function Form({
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start pb-20 lg:pb-0">
           <div className="lg:col-span-8 space-y-6">
-            <Card className="shadow-none lg:border-border lg:bg-card lg:border">
+            <Card>
               <CardContent className="p-3 lg:p-6">
                 <div className="flex justify-between items-center mb-6 px-1 lg:px-0 gap-4">
-                  <h1 className="text-2xl font-bold">Content</h1>
-                  <Button type="button" variant="outline" className="shadow-none" onClick={handleClearContent}>
+                  <h1 className="text-2xl font-black uppercase">Portfolio Content</h1>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className={builderOutlineButtonClass}
+                    onClick={handleClearContent}
+                  >
                     Clear content
                   </Button>
                 </div>
 
-                <div className="flex items-center justify-between mb-8 bg-muted/20 p-4 rounded-xl border">
+                <BuilderPanel className="mb-8 flex items-center justify-between gap-4 p-4 shadow-[4px_4px_0_#000]">
                   <div>
-                    <h3 className="text-sm font-semibold">Resume Parser</h3>
-                    <p className="text-xs text-muted-foreground">
+                    <h3 className="text-sm font-black uppercase">Resume Parser</h3>
+                    <p className="text-xs font-semibold text-muted-foreground">
                       Auto-fill your portfolio using AI.
                     </p>
                   </div>
                   <Button
                     size="sm"
-                    className="shadow-none flex items-center gap-2
-                  bg-gradient-to-r from-blue-500 to-purple-500 
-                  hover:from-blue-600 hover:to-purple-600 
-                  text-white border-0 transition-all"
+                    className={builderButtonClass}
                     onClick={() => setIsParserOpen(true)}
                   >
                     Parse Resume
                   </Button>
-                </div>
+                </BuilderPanel>
 
                 <div className="flex flex-col gap-6 lg:gap-10">
                   <Accordion type="single" defaultValue="details" collapsible>
                     <AccordionItem value="details" className={accordionItemClass}>
-                      <AccordionTrigger className="cursor-pointer py-3 text-base font-medium hover:no-underline">
+                      <AccordionTrigger className="py-3 text-base">
                         Header & Bio
                       </AccordionTrigger>
                       <AccordionContent className="space-y-6 pt-2 pb-4 px-1 lg:px-2">
                       {/* Identity Group */}
                       <div className="space-y-4">
-                        <div className="flex items-center gap-2 text-sm text-primary font-semibold uppercase tracking-wider">
+                        <div className="flex items-center gap-2 text-sm text-primary font-black uppercase tracking-wider">
                           <User className="w-4 h-4" /> Identity
                         </div>
                         <div className="flex flex-col gap-6 md:flex-row">
@@ -574,7 +583,7 @@ export function Form({
 
                       {/* Contact Group */}
                       <div className="space-y-4">
-                        <div className="flex items-center gap-2 text-sm text-primary font-semibold uppercase tracking-wider">
+                        <div className="flex items-center gap-2 text-sm text-primary font-black uppercase tracking-wider">
                           <MapPin className="w-4 h-4" /> Contact
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -615,7 +624,7 @@ export function Form({
 
                       {/* Socials Group */}
                       <div className="space-y-4">
-                        <div className="flex items-center gap-2 text-sm text-primary font-semibold uppercase tracking-wider">
+                        <div className="flex items-center gap-2 text-sm text-primary font-black uppercase tracking-wider">
                           <Globe className="w-4 h-4" /> Socials
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -657,7 +666,7 @@ export function Form({
 
                 <Accordion type="single" defaultValue="work" collapsible>
                   <AccordionItem value="work" className={accordionItemClass}>
-                    <AccordionTrigger className="cursor-pointer py-3 text-base font-medium hover:no-underline">
+                    <AccordionTrigger className="py-3 text-base">
                       Work Experience
                     </AccordionTrigger>
                     <AccordionContent className="space-y-4 pt-2 pb-4">
@@ -720,7 +729,7 @@ export function Form({
                   {/* 3. EDUCATION */}
                   <Accordion type="single" defaultValue="edu" collapsible>
                   <AccordionItem value="edu" className={accordionItemClass}>
-                    <AccordionTrigger className="cursor-pointer py-3 text-base font-medium hover:no-underline">
+                    <AccordionTrigger className="py-3 text-base">
                       Education
                     </AccordionTrigger>
                     <AccordionContent className="space-y-4 pt-2 pb-4">
@@ -783,7 +792,7 @@ export function Form({
                   {/* 4. PROJECTS */}
                   <Accordion type="single" defaultValue="projects" collapsible>
                   <AccordionItem value="projects" className={accordionItemClass}>
-                    <AccordionTrigger className="cursor-pointer py-3 text-base font-medium hover:no-underline">
+                    <AccordionTrigger className="py-3 text-base">
                       Projects
                     </AccordionTrigger>
                     <AccordionContent className="space-y-4 pt-2 pb-4">
@@ -842,7 +851,7 @@ export function Form({
                   {/* 5. SKILLS */}
                   <Accordion type="single" defaultValue="skills" collapsible>
                   <AccordionItem value="skills" className={accordionItemClass}>
-                    <AccordionTrigger className="cursor-pointer py-3 text-base font-medium hover:no-underline">
+                    <AccordionTrigger className="py-3 text-base">
                       Skills
                     </AccordionTrigger>
                     <AccordionContent className="pt-4 pb-4">
@@ -1075,12 +1084,12 @@ export function Form({
           <SheetTrigger asChild>
             <Button
               size="lg"
-              className="rounded-full h-14 w-14 shadow-xl bg-primary hover:bg-primary/90 flex items-center justify-center"
+              className="h-14 w-14 bg-secondary text-black flex items-center justify-center"
             >
               <Palette className="w-6 h-6 text-primary-foreground" />
             </Button>
           </SheetTrigger>
-          <SheetContent side="bottom" className="h-[85vh] rounded-t-[20px] pt-6 px-4">
+          <SheetContent side="bottom" className="h-[85vh] pt-6 px-4">
             <SheetHeader className="mb-4 text-left">
               <SheetTitle>Design & Style</SheetTitle>
               <SheetDescription>Switch layouts and customize your theme.</SheetDescription>

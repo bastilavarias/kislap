@@ -2,13 +2,32 @@ import { ArrowRight } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { buildPaths, productStories } from "@/components/landing/data";
+import { productStories, type LandingBuildPaths } from "@/components/landing/data";
 import { PlaceholderMedia } from "@/components/landing/placeholder-media";
 
-export function ExamplesRail() {
+type ExamplesRailProps = {
+  buildPaths: LandingBuildPaths;
+};
+
+const sampleLinks: Record<string, { url: string; label: string }> = {
+  Portfolio: {
+    url: "https://sebastech.kislap.app",
+    label: "sebastech.kislap.app",
+  },
+  "Link Page": {
+    url: "https://bastilavarias.kislap.app",
+    label: "bastilavarias.kislap.app",
+  },
+  "Digital Menu": {
+    url: "https://dontstir.kislap.app",
+    label: "dontstir.kislap.app",
+  },
+};
+
+export function ExamplesRail({ buildPaths }: ExamplesRailProps) {
   return (
-    <section className="overflow-hidden border-b-4 border-black bg-white px-4 py-28 md:py-40">
-      <div className="mx-auto max-w-7xl">
+    <section className="overflow-hidden border-b-4 border-black bg-black py-28 text-white md:py-40">
+      <div className="mx-auto max-w-7xl px-4 md:px-6">
         <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
           <div>
             <Badge className="rounded-none border-4 border-black bg-secondary px-4 py-2 font-mono text-black shadow-[5px_5px_0_#000]">
@@ -29,29 +48,59 @@ export function ExamplesRail() {
         </div>
 
         <div className="landing-horizontal-rail mt-16 flex w-max gap-6 pr-6">
-          {[...productStories, ...productStories].map((story, index) => (
-            <div
-              key={`${story.title}-${index}`}
-              className="landing-stack-card w-[78vw] max-w-[540px] shrink-0 border-4 border-black bg-zinc-100 p-4 shadow-[10px_10px_0_#000] md:w-[520px]"
+          {productStories.map((story) => (
+            <article
+              key={story.title}
+              className="landing-stack-card landing-pop-card w-[78vw] max-w-[560px] shrink-0 border-4 border-white bg-white p-4 text-black shadow-[10px_10px_0_#ef4444] md:w-[540px]"
             >
-              <PlaceholderMedia
-                title={`${story.title} published example`}
-                size={story.imageSize}
-                icon={story.icon}
-                className="landing-scale-media min-h-[360px] bg-zinc-300 shadow-none"
-              />
+              <div className="overflow-hidden border-4 border-black bg-white">
+                <div className="flex items-center gap-3 border-b-4 border-black bg-zinc-100 px-4 py-3">
+                  <div className="flex gap-2">
+                    <span className="h-3 w-3 border-2 border-black bg-primary" />
+                    <span className="h-3 w-3 border-2 border-black bg-secondary" />
+                    <span className="h-3 w-3 border-2 border-black bg-black" />
+                  </div>
+                  <div className="min-w-0 flex-1 border-2 border-black bg-white px-3 py-1 font-mono text-[11px] font-black text-zinc-700">
+                    <span className="block truncate">
+                      {sampleLinks[story.title]?.label}
+                    </span>
+                  </div>
+                </div>
+
+                <PlaceholderMedia
+                  title={`${story.title} published example`}
+                  size={story.imageSize}
+                  icon={story.icon}
+                  imageSrc={story.imageSrc}
+                  className="landing-scale-media landing-image-lift h-[300px] border-0 bg-zinc-300 shadow-none md:h-[360px]"
+                />
+              </div>
+
               <div className="mt-5 flex items-end justify-between gap-4">
                 <div>
                   <p className="font-mono text-xs font-bold uppercase tracking-[0.16em] text-zinc-600">
-                    Public output
+                    Live sample
                   </p>
                   <h3 className="mt-1 text-3xl font-black uppercase">
                     {story.title}
                   </h3>
                 </div>
-                <div className={`h-10 w-10 border-4 border-black ${story.accent}`} />
+                <div className={`landing-bounce h-10 w-10 border-4 border-black ${story.accent}`} />
               </div>
-            </div>
+
+              <Button
+                asChild
+                className="mt-5 h-13 w-full rounded-none border-4 border-black bg-black font-black uppercase text-white shadow-[5px_5px_0_#facc15] hover:bg-primary"
+              >
+                <a
+                  href={sampleLinks[story.title]?.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Visit sample <ArrowRight className="h-4 w-4" />
+                </a>
+              </Button>
+            </article>
           ))}
         </div>
       </div>

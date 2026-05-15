@@ -7,6 +7,10 @@ import ThemeControlPanel from '@/components/customizer/theme-control-panel';
 import { Settings } from '@/contexts/settings-context';
 import { cn } from '@/lib/utils';
 import { QRPanel } from './qr-panel';
+import {
+  builderTabsListClass,
+  builderTabsTriggerClass,
+} from '@/components/builder/builder-ui';
 
 const LAYOUT_OPTIONS = [
   {
@@ -64,20 +68,20 @@ export function DesignPanel(props: Props) {
   return (
     <Card className="border-none bg-transparent shadow-none">
       <Tabs defaultValue="layout" className="w-full">
-        <TabsList className="mb-4 grid h-12 w-full grid-cols-3 rounded-xl bg-muted/50 p-1">
-          <TabsTrigger value="layout" className="rounded-lg data-[state=active]:bg-background">
+        <TabsList className={`${builderTabsListClass} mb-4 grid h-12 w-full grid-cols-3`}>
+          <TabsTrigger value="layout" className={builderTabsTriggerClass}>
             Layout
           </TabsTrigger>
-          <TabsTrigger value="theme" className="rounded-lg data-[state=active]:bg-background">
+          <TabsTrigger value="theme" className={builderTabsTriggerClass}>
             Theme
           </TabsTrigger>
-          <TabsTrigger value="qr" className="rounded-lg data-[state=active]:bg-background">
+          <TabsTrigger value="qr" className={builderTabsTriggerClass}>
             QR
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="layout" className="mt-0">
-          <Card className="border-border shadow-none">
+          <Card>
             <CardHeader className="pb-3">
               <CardTitle className="text-lg">Choose Layout</CardTitle>
               <CardDescription>
@@ -92,7 +96,7 @@ export function DesignPanel(props: Props) {
                     key={option.id}
                     onClick={() => props.setLayout(option.id)}
                     className={cn(
-                      'group relative flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 p-4 text-center transition-all duration-200',
+                      'group relative flex cursor-pointer flex-col items-center justify-center border-2 p-4 text-center transition-all duration-200',
                       isSelected
                         ? 'border-primary bg-primary/5'
                         : 'border-muted hover:border-muted-foreground/30 hover:bg-muted/30'
@@ -105,7 +109,7 @@ export function DesignPanel(props: Props) {
                     ) : null}
                     <div
                       className={cn(
-                        'mb-3 rounded-full p-3 transition-colors',
+                        'mb-3 border-2 border-black p-3 transition-colors',
                         isSelected
                           ? 'bg-background text-primary'
                           : 'bg-muted text-muted-foreground group-hover:bg-background'
@@ -114,7 +118,7 @@ export function DesignPanel(props: Props) {
                       <option.icon className="h-6 w-6" />
                     </div>
                     <div>
-                      <p className={cn('text-sm font-semibold', isSelected && 'text-primary')}>
+                      <p className={cn('text-sm font-black uppercase', isSelected && 'text-primary')}>
                         {option.name}
                       </p>
                       <p className="mt-1 line-clamp-2 text-[10px] text-muted-foreground">
@@ -129,7 +133,7 @@ export function DesignPanel(props: Props) {
         </TabsContent>
 
         <TabsContent value="theme" className="mt-0">
-          <Card className="border-border shadow-none">
+          <Card>
             <CardHeader>
               <CardTitle className="text-lg">Theme</CardTitle>
               <CardDescription>Reuse the same theme system as the rest of Kislap.</CardDescription>
@@ -151,7 +155,7 @@ export function DesignPanel(props: Props) {
         </TabsContent>
 
         <TabsContent value="qr" className="mt-0">
-          <Card className="border-border shadow-none">
+          <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-lg">
                 <QrCode className="h-4 w-4" />

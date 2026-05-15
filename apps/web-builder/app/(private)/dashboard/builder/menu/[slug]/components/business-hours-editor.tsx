@@ -17,10 +17,10 @@ export function BusinessHoursEditor({ formMethods }: Props) {
   const businessHours = watch('business_hours') || [];
 
   return (
-    <div className="space-y-4 rounded-lg border bg-muted/10 p-4">
+    <div className="space-y-4 border-2 border-black bg-white p-4">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-primary">
+          <div className="flex items-center gap-2 text-sm font-black uppercase tracking-wider text-primary">
             <Clock3 className="h-4 w-4" />
             Opening Hours
           </div>
@@ -42,10 +42,10 @@ export function BusinessHoursEditor({ formMethods }: Props) {
             return (
               <div
                 key={entry.day}
-                className="grid gap-3 rounded-lg border bg-background p-3 md:grid-cols-[140px_1fr_1fr_auto]"
+                className="grid gap-3 border-2 border-black bg-background p-3 md:grid-cols-[140px_1fr_1fr_auto]"
               >
                 <div className="flex items-center">
-                  <Label className="text-sm font-medium">{entry.day}</Label>
+                  <Label className="text-sm font-black uppercase">{entry.day}</Label>
                 </div>
                 <Input
                   type="time"
@@ -59,7 +59,7 @@ export function BusinessHoursEditor({ formMethods }: Props) {
                   disabled={isClosed}
                   className="shadow-none"
                 />
-                <div className="flex items-center justify-between gap-3 rounded-md border px-3 py-2 md:justify-center">
+                <div className="flex items-center justify-between gap-3 border-2 border-black px-3 py-2 md:justify-center">
                   <span className="text-sm text-muted-foreground">Closed</span>
                   <Switch
                     checked={isClosed}

@@ -205,6 +205,12 @@ export interface APIResponseProject {
   deleted_at?: string;
   portfolio: APIResponsePortfolio;
 }
+
+export interface APIResponseProjectList {
+  data: APIResponseProject[];
+  meta: APIResponsePaginationMeta;
+}
+
 export interface APIResponseAppoinment {
   id: number;
   name: string;

@@ -1,13 +1,10 @@
-import { ArrowRight } from "lucide-react";
-
-import { Button } from "@/components/ui/button";
 import { productStories } from "@/components/landing/data";
 import { PlaceholderMedia } from "@/components/landing/placeholder-media";
 
 export function PinnedProductStory() {
   return (
-    <section className="landing-pin-section border-b-4 border-black bg-black px-4 py-28 text-white md:py-44">
-      <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.8fr_1.2fr]">
+    <section className="landing-pin-section border-b-4 border-black bg-black py-28 text-white md:py-44">
+      <div className="mx-auto grid max-w-7xl gap-12 px-4 md:px-6 lg:grid-cols-[0.8fr_1.2fr]">
         <div className="landing-pin-title h-fit lg:sticky lg:top-28">
           <h2 className="text-5xl font-black uppercase leading-[0.88] md:text-7xl">
             Three pages, one hard-working system.
@@ -25,14 +22,15 @@ export function PinnedProductStory() {
             return (
               <article
                 key={story.title}
-                className="landing-story-card group border-4 border-white bg-white p-5 text-black shadow-[12px_12px_0_var(--story-shadow,#ef4444)]"
+                className="landing-story-card landing-pop-card group border-4 border-white bg-white p-5 text-black shadow-[12px_12px_0_var(--story-shadow,#ef4444)]"
               >
                 <div className="grid gap-6 md:grid-cols-[0.92fr_1.08fr]">
                   <PlaceholderMedia
                     title={`${story.title} screen`}
                     size={story.imageSize}
                     icon={Icon}
-                    className="landing-scale-media min-h-80 bg-zinc-300 shadow-none"
+                    imageSrc={story.imageSrc}
+                    className="landing-scale-media landing-image-lift min-h-80 bg-zinc-300 shadow-none"
                   />
                   <div className="flex flex-col justify-between">
                     <div>
@@ -44,19 +42,10 @@ export function PinnedProductStory() {
                       <h3 className="text-5xl font-black uppercase leading-none">
                         {story.title}
                       </h3>
-                      <p className="mt-5 text-lg font-semibold leading-relaxed text-zinc-700">
+                      <p className="landing-scrub-text mt-5 text-lg font-semibold leading-relaxed text-zinc-700">
                         {story.copy}
                       </p>
                     </div>
-                    <Button
-                      asChild
-                      variant="outline"
-                      className="mt-8 w-fit rounded-none border-4 border-black bg-white font-black uppercase text-black shadow-[5px_5px_0_#000] hover:bg-secondary"
-                    >
-                      <a href={story.href}>
-                        Explore builder <ArrowRight className="h-4 w-4" />
-                      </a>
-                    </Button>
                   </div>
                 </div>
               </article>

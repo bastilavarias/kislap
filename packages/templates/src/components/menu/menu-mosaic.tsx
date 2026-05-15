@@ -1,12 +1,13 @@
 ﻿"use client";
 
 import React from "react";
-import { Globe, Mail, MapPin, Phone, Share2, Github } from "lucide-react";
+import { Globe, Mail, MapPin, Phone, Share2 } from "lucide-react";
 import { FaFacebookF, FaInstagram, FaTiktok } from "react-icons/fa6";
 import { Mode } from "@/contexts/settings-context";
 import { ThemeStyles } from "@/types/theme";
 import { ThemeSwitchToggle } from "../theme-switch-toggle";
 import { KISLAP_LINKS } from "../shared/kislap-links";
+import { MenuFooter } from "./menu-footer";
 import { formatHoursLabel, formatMenuLocation, MenuData, MenuItem, MenuSocialLink, normalizeMenuShareUrl } from "./menu-types";
 
 interface Props {
@@ -264,14 +265,15 @@ export function MenuMosaic({ menu, themeMode, themeStyles, onSetThemeMode }: Pro
           </section>
         </main>
 
-        <footer className="mt-14 border-t pt-10 pb-10 text-center" style={{ borderColor }}>
-          <p className="text-sm" style={{ color: mutedColor }}>© {new Date().getFullYear()} {source.name || "Mosaic Cafe"}. All rights reserved.</p>
-          <div className="mt-5 inline-flex items-center gap-4">
-            <a href={KISLAP_LINKS.github} target="_blank" rel="noreferrer" className="transition-opacity hover:opacity-80"><Github className="h-4 w-4" /></a>
-            <a href={KISLAP_LINKS.website} target="_blank" rel="noreferrer" className="transition-opacity hover:opacity-80"><Globe className="h-4 w-4" /></a>
-            <a href={KISLAP_LINKS.facebook} target="_blank" rel="noreferrer" className="transition-opacity hover:opacity-80"><FaFacebookF className="h-4 w-4" /></a>
-          </div>
-        </footer>
+        <MenuFooter
+          menu={source}
+          borderColor={borderColor}
+          foregroundColor={foregroundColor}
+          mutedColor={mutedColor}
+          headingFont={headingFont}
+          metaFont={bodyFont}
+          className="mt-14"
+        />
       </div>
     </div>
   );

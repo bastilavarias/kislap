@@ -36,6 +36,26 @@ This file mirrors the canonical rules in root `AGENTS.md`.
 - Media placeholders must state replacement sizes clearly, but final UI should use real product screenshots, published page captures, menu/QR assets, or contextual photography.
 - Motion should feel physical: pinned sections, card stacking, horizontal rails, scale/fade on media, and tactile hover movement. Avoid fade-only motion for major marketing sections.
 
+## Kislap Brand Identity Addendum
+
+- Brand essence: "fill the form, publish the site." Kislap turns structured inputs into visible public pages while hiding domain, database, code, hosting, and page-generation complexity.
+- Kislap should feel practical, fast, creative, and public-facing. The product is not a blank-canvas site builder; it is a focused publishing system for portfolios, link pages, and digital menus.
+- Core visual identity: black/white structure, Kislap red (`#ff3132`), secondary yellow, occasional cyan/fuchsia/amber accents, thick black outlines, square geometry, hard offset shadows, and oversized uppercase editorial type.
+- Builder screens should be calmer than marketing pages. Keep the brand DNA, but prioritize operational clarity, dense controls, direct labels, and stable workflows.
+- Brutalist does not mean chaotic. Avoid loud diagonal fills, decorative clutter, fake preview blocks, excessive card stacks, and unnecessary framed containers when a simple product surface works better.
+- Use cards only when they are structurally useful: repeated items, modals, focused tools, or browser/page previews. Avoid nested cards and avoid making every section a framed card.
+- Visible copy should be consumer-centered: what the user can publish, share, inspect, update, or open. Avoid implementation-first language unless the section is explicitly about platform mechanics.
+
+## Kislap Image & Illustration Language
+
+- Primary visual metaphor: forms becoming public pages. Prefer imagery that shows structured fields, checkboxes, upload controls, menus, link rows, and portfolio sections transforming into a finished website.
+- Best illustration style: flat neo-brutalist digital art with thick black outlines, sharp rectangles, hard offset shadows, visible grid discipline, high contrast, and a practical publish energy.
+- Best real media: actual published Kislap pages, browser-like screenshots, menu/QR assets, founder/project examples, or contextual imagery that directly explains what is being built.
+- Avoid generic laptop mockups, fake dashboards, anonymous SaaS charts, random decorative blobs, 3D glass panels, soft gradients, and unreadable UI clutter.
+- Do not put hero/login/product visuals inside decorative cards unless the feature is literally a browser/page preview. A full-bleed or naturally cropped image often fits the brand better.
+- If generating brand art, use this base prompt:
+  `Bold neo-brutalist digital illustration of an oversized web form transforming into a published website page. Large form fields, checkboxes, upload controls, and a submit action flow into clean public page sections, links, menu rows, and profile blocks. Thick black outlines, sharp edges, hard offset shadows, white background, black, Kislap red #ff3132, bright yellow, cyan, and small pink accents. Practical, energetic, polished but raw. No people, no logos, no readable brand names, no glassmorphism, no soft 3D, no gradients, no fake dashboard charts, no card frame. Landscape 16:10, suitable for a sign-in or marketing left-side visual with open space near one edge.`
+
 ## Continuity Ledger (compaction-safe)
 
 Maintain a single continuity file for this workspace: `CONTINUITY.md`.

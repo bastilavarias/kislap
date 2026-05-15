@@ -3,9 +3,9 @@ export const prerender = false;
 import Layout from '@/layouts/main.astro'; 
 import { AboutPageContent } from '@/components/about-page-content';
 import type { APIResponsePublicProjectStats } from '@/types/api-response';
+import { PAGE_SEO } from '@/lib/seo';
 
-const title = "Kislap - About Kislap";
-const description = "We help developers, designers, and founders tell their story with world-class portfolios built in minutes.";
+const { title, description, keywords } = PAGE_SEO.about;
 
 let stats: APIResponsePublicProjectStats = {
   sites_published: 0,
@@ -28,6 +28,6 @@ try {
 }
 ---
 
-<Layout title={title} description={description}>
+<Layout title={title} description={description} keywords={keywords}>
   <AboutPageContent client:load stats={stats} />
 </Layout>
