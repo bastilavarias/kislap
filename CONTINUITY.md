@@ -68,6 +68,7 @@
 - `packages/templates/src/components/menu/menu-default-sample-data.ts`
 
 ## Receipts
+- 2026-05-15 [CODE] Unified default OG image usage across web-sites, web-builder, and web-marketing by copying `apps/web-sites/public/og-image.png` into builder/marketing public assets and mapping marketing defaults/feature-page social images to `/og-image.png`.
 - 2026-05-10 [CODE] Began web-builder redesign foundation using the Kislap neo-brutalist language: added shared builder UI primitives, rebuilt authenticated header/logo/app shell, redesigned dashboard project cards, and restyled the project creation flow/live preview workbench.
 - 2026-05-10 [CODE] Split dashboard project card and project creation helper/basic panels into focused components so the touched builder files stay under the 300 LOC cap.
 - 2026-05-10 [TOOL] `npm.cmd run build` passed in `apps/web-builder` after the builder visual foundation pass; dev server started and responded 200 at `http://127.0.0.1:3000`.
