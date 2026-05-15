@@ -31,7 +31,7 @@ export interface BuilderFeaturePageConfig {
 export const builderPages: Record<BuilderFeaturePageConfig["slug"], BuilderFeaturePageConfig> = {
   "portfolio-builder": {
     slug: "portfolio-builder",
-    image: "/assets/builder/portfolio-builder.jpg",
+    image: "/og-image.png",
     templateImage: "/assets/templates/portfolio-template.jpg",
     title: "Portfolio Builder - Turn Your Work into a Public Page | Kislap",
     description:
@@ -137,7 +137,7 @@ export const builderPages: Record<BuilderFeaturePageConfig["slug"], BuilderFeatu
   },
   "linktree-builder": {
     slug: "linktree-builder",
-    image: "/assets/builder/linktree-builder.jpg",
+    image: "/og-image.png",
     templateImage: "/assets/templates/linktree-template.jpg",
     title: "Link Page Builder - Build the Link People Open First | Kislap",
     description:
@@ -243,7 +243,7 @@ export const builderPages: Record<BuilderFeaturePageConfig["slug"], BuilderFeatu
   },
   "menu-builder": {
     slug: "menu-builder",
-    image: "/assets/builder/menu-builder.jpg",
+    image: "/og-image.png",
     templateImage: "/assets/templates/menu-template.jpg",
     title: "Digital Menu Builder - Publish a QR-Ready Menu Page | Kislap",
     description:

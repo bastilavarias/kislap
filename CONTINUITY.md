@@ -68,6 +68,7 @@
 - `packages/templates/src/components/menu/menu-default-sample-data.ts`
 
 ## Receipts
+- 2026-05-15 [CODE] Unified default OG image usage across web-sites, web-builder, and web-marketing by copying `apps/web-sites/public/og-image.png` into builder/marketing public assets and mapping marketing defaults/feature-page social images to `/og-image.png`.
 - 2026-05-10 [CODE] Began web-builder redesign foundation using the Kislap neo-brutalist language: added shared builder UI primitives, rebuilt authenticated header/logo/app shell, redesigned dashboard project cards, and restyled the project creation flow/live preview workbench.
 - 2026-05-10 [CODE] Split dashboard project card and project creation helper/basic panels into focused components so the touched builder files stay under the 300 LOC cap.
 - 2026-05-10 [TOOL] `npm.cmd run build` passed in `apps/web-builder` after the builder visual foundation pass; dev server started and responded 200 at `http://127.0.0.1:3000`.
@@ -169,7 +170,8 @@ pm run build passed in pps/web-builder after the starter data enrichment pass.
 - 2026-03-31 [TOOL] 
 pm run build passed in pps/web-builder after the portfolio preview data alignment pass.
 
-- 2026-03-31 [CODE] Removed the iframe from the builder project creation preview and replaced it with a builder-side preview renderer that mirrors the pps/web-sites pattern: builder-local enderTemplate, theme normalization, ComponentThemeProvider, and shared template rendering inside the creation page.
+- 2026-03-31 [CODE] Removed the iframe from the builder project creation preview and replaced it with a builder-side preview renderer that mirrors the pps/web-sites pattern: builder-local 
+enderTemplate, theme normalization, ComponentThemeProvider, and shared template rendering inside the creation page.
 - 2026-03-31 [TOOL] 
 pm run build passed in pps/web-builder after switching the creation preview from iframe-backed rendering to the builder-side shared-template render path.
 
@@ -191,7 +193,8 @@ pm run build passed in pps/web-builder after switching the creation preview fro
 
 - 2026-03-31: Enriched creator linktree preview in pps/web-builder/lib/project-starters.ts with more section types already supported by shared templates. Added a promo/image section, a support/QR section, and accent colors for banner/quote so the preview shows richer possibilities beyond plain link rows. Verified with pps/web-builder build passing.
 
-- 2026-03-31: Cleaned mojibake from shared menu templates and portfolio neo-brutalist footer. Fixed broken peso/copyright output in menu-editorial.tsx, menu-showcase.tsx, menu-runway.tsx, menu-mosaic.tsx, menu-bistro.tsx, and portfolio/neo-brutalist.tsx. g now finds no remaining Â/broken peso sequences in those paths. pps/web-builder build passes.
+- 2026-03-31: Cleaned mojibake from shared menu templates and portfolio neo-brutalist footer. Fixed broken peso/copyright output in menu-editorial.tsx, menu-showcase.tsx, menu-runway.tsx, menu-mosaic.tsx, menu-bistro.tsx, and portfolio/neo-brutalist.tsx. 
+g now finds no remaining Â/broken peso sequences in those paths. pps/web-builder build passes.
 
 - 2026-03-31: Tweaked project creation selection cards in pps/web-builder/app/(private)/dashboard/projects/new/components/project-creation-page.tsx so selected/hover states keep a solid card background. Replaced translucent g-primary/10/g-accent/20 with g-card plus a light red gradient overlay on selected cards, and made audience chips use opaque g-background. Verified with pps/web-builder build passing.
 
@@ -220,7 +223,8 @@ pm is not available on PATH.
 ode_modules/@kislap/templates, and added experimental.turbo.root to pps/web-builder/next.config.ts so external shared-template source imports resolve cleanly from the monorepo root. Could not rerun the build in this shell because 
 pm is not available on PATH.
 
-- 2026-03-31: Updated Next config root handling for Vercel/Turbopack in both pps/web-builder/next.config.ts and pps/web-sites/next.config.ts. Replaced deprecated experimental.turbo with top-level 	urbopack, introduced a shared epoRoot constant, and set both outputFileTracingRoot and 	urbopack.root to the same repo-root path to avoid Vercel root mismatch warnings and downstream Turbopack failures.
+- 2026-03-31: Updated Next config root handling for Vercel/Turbopack in both pps/web-builder/next.config.ts and pps/web-sites/next.config.ts. Replaced deprecated experimental.turbo with top-level 	urbopack, introduced a shared 
+epoRoot constant, and set both outputFileTracingRoot and 	urbopack.root to the same repo-root path to avoid Vercel root mismatch warnings and downstream Turbopack failures.
 
 - 2026-03-31: Adjusted web-builder shared-template consumption again after Vercel Turbopack continued failing with RangeError: Invalid count value: -1 while importing template source directly from packages/templates. Switched pps/web-builder back to package-root usage by adding @kislap/templates as a local file dependency in pps/web-builder/package.json, enabling 	ranspilePackages: ['@kislap/templates'] in pps/web-builder/next.config.ts, restoring package-root imports in pps/web-builder/hooks/use-template-renderer.tsx and pps/web-builder/app/preview/project/preview-frame.tsx, and pointing Tailwind @source back to ../../../node_modules/@kislap/templates. This makes web-builder follow the same stable package-consumer pattern as web-sites instead of importing external monorepo source directly under Turbopack.
 
@@ -229,11 +233,13 @@ ext build --turbopack to plain
 ext build. Reason: Vercel production builds were still failing with opaque Turbopack RangeError: Invalid count value: -1 even after import/root fixes. Kept local dev on Turbopack for fast iteration, but moved production builds to the more stable Next/Webpack path for deployment reliability.
 
 - 2026-03-31: After moving web-builder production builds to standard 
-ext build, webpack surfaced real missing shared-template deps from the iz template family. Added leaflet, eact-leaflet, and aligned lucide-react to ^0.555.0 in pps/web-builder/package.json so shared templates imported by web-builder can compile on Vercel.
+ext build, webpack surfaced real missing shared-template deps from the iz template family. Added leaflet, 
+eact-leaflet, and aligned lucide-react to ^0.555.0 in pps/web-builder/package.json so shared templates imported by web-builder can compile on Vercel.
 
 - 2026-03-31: Refined web-builder shared-template strategy again after webpack still compiled through packages/templates/src/index.ts and pulled in unnecessary package-root graph. Switched pps/web-builder/hooks/use-template-renderer.tsx to direct family-level source imports (packages/templates/src/components/biz|portfolio|linktree|menu) and changed pps/web-builder/app/preview/project/preview-frame.tsx to direct family-level source imports for portfolio/linktree/menu only, avoiding package-root src/index.ts imports. Restored Tailwind @source in pps/web-builder/app/globals.css to ../../../packages/templates/src, removed the temporary @kislap/templates file dependency from pps/web-builder/package.json, and removed 	ranspilePackages from pps/web-builder/next.config.ts so builder has one clean external-source strategy again.
 
-- 2026-03-31: Removed iz templates from pps/web-builder/hooks/use-template-renderer.tsx. Root cause from Vercel traces: the new project creation preview only uses portfolio/linktree/menu, but the builder preview renderer still imported packages/templates/src/components/biz, which dragged in leaflet, eact-leaflet, and sibling-package dependency resolution issues. Deleted the BizTemplates import, izTemplates map, and project.type === 'biz' branch so the failing iz family no longer enters the web-builder preview build graph.
+- 2026-03-31: Removed iz templates from pps/web-builder/hooks/use-template-renderer.tsx. Root cause from Vercel traces: the new project creation preview only uses portfolio/linktree/menu, but the builder preview renderer still imported packages/templates/src/components/biz, which dragged in leaflet, 
+eact-leaflet, and sibling-package dependency resolution issues. Deleted the BizTemplates import, izTemplates map, and project.type === 'biz' branch so the failing iz family no longer enters the web-builder preview build graph.
 
 - 2026-03-31: Further narrowed web-builder shared-template imports to exact component files. Replaced family-level imports in pps/web-builder/hooks/use-template-renderer.tsx with direct component imports for each portfolio/linktree/menu template used there, and replaced family-level imports in pps/web-builder/app/preview/project/preview-frame.tsx with direct component imports for only the previewed templates. Goal: prevent family index.ts files from pulling unrelated siblings into the build graph and causing opaque Vercel compile failures.
 
