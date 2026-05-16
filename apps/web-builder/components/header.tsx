@@ -1,7 +1,15 @@
 'use client';
 
-import { useState, useMemo } from 'react';
-import { Home, Settings2, LogOut, Sun, Moon, LifeBuoy, Menu, LayoutGrid } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import {
+  Home,
+  Settings2,
+  LogOut,
+  Sun,
+  Moon,
+  Menu,
+  X,
+} from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 
@@ -29,6 +37,12 @@ import { useSettings } from '@/hooks/use-settings';
 import { getPresetThemeStyles, presets } from '@/lib/theme-presets';
 import { defaultThemeState } from '@/config/theme';
 import { ThemeStyleProps } from '@/types/theme';
+import { builderTabsListClass } from '@/components/builder/builder-ui';
+
+const marketingNavButtonClass =
+  'inline-flex h-12 items-center border-4 border-black bg-white px-4 font-mono text-sm font-black uppercase text-black shadow-[4px_4px_0_#000] transition-all hover:-translate-y-0.5 hover:bg-secondary hover:text-black';
+const marketingCtaButtonClass =
+  'rounded-none border-4 border-black bg-primary font-mono text-sm font-black uppercase text-white shadow-[5px_5px_0_#000] transition-all hover:translate-x-1 hover:translate-y-1 hover:bg-primary/90 hover:text-white hover:shadow-[2px_2px_0_#000]';
 
 const DASHBOARD_LINKS = [
   { title: 'Projects', url: '/dashboard', icon: Home },
@@ -36,8 +50,9 @@ const DASHBOARD_LINKS = [
 ];
 
 const PUBLIC_LINKS = [
-  { title: 'Showcase', url: 'https://kislap.app/showcase', icon: LayoutGrid },
-  { title: 'About us', url: 'https://kislap.app/about', icon: LifeBuoy },
+  { title: 'Showcase', url: 'https://kislap.app/showcase' },
+  { title: 'About us', url: 'https://kislap.app/about' },
+  { title: 'Help', url: 'https://kislap.app/help' },
 ];
 
 const ThemeSelector = () => {
@@ -64,9 +79,11 @@ const ThemeSelector = () => {
 
   return (
     <div className="px-2 py-1.5">
-      <label className="mb-1.5 block text-xs font-medium text-muted-foreground">Theme</label>
+      <label className="mb-1.5 block font-mono text-xs font-black uppercase tracking-[0.18em] text-muted-foreground">
+        Theme
+      </label>
       <Select value={currentPreset} onValueChange={onPresetChange}>
-        <SelectTrigger className="h-8 w-full bg-muted/50 text-xs">
+        <SelectTrigger className="h-9 w-full rounded-none border-2 border-black bg-white text-xs font-bold">
           <SelectValue placeholder="Select theme" />
         </SelectTrigger>
         <SelectContent>
@@ -100,8 +117,8 @@ const ModeToggle = () => {
         size="sm"
         onClick={() => setMode('light')}
         className={cn(
-          'h-8 justify-start px-3',
-          settings.mode === 'light' && 'border-primary bg-primary/5 text-primary'
+          'h-8 justify-start rounded-none border-2 border-black px-3 font-bold',
+          settings.mode === 'light' && 'bg-secondary text-black'
         )}
       >
         <Sun className="mr-2 h-4 w-4" />
@@ -112,8 +129,8 @@ const ModeToggle = () => {
         size="sm"
         onClick={() => setMode('dark')}
         className={cn(
-          'h-8 justify-start px-3',
-          settings.mode === 'dark' && 'border-primary bg-primary/5 text-primary'
+          'h-8 justify-start rounded-none border-2 border-black px-3 font-bold',
+          settings.mode === 'dark' && 'bg-secondary text-black'
         )}
       >
         <Moon className="mr-2 h-4 w-4" />
@@ -127,6 +144,7 @@ export function Header() {
   const { logout, authUser } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const hasUser = useMemo(() => {
     return !!authUser && Object.keys(authUser).length > 0;
@@ -138,15 +156,20 @@ export function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-md">
-      <div className="container mx-auto flex h-16 items-center justify-between px-4">
+    <header className="sticky top-0 z-50 w-full border-b-4 border-black bg-secondary">
+      <div className="mx-auto flex min-h-20 max-w-7xl items-center justify-between gap-4 px-4 py-3 lg:px-6">
         <div className="flex items-center gap-8">
           <LogoVersion url={hasUser ? '/dashboard' : '/'} />
         </div>
 
         {hasUser && (
           <div className="absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 md:block">
-            <nav className="flex items-center rounded-full border bg-background p-1 shadow-sm">
+            <nav
+              className={cn(
+                'flex items-center border-4 shadow-[5px_5px_0_#000]',
+                builderTabsListClass
+              )}
+            >
               {DASHBOARD_LINKS.map((item) => {
                 const isActive = pathname.startsWith(item.url);
                 const Icon = item.icon;
@@ -155,20 +178,14 @@ export function Header() {
                     key={item.url}
                     href={item.url}
                     className={cn(
-                      'relative flex items-center gap-2 rounded-full px-5 py-2 text-sm font-medium transition-all duration-200',
+                      'relative flex h-11 items-center gap-2 border-r-2 border-black px-5 py-2 text-sm font-black uppercase transition-all duration-200 last:border-r-0',
                       isActive
-                        ? 'bg-primary text-background shadow-md'
-                        : 'text-muted-foreground hover:bg-muted hover:text-primary'
+                        ? 'bg-black text-white'
+                        : 'bg-white text-black hover:bg-primary hover:text-white'
                     )}
                   >
                     <Icon className="h-4 w-4" />
                     <span>{item.title}</span>
-                    {isActive && (
-                      <span className="absolute -right-0.5 -top-0.5 flex h-2.5 w-2.5">
-                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-destructive opacity-75"></span>
-                        <span className="relative inline-flex h-2.5 w-2.5 rounded-full border-2 border-background bg-destructive"></span>
-                      </span>
-                    )}
                   </Link>
                 );
               })}
@@ -182,20 +199,24 @@ export function Header() {
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
-                  className="relative h-9 w-9 rounded-full ring-offset-2 hover:ring-2 hover:ring-border transition-all"
+                  className="relative h-12 w-12 rounded-none border-4 border-black bg-white p-0 shadow-[4px_4px_0_#000] transition-all hover:-translate-y-0.5 hover:shadow-[6px_6px_0_#000]"
                 >
-                  <Avatar className="h-9 w-9 border shadow-sm">
+                  <Avatar className="h-full w-full rounded-none border-0">
                     <AvatarImage src={authUser?.image_url} alt="User" />
-                    <AvatarFallback className="bg-primary/10 text-primary font-bold">
+                    <AvatarFallback className="rounded-none bg-primary text-white font-black">
                       {authUser?.first_name?.[0]}
                     </AvatarFallback>
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>
 
-              <DropdownMenuContent align="end" className="w-64 p-0" forceMount>
+              <DropdownMenuContent
+                align="end"
+                className="w-64 rounded-none border-2 border-black p-0 shadow-[6px_6px_0_#000]"
+                forceMount
+              >
                 <div className="flex items-center gap-2 p-3 pb-2">
-                  <Avatar className="h-8 w-8">
+                  <Avatar className="h-8 w-8 rounded-none border-2 border-black">
                     <AvatarImage src={authUser?.image_url} />
                     <AvatarFallback>{authUser?.first_name?.[0] || 'U'}</AvatarFallback>
                   </Avatar>
@@ -241,64 +262,73 @@ export function Header() {
             </DropdownMenu>
           ) : (
             <>
-              <div className="md:hidden">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon">
-                      <Menu className="h-5 w-5" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56 p-2">
-                    {PUBLIC_LINKS.map((link) => (
-                      <DropdownMenuItem key={link.url} asChild>
-                        <Link href={link.url} className="w-full cursor-pointer py-2 font-medium">
-                          {link.icon && <link.icon className="mr-2 h-4 w-4" />}
-                          {link.title}
-                        </Link>
-                      </DropdownMenuItem>
-                    ))}
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem asChild>
-                      <Button
-                        asChild
-                        variant="default"
-                        size="lg"
-                        className="border-2 border-black dark:border-white 
-                 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] 
-                 transition-all 
-                 hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none 
-                 active:translate-x-[3px] active:translate-y-[3px] active:shadow-none"
-                      >
-                        <Link href="https://kislap.app">Home</Link>
-                      </Button>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
+              <nav className="hidden items-center gap-3 md:flex" aria-label="Main Navigation">
+                <ul className="m-0 flex list-none items-center gap-3 p-0">
+                  {PUBLIC_LINKS.map((link) => (
+                    <li key={link.url}>
+                      <Link href={link.url} className={marketingNavButtonClass}>
+                        {link.title}
+                      </Link>
+                    </li>
+                  ))}
 
-              <div className="hidden md:flex items-center gap-3">
-                {PUBLIC_LINKS.map((link) => (
-                  <Button key={link.url} variant="ghost" size="sm" asChild>
-                    <Link href={link.url}>{link.title}</Link>
-                  </Button>
-                ))}
-                <Button
-                  asChild
-                  variant="default"
-                  size="lg"
-                  className="border-2 border-black dark:border-white 
-                 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] 
-                 transition-all 
-                 hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none 
-                 active:translate-x-[3px] active:translate-y-[3px] active:shadow-none"
-                >
-                  <Link href="https://kislap.app">Home</Link>
-                </Button>
-              </div>
+                  <li>
+                    <Button
+                      asChild
+                      variant="default"
+                      size="lg"
+                      className={cn('h-12 px-5', marketingCtaButtonClass)}
+                    >
+                      <Link href="https://kislap.app">Home</Link>
+                    </Button>
+                  </li>
+                </ul>
+              </nav>
+
+              <button
+                type="button"
+                onClick={() => setMobileMenuOpen((open) => !open)}
+                className="border-4 border-black bg-white p-2 text-black shadow-[4px_4px_0_#000] md:hidden"
+                aria-expanded={mobileMenuOpen}
+                aria-controls="builder-public-mobile-menu"
+              >
+                {mobileMenuOpen ? (
+                  <X className="h-6 w-6" aria-hidden="true" />
+                ) : (
+                  <Menu className="h-6 w-6" aria-hidden="true" />
+                )}
+                <span className="sr-only">Toggle navigation</span>
+              </button>
             </>
           )}
         </div>
       </div>
+
+      {!hasUser && mobileMenuOpen ? (
+        <div
+          id="builder-public-mobile-menu"
+          className="space-y-3 border-t-4 border-black bg-white px-4 py-5 text-center shadow-[0_8px_0_#000] md:hidden"
+        >
+          {PUBLIC_LINKS.map((link) => (
+            <Link
+              key={link.url}
+              href={link.url}
+              className="flex items-center justify-center border-4 border-black bg-white px-4 py-3 font-mono text-sm font-black uppercase text-black shadow-[5px_5px_0_#000]"
+            >
+              {link.title}
+            </Link>
+          ))}
+
+          <Button
+            asChild
+            variant="default"
+            size="lg"
+            className={cn('h-14 w-full', marketingCtaButtonClass)}
+          >
+            <Link href="https://kislap.app">Home</Link>
+          </Button>
+        </div>
+      ) : null}
     </header>
   );
 }

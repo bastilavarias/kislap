@@ -46,9 +46,9 @@ export function CategoriesEditor({ formMethods, fieldArray }: Props) {
     <>
       <div className="space-y-3">
         {fields.length === 0 ? (
-          <div className="rounded-lg border-2 border-dashed bg-muted/20 py-6 text-center text-muted-foreground">
+          <div className="border-2 border-dashed border-black bg-secondary/40 py-6 text-center text-black">
             <LayoutTemplate className="mx-auto mb-2 h-8 w-8 opacity-50" />
-            <p>No categories yet.</p>
+            <p className="font-black uppercase">No categories yet.</p>
           </div>
         ) : (
           <SortableList
@@ -60,9 +60,9 @@ export function CategoriesEditor({ formMethods, fieldArray }: Props) {
               const isVisible = watch(`categories.${index}.is_visible`);
 
               return (
-                <div className="flex items-center justify-between rounded-lg border bg-card p-3 transition-colors hover:bg-muted/30">
+                <div className="flex items-center justify-between border-2 border-black bg-card p-3 transition-colors hover:bg-secondary/40">
                   <div className="min-w-0">
-                    <p className="truncate font-medium">{name || 'Untitled category'}</p>
+                    <p className="truncate font-black uppercase">{name || 'Untitled category'}</p>
                     <p className="text-xs text-muted-foreground">
                       {isVisible ? 'Visible' : 'Hidden'}
                       {description ? ` • ${description}` : ''}
@@ -94,7 +94,7 @@ export function CategoriesEditor({ formMethods, fieldArray }: Props) {
           />
         )}
 
-        <Button type="button" variant="outline" className="w-full border-dashed shadow-none" onClick={addCategory}>
+        <Button type="button" variant="outline" className="w-full border-dashed" onClick={addCategory}>
           <Plus className="mr-2 h-4 w-4" />
           Add Category
         </Button>
@@ -126,10 +126,10 @@ export function CategoriesEditor({ formMethods, fieldArray }: Props) {
                     className="shadow-none"
                   />
                 </div>
-                <div className="rounded-lg border p-3">
+                <div className="border-2 border-black p-3">
                   <div className="flex items-center justify-between gap-3">
                     <div>
-                      <p className="text-sm font-medium">Visible on menu</p>
+                      <p className="text-sm font-black uppercase">Visible on menu</p>
                       <p className="text-xs text-muted-foreground">
                         Hide a category without deleting it.
                       </p>
@@ -145,8 +145,8 @@ export function CategoriesEditor({ formMethods, fieldArray }: Props) {
                 </div>
               </div>
 
-              <div className="rounded-lg border bg-muted/20 p-4">
-                <Label className="mb-3 block text-sm font-medium">Category Image</Label>
+              <div className="border-2 border-black bg-white p-4">
+                <Label className="mb-3 block text-sm font-black uppercase">Category Image</Label>
                 <ImageUploadField
                   id={`category-image-${editIndex}`}
                   previewUrl={watch(`categories.${editIndex}.image_url`)}

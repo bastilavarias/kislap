@@ -3,6 +3,7 @@ package project
 import (
 	objectStorage "flash/sdk/object_storage"
 	"flash/utils"
+	"math"
 	"net/http"
 	"strconv"
 
@@ -206,7 +207,14 @@ func (controller Controller) PublicList(context *gin.Context) {
 	limit, _ := strconv.Atoi(context.DefaultQuery("limit", "10"))
 	projectType := context.Query("type")
 
-	projects, err := controller.Service.List(nil, page, limit, projectType)
+	if page < 1 {
+		page = 1
+	}
+	if limit < 1 {
+		limit = 10
+	}
+
+	projects, total, err := controller.Service.PublicList(page, limit, projectType)
 
 	if err != nil {
 		utils.APIRespondError(context, http.StatusBadRequest, err.Error())
@@ -214,7 +222,15 @@ func (controller Controller) PublicList(context *gin.Context) {
 		return
 	}
 
-	utils.APIRespondSuccess(context, http.StatusOK, projects)
+	utils.APIRespondSuccess(context, http.StatusOK, gin.H{
+		"data": projects,
+		"meta": gin.H{
+			"page":      page,
+			"limit":     limit,
+			"total":     total,
+			"last_page": int(math.Ceil(float64(total) / float64(limit))),
+		},
+	})
 
 }
 

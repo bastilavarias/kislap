@@ -30,6 +30,11 @@ import { ImageUploadField } from './image-upload-field';
 import { DesignPanel } from './design-panel';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { LinktreeFormPreview } from './linktree-form-preview';
+import {
+  builderOutlineButtonClass,
+  builderTabsListClass,
+  builderTabsTriggerClass,
+} from '@/components/builder/builder-ui';
 
 interface Props {
   formMethods: UseFormReturn<LinktreeFormValues>;
@@ -91,16 +96,16 @@ export function Form({
     <div className="w-full relative">
       <div className="mb-6">
         <Tabs value={builderTab} onValueChange={(value) => setBuilderTab(value as 'form' | 'preview')}>
-          <TabsList className="grid h-12 w-full max-w-md grid-cols-2 rounded-xl border border-border/70 bg-muted/50 p-1 shadow-sm">
+          <TabsList className={`${builderTabsListClass} grid h-12 w-full max-w-md grid-cols-2`}>
             <TabsTrigger
               value="form"
-              className="cursor-pointer rounded-lg"
+              className={builderTabsTriggerClass}
             >
               Form
             </TabsTrigger>
             <TabsTrigger
               value="preview"
-              className="cursor-pointer rounded-lg"
+              className={builderTabsTriggerClass}
             >
               Preview
             </TabsTrigger>
@@ -113,26 +118,31 @@ export function Form({
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start pb-20 lg:pb-0">
           <div className="lg:col-span-8 space-y-6">
-            <Card className="shadow-none border-border">
+            <Card>
               <CardContent className="p-6">
                 <div className="flex justify-between items-center mb-6 gap-4">
-                  <h1 className="text-2xl font-bold flex items-center gap-2">
-                    <LinkIcon className="w-6 h-6" /> Linktree Content
+                  <h1 className="text-2xl font-black uppercase flex items-center gap-2">
+                    <LinkIcon className="w-6 h-6" /> Link Page Content
                   </h1>
-                  <Button type="button" variant="outline" className="shadow-none" onClick={handleClearContent}>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className={builderOutlineButtonClass}
+                    onClick={handleClearContent}
+                  >
                     Clear content
                   </Button>
                 </div>
 
                 <div className="flex flex-col gap-10">
                   <Accordion type="single" defaultValue="details" collapsible>
-                    <AccordionItem value="details" className="rounded-lg border px-4 shadow-none">
-                      <AccordionTrigger className="cursor-pointer py-3 text-base font-medium hover:no-underline">
+                    <AccordionItem value="details" className="border-2 border-black px-4">
+                      <AccordionTrigger className="py-3 text-base">
                         Identity & Branding
                       </AccordionTrigger>
                       <AccordionContent className="pt-4 pb-4 space-y-8 px-1">
                       <div className="space-y-4">
-                        <div className="flex items-center gap-2 text-sm text-primary font-semibold uppercase tracking-wider">
+                        <div className="flex items-center gap-2 text-sm text-primary font-black uppercase tracking-wider">
                           <Palette className="w-4 h-4" /> Branding
                         </div>
                         <div className="flex flex-col md:flex-row gap-6">
@@ -150,7 +160,7 @@ export function Form({
                               <Label className="mb-2 block">Name</Label>
                               <Input
                                 {...register('name')}
-                                placeholder="My Awesome Linktree"
+                                placeholder="My Awesome Link Page"
                                 className="shadow-none"
                               />
                               {errors.name && (
@@ -208,8 +218,8 @@ export function Form({
                   </Accordion>
 
                   <Accordion type="single" defaultValue="sections" collapsible>
-                    <AccordionItem value="sections" className="rounded-lg border px-4 shadow-none">
-                      <AccordionTrigger className="cursor-pointer py-3 text-base font-medium hover:no-underline">
+                    <AccordionItem value="sections" className="border-2 border-black px-4">
+                      <AccordionTrigger className="py-3 text-base">
                         Links & Custom Sections
                       </AccordionTrigger>
                       <AccordionContent className="pt-2 pb-4 px-1">
@@ -248,12 +258,12 @@ export function Form({
           <SheetTrigger asChild>
             <Button
               size="lg"
-              className="rounded-full h-14 w-14 shadow-xl bg-primary hover:bg-primary/90 flex items-center justify-center"
+              className="h-14 w-14 bg-secondary text-black flex items-center justify-center"
             >
               <Palette className="w-6 h-6 text-primary-foreground" />
             </Button>
           </SheetTrigger>
-          <SheetContent side="bottom" className="h-[85vh] rounded-t-[20px] pt-6 px-4">
+          <SheetContent side="bottom" className="h-[85vh] pt-6 px-4">
             <SheetHeader className="mb-4 text-left">
               <SheetTitle>Design & Style</SheetTitle>
               <SheetDescription>Switch layouts and customize your theme.</SheetDescription>

@@ -62,9 +62,9 @@ export function ItemsEditor({ formMethods, fieldArray }: Props) {
     <>
       <div className="space-y-3">
         {fields.length === 0 ? (
-          <div className="rounded-lg border-2 border-dashed bg-muted/20 py-6 text-center text-muted-foreground">
+          <div className="border-2 border-dashed border-black bg-secondary/40 py-6 text-center text-black">
             <LayoutTemplate className="mx-auto mb-2 h-8 w-8 opacity-50" />
-            <p>No items yet.</p>
+            <p className="font-black uppercase">No items yet.</p>
           </div>
         ) : (
           <SortableList
@@ -84,9 +84,9 @@ export function ItemsEditor({ formMethods, fieldArray }: Props) {
                 : price;
 
               return (
-                <div className="flex items-center justify-between rounded-lg border bg-card p-3 transition-colors hover:bg-muted/30">
+                <div className="flex items-center justify-between border-2 border-black bg-card p-3 transition-colors hover:bg-secondary/40">
                   <div className="min-w-0">
-                    <p className="truncate font-medium">{name || 'Untitled item'}</p>
+                    <p className="truncate font-black uppercase">{name || 'Untitled item'}</p>
                     <p className="text-xs text-muted-foreground">
                       {categoryLabel}
                       {priceLabel ? ` | ${priceLabel}` : ''}
@@ -119,7 +119,7 @@ export function ItemsEditor({ formMethods, fieldArray }: Props) {
           />
         )}
 
-        <Button type="button" variant="outline" className="w-full border-dashed shadow-none" onClick={addItem}>
+        <Button type="button" variant="outline" className="w-full border-dashed" onClick={addItem}>
           <Plus className="mr-2 h-4 w-4" />
           Add Item
         </Button>
@@ -205,9 +205,9 @@ export function ItemsEditor({ formMethods, fieldArray }: Props) {
                 <VariantsEditor formMethods={formMethods} itemIndex={editIndex} />
 
                 <div className="grid gap-3 md:grid-cols-2">
-                  <div className="rounded-lg border p-3">
+                  <div className="border-2 border-black p-3">
                     <div className="flex items-center justify-between gap-3">
-                      <span className="text-sm font-medium">Available</span>
+                      <span className="text-sm font-black uppercase">Available</span>
                       <Controller
                         name={`items.${editIndex}.is_available`}
                         control={control}
@@ -217,9 +217,9 @@ export function ItemsEditor({ formMethods, fieldArray }: Props) {
                       />
                     </div>
                   </div>
-                  <div className="rounded-lg border p-3">
+                  <div className="border-2 border-black p-3">
                     <div className="flex items-center justify-between gap-3">
-                      <span className="text-sm font-medium">Featured</span>
+                      <span className="text-sm font-black uppercase">Featured</span>
                       <Controller
                         name={`items.${editIndex}.is_featured`}
                         control={control}
@@ -232,8 +232,8 @@ export function ItemsEditor({ formMethods, fieldArray }: Props) {
                 </div>
               </div>
 
-              <div className="self-start rounded-lg border bg-muted/20 p-4">
-                <Label className="mb-3 block text-sm font-medium">Item Image</Label>
+              <div className="self-start border-2 border-black bg-white p-4">
+                <Label className="mb-3 block text-sm font-black uppercase">Item Image</Label>
                 <ImageUploadField
                   id={`item-image-${editIndex}`}
                   previewUrl={watch(`items.${editIndex}.image_url`)}

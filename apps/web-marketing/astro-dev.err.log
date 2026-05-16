@@ -1,0 +1,132 @@
+[31m[1m14:12:27[22m [ERROR] [vite][39m [31mInternal server error: ENOENT: no such file or directory, open 'C:\laragon\www\kislap\apps\web-marketing\public\favicon.svg'[39m
+  Plugin: [35mvite:css-analysis[39m
+  File: [36mC:/laragon/www/kislap/apps/web-marketing/src/styles/global.css[39m
+      at async open (node:internal/fs/promises:638:25)
+      at async Object.readFile (node:internal/fs/promises:1242:14)
+      at async fileToDevUrl (file:///C:/laragon/www/kislap/apps/web-marketing/node_modules/vite/dist/node/chunks/dep-D4NMHUTW.js:10500:21)
+      at async TransformPluginContext.handler (file:///C:/laragon/www/kislap/apps/web-marketing/node_modules/vite/dist/node/chunks/dep-D4NMHUTW.js:43496:29)
+      at async EnvironmentPluginContainer.transform (file:///C:/laragon/www/kislap/apps/web-marketing/node_modules/vite/dist/node/chunks/dep-D4NMHUTW.js:42323:18)
+      at async loadAndTransform (file:///C:/laragon/www/kislap/apps/web-marketing/node_modules/vite/dist/node/chunks/dep-D4NMHUTW.js:35739:27)
+      at async viteTransformMiddleware (file:///C:/laragon/www/kislap/apps/web-marketing/node_modules/vite/dist/node/chunks/dep-D4NMHUTW.js:37254:24)
+[31m[1m14:12:36[22m [ERROR] [vite][39m [31mInternal server error: ENOENT: no such file or directory, open 'C:\laragon\www\kislap\apps\web-marketing\public\ChatGPT Image May 15, 2026, 02_02_20 PM.svg'[39m
+  Plugin: [35mvite:css-analysis[39m
+  File: [36mC:/laragon/www/kislap/apps/web-marketing/src/styles/global.css[39m
+      at async open (node:internal/fs/promises:638:25)
+      at async Object.readFile (node:internal/fs/promises:1242:14)
+      at async fileToDevUrl (file:///C:/laragon/www/kislap/apps/web-marketing/node_modules/vite/dist/node/chunks/dep-D4NMHUTW.js:10500:21)
+      at async TransformPluginContext.handler (file:///C:/laragon/www/kislap/apps/web-marketing/node_modules/vite/dist/node/chunks/dep-D4NMHUTW.js:43496:29)
+      at async EnvironmentPluginContainer.transform (file:///C:/laragon/www/kislap/apps/web-marketing/node_modules/vite/dist/node/chunks/dep-D4NMHUTW.js:42323:18)
+      at async loadAndTransform (file:///C:/laragon/www/kislap/apps/web-marketing/node_modules/vite/dist/node/chunks/dep-D4NMHUTW.js:35739:27)
+      at async viteTransformMiddleware (file:///C:/laragon/www/kislap/apps/web-marketing/node_modules/vite/dist/node/chunks/dep-D4NMHUTW.js:37254:24)
+[31m[1m14:12:41[22m [ERROR] [vite][39m [31mInternal server error: ENOENT: no such file or directory, open 'C:\laragon\www\kislap\apps\web-marketing\public\ChatGPT Image May 15, 2026, 02_02_20 PM.svg'[39m
+  Plugin: [35mvite:css-analysis[39m
+  File: [36mC:/laragon/www/kislap/apps/web-marketing/src/styles/global.css[39m
+      at async open (node:internal/fs/promises:638:25)
+      at async Object.readFile (node:internal/fs/promises:1242:14)
+      at async fileToDevUrl (file:///C:/laragon/www/kislap/apps/web-marketing/node_modules/vite/dist/node/chunks/dep-D4NMHUTW.js:10500:21)
+      at async TransformPluginContext.handler (file:///C:/laragon/www/kislap/apps/web-marketing/node_modules/vite/dist/node/chunks/dep-D4NMHUTW.js:43496:29)
+      at async EnvironmentPluginContainer.transform (file:///C:/laragon/www/kislap/apps/web-marketing/node_modules/vite/dist/node/chunks/dep-D4NMHUTW.js:42323:18)
+      at async loadAndTransform (file:///C:/laragon/www/kislap/apps/web-marketing/node_modules/vite/dist/node/chunks/dep-D4NMHUTW.js:35739:27)
+      at async viteTransformMiddleware (file:///C:/laragon/www/kislap/apps/web-marketing/node_modules/vite/dist/node/chunks/dep-D4NMHUTW.js:37254:24)
+[31m[1m14:12:43[22m [ERROR] [vite][39m [31mInternal server error: ENOENT: no such file or directory, open 'C:\laragon\www\kislap\apps\web-marketing\public\ChatGPT Image May 15, 2026, 02_02_20 PM.svg'[39m
+  Plugin: [35mvite:css-analysis[39m
+  File: [36mC:/laragon/www/kislap/apps/web-marketing/src/styles/global.css[39m
+      at async open (node:internal/fs/promises:638:25)
+      at async Object.readFile (node:internal/fs/promises:1242:14)
+      at async fileToDevUrl (file:///C:/laragon/www/kislap/apps/web-marketing/node_modules/vite/dist/node/chunks/dep-D4NMHUTW.js:10500:21)
+      at async TransformPluginContext.handler (file:///C:/laragon/www/kislap/apps/web-marketing/node_modules/vite/dist/node/chunks/dep-D4NMHUTW.js:43496:29)
+      at async EnvironmentPluginContainer.transform (file:///C:/laragon/www/kislap/apps/web-marketing/node_modules/vite/dist/node/chunks/dep-D4NMHUTW.js:42323:18)
+      at async loadAndTransform (file:///C:/laragon/www/kislap/apps/web-marketing/node_modules/vite/dist/node/chunks/dep-D4NMHUTW.js:35739:27)
+      at async viteTransformMiddleware (file:///C:/laragon/www/kislap/apps/web-marketing/node_modules/vite/dist/node/chunks/dep-D4NMHUTW.js:37254:24)
+[31m[1m14:13:03[22m [ERROR] [vite][39m [31mInternal server error: ENOENT: no such file or directory, open 'C:\laragon\www\kislap\apps\web-marketing\public\ChatGPT Image May 15, 2026, 02_02_20 PM.svg'[39m
+  Plugin: [35mvite:css-analysis[39m
+  File: [36mC:/laragon/www/kislap/apps/web-marketing/src/styles/global.css[39m
+      at async open (node:internal/fs/promises:638:25)
+      at async Object.readFile (node:internal/fs/promises:1242:14)
+      at async fileToDevUrl (file:///C:/laragon/www/kislap/apps/web-marketing/node_modules/vite/dist/node/chunks/dep-D4NMHUTW.js:10500:21)
+      at async TransformPluginContext.handler (file:///C:/laragon/www/kislap/apps/web-marketing/node_modules/vite/dist/node/chunks/dep-D4NMHUTW.js:43496:29)
+      at async EnvironmentPluginContainer.transform (file:///C:/laragon/www/kislap/apps/web-marketing/node_modules/vite/dist/node/chunks/dep-D4NMHUTW.js:42323:18)
+      at async loadAndTransform (file:///C:/laragon/www/kislap/apps/web-marketing/node_modules/vite/dist/node/chunks/dep-D4NMHUTW.js:35739:27)
+      at async viteTransformMiddleware (file:///C:/laragon/www/kislap/apps/web-marketing/node_modules/vite/dist/node/chunks/dep-D4NMHUTW.js:37254:24)
+[31m[1m14:13:20[22m [ERROR] [vite][39m [31mInternal server error: ENOENT: no such file or directory, open 'C:\laragon\www\kislap\apps\web-marketing\public\ChatGPT Image May 15, 2026, 02_02_20 PM.svg'[39m
+  Plugin: [35mvite:css-analysis[39m
+  File: [36mC:/laragon/www/kislap/apps/web-marketing/src/styles/global.css[39m
+      at async open (node:internal/fs/promises:638:25)
+      at async Object.readFile (node:internal/fs/promises:1242:14)
+      at async fileToDevUrl (file:///C:/laragon/www/kislap/apps/web-marketing/node_modules/vite/dist/node/chunks/dep-D4NMHUTW.js:10500:21)
+      at async TransformPluginContext.handler (file:///C:/laragon/www/kislap/apps/web-marketing/node_modules/vite/dist/node/chunks/dep-D4NMHUTW.js:43496:29)
+      at async EnvironmentPluginContainer.transform (file:///C:/laragon/www/kislap/apps/web-marketing/node_modules/vite/dist/node/chunks/dep-D4NMHUTW.js:42323:18)
+      at async loadAndTransform (file:///C:/laragon/www/kislap/apps/web-marketing/node_modules/vite/dist/node/chunks/dep-D4NMHUTW.js:35739:27)
+      at async viteTransformMiddleware (file:///C:/laragon/www/kislap/apps/web-marketing/node_modules/vite/dist/node/chunks/dep-D4NMHUTW.js:37254:24)
+[31m[1m14:16:33[22m [ERROR][39m ENOENT: no such file or directory, open 'C:\laragon\www\kislap\apps\web-marketing\public\favicon1.svg'
+  [1mStack trace:[22m
+[2m    at async open (node:internal/fs/promises:638:25)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[31m[1m14:16:37[22m [ERROR][39m ENOENT: no such file or directory, open 'C:\laragon\www\kislap\apps\web-marketing\public\favicon1.svg'
+  [1mStack trace:[22m
+[2m    at async open (node:internal/fs/promises:638:25)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[31m[1m14:16:42[22m [ERROR][39m ENOENT: no such file or directory, open 'C:\laragon\www\kislap\apps\web-marketing\public\favicon1.svg'
+  [1mStack trace:[22m
+[2m    at async open (node:internal/fs/promises:638:25)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[31m[1m14:16:43[22m [ERROR][39m ENOENT: no such file or directory, open 'C:\laragon\www\kislap\apps\web-marketing\public\favicon1.svg'
+  [1mStack trace:[22m
+[2m    at async open (node:internal/fs/promises:638:25)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[31m[1m14:16:43[22m [ERROR][39m ENOENT: no such file or directory, open 'C:\laragon\www\kislap\apps\web-marketing\public\favicon1.svg'
+  [1mStack trace:[22m
+[2m    at async open (node:internal/fs/promises:638:25)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[31m[1m14:16:43[22m [ERROR][39m ENOENT: no such file or directory, open 'C:\laragon\www\kislap\apps\web-marketing\public\favicon1.svg'
+  [1mStack trace:[22m
+[2m    at async open (node:internal/fs/promises:638:25)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[31m[1m14:16:47[22m [ERROR][39m ENOENT: no such file or directory, open 'C:\laragon\www\kislap\apps\web-marketing\public\favicon1.svg'
+  [1mStack trace:[22m
+[2m    at async open (node:internal/fs/promises:638:25)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[31m[1m14:16:47[22m [ERROR][39m ENOENT: no such file or directory, open 'C:\laragon\www\kislap\apps\web-marketing\public\favicon1.svg'
+  [1mStack trace:[22m
+[2m    at async open (node:internal/fs/promises:638:25)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[31m[1m14:16:47[22m [ERROR][39m ENOENT: no such file or directory, open 'C:\laragon\www\kislap\apps\web-marketing\public\favicon1.svg'
+  [1mStack trace:[22m
+[2m    at async open (node:internal/fs/promises:638:25)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[31m[1m14:16:47[22m [ERROR][39m ENOENT: no such file or directory, open 'C:\laragon\www\kislap\apps\web-marketing\public\favicon1.svg'
+  [1mStack trace:[22m
+[2m    at async open (node:internal/fs/promises:638:25)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[31m[1m14:16:47[22m [ERROR][39m ENOENT: no such file or directory, open 'C:\laragon\www\kislap\apps\web-marketing\public\favicon1.svg'
+  [1mStack trace:[22m
+[2m    at async open (node:internal/fs/promises:638:25)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[31m[1m14:16:47[22m [ERROR][39m ENOENT: no such file or directory, open 'C:\laragon\www\kislap\apps\web-marketing\public\favicon1.svg'
+  [1mStack trace:[22m
+[2m    at async open (node:internal/fs/promises:638:25)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[31m[1m14:16:48[22m [ERROR][39m ENOENT: no such file or directory, open 'C:\laragon\www\kislap\apps\web-marketing\public\favicon1.svg'
+  [1mStack trace:[22m
+[2m    at async open (node:internal/fs/promises:638:25)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[31m[1m14:16:48[22m [ERROR][39m ENOENT: no such file or directory, open 'C:\laragon\www\kislap\apps\web-marketing\public\favicon1.svg'
+  [1mStack trace:[22m
+[2m    at async open (node:internal/fs/promises:638:25)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[31m[1m14:16:49[22m [ERROR][39m ENOENT: no such file or directory, open 'C:\laragon\www\kislap\apps\web-marketing\public\favicon1.svg'
+  [1mStack trace:[22m
+[2m    at async open (node:internal/fs/promises:638:25)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[31m[1m14:16:49[22m [ERROR][39m ENOENT: no such file or directory, open 'C:\laragon\www\kislap\apps\web-marketing\public\favicon1.svg'
+  [1mStack trace:[22m
+[2m    at async open (node:internal/fs/promises:638:25)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[31m[1m14:17:13[22m [ERROR][39m ENOENT: no such file or directory, open 'C:\laragon\www\kislap\apps\web-marketing\public\favicon1.svg'
+  [1mStack trace:[22m
+[2m    at async open (node:internal/fs/promises:638:25)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[31m[1m14:17:13[22m [ERROR][39m ENOENT: no such file or directory, open 'C:\laragon\www\kislap\apps\web-marketing\public\favicon1.svg'
+  [1mStack trace:[22m
+[2m    at async open (node:internal/fs/promises:638:25)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m

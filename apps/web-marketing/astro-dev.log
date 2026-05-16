@@ -1,0 +1,111 @@
+
+> my-astro-app@0.0.1 dev
+> astro dev --host 0.0.0.0
+
+[2m08:15:31[22m [34m[@astrojs/node][39m Enabling sessions with filesystem storage
+[2m08:15:31[22m [34m[types][39m Generated [2m2ms[22m
+[2m08:15:31[22m [34m[content][39m Syncing content
+[2m08:15:31[22m [34m[content][39m Synced content
+
+[42m[1m astro [22m[49m [32mv5.16.6[39m [2mready in[22m 439 [2mms[22m
+
+[2m┃[22m Local    [36mhttp://localhost:4321/[39m
+[2m┃[22m Network  [36mhttp://169.254.83.107:4321/[39m
+           [36mhttp://192.168.1.33:4321/[39m
+           [36mhttp://172.24.224.1:4321/[39m
+
+[2m08:15:31[22m [32mwatching for file changes...[39m
+
+[43m[30m update [39m[49m [33m▶ New version of Astro available: 6.3.3[39m
+  Run [36mnpx @astrojs/upgrade[39m to update
+
+[2m08:15:39[22m [34m[200][39m / [2m1118ms[22m
+[2m08:15:40[22m [34m[200][39m / [2m1045ms[22m
+[2m08:15:56[22m [34m[200][39m / [2m1106ms[22m
+[2m08:16:43[22m [34m[200][39m / [2m1085ms[22m
+[2m08:16:49[22m [34m[200][39m /help [2m1031ms[22m
+[2m08:17:22[22m [34m[200][39m /about [2m1159ms[22m
+[2m08:17:34[22m [34m[200][39m / [2m1061ms[22m
+[2m08:19:17[22m [34m[watch][39m /@fs/C:\laragon\www\kislap\apps\web-marketing\src\components\landing-page-content.tsx, /src/styles/global.css
+[2m08:19:17[22m [34m[watch][39m src/components/landing-page-content.tsx
+[2m08:19:37[22m [34m[watch][39m /@fs/C:\laragon\www\kislap\apps\web-marketing\src\components\about-page-content.tsx, /src/styles/global.css
+[2m08:19:37[22m [34m[watch][39m src/components/about-page-content.tsx
+[2m08:20:01[22m [34m[200][39m / [2m2115ms[22m
+[2m08:20:01[22m [34m[200][39m /about [2m2335ms[22m
+[2m08:20:44[22m [34m[200][39m / [2m1060ms[22m
+[2m08:21:32[22m [34m[200][39m /about [2m1237ms[22m
+[2m08:21:42[22m [34m[200][39m / [2m1064ms[22m
+[2m08:22:13[22m [34m[200][39m /about [2m1214ms[22m
+[2m08:22:23[22m [34m[watch][39m /src/components/landing/visibility-section.tsx, /src/styles/global.css
+[2m08:22:23[22m [34m[watch][39m src/components/landing/visibility-section.tsx
+[2m08:22:27[22m [34m[200][39m / [2m1076ms[22m
+[2m08:24:52[22m [34m[200][39m /about [2m1250ms[22m
+[2m08:25:01[22m [34m[200][39m / [2m1061ms[22m
+[2m08:25:16[22m [34m[200][39m /about [2m1260ms[22m
+[2m08:28:08[22m [34m[200][39m /showcase [2m1245ms[22m
+[2m08:28:11[22m [34m[200][39m / [2m1070ms[22m
+[2m08:28:17[22m [34m[watch][39m /@fs/C:\laragon\www\kislap\apps\web-marketing\src\components\about-page-content.tsx, /src/styles/global.css
+[2m08:28:17[22m [34m[watch][39m src/components/about-page-content.tsx
+[2m08:28:38[22m [34m[200][39m /about [2m1208ms[22m
+[2m08:29:42[22m [34m[200][39m /about [2m1174ms[22m
+[2m08:30:26[22m [34m[200][39m /help [2m1004ms[22m
+[2m08:30:34[22m [34m[200][39m / [2m1049ms[22m
+[2m08:32:53[22m [34m[watch][39m /@fs/C:\laragon\www\kislap\apps\web-marketing\src\components\landing\examples-rail.tsx, /src/styles/global.css
+[2m08:32:53[22m [34m[watch][39m src/components/landing/examples-rail.tsx
+[2m13:36:04[22m [34m[200][39m / [2m1119ms[22m
+[2m13:36:17[22m [34m[200][39m /showcase [2m1300ms[22m
+[2m13:36:27[22m [34m[200][39m /about [2m1170ms[22m
+[2m13:36:30[22m [34m[200][39m /help [2m998ms[22m
+[2m13:36:33[22m [34m[200][39m /help [2m985ms[22m
+[2m13:37:41[22m [34m[200][39m /showcase [2m1244ms[22m
+[2m13:38:05[22m [34m[200][39m / [2m1089ms[22m
+[2m13:40:57[22m [34m[watch][39m /@fs/C:\laragon\www\kislap\apps\web-marketing\src\components\showcase-feed.tsx, /src/styles/global.css
+[2m13:40:57[22m [34m[watch][39m src/components/showcase-feed.tsx
+[2m13:41:03[22m [34m[watch][39m src/pages/showcase.astro
+[2m13:41:03[22m [34m[watch][39m src/pages/showcase.astro
+[2m13:41:05[22m [34m[200][39m / [2m1162ms[22m
+[2m13:41:06[22m [34m[watch][39m src/types/api-response.ts
+[2m13:41:06[22m [34m[watch][39m src/types/api-response.ts
+[2m13:41:08[22m [34m[200][39m / [2m1189ms[22m
+[2m13:51:14[22m [34m[watch][39m src/components/logo-version.tsx
+[2m13:51:14[22m [34m[watch][39m src/components/logo-version.tsx
+[2m13:51:16[22m [34m[200][39m / [2m1124ms[22m
+[2m13:51:24[22m [34m[watch][39m src/layouts/main.astro
+[2m13:51:24[22m [34m[watch][39m src/layouts/main.astro
+[2m13:51:25[22m [34m[200][39m / [2m1111ms[22m
+[2m13:52:22[22m [34m[watch][39m src/components/logo-version.tsx
+[2m13:52:22[22m [34m[watch][39m src/components/logo-version.tsx
+[2m13:52:24[22m [34m[200][39m / [2m1108ms[22m
+[2m13:52:27[22m [34m[watch][39m src/layouts/main.astro
+[2m13:52:27[22m [34m[watch][39m src/layouts/main.astro
+[2m13:52:28[22m [34m[200][39m / [2m1180ms[22m
+[2m13:54:09[22m [34m[200][39m / [2m1063ms[22m
+[2m13:55:10[22m [34m[200][39m / [2m1108ms[22m
+[2m13:55:21[22m [34m[watch][39m src/components/logo-version.tsx
+[2m13:55:21[22m [34m[watch][39m src/components/logo-version.tsx
+[2m13:55:23[22m [34m[200][39m / [2m1167ms[22m
+[2m14:07:17[22m [34m[200][39m / [2m1154ms[22m
+[2m14:10:32[22m [34m[200][39m / [2m1134ms[22m
+[2m14:11:52[22m [34m[200][39m / [2m1093ms[22m
+[2m14:12:27[22m [34m[watch][39m /src/styles/global.css
+[2m14:12:27[22m [34m[watch][39m public/favicon.svg
+[2m14:12:36[22m [34m[watch][39m /src/styles/global.css
+[2m14:12:36[22m [34m[watch][39m public/favicon.svg
+[2m14:12:41[22m [34m[200][39m / [2m1109ms[22m
+[2m14:12:43[22m [34m[200][39m / [2m1084ms[22m
+[2m14:13:02[22m [34m[200][39m / [2m1083ms[22m
+[2m14:16:08[22m [34m[watch][39m public/favicon.svg
+[2m14:16:08[22m [34m[watch][39m public/favicon.svg
+[2m14:16:12[22m [34m[watch][39m public/favicon.svg
+[2m14:16:12[22m [34m[watch][39m public/favicon.svg
+[2m14:16:26[22m [34m[watch][39m public/favicon1.svg
+[2m15:18:16[22m Configuration file updated. Restarting...
+[2m15:18:16[22m [34m[watch][39m astro.config.mjs
+[2m15:18:16[22m [34m[watch][39m astro.config.mjs
+[2m15:18:16[22m [34m[@astrojs/node][39m Enabling sessions with filesystem storage
+[2m15:18:16[22m [34m[content][39m Syncing content
+[2m15:18:16[22m [34m[content][39m Astro config changed
+[2m15:18:16[22m [34m[content][39m Clearing content store
+[2m15:18:16[22m [34m[content][39m Synced content
+[2m15:18:16[22m [34m[types][39m Generated [2m424ms[22m
+[2m15:18:16[22m [34m[vite][39m Re-optimizing dependencies because vite config has changed

@@ -38,10 +38,10 @@ export const PROJECT_TYPE_COPY: Record<
     label: 'Portfolio',
     title: 'Start a portfolio',
     description: 'Turn your profile, work, and proof into a polished public site.',
-    bestFor: 'Developers, freelancers, designers, and job seekers',
+    bestFor: 'Professionals, freelancers, designers, and job seekers',
   },
   linktree: {
-    label: 'Linktree',
+    label: 'Link Page',
     title: 'Start a link page',
     description: 'Route social traffic into one branded page that feels intentional.',
     bestFor: 'Creators, founders, speakers, and personal brands',
@@ -143,9 +143,9 @@ export const STARTERS: Record<StarterProjectType, BuilderStarter[]> = {
     {
       id: 'developer',
       type: 'portfolio',
-      label: 'Developer',
+      label: 'Technical Portfolio',
       description: 'More technical proof, stronger project framing, and cleaner social links.',
-      bestFor: 'Developers, engineers, and technical builders',
+      bestFor: 'Product builders, engineers, and technical consultants',
       defaults: { layoutName: 'newspaper', themePreset: 'slack' },
     },
   ],
@@ -419,7 +419,7 @@ export function buildPortfolioStarterValues(
   if (starterId === 'developer') {
     return {
       ...base,
-      job_title: 'Developer focused on product systems',
+      job_title: 'Technical consultant focused on product systems',
       introduction: 'I design and ship products with clear structure, strong UX, and maintainable code.',
       showcases: [
         {
@@ -432,7 +432,7 @@ export function buildPortfolioStarterValues(
         },
         {
           name: 'API Observability Toolkit',
-          description: 'Developer-facing tooling for request tracing, failures, and deployment validation.',
+          description: 'Internal tooling for request tracing, failures, and deployment validation.',
           url: 'https://example.com/observability',
           role: 'Systems design and full-stack implementation',
           technologies: [{ name: 'Go' }, { name: 'OpenTelemetry' }, { name: 'Postgres' }],

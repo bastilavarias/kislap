@@ -85,13 +85,13 @@ export function GalleryUploader({
         {displayItems.map((item, index) => (
           <div
             key={`${item.src}-${index}`}
-            className="group relative aspect-square overflow-hidden rounded-xl border bg-muted"
+            className="group relative aspect-square overflow-hidden border-2 border-black bg-muted"
           >
             <img src={item.src} alt={`Gallery ${index + 1}`} className="h-full w-full object-cover" />
             <button
               type="button"
               onClick={() => handleRemove(index)}
-              className="absolute right-2 top-2 rounded-full bg-background/90 p-1.5 text-foreground opacity-0 shadow-sm transition-opacity group-hover:opacity-100"
+              className="absolute right-2 top-2 border-2 border-black bg-background p-1.5 text-foreground opacity-0 transition-opacity group-hover:opacity-100"
             >
               <X className="h-3.5 w-3.5" />
             </button>
@@ -99,9 +99,9 @@ export function GalleryUploader({
         ))}
 
         {displayItems.length < maxFiles ? (
-          <label className="flex aspect-square cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-border bg-muted/20 text-center transition-colors hover:bg-muted/40">
+          <label className="flex aspect-square cursor-pointer flex-col items-center justify-center border-2 border-dashed border-black bg-secondary/40 text-center transition-colors hover:bg-secondary">
             <Plus className="mb-2 h-5 w-5 text-muted-foreground" />
-            <span className="text-sm font-medium">Add Image</span>
+            <span className="text-sm font-black uppercase">Add Image</span>
             <span className="mt-1 px-3 text-[10px] text-muted-foreground">
               PNG, JPG, WEBP
             </span>

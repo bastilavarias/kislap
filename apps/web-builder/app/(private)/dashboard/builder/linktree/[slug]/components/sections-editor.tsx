@@ -43,9 +43,9 @@ export function SectionsEditor({ formMethods, sectionsFieldArray, onAddSection }
     <>
       <div className="space-y-3">
         {fields.length === 0 ? (
-          <div className="text-center py-6 text-muted-foreground bg-muted/20 rounded-lg border-dashed border-2">
+          <div className="border-2 border-dashed border-black bg-secondary/40 py-6 text-center text-black">
             <LayoutTemplate className="w-8 h-8 mx-auto mb-2 opacity-50" />
-            <p>No content items yet.</p>
+            <p className="font-black uppercase">No content items yet.</p>
           </div>
         ) : (
           <SortableList
@@ -63,9 +63,9 @@ export function SectionsEditor({ formMethods, sectionsFieldArray, onAddSection }
               const displayTitle = title || bannerText || quoteText || 'Untitled Section';
 
               return (
-                <div className="flex items-center justify-between p-3 border rounded-lg bg-card hover:bg-muted/30 transition-colors">
+                <div className="flex items-center justify-between border-2 border-black bg-card p-3 transition-colors hover:bg-secondary/40">
                   <div className="min-w-0">
-                    <p className="font-medium truncate">{displayTitle}</p>
+                    <p className="truncate font-black uppercase">{displayTitle}</p>
                     <p className="text-xs text-muted-foreground">
                       {type === 'link' && url ? `${typeLabel(type)} - ${url}` : typeLabel(type)}
                     </p>
@@ -96,7 +96,7 @@ export function SectionsEditor({ formMethods, sectionsFieldArray, onAddSection }
           />
         )}
 
-        <Button onClick={addAndEdit} variant="outline" className="w-full border-dashed shadow-none">
+        <Button onClick={addAndEdit} variant="outline" className="w-full border-dashed">
           <Plus className="w-4 h-4 mr-2" /> Add Content Item
         </Button>
       </div>

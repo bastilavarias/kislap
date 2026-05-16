@@ -31,20 +31,20 @@ export interface BuilderFeaturePageConfig {
 export const builderPages: Record<BuilderFeaturePageConfig["slug"], BuilderFeaturePageConfig> = {
   "portfolio-builder": {
     slug: "portfolio-builder",
-    image: "/assets/builder/portfolio-builder.jpg",
+    image: "/og-image.png",
     templateImage: "/assets/templates/portfolio-template.jpg",
-    title: "Portfolio Builder - Create a Portfolio Website Fast | Kislap",
+    title: "Portfolio Builder - Turn Your Work into a Public Page | Kislap",
     description:
-      "Create a portfolio website fast with Kislap. Turn your resume into a polished personal site with SEO, project showcases, contact forms, and multiple portfolio layouts.",
+      "Build a portfolio page from structured forms. Kislap turns your profile, projects, resume, and links into a polished public page without blank-canvas design work.",
     eyebrow: "Portfolio Builder",
     heroTitle: "Create a portfolio website without wrestling with a builder.",
     heroLead:
-      "Kislap helps freelancers, designers, developers, and job seekers launch a portfolio site that looks intentional and ranks well.",
+      "Kislap helps freelancers, designers, consultants, and job seekers publish the page people see first, with project proof, resume detail, and clean sharing metadata.",
     heroBody:
-      "Start from a form, not a blank canvas. Add your headline, work, links, and experience once, then publish a portfolio website with strong SEO, sharable previews, and layouts that feel production-ready.",
+      "Start from a focused form, not drag-and-drop chaos. Add your headline, work, links, and experience once, then publish a portfolio with strong SEO, shareable previews, and production-ready layouts.",
     audienceTitle: "Built for people who need a credible online presence quickly.",
     audience: [
-      "Developers showing work, skills, and case studies",
+      "Professionals showing work, skills, and case studies",
       "Designers packaging services and proof in one link",
       "Freelancers sharing a clean site with direct inquiry flow",
       "Job seekers turning an existing resume into a portfolio page",
@@ -131,23 +131,23 @@ export const builderPages: Record<BuilderFeaturePageConfig["slug"], BuilderFeatu
       "build portfolio",
       "portfolio website builder",
       "resume website",
-      "personal website for developers",
+      "personal website builder",
       "online portfolio maker",
     ],
   },
   "linktree-builder": {
     slug: "linktree-builder",
-    image: "/assets/builder/linktree-builder.jpg",
+    image: "/og-image.png",
     templateImage: "/assets/templates/linktree-template.jpg",
-    title: "Linktree Builder - Create a Link in Bio Page | Kislap",
+    title: "Link Page Builder - Build the Link People Open First | Kislap",
     description:
-      "Create a link in bio page with Kislap. Build a custom linktree-style page for creators, founders, and freelancers with better branding, layouts, and SEO.",
-    eyebrow: "Linktree Builder",
+      "Build a branded link page from structured content. Kislap turns your links, offers, profiles, and calls to action into a public page that feels intentional.",
+    eyebrow: "Link Page Builder",
     heroTitle: "Create a link in bio page that feels like your brand, not everyone else's.",
     heroLead:
-      "Kislap gives creators and personal brands a cleaner way to publish a link page with stronger identity, better social sharing, and more flexibility.",
+      "Kislap gives creators and personal brands a cleaner way to publish the route from every bio, with stronger identity, better social previews, and flexible sections.",
     heroBody:
-      "Use the linktree builder to collect your profiles, offers, content destinations, and key actions into one page that feels custom instead of generic.",
+      "Use the link page builder to collect your profiles, offers, content destinations, and key actions into one page that feels custom instead of generic.",
     audienceTitle: "Ideal for creators, freelancers, founders, and people building attention online.",
     audience: [
       "Creators routing traffic from Instagram, TikTok, and YouTube",
@@ -160,9 +160,9 @@ export const builderPages: Record<BuilderFeaturePageConfig["slug"], BuilderFeatu
       { label: "Strongest hook", value: "Brand-first link hub" },
       { label: "Primary CTA", value: "Route social traffic better" },
     ],
-    featureTitle: "A better linktree-style page for real brand use",
+    featureTitle: "A better bio link page for real brand use",
     featureLead:
-      "The linktree builder is focused on helping you capture attention quickly while keeping the page clear, mobile-friendly, and easy to update.",
+      "The link page builder is focused on helping you capture attention quickly while keeping the page clear, mobile-friendly, and easy to update.",
     features: [
       {
         title: "Link blocks that feel curated, not disposable",
@@ -195,7 +195,7 @@ export const builderPages: Record<BuilderFeaturePageConfig["slug"], BuilderFeatu
         ],
       },
     ],
-    workflowTitle: "How the linktree builder flow works",
+    workflowTitle: "How the link page builder flow works",
     workflow: [
       {
         step: "01",
@@ -218,7 +218,7 @@ export const builderPages: Record<BuilderFeaturePageConfig["slug"], BuilderFeatu
     ],
     faq: [
       {
-        question: "Can I use this instead of Linktree?",
+        question: "Can I use this instead of a standard bio link tool?",
         answer:
           "Yes. The goal is to give you a more flexible, better branded alternative that still keeps the setup simple.",
       },
@@ -234,26 +234,26 @@ export const builderPages: Record<BuilderFeaturePageConfig["slug"], BuilderFeatu
       },
     ],
     keywords: [
-      "create linktree page",
+      "create bio link page",
       "link in bio builder",
-      "linktree alternative",
+      "branded link page",
       "creator landing page",
       "bio link page builder",
     ],
   },
   "menu-builder": {
     slug: "menu-builder",
-    image: "/assets/builder/menu-builder.jpg",
+    image: "/og-image.png",
     templateImage: "/assets/templates/menu-template.jpg",
-    title: "Menu Builder - Create a Digital Menu Website | Kislap",
+    title: "Digital Menu Builder - Publish a QR-Ready Menu Page | Kislap",
     description:
-      "Create a digital menu website with Kislap. Build a QR-ready menu page for restaurants, cafes, and stalls with themes, gallery support, and mobile-friendly layouts.",
+      "Build a QR-ready digital menu from structured forms. Kislap turns categories, items, photos, and business details into a mobile public menu page.",
     eyebrow: "Menu Builder",
     heroTitle: "Create a digital menu that feels like your place, not a spreadsheet online.",
     heroLead:
-      "The menu builder helps restaurants, cafes, and small food brands turn their menu into a mobile-friendly website people can scan, share, and revisit.",
+      "The menu builder helps restaurants, cafes, and small food brands publish the page customers scan first, share later, and revisit on mobile.",
     heroBody:
-      "Use structured menu sections, item photos, gallery images, QR support, and multiple layouts to build a menu page that actually fits your brand.",
+      "Use structured menu sections, item photos, gallery images, QR support, and multiple layouts to build a public menu page that actually fits your brand.",
     audienceTitle: "Made for restaurants, cafes, food stalls, bakeries, and branded menu pages.",
     audience: [
       "Restaurants that need a clean digital menu",

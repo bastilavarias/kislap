@@ -34,6 +34,9 @@
 - D011 ACTIVE: Menu Phase 1 supports a single-price item UI only; future size/variant support must use flexible variant rows rather than hardcoded `small/medium/large` columns. [2026-03-20][USER]
 - D012 ACTIVE: Menu QR in Phase 1 is basic UI but isolated as its own component/module, with persistence already ready for future customization via `qr_settings`. [2026-03-20][USER]
 - D013 ACTIVE: Menu Phase 2 still excludes ordering; it focuses on stronger business presentation, item browsing UX, lightweight analytics polish, and basic-but-better QR ergonomics. [2026-03-20][USER]
+- D014 ACTIVE: `gpt-taste` is activated for frontend/marketing/public-template/rich UI work; project agents should follow the `<design_plan>` preflight, AIDA structure, wide hero typography, gapless bento, and GSAP motion rules captured in `.agents/AGENTS.md`. [2026-05-10][USER]
+- D015 ACTIVE: Kislap's base product/marketing design direction is disciplined neo-brutalist: black/white/red/yellow core palette, thick black borders, square corners, hard shadows, oversized uppercase display type, consumer-centered copy, real product media, shadcn/Radix primitive reuse, and physical GSAP motion. Builder redesigns should inherit this language while staying denser and more operational. [2026-05-10][USER]
+- D016 ACTIVE: Kislap brand identity is now documented as "fill the form, publish the site"; visual language should favor forms transforming into public pages, flat neo-brutalist image direction, real published-page media, calmer builder surfaces, and no unnecessary/nested card containers. [2026-05-15][USER][CODE]
 
 ## Working set
 - `.agents/AGENTS.md`
@@ -65,6 +68,29 @@
 - `packages/templates/src/components/menu/menu-default-sample-data.ts`
 
 ## Receipts
+- 2026-05-15 [CODE] Unified default OG image usage across web-sites, web-builder, and web-marketing by copying `apps/web-sites/public/og-image.png` into builder/marketing public assets and mapping marketing defaults/feature-page social images to `/og-image.png`.
+- 2026-05-10 [CODE] Began web-builder redesign foundation using the Kislap neo-brutalist language: added shared builder UI primitives, rebuilt authenticated header/logo/app shell, redesigned dashboard project cards, and restyled the project creation flow/live preview workbench.
+- 2026-05-10 [CODE] Split dashboard project card and project creation helper/basic panels into focused components so the touched builder files stay under the 300 LOC cap.
+- 2026-05-10 [TOOL] `npm.cmd run build` passed in `apps/web-builder` after the builder visual foundation pass; dev server started and responded 200 at `http://127.0.0.1:3000`.
+- 2026-05-10 [CODE] Fixed Showcase filters by turning project-type controls into real `/showcase?type=...` links so filtering uses Astro server-rendered API results instead of relying on fragile browser-side cross-origin fetches.
+- 2026-05-10 [TOOL] `npm.cmd run build` passed in `apps/web-marketing`; verified `/showcase?type=portfolio` only serialized portfolio projects and `/showcase?type=menu` only serialized menu projects.
+- 2026-05-10 [CODE] Fixed blank About/Showcase rendering by changing Framer Motion SSR hidden variants to render visible content by default; verified `/about` and `/showcase` HTML now ships `opacity:1` for main content.
+- 2026-05-10 [TOOL] `npm.cmd run build` passed in `apps/web-marketing` after the About/Showcase visibility fix.
+- 2026-05-10 [CODE] Extended the new Kislap neo-brutalist visual language beyond the homepage into marketing pages: shared builder feature pages, features index, showcase feed/cards, about page, help page, and builder FAQ styling now use thick borders, square placeholder media with sizes, hard shadows, uppercase editorial typography, and consumer-centered labels.
+- 2026-05-10 [TOOL] `npm.cmd run build` passed in `apps/web-marketing` after the remaining marketing page redesign; existing dev server responded 200 at `http://127.0.0.1:4322/`.
+- 2026-05-10 [CODE] Added `Kislap Design Direction` to `.agents/AGENTS.md` to make the current neo-brutalist homepage language the durable baseline for future marketing and builder redesign work.
+- 2026-05-10 [CODE] Deepened the web-builder design-language rollout across form-heavy builder surfaces: shadcn primitives now default to square neo-brutalist cards, dialogs, sheets, tabs, inputs, textareas, buttons, selects, badges, switches, and accordions; portfolio/linktree/menu/biz builder forms and nested menu/linktree editors now use hard borders, uppercase labels, stronger empty states, and shared builder tab/button styling.
+- 2026-05-10 [TOOL] `npm.cmd run build` passed in `apps/web-builder` after the deeper builder form redesign pass. Attempts to start a hidden dev server did not produce a reachable `http://127.0.0.1:3000`; foreground `npm.cmd run dev` reported ready before the timed command was stopped.
+- 2026-05-10 [CODE] Cleaned homepage consumer-facing copy by replacing developer/internal labels in the bento intro, examples rail, final CTA, and open-source section while keeping placeholder media replacement notes/sizes intact as requested.
+- 2026-05-10 [TOOL] `npm.cmd run build` passed in `apps/web-marketing` after the homepage copy cleanup.
+- 2026-05-10 [CODE] Synced the web-marketing shared nav/footer with the homepage's neo-brutalist visual language: hard-bordered sticky nav, brutalist builder dropdown/mobile menu, cleaned Kislap logo/version mark, and a high-contrast footer CTA/link grid in `apps/web-marketing/src/layouts/main.astro` plus `logo-version.tsx`.
+- 2026-05-10 [TOOL] `npm.cmd run build` passed in `apps/web-marketing` after the nav/footer visual sync.
+- 2026-05-10 [CODE] Added a neo-brutalist open-source homepage section in `apps/web-marketing/src/components/landing/open-source-section.tsx`, linking to the GitHub repo and explaining Kislap's transparent/forkable product codebase.
+- 2026-05-10 [TOOL] `npm.cmd run build` passed in `apps/web-marketing` after adding the open-source homepage section.
+- 2026-05-10 [CODE] Rebuilt the web-marketing homepage foundation around a disciplined neo-brutalist visual language using `gpt-taste`: modular landing components, placeholder media blocks with replacement sizes, gapless product bento, GSAP scroll/stack/rail motion, shadcn Button/Badge/Accordion reuse, and Outfit typography.
+- 2026-05-10 [TOOL] `npm.cmd run build` passed in `apps/web-marketing` after the homepage redesign foundation; dev server started at `http://127.0.0.1:4322/`.
+- 2026-05-10 [CODE] Activated `gpt-taste` project guidance by adding an Active UI Skill section to `.agents/AGENTS.md` for future frontend, marketing, public-template, landing-page, and rich UI implementation work.
+- 2026-05-15 [CODE] Added a Kislap brand identity and image/illustration language addendum to `.agents/AGENTS.md`, including the form-to-public-page metaphor, neo-brutalist art prompt, card-usage guardrails, and a root `AGENTS.md` pointer to the canonical `.agents/AGENTS.md`.
 - 2026-03-20 [CODE] Added `menu` API routes (`GET /api/menu/:id`, `POST /api/menu`) and mirrored Linktree-style multipart `json_body` save flow plus async OG regeneration.
 - 2026-03-20 [CODE] Added Laravel migrations for `menus`, `menu_categories`, `menu_items`, and enum updates to include `menu` in `projects` and `layouts`.
 - 2026-03-20 [TOOL] `go test ./internal/menu ./internal/project ./routes` passed in `apps/api-service`.
@@ -144,7 +170,8 @@ pm run build passed in pps/web-builder after the starter data enrichment pass.
 - 2026-03-31 [TOOL] 
 pm run build passed in pps/web-builder after the portfolio preview data alignment pass.
 
-- 2026-03-31 [CODE] Removed the iframe from the builder project creation preview and replaced it with a builder-side preview renderer that mirrors the pps/web-sites pattern: builder-local enderTemplate, theme normalization, ComponentThemeProvider, and shared template rendering inside the creation page.
+- 2026-03-31 [CODE] Removed the iframe from the builder project creation preview and replaced it with a builder-side preview renderer that mirrors the pps/web-sites pattern: builder-local 
+enderTemplate, theme normalization, ComponentThemeProvider, and shared template rendering inside the creation page.
 - 2026-03-31 [TOOL] 
 pm run build passed in pps/web-builder after switching the creation preview from iframe-backed rendering to the builder-side shared-template render path.
 
@@ -166,7 +193,8 @@ pm run build passed in pps/web-builder after switching the creation preview fro
 
 - 2026-03-31: Enriched creator linktree preview in pps/web-builder/lib/project-starters.ts with more section types already supported by shared templates. Added a promo/image section, a support/QR section, and accent colors for banner/quote so the preview shows richer possibilities beyond plain link rows. Verified with pps/web-builder build passing.
 
-- 2026-03-31: Cleaned mojibake from shared menu templates and portfolio neo-brutalist footer. Fixed broken peso/copyright output in menu-editorial.tsx, menu-showcase.tsx, menu-runway.tsx, menu-mosaic.tsx, menu-bistro.tsx, and portfolio/neo-brutalist.tsx. g now finds no remaining Â/broken peso sequences in those paths. pps/web-builder build passes.
+- 2026-03-31: Cleaned mojibake from shared menu templates and portfolio neo-brutalist footer. Fixed broken peso/copyright output in menu-editorial.tsx, menu-showcase.tsx, menu-runway.tsx, menu-mosaic.tsx, menu-bistro.tsx, and portfolio/neo-brutalist.tsx. 
+g now finds no remaining Â/broken peso sequences in those paths. pps/web-builder build passes.
 
 - 2026-03-31: Tweaked project creation selection cards in pps/web-builder/app/(private)/dashboard/projects/new/components/project-creation-page.tsx so selected/hover states keep a solid card background. Replaced translucent g-primary/10/g-accent/20 with g-card plus a light red gradient overlay on selected cards, and made audience chips use opaque g-background. Verified with pps/web-builder build passing.
 
@@ -195,7 +223,8 @@ pm is not available on PATH.
 ode_modules/@kislap/templates, and added experimental.turbo.root to pps/web-builder/next.config.ts so external shared-template source imports resolve cleanly from the monorepo root. Could not rerun the build in this shell because 
 pm is not available on PATH.
 
-- 2026-03-31: Updated Next config root handling for Vercel/Turbopack in both pps/web-builder/next.config.ts and pps/web-sites/next.config.ts. Replaced deprecated experimental.turbo with top-level 	urbopack, introduced a shared epoRoot constant, and set both outputFileTracingRoot and 	urbopack.root to the same repo-root path to avoid Vercel root mismatch warnings and downstream Turbopack failures.
+- 2026-03-31: Updated Next config root handling for Vercel/Turbopack in both pps/web-builder/next.config.ts and pps/web-sites/next.config.ts. Replaced deprecated experimental.turbo with top-level 	urbopack, introduced a shared 
+epoRoot constant, and set both outputFileTracingRoot and 	urbopack.root to the same repo-root path to avoid Vercel root mismatch warnings and downstream Turbopack failures.
 
 - 2026-03-31: Adjusted web-builder shared-template consumption again after Vercel Turbopack continued failing with RangeError: Invalid count value: -1 while importing template source directly from packages/templates. Switched pps/web-builder back to package-root usage by adding @kislap/templates as a local file dependency in pps/web-builder/package.json, enabling 	ranspilePackages: ['@kislap/templates'] in pps/web-builder/next.config.ts, restoring package-root imports in pps/web-builder/hooks/use-template-renderer.tsx and pps/web-builder/app/preview/project/preview-frame.tsx, and pointing Tailwind @source back to ../../../node_modules/@kislap/templates. This makes web-builder follow the same stable package-consumer pattern as web-sites instead of importing external monorepo source directly under Turbopack.
 
@@ -204,11 +233,13 @@ ext build --turbopack to plain
 ext build. Reason: Vercel production builds were still failing with opaque Turbopack RangeError: Invalid count value: -1 even after import/root fixes. Kept local dev on Turbopack for fast iteration, but moved production builds to the more stable Next/Webpack path for deployment reliability.
 
 - 2026-03-31: After moving web-builder production builds to standard 
-ext build, webpack surfaced real missing shared-template deps from the iz template family. Added leaflet, eact-leaflet, and aligned lucide-react to ^0.555.0 in pps/web-builder/package.json so shared templates imported by web-builder can compile on Vercel.
+ext build, webpack surfaced real missing shared-template deps from the iz template family. Added leaflet, 
+eact-leaflet, and aligned lucide-react to ^0.555.0 in pps/web-builder/package.json so shared templates imported by web-builder can compile on Vercel.
 
 - 2026-03-31: Refined web-builder shared-template strategy again after webpack still compiled through packages/templates/src/index.ts and pulled in unnecessary package-root graph. Switched pps/web-builder/hooks/use-template-renderer.tsx to direct family-level source imports (packages/templates/src/components/biz|portfolio|linktree|menu) and changed pps/web-builder/app/preview/project/preview-frame.tsx to direct family-level source imports for portfolio/linktree/menu only, avoiding package-root src/index.ts imports. Restored Tailwind @source in pps/web-builder/app/globals.css to ../../../packages/templates/src, removed the temporary @kislap/templates file dependency from pps/web-builder/package.json, and removed 	ranspilePackages from pps/web-builder/next.config.ts so builder has one clean external-source strategy again.
 
-- 2026-03-31: Removed iz templates from pps/web-builder/hooks/use-template-renderer.tsx. Root cause from Vercel traces: the new project creation preview only uses portfolio/linktree/menu, but the builder preview renderer still imported packages/templates/src/components/biz, which dragged in leaflet, eact-leaflet, and sibling-package dependency resolution issues. Deleted the BizTemplates import, izTemplates map, and project.type === 'biz' branch so the failing iz family no longer enters the web-builder preview build graph.
+- 2026-03-31: Removed iz templates from pps/web-builder/hooks/use-template-renderer.tsx. Root cause from Vercel traces: the new project creation preview only uses portfolio/linktree/menu, but the builder preview renderer still imported packages/templates/src/components/biz, which dragged in leaflet, 
+eact-leaflet, and sibling-package dependency resolution issues. Deleted the BizTemplates import, izTemplates map, and project.type === 'biz' branch so the failing iz family no longer enters the web-builder preview build graph.
 
 - 2026-03-31: Further narrowed web-builder shared-template imports to exact component files. Replaced family-level imports in pps/web-builder/hooks/use-template-renderer.tsx with direct component imports for each portfolio/linktree/menu template used there, and replaced family-level imports in pps/web-builder/app/preview/project/preview-frame.tsx with direct component imports for only the previewed templates. Goal: prevent family index.ts files from pulling unrelated siblings into the build graph and causing opaque Vercel compile failures.
 

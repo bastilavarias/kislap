@@ -1,11 +1,24 @@
 ---
+export const prerender = false;
+
 import Layout from '@/layouts/main.astro';
 import BuilderFeaturePage from '@/components/builder-pages/BuilderFeaturePage.astro';
 import { builderPages } from '@/data/builder-pages';
 
+const builderPagesEnabled = false;
+
+if (!builderPagesEnabled) {
+  return new Response("Not found", { status: 404 });
+}
+
 const page = builderPages["portfolio-builder"];
 ---
 
-<Layout title={page.title} description={page.description} image={page.image}>
+<Layout
+  title={page.title}
+  description={page.description}
+  image={page.image}
+  keywords={page.keywords}
+>
   <BuilderFeaturePage page={page} />
 </Layout>

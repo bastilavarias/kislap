@@ -3,17 +3,31 @@ import { APP_VERSION } from "astro:env/client";
 
 interface Props {
   url: string;
+  showVersion?: boolean;
 }
 
-export function LogoVersion({ url }: Props) {
+export function LogoVersion({ url, showVersion = false }: Props) {
   return (
-    <a href={url} className="flex items-center space-x-2 hover:opacity-80">
-      <div>
-        ✨<span className="text-xl font-bold">KISLAP</span>✨
-      </div>
-      <Badge variant="secondary" className="inline-flex">
-        v{APP_VERSION}
-      </Badge>
+    <a
+      href={url}
+      className="group flex items-center gap-3 transition hover:-translate-y-0.5"
+      aria-label="Kislap home"
+    >
+      <img
+        src="/assets/logo.png"
+        alt="Kislap"
+        width={3148}
+        height={768}
+        className="h-14 w-auto object-contain transition-transform duration-200 group-hover:-translate-y-0.5"
+      />
+      {showVersion ? (
+        <Badge
+          variant="secondary"
+          className="hidden rounded-none border-4 border-black bg-secondary px-2 py-1 font-mono text-[11px] font-black uppercase text-black shadow-[3px_3px_0_#000] sm:inline-flex"
+        >
+          v{APP_VERSION}
+        </Badge>
+      ) : null}
     </a>
   );
 }
