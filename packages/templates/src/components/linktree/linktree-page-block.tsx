@@ -38,22 +38,43 @@ function defaultWidth(layout: CompositionLayout, type: string): Exclude<BlockWid
   if (layout === "classic") return "full";
 
   if (layout === "bento") {
-    if (type === "banner" || type === "quote" || type === "experience") return "full";
+    if (
+      type === "banner" ||
+      type === "quote" ||
+      type === "experience" ||
+      type === "support"
+    ) {
+      return "full";
+    }
     if (type === "text") return "two-thirds";
     if (type === "skills") return "third";
     return "half";
   }
 
   if (layout === "portfolio") {
-    if (type === "experience" || type === "banner" || type === "quote") return "full";
+    if (
+      type === "experience" ||
+      type === "banner" ||
+      type === "quote" ||
+      type === "support"
+    ) {
+      return "full";
+    }
     if (type === "text") return "two-thirds";
     if (type === "skills" || type === "link") return "third";
     return "half";
   }
 
-  if (type === "banner" || type === "quote" || type === "text" || type === "experience") {
+  if (
+    type === "banner" ||
+    type === "quote" ||
+    type === "text" ||
+    type === "experience" ||
+    type === "support"
+  ) {
     return "full";
   }
+
   return "half";
 }
 
@@ -74,6 +95,7 @@ export function blockGridClass(
 ) {
   const requested = blockLayout?.width || "auto";
   const width = requested === "auto" ? defaultWidth(layout, type) : requested;
+
   return cn("col-span-12 h-full min-w-0", widthClasses[width]);
 }
 
@@ -84,9 +106,15 @@ function alignmentClass(align?: BlockAlign) {
 }
 
 function paddingClass(padding?: BlockPadding) {
-  if (padding === "compact") return "p-2";
-  if (padding === "spacious") return "p-5 @sm:p-6";
-  return "p-3 @sm:p-4";
+  if (padding === "compact") {
+    return "p-[calc(var(--theme-spacing)*2)]";
+  }
+
+  if (padding === "spacious") {
+    return "p-[calc(var(--theme-spacing)*5)] @sm:p-[calc(var(--theme-spacing)*6)]";
+  }
+
+  return "p-[calc(var(--theme-spacing)*3)] @sm:p-[calc(var(--theme-spacing)*4)]";
 }
 
 export function PageBlockFrame({
@@ -109,7 +137,10 @@ export function PageBlockFrame({
         "h-full",
         alignmentClass(block.layout_json?.align),
         hasStyleSettings && paddingClass(padding),
-        decorated && (brutal ? "border-2 border-border" : "rounded-[var(--radius)] border border-border shadow-[var(--shadow)]"),
+        decorated &&
+          (brutal
+            ? "border-2 border-border"
+            : "rounded-[var(--radius)] border border-border shadow-[var(--shadow)]"),
         variant === "card" && "bg-card",
         variant === "flat" && "bg-transparent",
         variant === "highlight" && "border-primary bg-primary/10",
@@ -127,6 +158,7 @@ function text(value: unknown) {
 
 function skillItems(value: unknown) {
   if (Array.isArray(value)) return value.map(String).filter(Boolean);
+
   return text(value)
     .split(",")
     .map((item) => item.trim())
@@ -145,12 +177,21 @@ export function PagePortfolioBlock({
   if (block.type === "text") {
     return (
       <PageBlockFrame block={block} brutal={brutal}>
-        <div className={cn("flex h-full flex-col", brutal ? "border-2 border-border bg-card p-4" : "rounded-[var(--radius)] border border-border bg-card p-5 shadow-[var(--shadow)]")}>
+        <div
+          className={cn(
+            "flex h-full flex-col",
+            brutal
+              ? "border-2 border-border bg-card p-[calc(var(--theme-spacing)*4)]"
+              : "rounded-[var(--radius)] border border-border bg-card p-[calc(var(--theme-spacing)*5)] shadow-[var(--shadow)]",
+          )}
+        >
           {text(content.heading) ? (
-            <h2 className={cn("text-xl font-black", brutal && "uppercase")}>{text(content.heading)}</h2>
+            <h2 className={cn("text-xl font-black", brutal && "uppercase")}>
+              {text(content.heading)}
+            </h2>
           ) : null}
           {text(content.body) ? (
-            <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-muted-foreground">
+            <p className="mt-[calc(var(--theme-spacing)*2)] whitespace-pre-line text-sm leading-relaxed text-muted-foreground">
               {text(content.body)}
             </p>
           ) : null}
@@ -161,8 +202,16 @@ export function PagePortfolioBlock({
 
   if (block.type === "project") {
     const projectUrl = text(content.url);
+
     const project = (
-      <div className={cn("flex h-full flex-col overflow-hidden", brutal ? "border-2 border-border bg-card" : "rounded-[var(--radius)] border border-border bg-card shadow-[var(--shadow)]")}>
+      <div
+        className={cn(
+          "flex h-full flex-col overflow-hidden",
+          brutal
+            ? "border-2 border-border bg-card"
+            : "rounded-[var(--radius)] border border-border bg-card shadow-[var(--shadow)]",
+        )}
+      >
         {text(content.image_url) ? (
           <img
             src={text(content.image_url)}
@@ -170,24 +219,31 @@ export function PagePortfolioBlock({
             className="h-40 w-full object-cover"
           />
         ) : null}
-        <div className="flex flex-1 flex-col p-4">
-          <div className="flex items-start justify-between gap-3">
-            <h2 className={cn("text-lg font-black", brutal && "uppercase")}>{text(content.title)}</h2>
+
+        <div className="flex flex-1 flex-col p-[calc(var(--theme-spacing)*4)]">
+          <div className="flex items-start justify-between gap-[calc(var(--theme-spacing)*3)]">
+            <h2 className={cn("text-lg font-black", brutal && "uppercase")}>
+              {text(content.title)}
+            </h2>
             {projectUrl ? <ArrowUpRight className="h-4 w-4 shrink-0" /> : null}
           </div>
+
           {text(content.description) ? (
-            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+            <p className="mt-[calc(var(--theme-spacing)*2)] text-sm leading-relaxed text-muted-foreground">
               {text(content.description)}
             </p>
           ) : null}
+
           {skillItems(content.technologies).length ? (
-            <div className="mt-auto flex flex-wrap gap-2 pt-3">
+            <div className="mt-auto flex flex-wrap gap-[calc(var(--theme-spacing)*2)] pt-[calc(var(--theme-spacing)*3)]">
               {skillItems(content.technologies).map((item) => (
                 <span
                   key={item}
                   className={cn(
                     "px-2 py-1 text-[10px] font-bold uppercase",
-                    brutal ? "border-2 border-border" : "rounded-[var(--radius)] border border-border",
+                    brutal
+                      ? "border-2 border-border"
+                      : "rounded-[var(--radius)] border border-border",
                   )}
                 >
                   {item}
@@ -202,10 +258,17 @@ export function PagePortfolioBlock({
     return (
       <PageBlockFrame block={block} brutal={brutal}>
         {projectUrl ? (
-          <a href={projectUrl} target="_blank" rel="noopener noreferrer" className="block h-full">
+          <a
+            href={projectUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block h-full"
+          >
             {project}
           </a>
-        ) : project}
+        ) : (
+          project
+        )}
       </PageBlockFrame>
     );
   }
@@ -213,14 +276,35 @@ export function PagePortfolioBlock({
   if (block.type === "experience") {
     return (
       <PageBlockFrame block={block} brutal={brutal}>
-        <div className={cn("flex h-full flex-col", brutal ? "border-2 border-border bg-card p-4" : "rounded-[var(--radius)] border border-border bg-card p-5 shadow-[var(--shadow)]")}>
+        <div
+          className={cn(
+            "flex h-full flex-col",
+            brutal
+              ? "border-2 border-border bg-card p-[calc(var(--theme-spacing)*4)]"
+              : "rounded-[var(--radius)] border border-border bg-card p-[calc(var(--theme-spacing)*5)] shadow-[var(--shadow)]",
+          )}
+        >
           <p className="text-xs font-bold uppercase tracking-[0.12em] text-muted-foreground">
             {[text(content.start), text(content.end)].filter(Boolean).join(" — ")}
           </p>
-          <h2 className={cn("mt-2 text-lg font-black", brutal && "uppercase")}>{text(content.role)}</h2>
-          {text(content.company) ? <p className="mt-1 text-sm font-semibold">{text(content.company)}</p> : null}
+
+          <h2
+            className={cn(
+              "mt-[calc(var(--theme-spacing)*2)] text-lg font-black",
+              brutal && "uppercase",
+            )}
+          >
+            {text(content.role)}
+          </h2>
+
+          {text(content.company) ? (
+            <p className="mt-[var(--theme-spacing)] text-sm font-semibold">
+              {text(content.company)}
+            </p>
+          ) : null}
+
           {text(content.description) ? (
-            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+            <p className="mt-[calc(var(--theme-spacing)*3)] text-sm leading-relaxed text-muted-foreground">
               {text(content.description)}
             </p>
           ) : null}
@@ -231,19 +315,30 @@ export function PagePortfolioBlock({
 
   if (block.type === "skills") {
     const items = skillItems(content.items);
+
     return (
       <PageBlockFrame block={block} brutal={brutal}>
-        <div className={cn("flex h-full flex-col", brutal ? "border-2 border-border bg-card p-4" : "rounded-[var(--radius)] border border-border bg-card p-5 shadow-[var(--shadow)]")}>
+        <div
+          className={cn(
+            "flex h-full flex-col",
+            brutal
+              ? "border-2 border-border bg-card p-[calc(var(--theme-spacing)*4)]"
+              : "rounded-[var(--radius)] border border-border bg-card p-[calc(var(--theme-spacing)*5)] shadow-[var(--shadow)]",
+          )}
+        >
           <h2 className={cn("text-lg font-black", brutal && "uppercase")}>
             {text(content.heading) || "Skills"}
           </h2>
-          <div className="mt-3 flex flex-wrap gap-2">
+
+          <div className="mt-[calc(var(--theme-spacing)*3)] flex flex-wrap gap-[calc(var(--theme-spacing)*2)]">
             {items.map((item) => (
               <span
                 key={item}
                 className={cn(
                   "px-2 py-1 text-xs font-semibold",
-                  brutal ? "border-2 border-border" : "rounded-[var(--radius)] border border-border bg-secondary",
+                  brutal
+                    ? "border-2 border-border"
+                    : "rounded-[var(--radius)] border border-border bg-secondary",
                 )}
               >
                 {item}

@@ -53,7 +53,7 @@ function PromoSection({
       onClick={(event: React.MouseEvent<HTMLAnchorElement>) =>
         trackThenNavigate(event, section.url as string, onTrackClick)
       }
-      className="flex h-full flex-col rounded-[var(--radius)] border border-border bg-card p-3 shadow-[var(--shadow)] transition hover:bg-accent/30"
+      className="flex h-full flex-col rounded-[var(--radius)] border border-border bg-card p-[calc(var(--theme-spacing)*3)] shadow-[var(--shadow)] transition hover:bg-accent/30"
     >
       {section.image_url ? (
         <div className="overflow-hidden rounded-[var(--radius)] border border-border bg-muted">
@@ -65,13 +65,13 @@ function PromoSection({
         </div>
       ) : null}
 
-      <div className="mt-3 flex items-center justify-between gap-3">
+      <div className="mt-[calc(var(--theme-spacing)*3)] flex items-center justify-between gap-[calc(var(--theme-spacing)*3)]">
         <p className="text-sm font-semibold">{section.title}</p>
         <ArrowUpRight className="h-4 w-4 shrink-0 text-muted-foreground" />
       </div>
 
       {section.description ? (
-        <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+        <p className="mt-[var(--theme-spacing)] text-sm leading-relaxed text-muted-foreground">
           {section.description}
         </p>
       ) : null}
@@ -81,19 +81,19 @@ function PromoSection({
 
 function SupportSection({ section }: { section: LinktreeSection }) {
   return (
-    <div className="h-full rounded-[var(--radius)] border border-border bg-card p-4 shadow-[var(--shadow)]">
-      <div className="grid grid-cols-1 gap-4 @sm:grid-cols-[1fr_112px] @sm:items-center">
+    <div className="h-full rounded-[var(--radius)] border border-border bg-card p-[calc(var(--theme-spacing)*4)] shadow-[var(--shadow)]">
+      <div className="grid grid-cols-1 gap-[calc(var(--theme-spacing)*4)] @sm:grid-cols-[1fr_112px] @sm:items-center">
         <div>
           {section.title ? (
             <p className="text-sm font-semibold">{section.title}</p>
           ) : null}
           {section.description ? (
-            <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+            <p className="mt-[var(--theme-spacing)] text-sm leading-relaxed text-muted-foreground">
               {section.description}
             </p>
           ) : null}
           {section.support_note ? (
-            <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+            <p className="mt-[var(--theme-spacing)] text-sm leading-relaxed text-muted-foreground">
               {section.support_note}
             </p>
           ) : null}
@@ -123,7 +123,7 @@ function QuoteSection({ section }: { section: LinktreeSection }) {
     <div
       style={accentStyle}
       className={cn(
-        "h-full rounded-[var(--radius)] border border-border p-6 shadow-[var(--shadow)] @sm:p-8",
+        "h-full rounded-[var(--radius)] border border-border p-[calc(var(--theme-spacing)*6)] shadow-[var(--shadow)] @sm:p-[calc(var(--theme-spacing)*8)]",
         hasAccent ? "" : "bg-card",
       )}
     >
@@ -138,7 +138,7 @@ function QuoteSection({ section }: { section: LinktreeSection }) {
       {section.quote_author ? (
         <p
           className={cn(
-            "mt-3 text-center text-xs uppercase tracking-[0.16em]",
+            "mt-[calc(var(--theme-spacing)*3)] text-center text-xs uppercase tracking-[0.16em]",
             hasAccent ? "text-white/90" : "text-muted-foreground",
           )}
         >
@@ -156,7 +156,7 @@ function BannerSection({ section }: { section: LinktreeSection }) {
     <div
       style={accentStyle}
       className={cn(
-        "h-full rounded-[var(--radius)] border border-border p-3 shadow-[var(--shadow)]",
+        "h-full rounded-[var(--radius)] border border-border p-[calc(var(--theme-spacing)*3)] shadow-[var(--shadow)]",
         hasAccent ? "" : "bg-card",
       )}
     >

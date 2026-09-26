@@ -81,11 +81,11 @@ function LinkCard({
       rel="noopener noreferrer"
       onClick={(event) => trackThenNavigate(event, link.url, onTrackClick)}
       className={cn(
-        "group block h-full rounded-[var(--radius)] border border-border bg-card p-3 shadow-[var(--shadow)]",
+        "group block h-full rounded-[var(--radius)] border border-border bg-card p-[calc(var(--theme-spacing)*3)] shadow-[var(--shadow)]",
         "transition hover:bg-accent/30",
       )}
     >
-      <div className="flex h-full items-center gap-3">
+      <div className="flex h-full items-center gap-[calc(var(--theme-spacing)*3)]">
         <div
           className={cn(
             "grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-[var(--radius)] border border-border",
@@ -204,17 +204,17 @@ export function LinktreeDefault({
   ]);
 
   return (
-    <div className="@container min-h-screen w-full p-4 @sm:p-6" style={pageBackgroundStyle}>
+    <div className="@container min-h-screen w-full p-[calc(var(--theme-spacing)*4)] @sm:p-[calc(var(--theme-spacing)*6)]" style={pageBackgroundStyle}>
       <motion.section
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.25 }}
         className={cn(
-          "mx-auto w-full rounded-[var(--radius)] border border-border bg-background/95 p-4 shadow-[var(--shadow)] @sm:p-6",
+          "mx-auto w-full rounded-[var(--radius)] border border-border bg-background/95 p-[calc(var(--theme-spacing)*4)] shadow-[var(--shadow)] @sm:p-[calc(var(--theme-spacing)*6)]",
           pageShellWidthClass(compositionLayout),
         )}
       >
-        <div className="mb-6 flex items-center justify-end gap-2">
+        <div className="mb-[calc(var(--theme-spacing)*6)] flex items-center justify-end gap-[calc(var(--theme-spacing)*2)]">
           <ThemeSwitchToggle
             isDarkMode={themeMode === "dark"}
             onSetThemeMode={onSetThemeMode}
@@ -244,16 +244,16 @@ export function LinktreeDefault({
             ) : null}
           </div>
 
-          <h1 className="mt-4 text-2xl font-bold tracking-tight">
+          <h1 className="mt-[calc(var(--theme-spacing)*4)] text-2xl font-bold tracking-tight">
             {linktree?.name}
           </h1>
           {linktree?.tagline ? (
-            <p className="mx-auto mt-2 max-w-[42ch] text-sm text-muted-foreground">
+            <p className="mx-auto mt-[calc(var(--theme-spacing)*2)] max-w-[42ch] text-sm text-muted-foreground">
               {linktree.tagline}
             </p>
           ) : null}
 
-          <div className="mt-3 flex flex-wrap items-center justify-center gap-2 text-sm text-muted-foreground">
+          <div className="mt-[calc(var(--theme-spacing)*3)] flex flex-wrap items-center justify-center gap-[calc(var(--theme-spacing)*2)] text-sm text-muted-foreground">
             {phoneValue ? (
               <a
                 href={`tel:${phoneValue}`}
@@ -282,13 +282,13 @@ export function LinktreeDefault({
           </div>
 
           {linktree?.about ? (
-            <p className="mx-auto mt-2 max-w-[54ch] text-sm leading-relaxed text-muted-foreground">
+            <p className="mx-auto mt-[calc(var(--theme-spacing)*2)] max-w-[54ch] text-sm leading-relaxed text-muted-foreground">
               {linktree.about}
             </p>
           ) : null}
         </div>
 
-        <div className="mt-6 grid grid-flow-dense grid-cols-12 items-stretch gap-3">
+        <div className="mt-[calc(var(--theme-spacing)*6)] grid grid-flow-dense grid-cols-12 items-stretch gap-[calc(var(--theme-spacing)*3)]">
           {contentItems.map((item) => {
             const block: FlexibleBlockData | null =
               item.kind === "link" && item.link
