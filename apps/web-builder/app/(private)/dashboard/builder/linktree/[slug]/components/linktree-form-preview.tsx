@@ -1,13 +1,16 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState, type MouseEvent } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Laptop, Smartphone, Tablet } from 'lucide-react';
 import { defaultThemeState } from '@/config/theme';
-import { Settings } from '@/contexts/settings-context';
-import { LinktreeFormValues } from '@/lib/schemas/linktree';
-import { PreviewSiteBuilder } from '@/app/(private)/dashboard/projects/new/components/preview-site-builder';
+import type { Settings } from '@/contexts/settings-context';
+import type { LinktreeFormValues } from '@/lib/schemas/linktree';
 
 type PreviewViewport = 'desktop' | 'tablet' | 'mobile';
+
+const PREVIEW_ORIGIN =
+  process.env.NEXT_PUBLIC_SITE_PREVIEW_ORIGIN || 'https://preview.kislap.app';
+const PREVIEW_URL = `${PREVIEW_ORIGIN}/builder-preview`;
 
 const VIEWPORT_OPTIONS: Array<{
   id: PreviewViewport;
@@ -80,6 +83,9 @@ function createLinktreePreviewProject({
     published: 0,
     created_at: now,
     updated_at: now,
+    portfolio: null,
+    biz: null,
+    menu: null,
     linktree: {
       id: 1,
       project_id: 1,
@@ -111,13 +117,13 @@ export function LinktreeFormPreview({
 }) {
   const [viewport, setViewport] = useState<PreviewViewport>('desktop');
   const [deviceWidth, setDeviceWidth] = useState(390);
+  const [availableWidth, setAvailableWidth] = useState(1280);
+  const [contentHeight, setContentHeight] = useState(900);
   const [logoPreviewUrl, setLogoPreviewUrl] = useState<string | null>(null);
   const viewportSelectionLocked = useRef(false);
-  const viewportWidth = getViewportWidth(viewport, deviceWidth);
   const scrollAreaRef = useRef<HTMLDivElement | null>(null);
-  const contentRef = useRef<HTMLDivElement | null>(null);
-  const [availableWidth, setAvailableWidth] = useState(viewportWidth);
-  const [contentHeight, setContentHeight] = useState(960);
+  const iframeRef = useRef<HTMLIFrameElement | null>(null);
+  const viewportWidth = getViewportWidth(viewport, deviceWidth);
 
   useEffect(() => {
     const syncDeviceViewport = () => {
@@ -125,13 +131,9 @@ export function LinktreeFormPreview({
       setDeviceWidth(width);
 
       if (viewportSelectionLocked.current) return;
-      if (width < 640) {
-        setViewport('mobile');
-      } else if (width < 1024) {
-        setViewport('tablet');
-      } else {
-        setViewport('desktop');
-      }
+      if (width < 640) setViewport('mobile');
+      else if (width < 1024) setViewport('tablet');
+      else setViewport('desktop');
     };
 
     syncDeviceViewport();
@@ -148,7 +150,6 @@ export function LinktreeFormPreview({
 
     const objectUrl = URL.createObjectURL(logoFile);
     setLogoPreviewUrl(objectUrl);
-
     return () => URL.revokeObjectURL(objectUrl);
   }, [values.logo]);
 
@@ -160,54 +161,60 @@ export function LinktreeFormPreview({
         projectName: values.name?.trim() || 'Page Preview',
         logoUrl: logoPreviewUrl || values.logo_url || '',
       }),
-    [logoPreviewUrl, themeSettings, values]
+    [logoPreviewUrl, themeSettings, values],
   );
 
-  useEffect(() => {
-    const scrollArea = scrollAreaRef.current;
-    const contentNode = contentRef.current;
-    if (!scrollArea || !contentNode) return;
+  const postPreviewProject = useCallback(() => {
+    iframeRef.current?.contentWindow?.postMessage(
+      {
+        type: 'kislap:preview-project',
+        project: previewProject,
+        mode: themeSettings?.mode || 'light',
+      },
+      PREVIEW_ORIGIN,
+    );
+  }, [previewProject, themeSettings?.mode]);
 
-    const updateMeasurements = () => {
-      setAvailableWidth(scrollArea.clientWidth);
-      setContentHeight(contentNode.scrollHeight);
+  useEffect(() => {
+    postPreviewProject();
+  }, [postPreviewProject]);
+
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      if (event.origin !== PREVIEW_ORIGIN || !event.data) return;
+
+      if (event.data.type === 'kislap:preview-height') {
+        const height = Number(event.data.height);
+        if (Number.isFinite(height) && height > 0) {
+          setContentHeight(height);
+        }
+      }
+
+      if (event.data.type === 'kislap:preview-block-select') {
+        const index = Number(event.data.index);
+        if (Number.isInteger(index) && index >= 0) {
+          onBlockSelect?.(index);
+        }
+      }
     };
 
-    updateMeasurements();
-
-    const resizeObserver = new ResizeObserver(() => {
-      updateMeasurements();
-    });
-
-    resizeObserver.observe(scrollArea);
-    resizeObserver.observe(contentNode);
-
-    return () => resizeObserver.disconnect();
-  }, [previewProject, themeSettings, viewport]);
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [onBlockSelect]);
 
   useEffect(() => {
-    const scrollArea = scrollAreaRef.current;
-    if (!scrollArea) return;
-    scrollArea.scrollTop = 0;
-    scrollArea.scrollLeft = 0;
-  }, [themeSettings, viewport]);
+    const node = scrollAreaRef.current;
+    if (!node) return;
 
-  const handlePreviewClick = (event: MouseEvent<HTMLDivElement>) => {
-    if (!onBlockSelect) return;
+    const updateWidth = () => setAvailableWidth(node.clientWidth);
+    updateWidth();
 
-    const target = event.target as HTMLElement;
-    const block = target.closest<HTMLElement>('[data-kislap-block-order]');
-    if (!block) return;
+    const observer = new ResizeObserver(updateWidth);
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
 
-    const index = Number(block.dataset.kislapBlockOrder);
-    if (!Number.isInteger(index) || index < 0) return;
-
-    event.preventDefault();
-    event.stopPropagation();
-    onBlockSelect(index);
-  };
-
-  const scale = Math.min(1, Math.max(0.3, availableWidth / viewportWidth));
+  const scale = Math.min(1, Math.max(0.25, availableWidth / viewportWidth));
   const previewShellWidth = Math.ceil(viewportWidth * scale);
   const previewShellHeight = Math.ceil(contentHeight * scale);
 
@@ -220,7 +227,7 @@ export function LinktreeFormPreview({
               Live preview
             </p>
             <p className="mt-2 text-sm text-muted-foreground">
-              Mobile defaults to this device width so responsive spacing matches the live page.
+              This is the actual public-site renderer using your current unsaved draft.
             </p>
           </div>
 
@@ -255,23 +262,26 @@ export function LinktreeFormPreview({
 
       <div
         ref={scrollAreaRef}
-        onClickCapture={handlePreviewClick}
         className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden bg-muted/10"
       >
         <div
           className="mx-auto"
           style={{ width: previewShellWidth, height: previewShellHeight }}
         >
-          <div
-            ref={contentRef}
+          <iframe
+            ref={iframeRef}
+            src={PREVIEW_URL}
+            title="Kislap public site preview"
+            onLoad={postPreviewProject}
+            scrolling="no"
+            className="block border-0 bg-background"
             style={{
               width: viewportWidth,
+              height: contentHeight,
               transform: `scale(${scale})`,
               transformOrigin: 'top left',
             }}
-          >
-            <PreviewSiteBuilder project={previewProject as any} />
-          </div>
+          />
         </div>
       </div>
     </div>

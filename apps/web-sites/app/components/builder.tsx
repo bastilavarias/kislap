@@ -14,23 +14,30 @@ import AcknowledgementBanner from './acknowledgement-banner';
 interface BuilderProps {
   initialProject: Project | null;
   initialSubdomain: string;
+  preview?: boolean;
+  controlledThemeMode?: Mode;
 }
 
 function isValidMode(value: string | null): value is Mode {
   return value === 'light' || value === 'dark' || value === 'system';
 }
 
-export function Builder({ initialProject, initialSubdomain }: BuilderProps) {
-  const [project] = useState<Project | null>(initialProject);
-  const [themeMode, setThemeMode] = useState<Mode>('system');
+export function Builder({
+  initialProject,
+  initialSubdomain,
+  preview = false,
+  controlledThemeMode,
+}: BuilderProps) {
+  const project = initialProject;
+  const [themeMode, setThemeMode] = useState<Mode>(controlledThemeMode || 'system');
   const [systemMode, setSystemMode] = useState<'light' | 'dark'>('light');
 
   const { trackPageView } = usePageActivity();
 
   const storageKey = useMemo(() => {
-    if (!project) return null;
+    if (preview || !project) return null;
     return `kislap:site-theme-mode:${project.type}:${project.id ?? initialSubdomain}`;
-  }, [project, initialSubdomain]);
+  }, [preview, project, initialSubdomain]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -45,32 +52,37 @@ export function Builder({ initialProject, initialSubdomain }: BuilderProps) {
   }, []);
 
   useEffect(() => {
+    if (controlledThemeMode) {
+      setThemeMode(controlledThemeMode);
+      return;
+    }
+
     if (!storageKey || typeof window === 'undefined') return;
 
     const savedMode = window.localStorage.getItem(storageKey);
     setThemeMode(isValidMode(savedMode) ? savedMode : 'system');
-  }, [storageKey]);
+  }, [controlledThemeMode, storageKey]);
 
   const setPersistedThemeMode = useCallback<React.Dispatch<React.SetStateAction<Mode>>>(
     (value) => {
       setThemeMode((previousMode) => {
         const nextMode = typeof value === 'function' ? value(previousMode) : value;
 
-        if (storageKey && typeof window !== 'undefined') {
+        if (!preview && storageKey && typeof window !== 'undefined') {
           window.localStorage.setItem(storageKey, nextMode);
         }
 
         return nextMode;
       });
     },
-    [storageKey]
+    [preview, storageKey]
   );
 
   useEffect(() => {
-    if (project?.id) {
+    if (!preview && project?.id) {
       trackPageView(project.id);
     }
-  }, [project, trackPageView]);
+  }, [preview, project, trackPageView]);
 
   if (!project) {
     return (
@@ -119,8 +131,9 @@ export function Builder({ initialProject, initialSubdomain }: BuilderProps) {
   const themeStyles: ThemeStyles =
     rawStyles && typeof rawStyles === 'object' ? (rawStyles as ThemeStyles) : defaultThemeState;
 
+  const effectiveThemeMode = controlledThemeMode || themeMode;
   const resolvedThemeMode: 'light' | 'dark' =
-    themeMode === 'system' ? systemMode : themeMode;
+    effectiveThemeMode === 'system' ? systemMode : effectiveThemeMode;
 
   const TemplateComponent = renderTemplate(
     project,

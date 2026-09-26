@@ -14,6 +14,10 @@ export default function middleware(req: NextRequest) {
     !hostname.endsWith(rootDomain) &&
     hostname !== 'localhost';
 
+  if (url.pathname.startsWith('/builder-preview')) {
+    return NextResponse.next();
+  }
+
   const currentHost = hostname.replace(`.${rootDomain}`, '');
   if (hostname.includes('.') && !hostname.includes('www') && hostname !== rootDomain) {
     url.pathname = `/sites/${currentHost}${url.pathname}`;
@@ -21,7 +25,10 @@ export default function middleware(req: NextRequest) {
     return NextResponse.rewrite(url);
   }
 
-  response.headers.set('Content-Security-Policy', "frame-ancestors 'self' https://kislap.app;");
+  response.headers.set(
+    'Content-Security-Policy',
+    "frame-ancestors 'self' https://kislap.app https://*.kislap.app;"
+  );
 
   return NextResponse.next();
 }
