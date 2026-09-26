@@ -61,6 +61,7 @@ export function SectionsEditor({
       {selectedIndex !== null && fields[selectedIndex] ? (
         <div className="mb-4">
           <SectionEditorPanel
+            key={selectedIndex}
             index={selectedIndex}
             formMethods={formMethods}
             onDone={() => onSelectedIndexChange(null)}

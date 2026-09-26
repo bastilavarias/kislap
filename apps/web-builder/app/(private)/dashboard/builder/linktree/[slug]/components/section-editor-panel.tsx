@@ -1,6 +1,6 @@
 'use client';
 
-import { Controller, type UseFormReturn } from 'react-hook-form';
+import { Controller, useForm, type UseFormReturn } from 'react-hook-form';
 import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -16,9 +16,37 @@ type Props = {
   onDone: () => void;
 };
 
+function cloneSection(section: LinktreeFormValues['sections'][number]) {
+  return {
+    ...section,
+    content: section.content ? { ...section.content } : undefined,
+    layout: section.layout ? { ...section.layout } : { width: 'auto' as const, align: 'left' as const },
+    style: section.style
+      ? { ...section.style }
+      : { variant: 'default' as const, padding: 'normal' as const },
+  };
+}
+
 export function SectionEditorPanel({ index, formMethods, onDone }: Props) {
-  const { watch, setValue, register, control } = formMethods;
-  const type = watch(`sections.${index}.type`) as SectionType;
+  const sourceSection = cloneSection(formMethods.getValues(`sections.${index}`));
+
+  const draftForm = useForm<LinktreeFormValues>({
+    defaultValues: {
+      sections: [sourceSection],
+    },
+  });
+
+  const { watch, setValue, register, control, getValues } = draftForm;
+  const type = watch('sections.0.type') as SectionType;
+
+  const commitDraft = () => {
+    const nextSection = getValues('sections.0');
+    formMethods.setValue(`sections.${index}`, nextSection, {
+      shouldDirty: true,
+      shouldTouch: true,
+    });
+    onDone();
+  };
 
   return (
     <div className="border-2 border-black bg-background shadow-[4px_4px_0_#000]">
@@ -26,7 +54,7 @@ export function SectionEditorPanel({ index, formMethods, onDone }: Props) {
         <div>
           <p className="font-black uppercase">Edit {typeLabel(type)}</p>
           <p className="mt-0.5 text-xs text-muted-foreground">
-            Changes appear in the preview immediately.
+            Draft changes stay here until you click Done editing.
           </p>
         </div>
         <Button
@@ -35,7 +63,8 @@ export function SectionEditorPanel({ index, formMethods, onDone }: Props) {
           size="icon"
           className="h-8 w-8 border-2 border-black bg-background"
           onClick={onDone}
-          aria-label="Close block editor"
+          aria-label="Discard block changes"
+          title="Discard changes"
         >
           <X className="h-4 w-4" />
         </Button>
@@ -45,7 +74,7 @@ export function SectionEditorPanel({ index, formMethods, onDone }: Props) {
         <div className="space-y-2">
           <Label className="font-black uppercase tracking-wide">Block type</Label>
           <Controller
-            name={`sections.${index}.type`}
+            name="sections.0.type"
             control={control}
             render={({ field }) => (
               <Select value={field.value} onValueChange={field.onChange}>
@@ -65,17 +94,20 @@ export function SectionEditorPanel({ index, formMethods, onDone }: Props) {
         </div>
 
         {renderTypeFields({
-          editIndex: index,
+          editIndex: 0,
           type,
           register,
           setValue,
           watch,
         })}
 
-        <BlockLayoutControls index={index} watch={watch} setValue={setValue} />
+        <BlockLayoutControls index={0} watch={watch} setValue={setValue} />
 
-        <div className="flex justify-end border-t-2 border-black pt-4">
-          <Button type="button" onClick={onDone}>
+        <div className="flex items-center justify-between gap-3 border-t-2 border-black pt-4">
+          <Button type="button" variant="outline" onClick={onDone}>
+            Cancel
+          </Button>
+          <Button type="button" onClick={commitDraft}>
             Done editing
           </Button>
         </div>

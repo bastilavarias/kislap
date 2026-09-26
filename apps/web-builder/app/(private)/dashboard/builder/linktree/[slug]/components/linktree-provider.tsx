@@ -57,7 +57,7 @@ export function LinktreeProvider({ children }: { children: ReactNode }) {
   const [isSaving, setIsSaving] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
   const [user, setUser] = useState<AuthUser | null>(null);
-  const [linktreeID, setLinktreeID] = useState(null);
+  const [linktreeID, setLinktreeID] = useState<number | null>(null);
 
   const [files, setFiles] = useState<File[]>([]);
   const [isFileUploadDialogOpen, setIsFileUploadDialogOpen] = useState(false);
@@ -132,8 +132,21 @@ export function LinktreeProvider({ children }: { children: ReactNode }) {
         const response = await create(formData as any);
 
         if (response.success) {
-          // @ts-ignore
-          setLinktreeID(response?.data?.linktree?.id || null);
+          const savedLinktree = response?.data?.linktree;
+          setLinktreeID(savedLinktree?.id || null);
+
+          if (savedLinktree) {
+            reset(mapToFormValues(savedLinktree));
+            setProject((current) =>
+              current
+                ? {
+                    ...current,
+                    linktree: savedLinktree,
+                  }
+                : current
+            );
+          }
+
           toast.success('Saved successfully');
         } else {
           toast.error(response.message || 'Error saving page');

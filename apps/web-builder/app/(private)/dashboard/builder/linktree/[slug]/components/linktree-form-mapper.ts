@@ -11,8 +11,8 @@ export function mapToFormValues(source: APIResponseLinktree): LinktreeFormValues
     image_url: socialLink.image_url || '',
     icon_key: socialLink.icon_key || '',
     content: socialLink.content_json || undefined,
-    layout: socialLink.layout_json || undefined,
-    style: socialLink.style_json || undefined,
+    layout: socialLink.layout_json || { width: 'auto', align: 'left' },
+    style: socialLink.style_json || { variant: 'default', padding: 'normal' },
     placement_order: socialLink.placement_order ?? 0,
   }));
 
@@ -33,8 +33,8 @@ export function mapToFormValues(source: APIResponseLinktree): LinktreeFormValues
     support_qr_image_url: section.support_qr_image_url || '',
     cta_label: section.cta_label || '',
     content: section.content_json || undefined,
-    layout: section.layout_json || undefined,
-    style: section.style_json || undefined,
+    layout: section.layout_json || { width: 'auto', align: 'left' },
+    style: section.style_json || { variant: 'default', padding: 'normal' },
     placement_order: section.placement_order ?? 0,
   }));
 

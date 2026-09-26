@@ -8,7 +8,7 @@ export function useLinktree() {
   const { apiPost } = useApi();
 
   const create = async (form: LinktreeFormValues) => {
-    return await apiPost<APIResponseLinktree>('api/linktree', form);
+    return await apiPost<{ linktree: APIResponseLinktree }>('api/linktree', form);
   };
 
   return {

@@ -56,6 +56,13 @@ This file mirrors the canonical rules in root `AGENTS.md`.
 - If generating brand art, use this base prompt:
   `Bold neo-brutalist digital illustration of an oversized web form transforming into a published website page. Large form fields, checkboxes, upload controls, and a submit action flow into clean public page sections, links, menu rows, and profile blocks. Thick black outlines, sharp edges, hard offset shadows, white background, black, Kislap red #ff3132, bright yellow, cyan, and small pink accents. Practical, energetic, polished but raw. No people, no logos, no readable brand names, no glassmorphism, no soft 3D, no gradients, no fake dashboard charts, no card frame. Landscape 16:10, suitable for a sign-in or marketing left-side visual with open space near one edge.`
 
+## Kislap Deployment Rule
+
+- Any code change that affects published/public Kislap sites (`apps/web-sites`, shared public templates under `packages/templates`, or public-site rendering behavior) must be deployed to the Cloudflare Worker in the same task using Wrangler/OpenNext before the task is considered complete.
+- For public-site deploys, clean the ignored generated OpenNext output first (`rm -rf apps/web-sites/.open-next`), rebuild, then deploy with Wrangler/OpenNext so stale generated files cannot duplicate environment exports.
+- After deploy, verify Wrangler records a new `kislap-public` version and smoke-test a published `*.kislap.app` page when one is available.
+- Builder-only changes do not require a Worker deploy unless they also modify shared public rendering code.
+
 ## Continuity Ledger (compaction-safe)
 
 Maintain a single continuity file for this workspace: `CONTINUITY.md`.

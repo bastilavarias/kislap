@@ -29,7 +29,7 @@ export function ProfileEditor({ formMethods }: Props) {
         </p>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-[104px_minmax(0,1fr)]">
+      <div className="space-y-4">
         <div>
           <Label className="mb-2 block">Photo / Logo</Label>
           <ImageUploadField
