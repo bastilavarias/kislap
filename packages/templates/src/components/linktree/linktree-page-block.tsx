@@ -108,7 +108,7 @@ export function PageBlockFrame({
       className={cn(
         alignmentClass(block.layout_json?.align),
         hasStyleSettings && paddingClass(padding),
-        decorated && (brutal ? "border-2 border-border" : "rounded-2xl border border-border/70"),
+        decorated && (brutal ? "border-2 border-border" : "rounded-[var(--radius)] border border-border shadow-[var(--shadow)]"),
         variant === "card" && "bg-card",
         variant === "flat" && "bg-transparent",
         variant === "highlight" && "border-primary bg-primary/10",
@@ -144,7 +144,7 @@ export function PagePortfolioBlock({
   if (block.type === "text") {
     return (
       <PageBlockFrame block={block} brutal={brutal}>
-        <div className={cn("h-full", brutal ? "border-2 border-border bg-card p-4" : "rounded-2xl border border-border/70 bg-card p-5")}>
+        <div className={cn("h-full", brutal ? "border-2 border-border bg-card p-4" : "rounded-[var(--radius)] border border-border bg-card p-5 shadow-[var(--shadow)]")}>
           {text(content.heading) ? (
             <h2 className={cn("text-xl font-black", brutal && "uppercase")}>{text(content.heading)}</h2>
           ) : null}
@@ -161,7 +161,7 @@ export function PagePortfolioBlock({
   if (block.type === "project") {
     const projectUrl = text(content.url);
     const project = (
-      <div className={cn("h-full overflow-hidden", brutal ? "border-2 border-border bg-card" : "rounded-2xl border border-border/70 bg-card")}>
+      <div className={cn("h-full overflow-hidden", brutal ? "border-2 border-border bg-card" : "rounded-[var(--radius)] border border-border bg-card shadow-[var(--shadow)]")}>
         {text(content.image_url) ? (
           <img
             src={text(content.image_url)}
@@ -186,7 +186,7 @@ export function PagePortfolioBlock({
                   key={item}
                   className={cn(
                     "px-2 py-1 text-[10px] font-bold uppercase",
-                    brutal ? "border-2 border-border" : "rounded-md border border-border/70",
+                    brutal ? "border-2 border-border" : "rounded-[var(--radius)] border border-border",
                   )}
                 >
                   {item}
@@ -212,7 +212,7 @@ export function PagePortfolioBlock({
   if (block.type === "experience") {
     return (
       <PageBlockFrame block={block} brutal={brutal}>
-        <div className={cn("h-full", brutal ? "border-2 border-border bg-card p-4" : "rounded-2xl border border-border/70 bg-card p-5")}>
+        <div className={cn("h-full", brutal ? "border-2 border-border bg-card p-4" : "rounded-[var(--radius)] border border-border bg-card p-5 shadow-[var(--shadow)]")}>
           <p className="text-xs font-bold uppercase tracking-[0.12em] text-muted-foreground">
             {[text(content.start), text(content.end)].filter(Boolean).join(" — ")}
           </p>
@@ -232,7 +232,7 @@ export function PagePortfolioBlock({
     const items = skillItems(content.items);
     return (
       <PageBlockFrame block={block} brutal={brutal}>
-        <div className={cn("h-full", brutal ? "border-2 border-border bg-card p-4" : "rounded-2xl border border-border/70 bg-card p-5")}>
+        <div className={cn("h-full", brutal ? "border-2 border-border bg-card p-4" : "rounded-[var(--radius)] border border-border bg-card p-5 shadow-[var(--shadow)]")}>
           <h2 className={cn("text-lg font-black", brutal && "uppercase")}>
             {text(content.heading) || "Skills"}
           </h2>
@@ -242,7 +242,7 @@ export function PagePortfolioBlock({
                 key={item}
                 className={cn(
                   "px-2 py-1 text-xs font-semibold",
-                  brutal ? "border-2 border-border" : "rounded-full border border-border/70 bg-secondary",
+                  brutal ? "border-2 border-border" : "rounded-[var(--radius)] border border-border bg-secondary",
                 )}
               >
                 {item}

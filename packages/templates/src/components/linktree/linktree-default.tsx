@@ -81,14 +81,14 @@ function LinkCard({
       rel="noopener noreferrer"
       onClick={(event) => trackThenNavigate(event, link.url, onTrackClick)}
       className={cn(
-        "group block rounded-2xl border border-border/70 bg-card p-3",
+        "group block rounded-[var(--radius)] border border-border bg-card p-3 shadow-[var(--shadow)]",
         "transition hover:bg-accent/30",
       )}
     >
       <div className="flex items-center gap-3">
         <div
           className={cn(
-            "grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-xl border border-border/70",
+            "grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-[var(--radius)] border border-border",
             hasPresetIcon
               ? ICON_BADGE_STYLES[iconKey]
               : "bg-secondary text-secondary-foreground",
@@ -210,7 +210,7 @@ export function LinktreeDefault({
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.25 }}
         className={cn(
-          "mx-auto w-full rounded-3xl border border-border/70 bg-background/95 p-4 @sm:p-6",
+          "mx-auto w-full rounded-[var(--radius)] border border-border bg-background/95 p-4 shadow-[var(--shadow)] @sm:p-6",
           pageShellWidthClass(compositionLayout),
         )}
       >
@@ -222,7 +222,7 @@ export function LinktreeDefault({
           <Button
             variant="secondary"
             size="icon"
-            className="h-9 w-9 rounded-full"
+            className="h-9 w-9 rounded-[var(--radius)] shadow-[var(--shadow)]"
             onClick={handleShare}
           >
             {copied ? (

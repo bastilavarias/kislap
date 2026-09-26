@@ -53,10 +53,10 @@ function PromoSection({
       onClick={(event: React.MouseEvent<HTMLAnchorElement>) =>
         trackThenNavigate(event, section.url as string, onTrackClick)
       }
-      className="block rounded-2xl border border-border/70 bg-card p-3 transition hover:bg-accent/30"
+      className="block rounded-[var(--radius)] border border-border bg-card p-3 shadow-[var(--shadow)] transition hover:bg-accent/30"
     >
       {section.image_url ? (
-        <div className="overflow-hidden rounded-xl border border-border/60 bg-muted">
+        <div className="overflow-hidden rounded-[var(--radius)] border border-border bg-muted">
           <img
             src={section.image_url}
             alt={section.title || "Promo"}
@@ -81,7 +81,7 @@ function PromoSection({
 
 function SupportSection({ section }: { section: LinktreeSection }) {
   return (
-    <div className="rounded-2xl border border-border/70 bg-card p-4">
+    <div className="rounded-[var(--radius)] border border-border bg-card p-4 shadow-[var(--shadow)]">
       <div className="grid grid-cols-1 gap-4 @sm:grid-cols-[1fr_112px] @sm:items-center">
         <div>
           {section.title ? (
@@ -99,7 +99,7 @@ function SupportSection({ section }: { section: LinktreeSection }) {
           ) : null}
         </div>
 
-        <div className="mx-auto grid h-28 w-28 place-items-center overflow-hidden rounded-xl border border-border/70 bg-background text-[10px] font-semibold text-muted-foreground">
+        <div className="mx-auto grid h-28 w-28 place-items-center overflow-hidden rounded-[var(--radius)] border border-border bg-background text-[10px] font-semibold text-muted-foreground">
           {section.support_qr_image_url ? (
             <img
               src={section.support_qr_image_url}
@@ -123,7 +123,7 @@ function QuoteSection({ section }: { section: LinktreeSection }) {
     <div
       style={accentStyle}
       className={cn(
-        "rounded-2xl border border-border/70 p-6 @sm:p-8",
+        "rounded-[var(--radius)] border border-border p-6 shadow-[var(--shadow)] @sm:p-8",
         hasAccent ? "" : "bg-card",
       )}
     >
@@ -156,7 +156,7 @@ function BannerSection({ section }: { section: LinktreeSection }) {
     <div
       style={accentStyle}
       className={cn(
-        "rounded-xl border border-border/70 p-3",
+        "rounded-[var(--radius)] border border-border p-3 shadow-[var(--shadow)]",
         hasAccent ? "" : "bg-card",
       )}
     >
