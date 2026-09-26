@@ -3,7 +3,7 @@
 import { createContext, useContext, type ReactNode } from 'react';
 import type { ThemeStyleProps, ThemeStyles } from '@/types/theme';
 import { colorFormatter } from '@/lib/color-converter';
-import { setShadowVariables } from '@/lib/shadows';
+import { getShadowVariables } from '@/lib/shadows';
 import { COMMON_STYLES } from '@/config/theme';
 
 type Theme = 'dark' | 'light';
@@ -23,7 +23,7 @@ const COMMON_NON_COLOR_KEYS = COMMON_STYLES;
 
 const ComponentThemesContext = createContext<ComponentThemesContext | null>(null);
 
-function applyCommonStyles(themeStyles: ThemeStyles): Record<string, string> {
+function applyCommonStyles(themeStyles: ThemeStyleProps): Record<string, string> {
   const vars: Record<string, string> = {};
 
   Object.entries(themeStyles)
@@ -32,7 +32,7 @@ function applyCommonStyles(themeStyles: ThemeStyles): Record<string, string> {
     )
     .forEach(([key, value]) => {
       if (typeof value === 'string') {
-        vars[`--${key}`] = value;
+        vars[key === 'spacing' ? '--theme-spacing' : `--${key}`] = value;
       }
     });
 
@@ -52,8 +52,7 @@ function applyThemeColors(themeStyles: ThemeStyles, mode: Theme): Record<string,
     }
   });
 
-  // Shadows can be translated into CSS vars as well
-  Object.assign(vars, setShadowVariables(themeStyles[mode] as ThemeStyleProps));
+  Object.assign(vars, getShadowVariables(themeStyles[mode] as ThemeStyleProps));
 
   return vars;
 }
@@ -61,11 +60,11 @@ function applyThemeColors(themeStyles: ThemeStyles, mode: Theme): Record<string,
 export function ComponentThemeProvider({
   children,
   themeStyles,
-  mode,
+  mode = 'light',
   className,
 }: ComponentThemeProviderProps) {
   const styleVars = {
-    ...applyCommonStyles(themeStyles.light as ThemeStyles),
+    ...applyCommonStyles(themeStyles.light),
     ...applyThemeColors(themeStyles as ThemeStyles, mode),
   };
 

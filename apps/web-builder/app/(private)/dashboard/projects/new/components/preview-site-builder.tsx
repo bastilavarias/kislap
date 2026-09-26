@@ -85,7 +85,7 @@ export function PreviewSiteBuilder({ project }: PreviewSiteBuilderProps) {
   const TemplateComponent = renderTemplate(project, themeMode, themeStyles, setThemeMode);
 
   return (
-    <div className="relative flex min-h-full w-full flex-auto flex-col gap-10">
+    <div className="relative flex min-h-full w-full flex-auto flex-col">
       <ComponentThemeProvider themeStyles={themeStyles} mode={themeMode === 'system' ? 'light' : themeMode}>
         <PreviewAcknowledgementBanner />
         <div

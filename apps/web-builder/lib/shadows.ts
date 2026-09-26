@@ -77,12 +77,18 @@ export const getShadowMap = (styles: ThemeStyleProps, colorFormat: ColorFormat =
   return shadowMap
 }
 
+export function getShadowVariables(styles: ThemeStyleProps): Record<string, string> {
+  return Object.fromEntries(
+    Object.entries(getShadowMap(styles)).map(([name, value]) => [`--${name}`, value])
+  )
+}
+
 // Function to set shadow CSS variables
 export function setShadowVariables(styles: ThemeStyleProps) {
   const root = document.documentElement
-  const shadows = getShadowMap(styles)
+  const shadows = getShadowVariables(styles)
 
   Object.entries(shadows).forEach(([name, value]) => {
-    root.style.setProperty(`--${name}`, value)
+    root.style.setProperty(name, value)
   })
 }

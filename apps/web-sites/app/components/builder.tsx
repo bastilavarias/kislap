@@ -130,7 +130,7 @@ export function Builder({ initialProject, initialSubdomain }: BuilderProps) {
   );
 
   return (
-    <div className="relative flex min-h-full w-full flex-auto flex-col gap-10">
+    <div className="relative flex min-h-full w-full flex-auto flex-col">
       <ComponentThemeProvider themeStyles={themeStyles} mode={resolvedThemeMode}>
         <AcknowledgementBanner />
         <div

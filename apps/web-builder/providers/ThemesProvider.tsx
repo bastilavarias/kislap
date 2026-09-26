@@ -47,7 +47,7 @@ const applyCommonStyles = (root: HTMLElement, themeStyles: ThemeStyles) => {
     )
     .forEach(([key, value]) => {
       if (typeof value === 'string') {
-        root.style.setProperty(`--${key}`, value);
+        root.style.setProperty(key === 'spacing' ? '--theme-spacing' : `--${key}`, value);
       }
     });
 };

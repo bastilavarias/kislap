@@ -8,63 +8,44 @@ type SaveContext = {
   layout: string;
 };
 
+const DEFAULT_LAYOUT = { width: 'auto', align: 'left' };
+const DEFAULT_STYLE = { variant: 'default', padding: 'normal' };
+
 function buildOrderedContentItems(items: LinktreeFormValues['sections']) {
   return [...(items || [])];
 }
 
+function serializeItem(item: any, index: number) {
+  return {
+    id: item.id,
+    type: item.type,
+    title: item.title || '',
+    url: item.url || '',
+    app_url: item.app_url || '',
+    description: item.description || '',
+    image_url: item.image_url || '',
+    icon_key: item.icon_key || '',
+    accent_color: item.accent_color || '',
+    quote_text: item.quote_text || '',
+    quote_author: item.quote_author || '',
+    banner_text: item.banner_text || '',
+    support_note: item.support_note || '',
+    support_qr_image_url: item.support_qr_image_url || '',
+    cta_label: item.cta_label || '',
+    content_json: item.content || null,
+    layout_json: item.layout || DEFAULT_LAYOUT,
+    style_json: item.style || DEFAULT_STYLE,
+    placement_order: index,
+  };
+}
+
 export function buildLinktreeSaveFormData(data: LinktreeFormValues, context: SaveContext): FormData {
   const orderedContentItems = buildOrderedContentItems(data.sections || []);
-  const links: Record<string, unknown>[] = [];
-  const sections: Record<string, unknown>[] = [];
 
-  orderedContentItems.forEach((item: any, index) => {
-    if (item.type === 'link') {
-      links.push({
-        id: item.id,
-        type: item.type,
-        title: item.title || '',
-        url: item.url || '',
-        app_url: item.app_url || '',
-        description: item.description || '',
-        image_url: item.image_url || '',
-        icon_key: item.icon_key || '',
-        accent_color: item.accent_color || '',
-        quote_text: item.quote_text || '',
-        quote_author: item.quote_author || '',
-        banner_text: item.banner_text || '',
-        support_note: item.support_note || '',
-        support_qr_image_url: item.support_qr_image_url || '',
-        cta_label: item.cta_label || '',
-        content_json: item.content || null,
-        layout_json: item.layout || { width: 'auto', align: 'left' },
-        style_json: item.style || { variant: 'default', padding: 'normal' },
-        placement_order: index,
-      });
-      return;
-    }
-
-    sections.push({
-      id: item.id,
-      type: item.type,
-      title: item.title || '',
-      description: item.description || '',
-      url: item.url || '',
-      app_url: item.app_url || '',
-      image_url: item.image_url || '',
-      icon_key: item.icon_key || '',
-      accent_color: item.accent_color || '',
-      quote_text: item.quote_text || '',
-      quote_author: item.quote_author || '',
-      banner_text: item.banner_text || '',
-      support_note: item.support_note || '',
-      support_qr_image_url: item.support_qr_image_url || '',
-      cta_label: item.cta_label || '',
-      content_json: item.content || null,
-      layout_json: item.layout || { width: 'auto', align: 'left' },
-      style_json: item.style || { variant: 'default', padding: 'normal' },
-      placement_order: index,
-    });
-  });
+  // Persist every Page block through one API item path. The API splits link vs non-link
+  // blocks back into response collections by type, so layout/style metadata follows
+  // the same proven save path for every block kind.
+  const links = orderedContentItems.map(serializeItem);
 
   const fullPayload = {
     project_id: context.projectID,
@@ -72,7 +53,7 @@ export function buildLinktreeSaveFormData(data: LinktreeFormValues, context: Sav
     user_id: context.userID,
     ...data,
     links,
-    sections,
+    sections: [],
     theme: context.theme,
     layout_name: context.layout,
   };
@@ -80,40 +61,20 @@ export function buildLinktreeSaveFormData(data: LinktreeFormValues, context: Sav
   const formData = new FormData();
   const jsonPayload = JSON.parse(JSON.stringify(fullPayload));
 
-  let linkIndex = 0;
-  let sectionIndex = 0;
-  orderedContentItems.forEach((item: any) => {
-    if (item.type === 'link') {
-      if (item.image instanceof File) {
-        formData.append(`links[${linkIndex}].image`, item.image);
-        if (jsonPayload.links?.[linkIndex]) {
-          jsonPayload.links[linkIndex].image = null;
-        }
-      }
-      if (item.support_qr_image instanceof File) {
-        formData.append(`links[${linkIndex}].support_qr_image`, item.support_qr_image);
-        if (jsonPayload.links?.[linkIndex]) {
-          jsonPayload.links[linkIndex].support_qr_image = null;
-        }
-      }
-      linkIndex += 1;
-      return;
-    }
-
+  orderedContentItems.forEach((item: any, index) => {
     if (item.image instanceof File) {
-      formData.append(`sections[${sectionIndex}].image`, item.image);
-      if (jsonPayload.sections?.[sectionIndex]) {
-        jsonPayload.sections[sectionIndex].image = null;
+      formData.append(`links[${index}].image`, item.image);
+      if (jsonPayload.links?.[index]) {
+        jsonPayload.links[index].image = null;
       }
     }
 
     if (item.support_qr_image instanceof File) {
-      formData.append(`sections[${sectionIndex}].support_qr_image`, item.support_qr_image);
-      if (jsonPayload.sections?.[sectionIndex]) {
-        jsonPayload.sections[sectionIndex].support_qr_image = null;
+      formData.append(`links[${index}].support_qr_image`, item.support_qr_image);
+      if (jsonPayload.links?.[index]) {
+        jsonPayload.links[index].support_qr_image = null;
       }
     }
-    sectionIndex += 1;
   });
 
   if (data.logo instanceof File) {
