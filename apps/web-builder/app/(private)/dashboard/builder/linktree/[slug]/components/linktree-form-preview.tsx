@@ -1,12 +1,12 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Laptop, Smartphone, Tablet } from 'lucide-react';
+import { Laptop, MonitorSmartphone, Smartphone, Tablet } from 'lucide-react';
 import { defaultThemeState } from '@/config/theme';
 import type { Settings } from '@/contexts/settings-context';
 import type { LinktreeFormValues } from '@/lib/schemas/linktree';
 
-type PreviewViewport = 'desktop' | 'tablet' | 'mobile';
+type PreviewViewport = 'device' | 'desktop' | 'tablet' | 'mobile';
 
 const PREVIEW_ORIGIN =
   process.env.NEXT_PUBLIC_SITE_PREVIEW_ORIGIN || 'https://preview.kislap.app';
@@ -17,13 +17,15 @@ const VIEWPORT_OPTIONS: Array<{
   label: string;
   icon: React.ComponentType<{ className?: string }>;
 }> = [
+  { id: 'device', label: 'Device', icon: MonitorSmartphone },
   { id: 'desktop', label: 'Desktop', icon: Laptop },
   { id: 'tablet', label: 'Tablet', icon: Tablet },
   { id: 'mobile', label: 'Mobile', icon: Smartphone },
 ];
 
 function getViewportWidth(viewport: PreviewViewport, deviceWidth: number) {
-  if (viewport === 'mobile') return Math.min(480, Math.max(320, deviceWidth));
+  if (viewport === 'device') return deviceWidth;
+  if (viewport === 'mobile') return 390;
   if (viewport === 'tablet') return 768;
   return 1280;
 }
@@ -115,12 +117,11 @@ export function LinktreeFormPreview({
   themeSettings: Settings | null;
   onBlockSelect?: (index: number) => void;
 }) {
-  const [viewport, setViewport] = useState<PreviewViewport>('desktop');
+  const [viewport, setViewport] = useState<PreviewViewport>('device');
   const [deviceWidth, setDeviceWidth] = useState(390);
   const [availableWidth, setAvailableWidth] = useState(1280);
   const [contentHeight, setContentHeight] = useState(900);
   const [logoPreviewUrl, setLogoPreviewUrl] = useState<string | null>(null);
-  const viewportSelectionLocked = useRef(false);
   const scrollAreaRef = useRef<HTMLDivElement | null>(null);
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
   const viewportWidth = getViewportWidth(viewport, deviceWidth);
@@ -130,10 +131,7 @@ export function LinktreeFormPreview({
       const width = window.innerWidth;
       setDeviceWidth(width);
 
-      if (viewportSelectionLocked.current) return;
-      if (width < 640) setViewport('mobile');
-      else if (width < 1024) setViewport('tablet');
-      else setViewport('desktop');
+      // Device mode follows the browser exactly. Preset modes stay fixed.
     };
 
     syncDeviceViewport();
@@ -227,7 +225,7 @@ export function LinktreeFormPreview({
               Live preview
             </p>
             <p className="mt-2 text-sm text-muted-foreground">
-              This is the actual public-site renderer using your current unsaved draft.
+              Device uses this browser's exact viewport. Desktop, Tablet, and Mobile are simulations.
             </p>
           </div>
 
@@ -240,10 +238,7 @@ export function LinktreeFormPreview({
                 <button
                   key={option.id}
                   type="button"
-                  onClick={() => {
-                    viewportSelectionLocked.current = true;
-                    setViewport(option.id);
-                  }}
+                  onClick={() => setViewport(option.id)}
                   className={[
                     'inline-flex items-center gap-2 border-r border-border/70 px-3 py-2 text-xs font-medium transition last:border-r-0',
                     isActive
