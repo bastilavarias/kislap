@@ -1,16 +1,18 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Mode } from '@/contexts/settings-context';
 import { ComponentThemeProvider } from '@/providers/ComponentThemesProvider';
 import { ThemeStyles } from '@/types/theme';
 import { defaultThemeState } from '@/config/theme';
 import { renderTemplate } from '@/hooks/use-template-renderer';
+import { LinktreeSiteRenderer } from '@kislap/templates/src/components/linktree';
 import type { Project } from '@/types/project';
 import Link from 'next/link';
 
 interface PreviewSiteBuilderProps {
   project: Project | null;
+  mode?: Mode;
 }
 
 function PreviewAcknowledgementBanner() {
@@ -41,8 +43,12 @@ function PreviewAcknowledgementBanner() {
   );
 }
 
-export function PreviewSiteBuilder({ project }: PreviewSiteBuilderProps) {
-  const [themeMode, setThemeMode] = useState<Mode>('light');
+export function PreviewSiteBuilder({ project, mode = 'light' }: PreviewSiteBuilderProps) {
+  const [themeMode, setThemeMode] = useState<Mode>(mode);
+
+  useEffect(() => {
+    setThemeMode(mode);
+  }, [mode]);
 
   const themeStyles = useMemo<ThemeStyles>(() => {
     if (!project) return defaultThemeState;
@@ -80,6 +86,18 @@ export function PreviewSiteBuilder({ project }: PreviewSiteBuilderProps) {
 
   if (!project) {
     return null;
+  }
+
+  if (project.type === 'linktree') {
+    return (
+      <LinktreeSiteRenderer
+        linktree={project.linktree}
+        themeMode={themeMode}
+        themeStyles={themeStyles as any}
+        onSetThemeMode={setThemeMode as any}
+        builderUrl={process.env.NEXT_PUBLIC_APP_URL || 'https://kislap.app/'}
+      />
+    );
   }
 
   const TemplateComponent = renderTemplate(project, themeMode, themeStyles, setThemeMode);

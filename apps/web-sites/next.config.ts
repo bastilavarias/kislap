@@ -14,7 +14,11 @@ const nextConfig: NextConfig = {
         headers: [
           {
             key: 'Content-Security-Policy',
-            value: "frame-ancestors 'self' https://kislap.app https://*.kislap.app;",
+            value: "frame-ancestors 'self' https://kislap.app;",
+          },
+          {
+            key: 'X-Frame-Options',
+            value: 'SAMEORIGIN',
           },
         ],
       },

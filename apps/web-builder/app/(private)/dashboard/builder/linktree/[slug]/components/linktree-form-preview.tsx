@@ -1,16 +1,13 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, type MouseEvent } from 'react';
 import { Laptop, MonitorSmartphone, Smartphone, Tablet } from 'lucide-react';
 import { defaultThemeState } from '@/config/theme';
 import type { Settings } from '@/contexts/settings-context';
 import type { LinktreeFormValues } from '@/lib/schemas/linktree';
+import { PreviewSiteBuilder } from '@/app/(private)/dashboard/projects/new/components/preview-site-builder';
 
 type PreviewViewport = 'device' | 'desktop' | 'tablet' | 'mobile';
-
-const PREVIEW_ORIGIN =
-  process.env.NEXT_PUBLIC_SITE_PREVIEW_ORIGIN || 'https://preview.kislap.app';
-const PREVIEW_URL = `${PREVIEW_ORIGIN}/builder-preview`;
 
 const VIEWPORT_OPTIONS: Array<{
   id: PreviewViewport;
@@ -24,7 +21,7 @@ const VIEWPORT_OPTIONS: Array<{
 ];
 
 function getViewportWidth(viewport: PreviewViewport, deviceWidth: number) {
-  if (viewport === 'device') return deviceWidth;
+  if (viewport === 'device') return Math.max(320, deviceWidth);
   if (viewport === 'mobile') return 390;
   if (viewport === 'tablet') return 768;
   return 1280;
@@ -123,17 +120,11 @@ export function LinktreeFormPreview({
   const [contentHeight, setContentHeight] = useState(900);
   const [logoPreviewUrl, setLogoPreviewUrl] = useState<string | null>(null);
   const scrollAreaRef = useRef<HTMLDivElement | null>(null);
-  const iframeRef = useRef<HTMLIFrameElement | null>(null);
+  const contentRef = useRef<HTMLDivElement | null>(null);
   const viewportWidth = getViewportWidth(viewport, deviceWidth);
 
   useEffect(() => {
-    const syncDeviceViewport = () => {
-      const width = window.innerWidth;
-      setDeviceWidth(width);
-
-      // Device mode follows the browser exactly. Preset modes stay fixed.
-    };
-
+    const syncDeviceViewport = () => setDeviceWidth(window.innerWidth);
     syncDeviceViewport();
     window.addEventListener('resize', syncDeviceViewport);
     return () => window.removeEventListener('resize', syncDeviceViewport);
@@ -162,55 +153,41 @@ export function LinktreeFormPreview({
     [logoPreviewUrl, themeSettings, values],
   );
 
-  const postPreviewProject = useCallback(() => {
-    iframeRef.current?.contentWindow?.postMessage(
-      {
-        type: 'kislap:preview-project',
-        project: previewProject,
-        mode: themeSettings?.mode || 'light',
-      },
-      PREVIEW_ORIGIN,
-    );
-  }, [previewProject, themeSettings?.mode]);
-
   useEffect(() => {
-    postPreviewProject();
-  }, [postPreviewProject]);
+    const scrollArea = scrollAreaRef.current;
+    const content = contentRef.current;
+    if (!scrollArea || !content) return;
 
-  useEffect(() => {
-    const handleMessage = (event: MessageEvent) => {
-      if (event.origin !== PREVIEW_ORIGIN || !event.data) return;
-
-      if (event.data.type === 'kislap:preview-height') {
-        const height = Number(event.data.height);
-        if (Number.isFinite(height) && height > 0) {
-          setContentHeight(height);
-        }
-      }
-
-      if (event.data.type === 'kislap:preview-block-select') {
-        const index = Number(event.data.index);
-        if (Number.isInteger(index) && index >= 0) {
-          onBlockSelect?.(index);
-        }
-      }
+    const update = () => {
+      setAvailableWidth(scrollArea.clientWidth);
+      setContentHeight(content.scrollHeight);
     };
 
-    window.addEventListener('message', handleMessage);
-    return () => window.removeEventListener('message', handleMessage);
-  }, [onBlockSelect]);
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(scrollArea);
+    observer.observe(content);
+    return () => observer.disconnect();
+  }, [previewProject, viewport, themeSettings]);
 
   useEffect(() => {
-    const node = scrollAreaRef.current;
-    if (!node) return;
+    scrollAreaRef.current?.scrollTo({ top: 0, left: 0 });
+  }, [viewport]);
 
-    const updateWidth = () => setAvailableWidth(node.clientWidth);
-    updateWidth();
+  const handlePreviewClick = (event: MouseEvent<HTMLDivElement>) => {
+    if (!onBlockSelect) return;
 
-    const observer = new ResizeObserver(updateWidth);
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, []);
+    const target = event.target as HTMLElement;
+    const block = target.closest<HTMLElement>('[data-kislap-block-order]');
+    if (!block) return;
+
+    const index = Number(block.dataset.kislapBlockOrder);
+    if (!Number.isInteger(index) || index < 0) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    onBlockSelect(index);
+  };
 
   const scale = Math.min(1, Math.max(0.25, availableWidth / viewportWidth));
   const previewShellWidth = Math.ceil(viewportWidth * scale);
@@ -225,7 +202,7 @@ export function LinktreeFormPreview({
               Live preview
             </p>
             <p className="mt-2 text-sm text-muted-foreground">
-              Device uses this browser's exact viewport. Desktop, Tablet, and Mobile are simulations.
+              Preview and published Page use the exact same shared renderer.
             </p>
           </div>
 
@@ -257,26 +234,26 @@ export function LinktreeFormPreview({
 
       <div
         ref={scrollAreaRef}
+        onClickCapture={handlePreviewClick}
         className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden bg-muted/10"
       >
         <div
           className="mx-auto"
           style={{ width: previewShellWidth, height: previewShellHeight }}
         >
-          <iframe
-            ref={iframeRef}
-            src={PREVIEW_URL}
-            title="Kislap public site preview"
-            onLoad={postPreviewProject}
-            scrolling="no"
-            className="block border-0 bg-background"
+          <div
+            ref={contentRef}
             style={{
               width: viewportWidth,
-              height: contentHeight,
               transform: `scale(${scale})`,
               transformOrigin: 'top left',
             }}
-          />
+          >
+            <PreviewSiteBuilder
+              project={previewProject as any}
+              mode={themeSettings?.mode || 'light'}
+            />
+          </div>
         </div>
       </div>
     </div>

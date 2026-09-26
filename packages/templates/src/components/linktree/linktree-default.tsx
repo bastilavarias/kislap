@@ -3,9 +3,7 @@
 import { useMemo, useState } from "react";
 import type React from "react";
 import { motion } from "framer-motion";
-import { ArrowUpRight, Check, Mail, Phone, Share2 } from "lucide-react";
-import { ThemeSwitchToggle } from "../theme-switch-toggle";
-import { Button } from "@/components/ui/button";
+import { ArrowUpRight, Check, Mail, Moon, Phone, Share2, Sun } from "lucide-react";
 import { Mode } from "@/contexts/settings-context";
 import { cn } from "@/lib/utils";
 import { usePageActivity } from "@/hooks/api/use-page-activity";
@@ -62,6 +60,35 @@ interface Props {
   linktree?: LinktreeData;
   themeMode: Mode;
   onSetThemeMode: React.Dispatch<React.SetStateAction<Mode>>;
+}
+
+function LinktreeThemeToggle({
+  isDarkMode,
+  onSetThemeMode,
+}: {
+  isDarkMode: boolean;
+  onSetThemeMode: React.Dispatch<React.SetStateAction<Mode>>;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={() => onSetThemeMode(isDarkMode ? "light" : "dark")}
+      aria-label="Toggle theme"
+      className="relative flex h-7 w-14 items-center rounded-full border border-border bg-muted p-1 transition-colors hover:bg-accent"
+    >
+      <span
+        className={cn(
+          "absolute left-1 top-1 h-5 w-5 rounded-full bg-background shadow-[var(--shadow)] transition-transform",
+          isDarkMode && "translate-x-7",
+        )}
+      />
+      {isDarkMode ? (
+        <Moon className="ml-auto mr-1 h-4 w-4 text-muted-foreground" />
+      ) : (
+        <Sun className="ml-1 h-4 w-4 text-amber-500" />
+      )}
+    </button>
+  );
 }
 
 function LinkCard({
@@ -215,14 +242,14 @@ export function LinktreeDefault({
         )}
       >
         <div className="mb-[calc(var(--theme-spacing)*6)] flex items-center justify-end gap-[calc(var(--theme-spacing)*2)]">
-          <ThemeSwitchToggle
+          <LinktreeThemeToggle
             isDarkMode={themeMode === "dark"}
             onSetThemeMode={onSetThemeMode}
           />
-          <Button
-            variant="secondary"
-            size="icon"
-            className="h-9 w-9 rounded-[var(--radius)] shadow-[var(--shadow)]"
+          <button
+            type="button"
+            aria-label="Share page"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-[var(--radius)] border border-border bg-secondary text-secondary-foreground shadow-[var(--shadow)] transition-colors hover:bg-secondary/80"
             onClick={handleShare}
           >
             {copied ? (
@@ -230,7 +257,7 @@ export function LinktreeDefault({
             ) : (
               <Share2 className="h-4 w-4" />
             )}
-          </Button>
+          </button>
         </div>
 
         <div className="text-center">

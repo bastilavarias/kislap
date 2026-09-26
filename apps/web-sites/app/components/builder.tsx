@@ -8,6 +8,7 @@ import { ThemeStyles } from '@/types/theme';
 import { defaultThemeState } from '@/config/theme';
 
 import { renderTemplate } from '@/hooks/use-template-renderer';
+import { LinktreeSiteRenderer } from '@kislap/templates/src/components/linktree';
 import { usePageActivity } from '@/hooks/api/use-page-activity';
 import AcknowledgementBanner from './acknowledgement-banner';
 
@@ -134,6 +135,18 @@ export function Builder({
   const effectiveThemeMode = controlledThemeMode || themeMode;
   const resolvedThemeMode: 'light' | 'dark' =
     effectiveThemeMode === 'system' ? systemMode : effectiveThemeMode;
+
+  if (project.type === 'linktree') {
+    return (
+      <LinktreeSiteRenderer
+        linktree={project.linktree}
+        themeMode={resolvedThemeMode}
+        themeStyles={themeStyles as any}
+        onSetThemeMode={setPersistedThemeMode as any}
+        builderUrl="https://kislap.app/"
+      />
+    );
+  }
 
   const TemplateComponent = renderTemplate(
     project,
