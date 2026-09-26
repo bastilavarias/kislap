@@ -53,7 +53,7 @@ function PromoSection({
       onClick={(event: React.MouseEvent<HTMLAnchorElement>) =>
         trackThenNavigate(event, section.url as string, onTrackClick)
       }
-      className="block rounded-[var(--radius)] border border-border bg-card p-3 shadow-[var(--shadow)] transition hover:bg-accent/30"
+      className="flex h-full flex-col rounded-[var(--radius)] border border-border bg-card p-3 shadow-[var(--shadow)] transition hover:bg-accent/30"
     >
       {section.image_url ? (
         <div className="overflow-hidden rounded-[var(--radius)] border border-border bg-muted">
@@ -81,7 +81,7 @@ function PromoSection({
 
 function SupportSection({ section }: { section: LinktreeSection }) {
   return (
-    <div className="rounded-[var(--radius)] border border-border bg-card p-4 shadow-[var(--shadow)]">
+    <div className="h-full rounded-[var(--radius)] border border-border bg-card p-4 shadow-[var(--shadow)]">
       <div className="grid grid-cols-1 gap-4 @sm:grid-cols-[1fr_112px] @sm:items-center">
         <div>
           {section.title ? (
@@ -123,7 +123,7 @@ function QuoteSection({ section }: { section: LinktreeSection }) {
     <div
       style={accentStyle}
       className={cn(
-        "rounded-[var(--radius)] border border-border p-6 shadow-[var(--shadow)] @sm:p-8",
+        "h-full rounded-[var(--radius)] border border-border p-6 shadow-[var(--shadow)] @sm:p-8",
         hasAccent ? "" : "bg-card",
       )}
     >
@@ -156,7 +156,7 @@ function BannerSection({ section }: { section: LinktreeSection }) {
     <div
       style={accentStyle}
       className={cn(
-        "rounded-[var(--radius)] border border-border p-3 shadow-[var(--shadow)]",
+        "h-full rounded-[var(--radius)] border border-border p-3 shadow-[var(--shadow)]",
         hasAccent ? "" : "bg-card",
       )}
     >

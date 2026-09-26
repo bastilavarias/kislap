@@ -81,11 +81,11 @@ function LinkCard({
       rel="noopener noreferrer"
       onClick={(event) => trackThenNavigate(event, link.url, onTrackClick)}
       className={cn(
-        "group block rounded-[var(--radius)] border border-border bg-card p-3 shadow-[var(--shadow)]",
+        "group block h-full rounded-[var(--radius)] border border-border bg-card p-3 shadow-[var(--shadow)]",
         "transition hover:bg-accent/30",
       )}
     >
-      <div className="flex items-center gap-3">
+      <div className="flex h-full items-center gap-3">
         <div
           className={cn(
             "grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-[var(--radius)] border border-border",
@@ -288,7 +288,7 @@ export function LinktreeDefault({
           ) : null}
         </div>
 
-        <div className="mt-6 grid grid-flow-dense grid-cols-12 gap-3">
+        <div className="mt-6 grid grid-flow-dense grid-cols-12 items-stretch gap-3">
           {contentItems.map((item) => {
             const block: FlexibleBlockData | null =
               item.kind === "link" && item.link

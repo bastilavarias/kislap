@@ -74,7 +74,7 @@ export function blockGridClass(
 ) {
   const requested = blockLayout?.width || "auto";
   const width = requested === "auto" ? defaultWidth(layout, type) : requested;
-  return cn("col-span-12 min-w-0", widthClasses[width]);
+  return cn("col-span-12 h-full min-w-0", widthClasses[width]);
 }
 
 function alignmentClass(align?: BlockAlign) {
@@ -106,6 +106,7 @@ export function PageBlockFrame({
   return (
     <div
       className={cn(
+        "h-full",
         alignmentClass(block.layout_json?.align),
         hasStyleSettings && paddingClass(padding),
         decorated && (brutal ? "border-2 border-border" : "rounded-[var(--radius)] border border-border shadow-[var(--shadow)]"),
@@ -144,7 +145,7 @@ export function PagePortfolioBlock({
   if (block.type === "text") {
     return (
       <PageBlockFrame block={block} brutal={brutal}>
-        <div className={cn("h-full", brutal ? "border-2 border-border bg-card p-4" : "rounded-[var(--radius)] border border-border bg-card p-5 shadow-[var(--shadow)]")}>
+        <div className={cn("flex h-full flex-col", brutal ? "border-2 border-border bg-card p-4" : "rounded-[var(--radius)] border border-border bg-card p-5 shadow-[var(--shadow)]")}>
           {text(content.heading) ? (
             <h2 className={cn("text-xl font-black", brutal && "uppercase")}>{text(content.heading)}</h2>
           ) : null}
@@ -161,7 +162,7 @@ export function PagePortfolioBlock({
   if (block.type === "project") {
     const projectUrl = text(content.url);
     const project = (
-      <div className={cn("h-full overflow-hidden", brutal ? "border-2 border-border bg-card" : "rounded-[var(--radius)] border border-border bg-card shadow-[var(--shadow)]")}>
+      <div className={cn("flex h-full flex-col overflow-hidden", brutal ? "border-2 border-border bg-card" : "rounded-[var(--radius)] border border-border bg-card shadow-[var(--shadow)]")}>
         {text(content.image_url) ? (
           <img
             src={text(content.image_url)}
@@ -169,7 +170,7 @@ export function PagePortfolioBlock({
             className="h-40 w-full object-cover"
           />
         ) : null}
-        <div className="p-4">
+        <div className="flex flex-1 flex-col p-4">
           <div className="flex items-start justify-between gap-3">
             <h2 className={cn("text-lg font-black", brutal && "uppercase")}>{text(content.title)}</h2>
             {projectUrl ? <ArrowUpRight className="h-4 w-4 shrink-0" /> : null}
@@ -180,7 +181,7 @@ export function PagePortfolioBlock({
             </p>
           ) : null}
           {skillItems(content.technologies).length ? (
-            <div className="mt-3 flex flex-wrap gap-2">
+            <div className="mt-auto flex flex-wrap gap-2 pt-3">
               {skillItems(content.technologies).map((item) => (
                 <span
                   key={item}
@@ -212,7 +213,7 @@ export function PagePortfolioBlock({
   if (block.type === "experience") {
     return (
       <PageBlockFrame block={block} brutal={brutal}>
-        <div className={cn("h-full", brutal ? "border-2 border-border bg-card p-4" : "rounded-[var(--radius)] border border-border bg-card p-5 shadow-[var(--shadow)]")}>
+        <div className={cn("flex h-full flex-col", brutal ? "border-2 border-border bg-card p-4" : "rounded-[var(--radius)] border border-border bg-card p-5 shadow-[var(--shadow)]")}>
           <p className="text-xs font-bold uppercase tracking-[0.12em] text-muted-foreground">
             {[text(content.start), text(content.end)].filter(Boolean).join(" — ")}
           </p>
@@ -232,7 +233,7 @@ export function PagePortfolioBlock({
     const items = skillItems(content.items);
     return (
       <PageBlockFrame block={block} brutal={brutal}>
-        <div className={cn("h-full", brutal ? "border-2 border-border bg-card p-4" : "rounded-[var(--radius)] border border-border bg-card p-5 shadow-[var(--shadow)]")}>
+        <div className={cn("flex h-full flex-col", brutal ? "border-2 border-border bg-card p-4" : "rounded-[var(--radius)] border border-border bg-card p-5 shadow-[var(--shadow)]")}>
           <h2 className={cn("text-lg font-black", brutal && "uppercase")}>
             {text(content.heading) || "Skills"}
           </h2>
