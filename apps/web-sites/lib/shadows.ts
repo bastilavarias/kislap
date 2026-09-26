@@ -68,7 +68,7 @@ export const getShadowMap = (styles: ThemeStyleProps, colorFormat: ColorFormat =
 
     // Two layer shadows - use base vars for layer 1, mix fixed/calculated for layer 2
     'shadow-sm': `${offsetX} ${offsetY} ${blur} ${spread} ${createColorWithOpacity(1.0)}, ${secondLayer('1px', '2px')}`,
-    shadow: `${offsetX} ${offsetY} ${blur} ${spread} ${createColorWithOpacity(1.0)}, ${secondLayer('1px', '2px')}`,
+    shadow: `${offsetX} ${offsetY} ${blur} ${spread} ${createColorWithOpacity(1.0)}`,
     'shadow-md': `${offsetX} ${offsetY} ${blur} ${spread} ${createColorWithOpacity(1.0)}, ${secondLayer('2px', '4px')}`,
     'shadow-lg': `${offsetX} ${offsetY} ${blur} ${spread} ${createColorWithOpacity(1.0)}, ${secondLayer('4px', '6px')}`,
     'shadow-xl': `${offsetX} ${offsetY} ${blur} ${spread} ${createColorWithOpacity(1.0)}, ${secondLayer('8px', '10px')}`,
