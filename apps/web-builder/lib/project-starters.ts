@@ -71,13 +71,8 @@ export const LAYOUT_OPTIONS: Record<StarterProjectType, BuilderLayoutOption[]> =
   linktree: [
     {
       id: 'linktree-default',
-      label: 'Default',
-      description: 'Simple, mobile-first, and easy to scan.',
-    },
-    {
-      id: 'linktree-neo-brutalist',
-      label: 'Neo Brutalist',
-      description: 'Louder visual direction for creator-first branding.',
+      label: 'Page',
+      description: 'Unified Page renderer. Visual character comes from the selected theme.',
     },
   ],
   menu: [
@@ -156,7 +151,7 @@ export const STARTERS: Record<StarterProjectType, BuilderStarter[]> = {
       label: 'Creator',
       description: 'A mobile-first bio page with your main platforms and offers front and center.',
       bestFor: 'Instagram, TikTok, and YouTube traffic',
-      defaults: { layoutName: 'linktree-neo-brutalist', themePreset: 'spotify' },
+      defaults: { layoutName: 'linktree-default', themePreset: 'spotify' },
     },
     {
       id: 'personal-brand',
@@ -164,7 +159,7 @@ export const STARTERS: Record<StarterProjectType, BuilderStarter[]> = {
       label: 'Personal Brand',
       description: 'A more polished page when your name and positioning matter as much as the links.',
       bestFor: 'Speakers, founders, coaches, and consultants',
-      defaults: { layoutName: 'linktree-neo-brutalist', themePreset: 'corporate' },
+      defaults: { layoutName: 'linktree-default', themePreset: 'corporate' },
     },
     {
       id: 'developer',
@@ -172,7 +167,7 @@ export const STARTERS: Record<StarterProjectType, BuilderStarter[]> = {
       label: 'Developer',
       description: 'Mix your intro, stack, projects, experience, GitHub, and contact links in one page.',
       bestFor: 'Software developers, engineers, and technical freelancers',
-      defaults: { layoutName: 'linktree-neo-brutalist', themePreset: 'slack' },
+      defaults: { layoutName: 'linktree-default', themePreset: 'slack' },
     },
     {
       id: 'freelancer',
@@ -587,7 +582,7 @@ export function buildLinktreeStarterValues(
       name: starterName,
       tagline: 'Founder, speaker, and systems-minded storyteller.',
       about: 'Use one page to route people into your ideas, talks, writing, and consulting without losing personality.',
-      layout_name: 'linktree-neo-brutalist',
+      layout_name: 'linktree-default',
       composition_layout: 'bento',
       sections: [
         {
@@ -653,7 +648,7 @@ export function buildLinktreeStarterValues(
       name: starterName,
       tagline: 'Software developer building useful products and systems.',
       about: 'A flexible developer page with room for projects, experience, skills, and the links people actually need.',
-      layout_name: 'linktree-neo-brutalist',
+      layout_name: 'linktree-default',
       composition_layout: 'portfolio',
       sections: [
         {

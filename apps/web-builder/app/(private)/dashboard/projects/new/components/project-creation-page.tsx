@@ -7,7 +7,6 @@ import {
   ArrowLeft,
   ArrowRight,
   FileText,
-  LayoutTemplate,
   Loader2,
   Palette,
 } from 'lucide-react';
@@ -22,7 +21,6 @@ import {
   builderTabsTriggerClass,
 } from '@/components/builder/builder-ui';
 import {
-  LAYOUT_OPTIONS,
   STARTERS,
   THEME_OPTIONS,
   type BuilderStarter,
@@ -46,17 +44,12 @@ export function ProjectCreationPage() {
 
   const projectType: StarterProjectType = 'linktree';
   const initialStarter = getStarterById(projectType, searchParams.get('starter'));
-  const requestedLayout = searchParams.get('layout');
   const requestedTheme = searchParams.get('theme');
-  const initialLayout = LAYOUT_OPTIONS[projectType].some((option) => option.id === requestedLayout)
-    ? requestedLayout!
-    : initialStarter.defaults.layoutName;
   const initialTheme = THEME_OPTIONS[projectType].some((option) => option.id === requestedTheme)
     ? requestedTheme!
     : initialStarter.defaults.themePreset;
 
   const [starterId, setStarterId] = useState(initialStarter.id);
-  const [layoutName, setLayoutName] = useState(initialLayout);
   const [themePreset, setThemePreset] = useState(initialTheme);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -66,7 +59,6 @@ export function ProjectCreationPage() {
   const [mobileTab, setMobileTab] = useState<'form' | 'preview'>('form');
 
   const starters = STARTERS[projectType];
-  const layoutOptions = LAYOUT_OPTIONS[projectType];
   const themeOptions = THEME_OPTIONS[projectType];
   const selectedStarter = useMemo(
     () => getStarterById(projectType, starterId),
@@ -81,7 +73,6 @@ export function ProjectCreationPage() {
 
   const handleStarterChange = (starter: BuilderStarter) => {
     setStarterId(starter.id);
-    setLayoutName(starter.defaults.layoutName);
     setThemePreset(starter.defaults.themePreset);
   };
 
@@ -111,7 +102,6 @@ export function ProjectCreationPage() {
         window.location.origin
       );
       nextUrl.searchParams.set('starter', starterId);
-      nextUrl.searchParams.set('layout', layoutName);
       nextUrl.searchParams.set('theme', themePreset);
 
       toast.success('Page created. Starter applied to your first draft.');
@@ -161,8 +151,8 @@ export function ProjectCreationPage() {
               Build your Kislap page.
             </h1>
             <p className="text-base font-semibold leading-relaxed text-muted-foreground">
-              Pick a starting point, customize the layout and theme, then shape the page with your
-              own blocks inside the builder.
+              Pick a starting point and color theme, then shape the page with your own blocks and
+              layout inside the builder.
             </p>
           </div>
         </div>
@@ -180,25 +170,7 @@ export function ProjectCreationPage() {
             />
           </div>
 
-          <div className="grid gap-6 lg:grid-cols-2">
-            <div className="space-y-3">
-              <div className="flex items-center gap-2 font-mono text-sm font-black uppercase tracking-[0.18em] text-foreground">
-                <LayoutTemplate className="h-4 w-4 text-primary" />
-                Layout
-              </div>
-              <div className="grid gap-3">
-                {layoutOptions.map((layoutOption) => (
-                  <OptionPill
-                    key={layoutOption.id}
-                    option={layoutOption}
-                    isSelected={layoutName === layoutOption.id}
-                    onClick={() => setLayoutName(layoutOption.id)}
-                  />
-                ))}
-              </div>
-            </div>
-
-            <div className="space-y-3">
+          <div className="space-y-3">
               <div className="flex items-center gap-2 font-mono text-sm font-black uppercase tracking-[0.18em] text-foreground">
                 <Palette className="h-4 w-4 text-primary" />
                 Theme
@@ -213,7 +185,6 @@ export function ProjectCreationPage() {
                   />
                 ))}
               </div>
-            </div>
           </div>
 
           <ProjectBasicsPanel
@@ -256,7 +227,7 @@ export function ProjectCreationPage() {
         <ProjectTemplatePreview
           type={projectType}
           starterId={starterId}
-          layoutName={layoutName}
+          layoutName="linktree-default"
           themePreset={themePreset}
           projectName={name.trim() || getLinktreeStarterPreviewName(starterId)}
         />

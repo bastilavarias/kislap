@@ -9,8 +9,6 @@ export default function BizEditPage() {
   return (
     <Form
       formMethods={builder.formMethods}
-      layout={builder.layout}
-      setLayout={builder.setLayout}
       localThemeSettings={builder.localThemeSettings}
       setLocalThemeSettings={builder.setLocalThemeSettings}
       sectionsFieldArray={builder.sectionsFieldArray}

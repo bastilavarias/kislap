@@ -6,7 +6,6 @@ import { Default } from '@kislap/templates/src/components/portfolio/default';
 import { NeoBrutalist } from '@kislap/templates/src/components/portfolio/neo-brutalist';
 import { Newspaper } from '@kislap/templates/src/components/portfolio/newspaper';
 import { LinktreeDefault } from '@kislap/templates/src/components/linktree/linktree-default';
-import { LinktreeNeoBrutalist } from '@kislap/templates/src/components/linktree/linktree-neo-brutalist';
 import { MenuDefault } from '@kislap/templates/src/components/menu/menu-default';
 import { MenuEditorial } from '@kislap/templates/src/components/menu/menu-editorial';
 import { MenuShowcase } from '@kislap/templates/src/components/menu/menu-showcase';
@@ -18,11 +17,6 @@ const portfolioTemplateMap: Record<string, React.ComponentType<any>> = {
   default: Default,
   'neo-brutalist': NeoBrutalist,
   newspaper: Newspaper,
-};
-
-const linktreeTemplateMap: Record<string, React.ComponentType<any>> = {
-  'linktree-default': LinktreeDefault,
-  'linktree-neo-brutalist': LinktreeNeoBrutalist,
 };
 
 const menuTemplateMap: Record<string, React.ComponentType<any>> = {
@@ -70,7 +64,7 @@ export function ProjectPreviewFrame(props: PreviewProjectParams) {
     }
 
     if (props.type === 'linktree') {
-      return linktreeTemplateMap[props.layoutName] ?? LinktreeDefault;
+      return LinktreeDefault;
     }
 
     return menuTemplateMap[props.layoutName] ?? MenuDefault;

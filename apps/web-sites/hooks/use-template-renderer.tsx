@@ -20,7 +20,7 @@ import { BizTemplates, PortfolioTemplates, LinktreeTemplates, MenuTemplates } fr
 const { Default, Minimal, Bento, NeoBrutalist, Glass, Cyber, Newspaper, Kinetic, Vaporware } =
   PortfolioTemplates;
 const { BizDefault, BizCyber, BizRetro } = BizTemplates;
-const { LinktreeDefault, LinktreeNeoBrutalist } = LinktreeTemplates;
+const { LinktreeDefault } = LinktreeTemplates;
 const { MenuDefault, MenuEditorial, MenuShowcase, MenuBistro, MenuRunway, MenuMosaic } =
   MenuTemplates;
 
@@ -42,11 +42,6 @@ const bizTemplates: Record<TemplateName, React.FC<TemplateProps>> = {
   'biz-default': BizDefault,
   'biz-cyber': BizCyber,
   'biz-retro': BizRetro,
-};
-
-const linktreeTemplates: Record<TemplateName, React.FC<TemplateProps>> = {
-  'linktree-default': LinktreeDefault,
-  'linktree-neo-brutalist': LinktreeNeoBrutalist,
 };
 
 const menuTemplates: Record<TemplateName, React.FC<TemplateProps>> = {
@@ -82,8 +77,7 @@ export const renderTemplate = (
     layoutName = project.biz.layout_name || 'biz-default';
     Component = bizTemplates[layoutName as TemplateName];
   } else if (project.type === 'linktree') {
-    layoutName = project.linktree.layout_name || 'linktree-default';
-    Component = linktreeTemplates[layoutName as TemplateName];
+    Component = LinktreeDefault;
   } else if (project.type === 'menu') {
     layoutName = project.menu.layout_name || 'menu-default';
     Component = menuTemplates[layoutName as TemplateName];

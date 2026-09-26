@@ -25,7 +25,6 @@ import { Newspaper } from '@kislap/templates/src/components/portfolio/newspaper'
 import { Kinetic } from '@kislap/templates/src/components/portfolio/kinetic';
 import { Vaporware } from '@kislap/templates/src/components/portfolio/vaporware';
 import { LinktreeDefault } from '@kislap/templates/src/components/linktree/linktree-default';
-import { LinktreeNeoBrutalist } from '@kislap/templates/src/components/linktree/linktree-neo-brutalist';
 import { MenuDefault } from '@kislap/templates/src/components/menu/menu-default';
 import { MenuEditorial } from '@kislap/templates/src/components/menu/menu-editorial';
 import { MenuShowcase } from '@kislap/templates/src/components/menu/menu-showcase';
@@ -45,11 +44,6 @@ const templates: Record<TemplateName, React.FC<TemplateProps>> = {
   newspaper: Newspaper,
   kinetic: Kinetic,
   vaporware: Vaporware,
-};
-
-const linktreeTemplates: Record<TemplateName, React.FC<TemplateProps>> = {
-  'linktree-default': LinktreeDefault,
-  'linktree-neo-brutalist': LinktreeNeoBrutalist,
 };
 
 const menuTemplates: Record<TemplateName, React.FC<TemplateProps>> = {
@@ -74,8 +68,7 @@ export const renderTemplate = (
     layoutName = project.portfolio.layout_name || 'default';
     Component = templates[layoutName as TemplateName];
   } else if (project.type === 'linktree') {
-    layoutName = project.linktree.layout_name || 'linktree-default';
-    Component = linktreeTemplates[layoutName as TemplateName];
+    Component = LinktreeDefault;
   } else if (project.type === 'menu') {
     layoutName = project.menu.layout_name || 'menu-default';
     Component = menuTemplates[layoutName as TemplateName];

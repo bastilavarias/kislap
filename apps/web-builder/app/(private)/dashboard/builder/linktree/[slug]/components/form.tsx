@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -41,8 +41,6 @@ interface Props {
   sectionsFieldArray: UseFieldArrayReturn<LinktreeFormValues, 'sections', 'id'>;
   localThemeSettings: Settings | null;
   setLocalThemeSettings: React.Dispatch<React.SetStateAction<Settings | null>>;
-  layout: string;
-  setLayout: (layout: string) => void;
   onAddSection: () => void;
 }
 
@@ -52,8 +50,6 @@ export function Form({
   onAddSection,
   localThemeSettings,
   setLocalThemeSettings,
-  layout,
-  setLayout,
 }: Props) {
   const {
     register,
@@ -65,11 +61,6 @@ export function Form({
   } = formMethods;
   const previewValues = watch();
   const [builderTab, setBuilderTab] = useState<'form' | 'preview'>('form');
-
-  useEffect(() => {
-    //@ts-ignore
-    setValue('layout_name', layout);
-  }, [layout, setValue]);
 
   const backgroundStyle = (watch('background_style') as 'plain' | 'grid') || 'grid';
   const compositionLayout = watch('composition_layout') || 'classic';
@@ -88,7 +79,7 @@ export function Form({
       logo: null,
       logo_url: '',
       background_style: backgroundStyle,
-      layout_name: layout,
+      layout_name: 'linktree-default',
       composition_layout: compositionLayout,
       sections: [],
     });
@@ -116,7 +107,7 @@ export function Form({
       </div>
 
       {builderTab === 'preview' ? (
-        <LinktreeFormPreview values={previewValues} layout={layout} themeSettings={localThemeSettings} />
+        <LinktreeFormPreview values={previewValues} themeSettings={localThemeSettings} />
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start pb-20 lg:pb-0">
           <div className="lg:col-span-8 space-y-6">
@@ -241,8 +232,6 @@ export function Form({
           <div className="hidden lg:col-span-4 lg:block relative">
             <div className="sticky top-6 space-y-4">
               <DesignPanel
-                layout={layout}
-                setLayout={setLayout}
                 compositionLayout={compositionLayout}
                 setCompositionLayout={(value) =>
                   setValue('composition_layout', value, { shouldDirty: true })
@@ -271,13 +260,11 @@ export function Form({
           </SheetTrigger>
           <SheetContent side="bottom" className="h-[85vh] pt-6 px-4">
             <SheetHeader className="mb-4 text-left">
-              <SheetTitle>Design & Style</SheetTitle>
-              <SheetDescription>Arrange your page and customize its visual style.</SheetDescription>
+              <SheetTitle>Design</SheetTitle>
+              <SheetDescription>Arrange your page and customize its theme.</SheetDescription>
             </SheetHeader>
             <div className="h-full overflow-y-auto pb-20">
               <DesignPanel
-                layout={layout}
-                setLayout={setLayout}
                 compositionLayout={compositionLayout}
                 setCompositionLayout={(value) =>
                   setValue('composition_layout', value, { shouldDirty: true })

@@ -4,7 +4,6 @@ import {
   BriefcaseBusiness,
   CheckCircle2,
   LayoutGrid,
-  LayoutTemplate,
   Rows3,
   Sparkles,
 } from 'lucide-react';
@@ -45,24 +44,7 @@ const COMPOSITION_OPTIONS = [
   },
 ] as const;
 
-const PAGE_STYLE_OPTIONS = [
-  {
-    id: 'linktree-default',
-    name: 'Clean',
-    icon: LayoutTemplate,
-    description: 'Soft, modern, and content-first.',
-  },
-  {
-    id: 'linktree-neo-brutalist',
-    name: 'Neo Brutalist',
-    icon: LayoutTemplate,
-    description: 'Bold Kislap borders, hard shadows, and stronger contrast.',
-  },
-] as const;
-
 interface DesignPanelProps {
-  layout: string;
-  setLayout: (layout: string) => void;
   compositionLayout: 'classic' | 'bento' | 'portfolio' | 'creator';
   setCompositionLayout: (layout: 'classic' | 'bento' | 'portfolio' | 'creator') => void;
   backgroundStyle: 'plain' | 'grid';
@@ -72,8 +54,6 @@ interface DesignPanelProps {
 }
 
 export function DesignPanel({
-  layout,
-  setLayout,
   compositionLayout,
   setCompositionLayout,
   backgroundStyle,
@@ -83,7 +63,7 @@ export function DesignPanel({
 }: DesignPanelProps) {
   return (
     <Card className="border-none bg-transparent shadow-none">
-      <h2 className="mb-4 hidden text-xl font-black uppercase lg:block">Design & Style</h2>
+      <h2 className="mb-4 hidden text-xl font-black uppercase lg:block">Design</h2>
 
       <Tabs defaultValue="layout" className="w-full">
         <TabsList className={`${builderTabsListClass} mb-4 grid h-12 w-full grid-cols-2`}>
@@ -160,40 +140,12 @@ export function DesignPanel({
         <TabsContent value="theme" className="mt-0">
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-lg">Theme & Page Style</CardTitle>
+              <CardTitle className="text-lg">Theme</CardTitle>
               <CardDescription>
-                Page style controls the rendering treatment. Theme controls color, type, radius, and shadow tokens.
+                Theme controls the page colors, typography, radius, shadows, and overall visual character.
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-5">
-              <div className="grid grid-cols-2 gap-3">
-                {PAGE_STYLE_OPTIONS.map((option) => {
-                  const isSelected = layout === option.id;
-                  return (
-                    <button
-                      key={option.id}
-                      type="button"
-                      onClick={() => setLayout(option.id)}
-                      className={cn(
-                        'relative border-2 border-black p-3 text-left transition-all',
-                        isSelected
-                          ? 'bg-secondary shadow-[4px_4px_0_#000]'
-                          : 'bg-card hover:-translate-y-0.5 hover:shadow-[4px_4px_0_#000]'
-                      )}
-                    >
-                      {isSelected ? (
-                        <CheckCircle2 className="absolute right-2 top-2 h-4 w-4 text-primary" />
-                      ) : null}
-                      <option.icon className="mb-4 h-5 w-5" />
-                      <p className="text-sm font-black uppercase">{option.name}</p>
-                      <p className="mt-1 text-[11px] leading-relaxed text-muted-foreground">
-                        {option.description}
-                      </p>
-                    </button>
-                  );
-                })}
-              </div>
-
+            <CardContent>
               <ThemeControlPanel
                 stateless={true}
                 themeSettings={localThemeSettings}

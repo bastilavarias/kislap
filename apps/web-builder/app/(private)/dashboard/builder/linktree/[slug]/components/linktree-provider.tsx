@@ -19,8 +19,6 @@ import { buildLinktreeStarterValues, createThemeObject, getStarterById } from '@
 interface LinktreeContextType {
   project: APIResponseProject | null;
   formMethods: UseFormReturn<LinktreeFormValues>;
-  layout: string;
-  setLayout: React.Dispatch<React.SetStateAction<string>>;
 
   sectionsFieldArray: UseFieldArrayReturn<LinktreeFormValues, 'sections', 'id'>;
 
@@ -55,7 +53,6 @@ export function LinktreeProvider({ children }: { children: ReactNode }) {
   const searchParams = useSearchParams();
   const [project, setProject] = useState<APIResponseProject | null>(null);
   const [localThemeSettings, setLocalThemeSettings] = useState<Settings | null>(null);
-  const [layout, setLayout] = useState<string>('default-linktree');
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
@@ -106,15 +103,12 @@ export function LinktreeProvider({ children }: { children: ReactNode }) {
           const mapped = mapToFormValues(data.linktree);
           reset(mapped);
           setLocalThemeSettings({ mode: 'light', theme: data.linktree.theme_object });
-          setLayout(data.linktree.layout_name ?? 'default-linktree');
         } else {
           const starter = getStarterById('linktree', searchParams.get('starter'));
-          const starterLayout = searchParams.get('layout') || starter.defaults.layoutName;
           const starterThemePreset = searchParams.get('theme') || starter.defaults.themePreset;
 
           reset(buildLinktreeStarterValues(starter.id, data.name || 'John Doe'));
           setLocalThemeSettings({ mode: 'light', theme: createThemeObject(starterThemePreset) });
-          setLayout(starterLayout);
         }
       }
       setIsLoading(false);
@@ -132,7 +126,7 @@ export function LinktreeProvider({ children }: { children: ReactNode }) {
           linktreeID: linktreeID || project?.linktree?.id,
           userID: user?.id,
           theme: { ...(localThemeSettings?.theme || {}) },
-          layout,
+          layout: 'linktree-default',
         });
 
         const response = await create(formData as any);
@@ -186,8 +180,8 @@ export function LinktreeProvider({ children }: { children: ReactNode }) {
   );
 
   const hasLayout = useMemo(() => {
-    return !!layout;
-  }, [layout]);
+    return !!values.composition_layout;
+  }, [values.composition_layout]);
 
   const hasTheme = useMemo(() => {
     return !!localThemeSettings;
@@ -198,8 +192,6 @@ export function LinktreeProvider({ children }: { children: ReactNode }) {
       value={{
         project,
         formMethods,
-        layout,
-        setLayout,
         sectionsFieldArray,
         isLoading,
         isSaving,

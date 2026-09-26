@@ -27,13 +27,11 @@ function getViewportWidth(viewport: PreviewViewport) {
 
 function createLinktreePreviewProject({
   values,
-  layout,
   themeSettings,
   projectName,
   logoUrl,
 }: {
   values: LinktreeFormValues;
-  layout: string;
   themeSettings: Settings | null;
   projectName: string;
   logoUrl: string;
@@ -94,7 +92,7 @@ function createLinktreePreviewProject({
       logo_url: logoUrl || '',
       background_style: values.background_style || 'grid',
       theme_object: themeObject,
-      layout_name: layout || 'linktree-default',
+      layout_name: 'linktree-default',
       composition_layout: values.composition_layout || 'classic',
       links: sections.filter((section) => section.type === 'link'),
       sections: sections.filter((section) => section.type !== 'link'),
@@ -104,11 +102,9 @@ function createLinktreePreviewProject({
 
 export function LinktreeFormPreview({
   values,
-  layout,
   themeSettings,
 }: {
   values: LinktreeFormValues;
-  layout: string;
   themeSettings: Settings | null;
 }) {
   const [viewport, setViewport] = useState<PreviewViewport>('desktop');
@@ -136,12 +132,11 @@ export function LinktreeFormPreview({
     () =>
       createLinktreePreviewProject({
         values,
-        layout,
         themeSettings,
         projectName: values.name?.trim() || 'Page Preview',
         logoUrl: logoPreviewUrl || values.logo_url || '',
       }),
-    [layout, logoPreviewUrl, themeSettings, values]
+    [logoPreviewUrl, themeSettings, values]
   );
 
   useEffect(() => {
@@ -164,14 +159,14 @@ export function LinktreeFormPreview({
     resizeObserver.observe(contentNode);
 
     return () => resizeObserver.disconnect();
-  }, [previewProject, layout, themeSettings, viewport]);
+  }, [previewProject, themeSettings, viewport]);
 
   useEffect(() => {
     const scrollArea = scrollAreaRef.current;
     if (!scrollArea) return;
     scrollArea.scrollTop = 0;
     scrollArea.scrollLeft = 0;
-  }, [layout, themeSettings, viewport]);
+  }, [themeSettings, viewport]);
 
   const useHorizontalDesktopScroll =
     viewport === 'desktop' && availableWidth < 1024 && availableWidth < viewportWidth;
@@ -191,7 +186,7 @@ export function LinktreeFormPreview({
               Live preview
             </p>
             <p className="mt-2 text-sm text-muted-foreground">
-              Based on your current form values, layout, and theme. No save needed.
+              Based on your current content, page layout, and theme. No save needed.
             </p>
           </div>
 
