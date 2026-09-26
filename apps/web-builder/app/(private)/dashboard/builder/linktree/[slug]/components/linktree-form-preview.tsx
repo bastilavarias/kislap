@@ -185,14 +185,9 @@ export function LinktreeFormPreview({
     onBlockSelect(index);
   };
 
-  const useHorizontalDesktopScroll =
-    viewport === 'desktop' && availableWidth < 1024 && availableWidth < viewportWidth;
-  const scale = useHorizontalDesktopScroll
-    ? 1
-    : Math.min(1, Math.max(0.5, availableWidth / viewportWidth));
-  const scaledHeight = Math.ceil(contentHeight * scale);
-  const previewShellWidth = useHorizontalDesktopScroll ? viewportWidth : viewportWidth * scale;
-  const previewShellHeight = useHorizontalDesktopScroll ? contentHeight : scaledHeight;
+  const scale = Math.min(1, Math.max(0.3, availableWidth / viewportWidth));
+  const previewShellWidth = Math.ceil(viewportWidth * scale);
+  const previewShellHeight = Math.ceil(contentHeight * scale);
 
   return (
     <div className="flex h-full min-w-0 max-w-full flex-col overflow-hidden border-2 border-black bg-card">
@@ -203,7 +198,7 @@ export function LinktreeFormPreview({
               Live preview
             </p>
             <p className="mt-2 text-sm text-muted-foreground">
-              Updates live. Click any content block in the preview to edit it.
+              Preview updates instantly. Click Save to send those changes to your live site.
             </p>
           </div>
 
@@ -236,13 +231,10 @@ export function LinktreeFormPreview({
       <div
         ref={scrollAreaRef}
         onClickCapture={handlePreviewClick}
-        className={[
-          'min-h-0 flex-1 bg-muted/10',
-          useHorizontalDesktopScroll ? 'overflow-x-auto overflow-y-auto' : 'overflow-auto',
-        ].join(' ')}
+        className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden bg-muted/10"
       >
         <div
-          className={useHorizontalDesktopScroll ? 'min-w-max' : 'mx-auto'}
+          className="mx-auto"
           style={{ width: previewShellWidth, height: previewShellHeight }}
         >
           <div
