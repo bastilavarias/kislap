@@ -4,32 +4,19 @@ import {
   Coffee,
   FileText,
   Globe,
-  LayoutTemplate,
-  Link as LinkIcon,
   Megaphone,
   Presentation,
   Store,
   UserRound,
-  UtensilsCrossed,
   Video,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
-  PROJECT_TYPE_COPY,
   type BuilderStarter,
   type BuilderLayoutOption,
   type BuilderThemeOption,
   type StarterProjectType,
 } from '@/lib/project-starters';
-
-export const typeIcons: Record<
-  StarterProjectType,
-  React.ComponentType<{ className?: string }>
-> = {
-  portfolio: LayoutTemplate,
-  linktree: LinkIcon,
-  menu: UtensilsCrossed,
-};
 
 export const starterIcons: Record<string, React.ComponentType<{ className?: string }>> = {
   'resume-first': FileText,
@@ -53,26 +40,10 @@ export function createSubdomainCandidate(value: string) {
     .slice(0, 63);
 }
 
-export function isProjectType(value: string | null): value is StarterProjectType {
-  return value === 'portfolio' || value === 'linktree' || value === 'menu';
-}
-
 export function getCreateButtonCopy(type: StarterProjectType) {
   if (type === 'portfolio') return 'Create portfolio project';
   if (type === 'linktree') return 'Create page';
   return 'Create menu project';
-}
-
-export function getMenuStarterPreviewName(starterId: string) {
-  if (starterId === 'restaurant') return 'Resto Express';
-  if (starterId === 'food-stall') return 'Siomai Prince';
-  return 'Cafe Moto';
-}
-
-export function getPortfolioStarterPreviewName(starterId: string) {
-  if (starterId === 'freelancer') return 'Mara Sison';
-  if (starterId === 'developer') return 'Avery Navarro';
-  return 'Avery Navarro';
 }
 
 export function getLinktreeStarterPreviewName(starterId: string) {
@@ -120,66 +91,6 @@ export function OptionPill({
       <p className="text-sm font-black uppercase">{option.label}</p>
       <p className="mt-1 text-xs font-semibold leading-relaxed">{option.description}</p>
     </button>
-  );
-}
-
-export function ProjectTypeSelector({
-  projectType,
-  onChange,
-}: {
-  projectType: StarterProjectType;
-  onChange: (type: StarterProjectType) => void;
-}) {
-  return (
-    <div className="grid gap-3">
-      {(Object.keys(PROJECT_TYPE_COPY) as StarterProjectType[]).map((type) => {
-        const Icon = typeIcons[type];
-
-        return (
-          <button
-            key={type}
-            type="button"
-            onClick={() => onChange(type)}
-            className={cn(
-              'border-4 border-black p-4 text-left transition-all',
-              projectType === type
-                ? 'bg-secondary shadow-[5px_5px_0_#000]'
-                : 'bg-white hover:-translate-y-0.5 hover:shadow-[5px_5px_0_#000]'
-            )}
-            style={projectType === type ? getSelectedCardStyle() : undefined}
-          >
-            <div className="flex items-start gap-4">
-              <div
-                className={cn(
-                  'border-2 border-black p-3 transition-colors',
-                  projectType === type ? 'bg-black text-white' : 'bg-secondary text-black'
-                )}
-              >
-                <Icon className="h-5 w-5" />
-              </div>
-              <div className="space-y-1">
-                <p className="text-lg font-black uppercase text-foreground">
-                  {PROJECT_TYPE_COPY[type].title}
-                </p>
-                <p className="text-sm font-semibold leading-relaxed text-muted-foreground">
-                  {PROJECT_TYPE_COPY[type].description}
-                </p>
-                <div className="flex flex-wrap gap-2 pt-2">
-                  {splitAudienceChips(PROJECT_TYPE_COPY[type].bestFor).map((audience) => (
-                    <span
-                      key={`${type}-${audience}`}
-                      className="inline-flex items-center border-2 border-black bg-white px-3 py-1 font-mono text-[11px] font-black uppercase tracking-[0.08em] text-black"
-                    >
-                      {audience}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </button>
-        );
-      })}
-    </div>
   );
 }
 

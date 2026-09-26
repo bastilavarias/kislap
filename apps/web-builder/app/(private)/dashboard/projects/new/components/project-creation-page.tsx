@@ -23,7 +23,6 @@ import {
 } from '@/components/builder/builder-ui';
 import {
   LAYOUT_OPTIONS,
-  PROJECT_TYPE_COPY,
   STARTERS,
   THEME_OPTIONS,
   type BuilderStarter,
@@ -36,10 +35,6 @@ import {
   createSubdomainCandidate,
   getCreateButtonCopy,
   getLinktreeStarterPreviewName,
-  getMenuStarterPreviewName,
-  getPortfolioStarterPreviewName,
-  isProjectType,
-  ProjectTypeSelector,
   StarterSelector,
 } from './project-creation-options';
 import { ProjectBasicsPanel } from './project-basics-panel';
@@ -49,19 +44,20 @@ export function ProjectCreationPage() {
   const searchParams = useSearchParams();
   const { create } = useProject();
 
-  const initialType = isProjectType(searchParams.get('type'))
-    ? (searchParams.get('type') as StarterProjectType)
-    : 'portfolio';
-  const initialStarter = getStarterById(initialType, searchParams.get('starter'));
+  const projectType: StarterProjectType = 'linktree';
+  const initialStarter = getStarterById(projectType, searchParams.get('starter'));
+  const requestedLayout = searchParams.get('layout');
+  const requestedTheme = searchParams.get('theme');
+  const initialLayout = LAYOUT_OPTIONS[projectType].some((option) => option.id === requestedLayout)
+    ? requestedLayout!
+    : initialStarter.defaults.layoutName;
+  const initialTheme = THEME_OPTIONS[projectType].some((option) => option.id === requestedTheme)
+    ? requestedTheme!
+    : initialStarter.defaults.themePreset;
 
-  const [projectType, setProjectType] = useState<StarterProjectType>(initialType);
   const [starterId, setStarterId] = useState(initialStarter.id);
-  const [layoutName, setLayoutName] = useState(
-    searchParams.get('layout') || initialStarter.defaults.layoutName
-  );
-  const [themePreset, setThemePreset] = useState(
-    searchParams.get('theme') || initialStarter.defaults.themePreset
-  );
+  const [layoutName, setLayoutName] = useState(initialLayout);
+  const [themePreset, setThemePreset] = useState(initialTheme);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [subDomain, setSubDomain] = useState('');
@@ -69,7 +65,6 @@ export function ProjectCreationPage() {
   const [isCreating, setIsCreating] = useState(false);
   const [mobileTab, setMobileTab] = useState<'form' | 'preview'>('form');
 
-  const typeCopy = PROJECT_TYPE_COPY[projectType];
   const starters = STARTERS[projectType];
   const layoutOptions = LAYOUT_OPTIONS[projectType];
   const themeOptions = THEME_OPTIONS[projectType];
@@ -83,13 +78,6 @@ export function ProjectCreationPage() {
       setSubDomain(createSubdomainCandidate(name));
     }
   }, [name, subDomainTouched]);
-
-  useEffect(() => {
-    const defaultStarter = getStarterById(projectType, starterId);
-    setStarterId(defaultStarter.id);
-    setLayoutName(defaultStarter.defaults.layoutName);
-    setThemePreset(defaultStarter.defaults.themePreset);
-  }, [projectType]);
 
   const handleStarterChange = (starter: BuilderStarter) => {
     setStarterId(starter.id);
@@ -126,7 +114,7 @@ export function ProjectCreationPage() {
       nextUrl.searchParams.set('layout', layoutName);
       nextUrl.searchParams.set('theme', themePreset);
 
-      toast.success('Project created. Starter applied to your first draft.');
+      toast.success('Page created. Starter applied to your first draft.');
       router.push(`${nextUrl.pathname}${nextUrl.search}`);
       return;
     }
@@ -167,27 +155,19 @@ export function ProjectCreationPage() {
 
           <div className="space-y-3">
             <p className="font-mono text-sm font-black uppercase tracking-[0.24em] text-primary">
-              New project
+              New page
             </p>
             <h1 className="text-4xl font-black uppercase leading-none tracking-normal text-foreground md:text-5xl">
-              Create a page with a clearer starting point.
+              Build your Kislap page.
             </h1>
             <p className="text-base font-semibold leading-relaxed text-muted-foreground">
-              Choose what you want to publish, pick a starter, and we will show you the kind of
-              layout and theme you are getting before the project exists.
+              Pick a starting point, customize the layout and theme, then shape the page with your
+              own blocks inside the builder.
             </p>
           </div>
         </div>
 
         <div className="space-y-6">
-          <div className="space-y-3">
-            <div className="flex items-center gap-2 font-mono text-sm font-black uppercase tracking-[0.18em] text-foreground">
-              <LayoutTemplate className="h-4 w-4 text-primary" />
-              What are you building?
-            </div>
-            <ProjectTypeSelector projectType={projectType} onChange={setProjectType} />
-          </div>
-
           <div className="space-y-3">
             <div className="flex items-center gap-2 font-mono text-sm font-black uppercase tracking-[0.18em] text-foreground">
               <FileText className="h-4 w-4 text-primary" />
@@ -237,8 +217,6 @@ export function ProjectCreationPage() {
           </div>
 
           <ProjectBasicsPanel
-            projectType={projectType}
-            typeLabel={typeCopy.label}
             starterId={starterId}
             name={name}
             setName={setName}
@@ -263,7 +241,7 @@ export function ProjectCreationPage() {
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
           <p className="text-sm font-semibold text-muted-foreground">
-            We will create the project, take you into the builder, and prefill the first draft from{' '}
+            We will create the page, take you into the builder, and prefill the first draft from{' '}
             <span className="font-black text-foreground">{selectedStarter.label}</span>.
           </p>
         </div>
@@ -280,14 +258,7 @@ export function ProjectCreationPage() {
           starterId={starterId}
           layoutName={layoutName}
           themePreset={themePreset}
-          projectName={
-            name.trim() ||
-            (projectType === 'menu'
-              ? getMenuStarterPreviewName(starterId)
-              : projectType === 'portfolio'
-                ? getPortfolioStarterPreviewName(starterId)
-                : getLinktreeStarterPreviewName(starterId))
-          }
+          projectName={name.trim() || getLinktreeStarterPreviewName(starterId)}
         />
       </section>
       </div>
