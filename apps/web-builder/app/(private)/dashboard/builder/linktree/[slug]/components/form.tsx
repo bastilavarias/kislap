@@ -1,40 +1,21 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
+import type { UseFieldArrayReturn, UseFormReturn } from 'react-hook-form';
+import { Eraser } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent } from '@/components/ui/card';
-import { Palette, Link as LinkIcon } from 'lucide-react';
-import { UseFormReturn, UseFieldArrayReturn } from 'react-hook-form';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion';
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-  SheetDescription,
-} from '@/components/ui/sheet';
-import { Settings } from '@/contexts/settings-context';
-import { LinktreeFormValues } from '@/lib/schemas/linktree';
-import { Controller } from 'react-hook-form';
-import { SimpleRichTextEditor } from '@/components/simple-rich-text-editor';
-import { SectionsEditor } from './sections-editor';
-import { ImageUploadField } from './image-upload-field';
-import { DesignPanel } from './design-panel';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { LinktreeFormPreview } from './linktree-form-preview';
+import type { Settings } from '@/contexts/settings-context';
+import type { LinktreeFormValues } from '@/lib/schemas/linktree';
 import {
   builderOutlineButtonClass,
   builderTabsListClass,
   builderTabsTriggerClass,
 } from '@/components/builder/builder-ui';
+import { DesignPanel } from './design-panel';
+import { LinktreeFormPreview } from './linktree-form-preview';
+import { ProfileEditor } from './profile-editor';
+import { SectionsEditor } from './sections-editor';
 
 interface Props {
   formMethods: UseFormReturn<LinktreeFormValues>;
@@ -51,22 +32,21 @@ export function Form({
   localThemeSettings,
   setLocalThemeSettings,
 }: Props) {
-  const {
-    register,
-    watch,
-    setValue,
-    control,
-    reset,
-    formState: { errors },
-  } = formMethods;
+  const { watch, setValue, reset } = formMethods;
   const previewValues = watch();
-  const [builderTab, setBuilderTab] = useState<'form' | 'preview'>('form');
+  const [mobileTab, setMobileTab] = useState<'edit' | 'preview'>('edit');
+  const [selectedBlockIndex, setSelectedBlockIndex] = useState<number | null>(null);
+  const blocksRef = useRef<HTMLDivElement | null>(null);
 
   const backgroundStyle = (watch('background_style') as 'plain' | 'grid') || 'grid';
   const compositionLayout = watch('composition_layout') || 'classic';
 
   const handleClearContent = () => {
-    if (!window.confirm('Clear the current page content? Layout, background style, and theme will stay as they are.')) {
+    if (
+      !window.confirm(
+        'Clear the current page content? Layout, background style, and theme will stay as they are.',
+      )
+    ) {
       return;
     }
 
@@ -83,202 +63,99 @@ export function Form({
       composition_layout: compositionLayout,
       sections: [],
     });
+    setSelectedBlockIndex(null);
+  };
+
+  const handlePreviewBlockSelect = (index: number) => {
+    setSelectedBlockIndex(index);
+    setMobileTab('edit');
+    window.requestAnimationFrame(() => {
+      blocksRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
   };
 
   return (
-    <div className="w-full relative">
-      <div className="mb-6">
-        <Tabs value={builderTab} onValueChange={(value) => setBuilderTab(value as 'form' | 'preview')}>
-          <TabsList className={`${builderTabsListClass} grid h-12 w-full max-w-md grid-cols-2`}>
-            <TabsTrigger
-              value="form"
-              className={builderTabsTriggerClass}
-            >
-              Form
+    <div className="relative w-full">
+      <div className="mb-4 xl:hidden">
+        <Tabs value={mobileTab} onValueChange={(value) => setMobileTab(value as 'edit' | 'preview')}>
+          <TabsList className={`${builderTabsListClass} grid h-12 w-full grid-cols-2`}>
+            <TabsTrigger value="edit" className={builderTabsTriggerClass}>
+              Edit
             </TabsTrigger>
-            <TabsTrigger
-              value="preview"
-              className={builderTabsTriggerClass}
-            >
+            <TabsTrigger value="preview" className={builderTabsTriggerClass}>
               Preview
             </TabsTrigger>
           </TabsList>
         </Tabs>
       </div>
 
-      {builderTab === 'preview' ? (
-        <LinktreeFormPreview values={previewValues} themeSettings={localThemeSettings} />
-      ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start pb-20 lg:pb-0">
-          <div className="lg:col-span-8 space-y-6">
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex justify-between items-center mb-6 gap-4">
-                  <h1 className="text-2xl font-black uppercase flex items-center gap-2">
-                    <LinkIcon className="w-6 h-6" /> Page Content
-                  </h1>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className={builderOutlineButtonClass}
-                    onClick={handleClearContent}
-                  >
-                    Clear content
-                  </Button>
-                </div>
-
-                <div className="flex flex-col gap-10">
-                  <Accordion type="single" defaultValue="details" collapsible>
-                    <AccordionItem value="details" className="border-2 border-black px-4">
-                      <AccordionTrigger className="py-3 text-base">
-                        Identity & Branding
-                      </AccordionTrigger>
-                      <AccordionContent className="pt-4 pb-4 space-y-8 px-1">
-                      <div className="space-y-4">
-                        <div className="flex items-center gap-2 text-sm text-primary font-black uppercase tracking-wider">
-                          <Palette className="w-4 h-4" /> Branding
-                        </div>
-                        <div className="flex flex-col md:flex-row gap-6">
-                          <div className="shrink-0">
-                            <Label className="mb-2 block">Logo</Label>
-                            <ImageUploadField
-                              id="logo-upload"
-                              previewUrl={watch('logo_url')}
-                              currentFile={watch('logo') as File}
-                              onFileSelect={(f) => setValue('logo', f)}
-                            />
-                          </div>
-                          <div className="flex-1 space-y-4">
-                            <div>
-                              <Label className="mb-2 block">Name</Label>
-                              <Input
-                                {...register('name')}
-                                placeholder="My Awesome Link Page"
-                                className="shadow-none"
-                              />
-                              {errors.name && (
-                                <p className="text-destructive text-sm mt-1">
-                                  {errors.name.message}
-                                </p>
-                              )}
-                            </div>
-                            <div>
-                              <Label className="mb-2 block">Tagline</Label>
-                              <Input
-                                {...register('tagline')}
-                                placeholder="All my links in one place."
-                                className="shadow-none"
-                              />
-                            </div>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                              <div>
-                                <Label className="mb-2 block">Phone</Label>
-                                <Input
-                                  {...register('phone')}
-                                  placeholder="0997-221-7704"
-                                  className="shadow-none"
-                                />
-                              </div>
-                              <div>
-                                <Label className="mb-2 block">Email</Label>
-                                <Input
-                                  {...register('email')}
-                                  placeholder="you@email.com"
-                                  className="shadow-none"
-                                />
-                              </div>
-                            </div>
-                            <div>
-                              <Label className="mb-2 block">About (Optional)</Label>
-
-                              <Controller
-                                control={control}
-                                name="about"
-                                render={({ field }) => (
-                                  <SimpleRichTextEditor
-                                    value={field.value || ''}
-                                    onChange={field.onChange}
-                                    placeholder="Tell your story..."
-                                  />
-                                )}
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      </AccordionContent>
-                    </AccordionItem>
-                  </Accordion>
-
-                  <Accordion type="single" defaultValue="sections" collapsible>
-                    <AccordionItem value="sections" className="border-2 border-black px-4">
-                      <AccordionTrigger className="py-3 text-base">
-                        Page Blocks
-                      </AccordionTrigger>
-                      <AccordionContent className="pt-2 pb-4 px-1">
-                        <SectionsEditor
-                          formMethods={formMethods}
-                          sectionsFieldArray={sectionsFieldArray}
-                          onAddSection={onAddSection}
-                        />
-                      </AccordionContent>
-                    </AccordionItem>
-                  </Accordion>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          <div className="hidden lg:col-span-4 lg:block relative">
-            <div className="sticky top-6 space-y-4">
-              <DesignPanel
-                compositionLayout={compositionLayout}
-                setCompositionLayout={(value) =>
-                  setValue('composition_layout', value, { shouldDirty: true })
-                }
-                backgroundStyle={backgroundStyle}
-                setBackgroundStyle={(style) =>
-                  setValue('background_style', style, { shouldDirty: true })
-                }
-                localThemeSettings={localThemeSettings}
-                setLocalThemeSettings={setLocalThemeSettings}
-              />
+      <div className="grid min-w-0 gap-6 xl:grid-cols-[minmax(430px,5fr)_minmax(0,7fr)] xl:items-start">
+        <section
+          className={[
+            'min-w-0 space-y-5',
+            mobileTab === 'preview' ? 'hidden xl:block' : 'block',
+          ].join(' ')}
+        >
+          <div className="flex items-start justify-between gap-4 border-b-2 border-black pb-4">
+            <div>
+              <p className="font-mono text-xs font-black uppercase tracking-[0.2em] text-primary">
+                Page editor
+              </p>
+              <h1 className="mt-1 text-2xl font-black uppercase">Content & design</h1>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Edit on the left. Your page updates live on the right.
+              </p>
             </div>
-          </div>
-        </div>
-      )}
-
-      <div className="lg:hidden fixed bottom-6 right-6 z-50">
-        <Sheet>
-          <SheetTrigger asChild>
             <Button
-              size="lg"
-              className="h-14 w-14 bg-secondary text-black flex items-center justify-center"
+              type="button"
+              variant="outline"
+              className={builderOutlineButtonClass}
+              onClick={handleClearContent}
             >
-              <Palette className="w-6 h-6 text-primary-foreground" />
+              <Eraser className="mr-2 h-4 w-4" />
+              Clear
             </Button>
-          </SheetTrigger>
-          <SheetContent side="bottom" className="h-[85vh] pt-6 px-4">
-            <SheetHeader className="mb-4 text-left">
-              <SheetTitle>Design</SheetTitle>
-              <SheetDescription>Arrange your page and customize its theme.</SheetDescription>
-            </SheetHeader>
-            <div className="h-full overflow-y-auto pb-20">
-              <DesignPanel
-                compositionLayout={compositionLayout}
-                setCompositionLayout={(value) =>
-                  setValue('composition_layout', value, { shouldDirty: true })
-                }
-                backgroundStyle={backgroundStyle}
-                setBackgroundStyle={(style) =>
-                  setValue('background_style', style, { shouldDirty: true })
-                }
-                localThemeSettings={localThemeSettings}
-                setLocalThemeSettings={setLocalThemeSettings}
-              />
-            </div>
-          </SheetContent>
-        </Sheet>
+          </div>
+
+          <ProfileEditor formMethods={formMethods} />
+
+          <div ref={blocksRef} className="scroll-mt-4">
+            <SectionsEditor
+              formMethods={formMethods}
+              sectionsFieldArray={sectionsFieldArray}
+              onAddSection={onAddSection}
+              selectedIndex={selectedBlockIndex}
+              onSelectedIndexChange={setSelectedBlockIndex}
+            />
+          </div>
+
+          <DesignPanel
+            compositionLayout={compositionLayout}
+            setCompositionLayout={(value) =>
+              setValue('composition_layout', value, { shouldDirty: true })
+            }
+            backgroundStyle={backgroundStyle}
+            setBackgroundStyle={(style) =>
+              setValue('background_style', style, { shouldDirty: true })
+            }
+            localThemeSettings={localThemeSettings}
+            setLocalThemeSettings={setLocalThemeSettings}
+          />
+        </section>
+
+        <section
+          className={[
+            'min-w-0 max-w-full',
+            'min-h-[70vh] xl:sticky xl:top-4 xl:h-[calc(100vh-2rem)]',
+            mobileTab === 'edit' ? 'hidden xl:block' : 'block',
+          ].join(' ')}
+        >
+          <LinktreeFormPreview
+            values={previewValues}
+            themeSettings={localThemeSettings}
+            onBlockSelect={handlePreviewBlockSelect}
+          />
+        </section>
       </div>
     </div>
   );

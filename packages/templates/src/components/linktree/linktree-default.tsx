@@ -313,6 +313,7 @@ export function LinktreeDefault({
             return (
               <div
                 key={`${item.kind}-${item.id}`}
+                data-kislap-block-order={item.placement_order}
                 className={blockGridClass(compositionLayout, block.type, block.layout_json)}
               >
                 {isPortfolioBlock ? content : <PageBlockFrame block={block}>{content}</PageBlockFrame>}

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, type MouseEvent } from 'react';
 import { Laptop, Smartphone, Tablet } from 'lucide-react';
 import { defaultThemeState } from '@/config/theme';
 import { Settings } from '@/contexts/settings-context';
@@ -103,9 +103,11 @@ function createLinktreePreviewProject({
 export function LinktreeFormPreview({
   values,
   themeSettings,
+  onBlockSelect,
 }: {
   values: LinktreeFormValues;
   themeSettings: Settings | null;
+  onBlockSelect?: (index: number) => void;
 }) {
   const [viewport, setViewport] = useState<PreviewViewport>('desktop');
   const [logoPreviewUrl, setLogoPreviewUrl] = useState<string | null>(null);
@@ -168,6 +170,21 @@ export function LinktreeFormPreview({
     scrollArea.scrollLeft = 0;
   }, [themeSettings, viewport]);
 
+  const handlePreviewClick = (event: MouseEvent<HTMLDivElement>) => {
+    if (!onBlockSelect) return;
+
+    const target = event.target as HTMLElement;
+    const block = target.closest<HTMLElement>('[data-kislap-block-order]');
+    if (!block) return;
+
+    const index = Number(block.dataset.kislapBlockOrder);
+    if (!Number.isInteger(index) || index < 0) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    onBlockSelect(index);
+  };
+
   const useHorizontalDesktopScroll =
     viewport === 'desktop' && availableWidth < 1024 && availableWidth < viewportWidth;
   const scale = useHorizontalDesktopScroll
@@ -178,7 +195,7 @@ export function LinktreeFormPreview({
   const previewShellHeight = useHorizontalDesktopScroll ? contentHeight : scaledHeight;
 
   return (
-    <div className="flex min-w-0 max-w-full flex-col overflow-hidden border border-border/70 bg-card/60 shadow-[0_24px_80px_rgba(15,23,42,0.12)] backdrop-blur-sm">
+    <div className="flex h-full min-w-0 max-w-full flex-col overflow-hidden border-2 border-black bg-card">
       <div className="border-b border-border/60 px-5 py-4">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
@@ -186,7 +203,7 @@ export function LinktreeFormPreview({
               Live preview
             </p>
             <p className="mt-2 text-sm text-muted-foreground">
-              Based on your current content, page layout, and theme. No save needed.
+              Updates live. Click any content block in the preview to edit it.
             </p>
           </div>
 
@@ -218,6 +235,7 @@ export function LinktreeFormPreview({
 
       <div
         ref={scrollAreaRef}
+        onClickCapture={handlePreviewClick}
         className={[
           'min-h-0 flex-1 bg-muted/10',
           useHorizontalDesktopScroll ? 'overflow-x-auto overflow-y-auto' : 'overflow-auto',
