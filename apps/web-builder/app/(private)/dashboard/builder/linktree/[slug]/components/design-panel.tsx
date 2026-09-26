@@ -1,6 +1,13 @@
 'use client';
 
-import { CheckCircle2, LayoutTemplate } from 'lucide-react';
+import {
+  BriefcaseBusiness,
+  CheckCircle2,
+  LayoutGrid,
+  LayoutTemplate,
+  Rows3,
+  Sparkles,
+} from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import ThemeControlPanel from '@/components/customizer/theme-control-panel';
@@ -11,24 +18,53 @@ import {
   builderTabsTriggerClass,
 } from '@/components/builder/builder-ui';
 
-const LAYOUT_OPTIONS = [
+const COMPOSITION_OPTIONS = [
+  {
+    id: 'classic',
+    name: 'Classic',
+    icon: Rows3,
+    description: 'Simple single-column flow. Best for fast personal pages.',
+  },
+  {
+    id: 'bento',
+    name: 'Bento',
+    icon: LayoutGrid,
+    description: 'Mixed-width blocks that snap into a denser grid.',
+  },
+  {
+    id: 'portfolio',
+    name: 'Portfolio',
+    icon: BriefcaseBusiness,
+    description: 'Wide showcase blocks with supporting skills and links.',
+  },
+  {
+    id: 'creator',
+    name: 'Creator',
+    icon: Sparkles,
+    description: 'Profile-first layout with featured content and compact links.',
+  },
+] as const;
+
+const PAGE_STYLE_OPTIONS = [
   {
     id: 'linktree-default',
-    name: 'Default',
+    name: 'Clean',
     icon: LayoutTemplate,
-    description: 'Clean & balanced.',
+    description: 'Soft, modern, and content-first.',
   },
   {
     id: 'linktree-neo-brutalist',
     name: 'Neo Brutalist',
     icon: LayoutTemplate,
-    description: 'Raw, bold, and high-contrast.',
+    description: 'Bold Kislap borders, hard shadows, and stronger contrast.',
   },
-];
+] as const;
 
 interface DesignPanelProps {
   layout: string;
   setLayout: (layout: string) => void;
+  compositionLayout: 'classic' | 'bento' | 'portfolio' | 'creator';
+  setCompositionLayout: (layout: 'classic' | 'bento' | 'portfolio' | 'creator') => void;
   backgroundStyle: 'plain' | 'grid';
   setBackgroundStyle: (style: 'plain' | 'grid') => void;
   localThemeSettings: Settings | null;
@@ -38,38 +74,66 @@ interface DesignPanelProps {
 export function DesignPanel({
   layout,
   setLayout,
+  compositionLayout,
+  setCompositionLayout,
   backgroundStyle,
   setBackgroundStyle,
   localThemeSettings,
   setLocalThemeSettings,
 }: DesignPanelProps) {
   return (
-    <Card className="border-none shadow-none bg-transparent">
-      <h2 className="text-xl font-black uppercase mb-4 hidden lg:block">Design & Style</h2>
+    <Card className="border-none bg-transparent shadow-none">
+      <h2 className="mb-4 hidden text-xl font-black uppercase lg:block">Design & Style</h2>
+
       <Tabs defaultValue="layout" className="w-full">
         <TabsList className={`${builderTabsListClass} mb-4 grid h-12 w-full grid-cols-2`}>
-          <TabsTrigger
-            value="layout"
-            className={builderTabsTriggerClass}
-          >
+          <TabsTrigger value="layout" className={builderTabsTriggerClass}>
             Layout
           </TabsTrigger>
-          <TabsTrigger
-            value="theme"
-            className={builderTabsTriggerClass}
-          >
+          <TabsTrigger value="theme" className={builderTabsTriggerClass}>
             Theme
           </TabsTrigger>
         </TabsList>
+
         <TabsContent value="layout" className="mt-0">
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-lg">Choose Layout</CardTitle>
-              <CardDescription>Select a structure for your link page.</CardDescription>
+              <CardTitle className="text-lg">Page Layout</CardTitle>
+              <CardDescription>
+                Pick a starting composition. Individual blocks can still override their width.
+              </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-5 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
+            <CardContent className="max-h-[600px] space-y-5 overflow-y-auto pr-2 custom-scrollbar">
+              <div className="grid grid-cols-2 gap-3">
+                {COMPOSITION_OPTIONS.map((option) => {
+                  const isSelected = compositionLayout === option.id;
+                  return (
+                    <button
+                      key={option.id}
+                      type="button"
+                      onClick={() => setCompositionLayout(option.id)}
+                      className={cn(
+                        'relative border-2 border-black p-3 text-left transition-all',
+                        isSelected
+                          ? 'bg-secondary shadow-[4px_4px_0_#000]'
+                          : 'bg-card hover:-translate-y-0.5 hover:shadow-[4px_4px_0_#000]'
+                      )}
+                    >
+                      {isSelected ? (
+                        <CheckCircle2 className="absolute right-2 top-2 h-4 w-4 text-primary" />
+                      ) : null}
+                      <option.icon className="mb-4 h-5 w-5" />
+                      <p className="text-sm font-black uppercase">{option.name}</p>
+                      <p className="mt-1 text-[11px] font-medium leading-relaxed text-muted-foreground">
+                        {option.description}
+                      </p>
+                    </button>
+                  );
+                })}
+              </div>
+
               <div>
-                <p className="text-sm font-semibold mb-2">Background</p>
+                <p className="mb-2 text-sm font-semibold">Page Background</p>
                 <div className="grid grid-cols-2 gap-3">
                   {(['plain', 'grid'] as const).map((option) => {
                     const isSelected = backgroundStyle === option;
@@ -80,9 +144,7 @@ export function DesignPanel({
                         onClick={() => setBackgroundStyle(option)}
                         className={cn(
                           'border-2 border-black px-3 py-2 text-left text-sm font-black uppercase transition-colors',
-                          isSelected
-                            ? 'border-primary bg-primary/5 text-primary'
-                            : 'border-muted hover:border-muted-foreground/30'
+                          isSelected ? 'bg-secondary' : 'bg-card hover:bg-muted'
                         )}
                       >
                         {option}
@@ -91,58 +153,47 @@ export function DesignPanel({
                   })}
                 </div>
               </div>
-
-              <div className="grid grid-cols-2 gap-3">
-              {LAYOUT_OPTIONS.map((option) => {
-                const isSelected = layout === option.id;
-                return (
-                  <div
-                    key={option.id}
-                    onClick={() => setLayout(option.id)}
-                    className={cn(
-                      'cursor-pointer group relative flex flex-col items-center justify-center p-4 border-2 transition-all duration-200',
-                      isSelected
-                        ? 'border-primary bg-primary/5'
-                        : 'border-muted hover:border-muted-foreground/30 hover:bg-muted/30'
-                    )}
-                  >
-                    {isSelected && (
-                      <div className="absolute top-2 right-2 text-primary">
-                        <CheckCircle2 className="w-4 h-4" />
-                      </div>
-                    )}
-                    <div
-                      className={cn(
-                        'p-3 border-2 border-black mb-3 transition-colors',
-                        isSelected
-                          ? 'bg-background text-primary'
-                          : 'bg-muted text-muted-foreground group-hover:bg-background'
-                      )}
-                    >
-                      <option.icon className="w-6 h-6" />
-                    </div>
-                    <div className="text-center">
-                      <p className={cn('font-black uppercase text-sm', isSelected && 'text-primary')}>
-                        {option.name}
-                      </p>
-                      <p className="text-[10px] text-muted-foreground mt-1 line-clamp-1">
-                        {option.description}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
-              </div>
             </CardContent>
           </Card>
         </TabsContent>
+
         <TabsContent value="theme" className="mt-0">
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-lg">Choose Theme</CardTitle>
-              <CardDescription>Customize colors, fonts, and radius.</CardDescription>
+              <CardTitle className="text-lg">Theme & Page Style</CardTitle>
+              <CardDescription>
+                Page style controls the rendering treatment. Theme controls color, type, radius, and shadow tokens.
+              </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-5">
+              <div className="grid grid-cols-2 gap-3">
+                {PAGE_STYLE_OPTIONS.map((option) => {
+                  const isSelected = layout === option.id;
+                  return (
+                    <button
+                      key={option.id}
+                      type="button"
+                      onClick={() => setLayout(option.id)}
+                      className={cn(
+                        'relative border-2 border-black p-3 text-left transition-all',
+                        isSelected
+                          ? 'bg-secondary shadow-[4px_4px_0_#000]'
+                          : 'bg-card hover:-translate-y-0.5 hover:shadow-[4px_4px_0_#000]'
+                      )}
+                    >
+                      {isSelected ? (
+                        <CheckCircle2 className="absolute right-2 top-2 h-4 w-4 text-primary" />
+                      ) : null}
+                      <option.icon className="mb-4 h-5 w-5" />
+                      <p className="text-sm font-black uppercase">{option.name}</p>
+                      <p className="mt-1 text-[11px] leading-relaxed text-muted-foreground">
+                        {option.description}
+                      </p>
+                    </button>
+                  );
+                })}
+              </div>
+
               <ThemeControlPanel
                 stateless={true}
                 themeSettings={localThemeSettings}

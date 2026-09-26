@@ -1,6 +1,7 @@
 package linktree
 
 import (
+	"encoding/json"
 	"mime/multipart"
 )
 
@@ -22,6 +23,9 @@ type LinktreeLinkRequest struct {
 	SupportQRImageURL *string               `form:"support_qr_image_url" json:"support_qr_image_url"`
 	SupportQRImage    *multipart.FileHeader `form:"support_qr_image" json:"support_qr_image"`
 	CTALabel          *string               `form:"cta_label" json:"cta_label"`
+	ContentJSON       *json.RawMessage      `form:"content_json" json:"content_json"`
+	LayoutJSON        *json.RawMessage      `form:"layout_json" json:"layout_json"`
+	StyleJSON         *json.RawMessage      `form:"style_json" json:"style_json"`
 	PlacementOrder    *int                  `form:"placement_order" json:"placement_order"`
 }
 
@@ -43,6 +47,9 @@ type LinktreeSectionRequest struct {
 	SupportQRImageURL *string               `form:"support_qr_image_url" json:"support_qr_image_url"`
 	SupportQRImage    *multipart.FileHeader `form:"support_qr_image" json:"support_qr_image"`
 	CTALabel          *string               `form:"cta_label" json:"cta_label"`
+	ContentJSON       *json.RawMessage      `form:"content_json" json:"content_json"`
+	LayoutJSON        *json.RawMessage      `form:"layout_json" json:"layout_json"`
+	StyleJSON         *json.RawMessage      `form:"style_json" json:"style_json"`
 	PlacementOrder    *int                  `form:"placement_order" json:"placement_order"`
 }
 
@@ -59,9 +66,10 @@ type Payload struct {
 	LogoURL *string
 	Logo    *multipart.FileHeader
 
-	LayoutName      string
-	BackgroundStyle string
-	Theme           *ThemeRequest
+	LayoutName        string
+	CompositionLayout string
+	BackgroundStyle   string
+	Theme             *ThemeRequest
 
 	Links    []LinktreeLinkRequest
 	Sections []LinktreeSectionRequest
@@ -80,9 +88,10 @@ type CreateUpdateLinktreeRequest struct {
 	LogoURL *string               `form:"logo_url" json:"logo_url"`
 	Logo    *multipart.FileHeader `form:"logo" json:"logo"`
 
-	LayoutName      string        `form:"layout_name" json:"layout_name"`
-	BackgroundStyle string        `form:"background_style" json:"background_style"`
-	Theme           *ThemeRequest `form:"theme" json:"theme"`
+	LayoutName        string        `form:"layout_name" json:"layout_name"`
+	CompositionLayout string        `form:"composition_layout" json:"composition_layout"`
+	BackgroundStyle   string        `form:"background_style" json:"background_style"`
+	Theme             *ThemeRequest `form:"theme" json:"theme"`
 
 	Links    []LinktreeLinkRequest    `form:"links" json:"links"`
 	Sections []LinktreeSectionRequest `form:"sections" json:"sections"`
@@ -141,20 +150,21 @@ type ThemeRequest struct {
 
 func (request *CreateUpdateLinktreeRequest) ToServicePayload() Payload {
 	return Payload{
-		LinktreeID:      request.LinktreeID,
-		ProjectID:       request.ProjectID,
-		UserID:          request.UserID,
-		Name:            request.Name,
-		Tagline:         request.Tagline,
-		About:           request.About,
-		Phone:           request.Phone,
-		Email:           request.Email,
-		LogoURL:         request.LogoURL,
-		Logo:            request.Logo,
-		LayoutName:      request.LayoutName,
-		BackgroundStyle: request.BackgroundStyle,
-		Theme:           request.Theme,
-		Links:           request.Links,
-		Sections:        request.Sections,
+		LinktreeID:        request.LinktreeID,
+		ProjectID:         request.ProjectID,
+		UserID:            request.UserID,
+		Name:              request.Name,
+		Tagline:           request.Tagline,
+		About:             request.About,
+		Phone:             request.Phone,
+		Email:             request.Email,
+		LogoURL:           request.LogoURL,
+		Logo:              request.Logo,
+		LayoutName:        request.LayoutName,
+		CompositionLayout: request.CompositionLayout,
+		BackgroundStyle:   request.BackgroundStyle,
+		Theme:             request.Theme,
+		Links:             request.Links,
+		Sections:          request.Sections,
 	}
 }

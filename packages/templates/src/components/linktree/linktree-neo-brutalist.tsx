@@ -19,6 +19,15 @@ import {
   PLATFORM_STYLES,
 } from "./linktree-neo-brutalist-icons";
 import { trackThenNavigate } from "./linktree-track-navigation";
+import {
+  PageBlockFrame,
+  blockGridClass,
+  pageShellWidthClass,
+  type BlockLayoutData,
+  type BlockStyleData,
+  type CompositionLayout,
+  type FlexibleBlockData,
+} from "./linktree-page-block";
 interface LinkItem {
   id: number;
   title: string;
@@ -27,6 +36,9 @@ interface LinkItem {
   icon_key?: string | null;
   placement_order?: number | null;
   description?: string | null;
+  content_json?: Record<string, unknown> | null;
+  layout_json?: BlockLayoutData | null;
+  style_json?: BlockStyleData | null;
 }
 interface ContentItem {
   kind: "link" | "section";
@@ -42,6 +54,7 @@ interface LinktreeData {
   tagline?: string;
   about?: string;
   background_style?: "plain" | "grid";
+  composition_layout?: CompositionLayout;
   phone?: string | null;
   email?: string | null;
   logo_url?: string | null;
@@ -136,6 +149,7 @@ export function LinktreeNeoBrutalist({
   const [copied, setCopied] = useState(false);
   const { trackPageLinkClick } = usePageActivity();
   const isGridBackground = linktree?.background_style !== "plain";
+  const compositionLayout = linktree?.composition_layout || "classic";
   const gridLineColor =
     themeMode === "dark" ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.06)";
   const pageBackgroundStyle = isGridBackground
@@ -206,7 +220,8 @@ export function LinktreeNeoBrutalist({
       <section
         style={BRUTAL_SHADOW_LG}
         className={cn(
-          "mx-auto w-full max-w-[680px] border-4 border-border p-3 @sm:p-5",
+          "mx-auto w-full border-4 border-border p-3 @sm:p-5",
+          pageShellWidthClass(compositionLayout, "max-w-[680px]"),
           isGridBackground ? "bg-background/95" : "bg-background",
         )}
       >
@@ -285,14 +300,43 @@ export function LinktreeNeoBrutalist({
         </div>
 
         {contentItems.length > 0 ? (
-          <div className="mt-6 flex flex-col gap-3 @sm:gap-4">
-            {contentItems.map((item, index) =>
-              item.kind === "link" && item.link ? (
-                <LinkCard key={`link-${item.id}`} link={item.link} index={index} onTrackClick={handleTrackClick} />
-              ) : item.kind === "section" && item.section ? (
-                <NeoBrutalistSection key={`section-${item.id}`} section={item.section} onTrackClick={handleTrackClick} />
-              ) : null,
-            )}
+          <div className="mt-6 grid grid-flow-dense grid-cols-12 gap-3 @sm:gap-4">
+            {contentItems.map((item, index) => {
+              const block: FlexibleBlockData | null =
+                item.kind === "link" && item.link
+                  ? {
+                      type: "link",
+                      content_json: item.link.content_json,
+                      layout_json: item.link.layout_json,
+                      style_json: item.link.style_json,
+                    }
+                  : item.section || null;
+
+              if (!block) return null;
+
+              const isPortfolioBlock = ["text", "project", "experience", "skills"].includes(block.type);
+              const content =
+                item.kind === "link" && item.link ? (
+                  <LinkCard link={item.link} index={index} onTrackClick={handleTrackClick} />
+                ) : item.kind === "section" && item.section ? (
+                  <NeoBrutalistSection section={item.section} onTrackClick={handleTrackClick} />
+                ) : null;
+
+              return (
+                <div
+                  key={`${item.kind}-${item.id}`}
+                  className={blockGridClass(compositionLayout, block.type, block.layout_json)}
+                >
+                  {isPortfolioBlock ? (
+                    content
+                  ) : (
+                    <PageBlockFrame block={block} brutal>
+                      {content}
+                    </PageBlockFrame>
+                  )}
+                </div>
+              );
+            })}
           </div>
         ) : null}
       </section>

@@ -59,7 +59,7 @@ export function isProjectType(value: string | null): value is StarterProjectType
 
 export function getCreateButtonCopy(type: StarterProjectType) {
   if (type === 'portfolio') return 'Create portfolio project';
-  if (type === 'linktree') return 'Create link page';
+  if (type === 'linktree') return 'Create page';
   return 'Create menu project';
 }
 
@@ -77,6 +77,8 @@ export function getPortfolioStarterPreviewName(starterId: string) {
 
 export function getLinktreeStarterPreviewName(starterId: string) {
   if (starterId === 'personal-brand') return 'Nika Valdez';
+  if (starterId === 'developer') return 'Avery Navarro';
+  if (starterId === 'freelancer') return 'Bea Santos';
   if (starterId === 'launch-links') return 'Orbit Labs';
   return 'Mika Reyes';
 }

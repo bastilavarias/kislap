@@ -12,6 +12,15 @@ import { usePageActivity } from "@/hooks/api/use-page-activity";
 import { BrandGlyph, ICON_BADGE_STYLES } from "./linktree-neo-brutalist-icons";
 import { DefaultSection, LinktreeSection } from "./linktree-default-sections";
 import { trackThenNavigate } from "./linktree-track-navigation";
+import {
+  PageBlockFrame,
+  blockGridClass,
+  pageShellWidthClass,
+  type BlockLayoutData,
+  type BlockStyleData,
+  type CompositionLayout,
+  type FlexibleBlockData,
+} from "./linktree-page-block";
 
 interface LinkItem {
   id: number;
@@ -21,6 +30,9 @@ interface LinkItem {
   icon_key?: string | null;
   placement_order?: number | null;
   description?: string | null;
+  content_json?: Record<string, unknown> | null;
+  layout_json?: BlockLayoutData | null;
+  style_json?: BlockStyleData | null;
 }
 
 interface ContentItem {
@@ -41,6 +53,7 @@ interface LinktreeData {
   email?: string | null;
   logo_url?: string | null;
   background_style?: "plain" | "grid";
+  composition_layout?: CompositionLayout;
   links?: LinkItem[];
   sections?: LinktreeSection[];
 }
@@ -117,6 +130,7 @@ export function LinktreeDefault({
   const [copied, setCopied] = useState(false);
   const { trackPageLinkClick } = usePageActivity();
   const isGridBackground = linktree?.background_style !== "plain";
+  const compositionLayout = linktree?.composition_layout || "classic";
   const gridLineColor =
     themeMode === "dark" ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.06)";
 
@@ -195,7 +209,10 @@ export function LinktreeDefault({
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.25 }}
-        className="mx-auto w-full max-w-[620px] rounded-3xl border border-border/70 bg-background/95 p-4 @sm:p-6"
+        className={cn(
+          "mx-auto w-full rounded-3xl border border-border/70 bg-background/95 p-4 @sm:p-6",
+          pageShellWidthClass(compositionLayout),
+        )}
       >
         <div className="mb-6 flex items-center justify-end gap-2">
           <ThemeSwitchToggle
@@ -271,22 +288,37 @@ export function LinktreeDefault({
           ) : null}
         </div>
 
-        <div className="mt-6 flex flex-col gap-3">
-          {contentItems.map((item) =>
-            item.kind === "link" && item.link ? (
-              <LinkCard
-                key={`link-${item.id}`}
-                link={item.link}
-                onTrackClick={handleTrackClick}
-              />
-            ) : item.kind === "section" && item.section ? (
-              <DefaultSection
-                key={`section-${item.id}`}
-                section={item.section}
-                onTrackClick={handleTrackClick}
-              />
-            ) : null,
-          )}
+        <div className="mt-6 grid grid-flow-dense grid-cols-12 gap-3">
+          {contentItems.map((item) => {
+            const block: FlexibleBlockData | null =
+              item.kind === "link" && item.link
+                ? {
+                    type: "link",
+                    content_json: item.link.content_json,
+                    layout_json: item.link.layout_json,
+                    style_json: item.link.style_json,
+                  }
+                : item.section || null;
+
+            if (!block) return null;
+
+            const isPortfolioBlock = ["text", "project", "experience", "skills"].includes(block.type);
+            const content =
+              item.kind === "link" && item.link ? (
+                <LinkCard link={item.link} onTrackClick={handleTrackClick} />
+              ) : item.kind === "section" && item.section ? (
+                <DefaultSection section={item.section} onTrackClick={handleTrackClick} />
+              ) : null;
+
+            return (
+              <div
+                key={`${item.kind}-${item.id}`}
+                className={blockGridClass(compositionLayout, block.type, block.layout_json)}
+              >
+                {isPortfolioBlock ? content : <PageBlockFrame block={block}>{content}</PageBlockFrame>}
+              </div>
+            );
+          })}
         </div>
       </motion.section>
     </div>

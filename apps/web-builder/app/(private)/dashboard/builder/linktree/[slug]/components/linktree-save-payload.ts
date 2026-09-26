@@ -35,6 +35,9 @@ export function buildLinktreeSaveFormData(data: LinktreeFormValues, context: Sav
         support_note: item.support_note || '',
         support_qr_image_url: item.support_qr_image_url || '',
         cta_label: item.cta_label || '',
+        content_json: item.content || null,
+        layout_json: item.layout || null,
+        style_json: item.style || null,
         placement_order: index,
       });
       return;
@@ -56,6 +59,9 @@ export function buildLinktreeSaveFormData(data: LinktreeFormValues, context: Sav
       support_note: item.support_note || '',
       support_qr_image_url: item.support_qr_image_url || '',
       cta_label: item.cta_label || '',
+      content_json: item.content || null,
+      layout_json: item.layout || null,
+      style_json: item.style || null,
       placement_order: index,
     });
   });

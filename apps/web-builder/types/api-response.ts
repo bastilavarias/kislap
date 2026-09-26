@@ -389,7 +389,7 @@ export interface APIResponseBiz {
 export interface APIResponseLinktreeLink {
   id: number;
   linktree_id: number;
-  type?: 'link' | 'promo' | 'support' | 'quote' | 'banner';
+  type?: 'link' | 'promo' | 'support' | 'quote' | 'banner' | 'text' | 'project' | 'experience' | 'skills';
   title: string;
   url: string;
   description?: string;
@@ -403,6 +403,9 @@ export interface APIResponseLinktreeLink {
   support_note?: string;
   support_qr_image_url?: string;
   cta_label?: string;
+  content_json?: Record<string, unknown>;
+  layout_json?: Record<string, unknown>;
+  style_json?: Record<string, unknown>;
   placement_order: number;
 }
 
@@ -418,7 +421,7 @@ export interface APIResponseLinktreeSocialLink {
 export interface APIResponseLinktreeSection {
   id: number;
   linktree_id: number;
-  type: 'promo' | 'support' | 'quote' | 'banner';
+  type: 'promo' | 'support' | 'quote' | 'banner' | 'text' | 'project' | 'experience' | 'skills';
   title?: string;
   description?: string;
   url?: string;
@@ -432,6 +435,9 @@ export interface APIResponseLinktreeSection {
   support_note?: string;
   support_qr_image_url?: string;
   cta_label?: string;
+  content_json?: Record<string, unknown>;
+  layout_json?: Record<string, unknown>;
+  style_json?: Record<string, unknown>;
   placement_order: number;
 }
 
@@ -448,6 +454,7 @@ export interface APIResponseLinktree {
   background_style?: 'plain' | 'grid';
   theme_object: APIResponseThemeObject;
   layout_name?: string;
+  composition_layout?: 'classic' | 'bento' | 'portfolio' | 'creator';
   links: APIResponseLinktreeLink[];
   sections: APIResponseLinktreeSection[];
   user?: APIResponseUser;

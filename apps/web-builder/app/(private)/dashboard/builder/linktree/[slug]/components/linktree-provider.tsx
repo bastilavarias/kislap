@@ -82,7 +82,8 @@ export function LinktreeProvider({ children }: { children: ReactNode }) {
       logo: null,
       logo_url: '',
       background_style: 'grid',
-      layout_name: 'default-linktree',
+      layout_name: 'linktree-default',
+      composition_layout: 'classic',
       sections: [],
     },
   });
@@ -141,7 +142,7 @@ export function LinktreeProvider({ children }: { children: ReactNode }) {
           setLinktreeID(response?.data?.linktree?.id || null);
           toast.success('Saved successfully');
         } else {
-          toast.error(response.message || 'Error saving link page');
+          toast.error(response.message || 'Error saving page');
         }
       },
       (errors) => {
@@ -169,6 +170,8 @@ export function LinktreeProvider({ children }: { children: ReactNode }) {
       type: 'link',
       title: '',
       description: '',
+      layout: { width: 'auto', align: 'left' },
+      style: { variant: 'default', padding: 'normal' },
     });
   };
 

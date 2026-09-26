@@ -10,6 +10,9 @@ export function mapToFormValues(source: APIResponseLinktree): LinktreeFormValues
     url: socialLink.url || '',
     image_url: socialLink.image_url || '',
     icon_key: socialLink.icon_key || '',
+    content: socialLink.content_json || undefined,
+    layout: socialLink.layout_json || undefined,
+    style: socialLink.style_json || undefined,
     placement_order: socialLink.placement_order ?? 0,
   }));
 
@@ -29,6 +32,9 @@ export function mapToFormValues(source: APIResponseLinktree): LinktreeFormValues
     support_note: section.support_note || '',
     support_qr_image_url: section.support_qr_image_url || '',
     cta_label: section.cta_label || '',
+    content: section.content_json || undefined,
+    layout: section.layout_json || undefined,
+    style: section.style_json || undefined,
     placement_order: section.placement_order ?? 0,
   }));
 
@@ -39,7 +45,8 @@ export function mapToFormValues(source: APIResponseLinktree): LinktreeFormValues
     phone: source.phone || '',
     email: source.email || '',
     logo_url: source.logo_url || '',
-    layout_name: source.layout_name ?? 'default-linktree',
+    layout_name: source.layout_name ?? 'linktree-default',
+    composition_layout: source.composition_layout ?? 'classic',
     background_style: source.background_style ?? 'grid',
     sections: [...mappedLinks, ...mappedSections]
       .sort((prev: any, after: any) => (prev.placement_order ?? 0) - (after.placement_order ?? 0))

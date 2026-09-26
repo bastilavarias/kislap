@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Plus, Edit2, Trash2, LayoutTemplate } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { renderTypeFields, SectionType } from './sections-editor-fields';
+import { BlockLayoutControls } from './block-layout-controls';
 
 const SECTION_TYPES = [
   { id: 'link', label: 'Link' },
@@ -17,6 +18,10 @@ const SECTION_TYPES = [
   { id: 'support', label: 'Support Card' },
   { id: 'quote', label: 'Quote Card' },
   { id: 'banner', label: 'Banner Card' },
+  { id: 'text', label: 'Text / About' },
+  { id: 'project', label: 'Project' },
+  { id: 'experience', label: 'Experience' },
+  { id: 'skills', label: 'Skills' },
 ] as const;
 
 function typeLabel(type?: string) {
@@ -59,8 +64,14 @@ export function SectionsEditor({ formMethods, sectionsFieldArray, onAddSection }
               const url = watch(`sections.${index}.url`);
               const bannerText = watch(`sections.${index}.banner_text`);
               const quoteText = watch(`sections.${index}.quote_text`);
+              const content = watch(`sections.${index}.content`) as Record<string, unknown> | undefined;
+              const layoutWidth = watch(`sections.${index}.layout.width`) || 'auto';
 
-              const displayTitle = title || bannerText || quoteText || 'Untitled Section';
+              const displayTitle =
+                title ||
+                bannerText ||
+                quoteText ||
+                String(content?.title || content?.heading || content?.role || 'Untitled Block');
 
               return (
                 <div className="flex items-center justify-between border-2 border-black bg-card p-3 transition-colors hover:bg-secondary/40">
@@ -68,6 +79,7 @@ export function SectionsEditor({ formMethods, sectionsFieldArray, onAddSection }
                     <p className="truncate font-black uppercase">{displayTitle}</p>
                     <p className="text-xs text-muted-foreground">
                       {type === 'link' && url ? `${typeLabel(type)} - ${url}` : typeLabel(type)}
+                      <span className="ml-2 font-mono uppercase">· {layoutWidth}</span>
                     </p>
                   </div>
                   <div className="flex items-center gap-1">
@@ -138,6 +150,8 @@ export function SectionsEditor({ formMethods, sectionsFieldArray, onAddSection }
                 setValue,
                 watch,
               })}
+
+              <BlockLayoutControls index={editIndex} watch={watch} setValue={setValue} />
             </div>
           )}
 

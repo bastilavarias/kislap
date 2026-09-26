@@ -4,10 +4,15 @@ import type React from "react";
 import { ArrowUpRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { trackThenNavigate } from "./linktree-track-navigation";
+import {
+  PagePortfolioBlock,
+  type BlockLayoutData,
+  type BlockStyleData,
+} from "./linktree-page-block";
 
 export interface LinktreeSection {
   id: number;
-  type: "promo" | "support" | "quote" | "banner";
+  type: "promo" | "support" | "quote" | "banner" | "text" | "project" | "experience" | "skills";
   title?: string | null;
   description?: string | null;
   url?: string | null;
@@ -18,6 +23,10 @@ export interface LinktreeSection {
   banner_text?: string | null;
   support_note?: string | null;
   support_qr_image_url?: string | null;
+  placement_order?: number | null;
+  content_json?: Record<string, unknown> | null;
+  layout_json?: BlockLayoutData | null;
+  style_json?: BlockStyleData | null;
 }
 
 function getAccentBackgroundStyle(accentColor?: string | null) {
@@ -170,6 +179,9 @@ export function DefaultSection({
   section: LinktreeSection;
   onTrackClick?: (url: string) => Promise<unknown> | void;
 }) {
+  if (["text", "project", "experience", "skills"].includes(section.type)) {
+    return <PagePortfolioBlock block={section} />;
+  }
   if (section.type === "promo") {
     return <PromoSection section={section} onTrackClick={onTrackClick} />;
   }

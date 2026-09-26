@@ -64,6 +64,7 @@ func (s *Service) Save(payload Payload) (*models.Linktree, error) {
 	linktree.Phone = &payload.Phone
 	linktree.Email = &payload.Email
 	linktree.LayoutName = &payload.LayoutName
+	linktree.CompositionLayout = &payload.CompositionLayout
 	linktree.BackgroundStyle = &payload.BackgroundStyle
 
 	if themeName != nil {

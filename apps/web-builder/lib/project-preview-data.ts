@@ -168,6 +168,9 @@ function buildLinktreeProjectData(
       support_note: section.support_note || '',
       support_qr_image_url: section.support_qr_image_url || '',
       cta_label: section.cta_label || '',
+      content_json: section.content || null,
+      layout_json: section.layout || null,
+      style_json: section.style || null,
       placement_order: index,
     })) || [];
   const links = allSections.filter((section) => section.type === 'link');
@@ -196,6 +199,7 @@ function buildLinktreeProjectData(
       background_style: linktree.background_style || 'grid',
       theme_object: themeObject,
       layout_name: layoutName,
+      composition_layout: linktree.composition_layout || 'classic',
       links,
       sections,
     },

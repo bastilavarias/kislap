@@ -17,8 +17,18 @@ import {
   FaGlobe,
 } from 'react-icons/fa6';
 import type { IconType } from 'react-icons';
+import { PageBlockFields, type PortfolioBlockType } from './page-block-fields';
 
-export type SectionType = 'link' | 'promo' | 'support' | 'quote' | 'banner';
+export type SectionType =
+  | 'link'
+  | 'promo'
+  | 'support'
+  | 'quote'
+  | 'banner'
+  | 'text'
+  | 'project'
+  | 'experience'
+  | 'skills';
 type IconKey = 'none' | 'tiktok' | 'youtube' | 'instagram' | 'discord' | 'portfolio' | 'github';
 
 const LINK_ICON_OPTIONS: Array<{ key: IconKey; label: string; badgeClass: string; Icon: IconType }> = [
@@ -44,6 +54,16 @@ export function renderTypeFields({
   setValue: UseFormReturn<LinktreeFormValues>['setValue'];
   watch: UseFormReturn<LinktreeFormValues>['watch'];
 }) {
+  if (['text', 'project', 'experience', 'skills'].includes(type)) {
+    return (
+      <PageBlockFields
+        index={editIndex}
+        type={type as PortfolioBlockType}
+        register={register}
+      />
+    );
+  }
+
   if (type === 'link') {
     const iconKey = (watch(`sections.${editIndex}.icon_key`) || 'none') as IconKey;
     const selectedIcon = LINK_ICON_OPTIONS.find((item) => item.key === iconKey) || LINK_ICON_OPTIONS[0];

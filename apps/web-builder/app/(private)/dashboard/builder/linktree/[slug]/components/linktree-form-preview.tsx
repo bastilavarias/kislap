@@ -66,6 +66,9 @@ function createLinktreePreviewProject({
       support_note: section.support_note || '',
       support_qr_image_url: section.support_qr_image_url || '',
       cta_label: section.cta_label || '',
+      content_json: section.content || null,
+      layout_json: section.layout || null,
+      style_json: section.style || null,
       placement_order: index,
     })) || [];
 
@@ -92,6 +95,7 @@ function createLinktreePreviewProject({
       background_style: values.background_style || 'grid',
       theme_object: themeObject,
       layout_name: layout || 'linktree-default',
+      composition_layout: values.composition_layout || 'classic',
       links: sections.filter((section) => section.type === 'link'),
       sections: sections.filter((section) => section.type !== 'link'),
     },
@@ -134,7 +138,7 @@ export function LinktreeFormPreview({
         values,
         layout,
         themeSettings,
-        projectName: values.name?.trim() || 'Link Preview',
+        projectName: values.name?.trim() || 'Page Preview',
         logoUrl: logoPreviewUrl || values.logo_url || '',
       }),
     [layout, logoPreviewUrl, themeSettings, values]

@@ -72,9 +72,10 @@ export function Form({
   }, [layout, setValue]);
 
   const backgroundStyle = (watch('background_style') as 'plain' | 'grid') || 'grid';
+  const compositionLayout = watch('composition_layout') || 'classic';
 
   const handleClearContent = () => {
-    if (!window.confirm('Clear the current link page form content? Layout, background style, and theme will stay as they are.')) {
+    if (!window.confirm('Clear the current page content? Layout, background style, and theme will stay as they are.')) {
       return;
     }
 
@@ -88,6 +89,7 @@ export function Form({
       logo_url: '',
       background_style: backgroundStyle,
       layout_name: layout,
+      composition_layout: compositionLayout,
       sections: [],
     });
   };
@@ -122,7 +124,7 @@ export function Form({
               <CardContent className="p-6">
                 <div className="flex justify-between items-center mb-6 gap-4">
                   <h1 className="text-2xl font-black uppercase flex items-center gap-2">
-                    <LinkIcon className="w-6 h-6" /> Link Page Content
+                    <LinkIcon className="w-6 h-6" /> Page Content
                   </h1>
                   <Button
                     type="button"
@@ -220,7 +222,7 @@ export function Form({
                   <Accordion type="single" defaultValue="sections" collapsible>
                     <AccordionItem value="sections" className="border-2 border-black px-4">
                       <AccordionTrigger className="py-3 text-base">
-                        Links & Custom Sections
+                        Page Blocks
                       </AccordionTrigger>
                       <AccordionContent className="pt-2 pb-4 px-1">
                         <SectionsEditor
@@ -241,6 +243,10 @@ export function Form({
               <DesignPanel
                 layout={layout}
                 setLayout={setLayout}
+                compositionLayout={compositionLayout}
+                setCompositionLayout={(value) =>
+                  setValue('composition_layout', value, { shouldDirty: true })
+                }
                 backgroundStyle={backgroundStyle}
                 setBackgroundStyle={(style) =>
                   setValue('background_style', style, { shouldDirty: true })
@@ -266,12 +272,16 @@ export function Form({
           <SheetContent side="bottom" className="h-[85vh] pt-6 px-4">
             <SheetHeader className="mb-4 text-left">
               <SheetTitle>Design & Style</SheetTitle>
-              <SheetDescription>Switch layouts and customize your theme.</SheetDescription>
+              <SheetDescription>Arrange your page and customize its visual style.</SheetDescription>
             </SheetHeader>
             <div className="h-full overflow-y-auto pb-20">
               <DesignPanel
                 layout={layout}
                 setLayout={setLayout}
+                compositionLayout={compositionLayout}
+                setCompositionLayout={(value) =>
+                  setValue('composition_layout', value, { shouldDirty: true })
+                }
                 backgroundStyle={backgroundStyle}
                 setBackgroundStyle={(style) =>
                   setValue('background_style', style, { shouldDirty: true })

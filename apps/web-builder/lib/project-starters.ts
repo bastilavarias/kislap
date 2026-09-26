@@ -41,10 +41,10 @@ export const PROJECT_TYPE_COPY: Record<
     bestFor: 'Professionals, freelancers, designers, and job seekers',
   },
   linktree: {
-    label: 'Link Page',
-    title: 'Start a link page',
-    description: 'Route social traffic into one branded page that feels intentional.',
-    bestFor: 'Creators, founders, speakers, and personal brands',
+    label: 'Page',
+    title: 'Start a page',
+    description: 'Build one personal site from flexible blocks — from simple links to a full portfolio.',
+    bestFor: 'Creators, developers, VAs, freelancers, founders, and personal brands',
   },
   menu: {
     label: 'Menu',
@@ -165,6 +165,22 @@ export const STARTERS: Record<StarterProjectType, BuilderStarter[]> = {
       description: 'A more polished page when your name and positioning matter as much as the links.',
       bestFor: 'Speakers, founders, coaches, and consultants',
       defaults: { layoutName: 'linktree-neo-brutalist', themePreset: 'corporate' },
+    },
+    {
+      id: 'developer',
+      type: 'linktree',
+      label: 'Developer',
+      description: 'Mix your intro, stack, projects, experience, GitHub, and contact links in one page.',
+      bestFor: 'Software developers, engineers, and technical freelancers',
+      defaults: { layoutName: 'linktree-neo-brutalist', themePreset: 'slack' },
+    },
+    {
+      id: 'freelancer',
+      type: 'linktree',
+      label: 'Freelancer / VA',
+      description: 'Lead with services and proof, then give clients one obvious way to contact you.',
+      bestFor: 'Virtual assistants, freelancers, consultants, and service providers',
+      defaults: { layoutName: 'linktree-default', themePreset: 'corporate' },
     },
     {
       id: 'launch-links',
@@ -469,9 +485,13 @@ export function buildLinktreeStarterValues(
     !projectName || projectName === 'John Doe'
       ? starterId === 'personal-brand'
         ? 'Nika Valdez'
-        : starterId === 'launch-links'
-          ? 'Orbit Labs'
-          : 'Mika Reyes'
+        : starterId === 'developer'
+          ? 'Avery Navarro'
+          : starterId === 'freelancer'
+            ? 'Bea Santos'
+            : starterId === 'launch-links'
+              ? 'Orbit Labs'
+              : 'Mika Reyes'
       : projectName;
   const base: LinktreeFormValues = {
     name: starterName,
@@ -484,6 +504,7 @@ export function buildLinktreeStarterValues(
       'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=600&q=80',
     background_style: 'grid',
     layout_name: 'linktree-default',
+    composition_layout: 'creator',
     sections: [
       {
         type: 'banner',
@@ -567,6 +588,7 @@ export function buildLinktreeStarterValues(
       tagline: 'Founder, speaker, and systems-minded storyteller.',
       about: 'Use one page to route people into your ideas, talks, writing, and consulting without losing personality.',
       layout_name: 'linktree-neo-brutalist',
+      composition_layout: 'bento',
       sections: [
         {
           type: 'banner',
@@ -620,6 +642,154 @@ export function buildLinktreeStarterValues(
           description: 'Brand assets, approved headshots, and speaking topics.',
           url: 'https://example.com/media-kit',
           icon_key: 'image',
+        },
+      ],
+    };
+  }
+
+  if (starterId === 'developer') {
+    return {
+      ...base,
+      name: starterName,
+      tagline: 'Software developer building useful products and systems.',
+      about: 'A flexible developer page with room for projects, experience, skills, and the links people actually need.',
+      layout_name: 'linktree-neo-brutalist',
+      composition_layout: 'portfolio',
+      sections: [
+        {
+          type: 'text',
+          content: {
+            heading: 'About',
+            body: 'I build web products end-to-end, from product decisions and UI systems to APIs, infrastructure, and deployment.',
+          },
+          layout: { width: 'two-thirds', align: 'left' },
+          style: { variant: 'default', padding: 'normal' },
+        },
+        {
+          type: 'skills',
+          content: {
+            heading: 'Stack',
+            items: 'TypeScript, Next.js, React, Go, MySQL, Docker',
+          },
+          layout: { width: 'third', align: 'left' },
+          style: { variant: 'highlight', padding: 'normal' },
+        },
+        {
+          type: 'project',
+          content: {
+            title: 'Kislap',
+            description: 'A block-based personal site builder for creators and professionals.',
+            url: 'https://kislap.app',
+            technologies: 'Next.js, Go, MySQL',
+          },
+          layout: { width: 'half', align: 'left' },
+          style: { variant: 'default', padding: 'normal' },
+        },
+        {
+          type: 'project',
+          content: {
+            title: '13xfile',
+            description: 'A decentralized peer-to-peer file sharing experiment.',
+            url: 'https://github.com/',
+            technologies: 'Go, P2P, Web',
+          },
+          layout: { width: 'half', align: 'left' },
+          style: { variant: 'default', padding: 'normal' },
+        },
+        {
+          type: 'experience',
+          content: {
+            role: 'Software Developer',
+            company: 'Product Team',
+            start: '2023',
+            end: 'Present',
+            description: 'Building and maintaining production web applications, internal systems, and integrations.',
+          },
+          layout: { width: 'full', align: 'left' },
+          style: { variant: 'card', padding: 'normal' },
+        },
+        {
+          type: 'link',
+          title: 'GitHub',
+          description: 'Code, experiments, and open-source work.',
+          url: 'https://github.com/',
+          icon_key: 'github',
+          layout: { width: 'third', align: 'left' },
+        },
+        {
+          type: 'link',
+          title: 'LinkedIn',
+          description: 'Professional profile and experience.',
+          url: 'https://linkedin.com/',
+          layout: { width: 'third', align: 'left' },
+        },
+        {
+          type: 'link',
+          title: 'Email me',
+          description: 'For work, collaboration, or consulting.',
+          url: 'mailto:avery@example.com',
+          layout: { width: 'third', align: 'left' },
+        },
+      ],
+    };
+  }
+
+  if (starterId === 'freelancer') {
+    return {
+      ...base,
+      name: starterName,
+      tagline: 'Virtual assistant helping founders stay organized and move faster.',
+      about: 'A service-focused personal page that combines your offer, proof, skills, and contact paths.',
+      composition_layout: 'bento',
+      sections: [
+        {
+          type: 'text',
+          content: {
+            heading: 'How I can help',
+            body: 'Inbox management, calendar coordination, research, customer support, and lightweight operations.',
+          },
+          layout: { width: 'two-thirds', align: 'left' },
+        },
+        {
+          type: 'skills',
+          content: {
+            heading: 'Services',
+            items: 'Admin Support, Calendar, Research, Customer Support, Canva, Notion',
+          },
+          layout: { width: 'third', align: 'left' },
+          style: { variant: 'highlight', padding: 'normal' },
+        },
+        {
+          type: 'project',
+          content: {
+            title: 'Operations cleanup',
+            description: 'Organized a growing client workspace, recurring tasks, and weekly reporting into one simple system.',
+            technologies: 'Notion, Google Workspace, Slack',
+          },
+          layout: { width: 'half', align: 'left' },
+        },
+        {
+          type: 'project',
+          content: {
+            title: 'Customer support workflow',
+            description: 'Created reusable responses, escalation rules, and a cleaner support tracking flow.',
+            technologies: 'Gmail, Sheets, Helpdesk',
+          },
+          layout: { width: 'half', align: 'left' },
+        },
+        {
+          type: 'quote',
+          quote_text: 'Reliable, organized, and easy to work with.',
+          quote_author: 'Sample client',
+          layout: { width: 'two-thirds', align: 'center' },
+        },
+        {
+          type: 'link',
+          title: 'Book a discovery call',
+          description: 'Tell me what is taking too much time off your plate.',
+          url: 'https://example.com/book',
+          layout: { width: 'third', align: 'left' },
+          style: { variant: 'highlight', padding: 'normal' },
         },
       ],
     };

@@ -40,6 +40,9 @@ func (s *Service) syncContentItems(linktreeID uint64, projectID int64, links []L
 		item.BannerText = req.BannerText
 		item.SupportNote = req.SupportNote
 		item.CTALabel = req.CTALabel
+		item.ContentJSON = req.ContentJSON
+		item.LayoutJSON = req.LayoutJSON
+		item.StyleJSON = req.StyleJSON
 		if req.PlacementOrder != nil {
 			item.PlacementOrder = *req.PlacementOrder
 		} else {
@@ -101,6 +104,9 @@ func (s *Service) syncContentItems(linktreeID uint64, projectID int64, links []L
 		item.BannerText = req.BannerText
 		item.SupportNote = req.SupportNote
 		item.CTALabel = req.CTALabel
+		item.ContentJSON = req.ContentJSON
+		item.LayoutJSON = req.LayoutJSON
+		item.StyleJSON = req.StyleJSON
 		if req.PlacementOrder != nil {
 			item.PlacementOrder = *req.PlacementOrder
 		} else {
@@ -175,6 +181,9 @@ func splitLinksAndSections(items []models.LinktreeLink) ([]models.LinktreeLink, 
 			SupportNote:       item.SupportNote,
 			SupportQRImageURL: item.SupportQRImageURL,
 			CTALabel:          item.CTALabel,
+			ContentJSON:       item.ContentJSON,
+			LayoutJSON:        item.LayoutJSON,
+			StyleJSON:         item.StyleJSON,
 			CreatedAt:         item.CreatedAt,
 			UpdatedAt:         item.UpdatedAt,
 			DeletedAt:         item.DeletedAt,

@@ -20,10 +20,11 @@ type Linktree struct {
 
 	LogoURL *string `gorm:"size:255" json:"logo_url"`
 
-	LayoutName      *string          `gorm:"size:255;default:linktree-default" json:"layout_name"`
-	BackgroundStyle *string          `gorm:"size:50;default:grid" json:"background_style"`
-	ThemeName       *string          `gorm:"size:255;default:default" json:"theme_name"`
-	ThemeObject     *json.RawMessage `gorm:"type:json" json:"theme_object"`
+	LayoutName        *string          `gorm:"size:255;default:linktree-default" json:"layout_name"`
+	CompositionLayout *string          `gorm:"size:50;default:classic" json:"composition_layout"`
+	BackgroundStyle   *string          `gorm:"size:50;default:grid" json:"background_style"`
+	ThemeName         *string          `gorm:"size:255;default:default" json:"theme_name"`
+	ThemeObject       *json.RawMessage `gorm:"type:json" json:"theme_object"`
 
 	Links    []LinktreeLink    `gorm:"foreignKey:LinktreeID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"links"`
 	Sections []LinktreeSection `gorm:"-" json:"sections"`

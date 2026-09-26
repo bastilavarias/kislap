@@ -4,10 +4,15 @@ import type React from "react";
 import { ArrowUpRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { trackThenNavigate } from "./linktree-track-navigation";
+import {
+  PagePortfolioBlock,
+  type BlockLayoutData,
+  type BlockStyleData,
+} from "./linktree-page-block";
 
 export interface LinktreeSection {
   id: number;
-  type: "promo" | "support" | "quote" | "banner";
+  type: "promo" | "support" | "quote" | "banner" | "text" | "project" | "experience" | "skills";
   title?: string | null;
   description?: string | null;
   url?: string | null;
@@ -21,6 +26,9 @@ export interface LinktreeSection {
   support_qr_image_url?: string | null;
   cta_label?: string | null;
   placement_order?: number | null;
+  content_json?: Record<string, unknown> | null;
+  layout_json?: BlockLayoutData | null;
+  style_json?: BlockStyleData | null;
 }
 
 const BRUTAL_SHADOW = { boxShadow: "4px 4px 0 var(--shadow-color, var(--border))" };
@@ -173,6 +181,9 @@ export function NeoBrutalistSection({
   section: LinktreeSection;
   onTrackClick?: (url: string) => Promise<unknown> | void;
 }) {
+  if (["text", "project", "experience", "skills"].includes(section.type)) {
+    return <PagePortfolioBlock block={section} brutal />;
+  }
   if (section.type === "promo") {
     return <PromoSection section={section} onTrackClick={onTrackClick} />;
   }
