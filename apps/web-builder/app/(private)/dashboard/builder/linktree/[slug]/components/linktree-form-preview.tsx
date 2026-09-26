@@ -19,19 +19,10 @@ const VIEWPORT_OPTIONS: Array<{
   { id: 'mobile', label: 'Mobile', icon: Smartphone },
 ];
 
-function getViewportWidth(
-  viewport: PreviewViewport,
-  compositionLayout: LinktreeFormValues['composition_layout']
-) {
-  if (viewport === 'mobile') return 390;
-  if (viewport === 'tablet') return 900;
-
-  // Fit the virtual desktop viewport around the actual Page shell instead of
-  // shrinking a mostly-empty 1280px canvas into the split preview pane.
-  if (compositionLayout === 'portfolio') return 1200;
-  if (compositionLayout === 'bento') return 1080;
-  if (compositionLayout === 'creator') return 880;
-  return 720;
+function getViewportWidth(viewport: PreviewViewport, deviceWidth: number) {
+  if (viewport === 'mobile') return Math.min(480, Math.max(320, deviceWidth));
+  if (viewport === 'tablet') return 768;
+  return 1280;
 }
 
 function createLinktreePreviewProject({
@@ -119,12 +110,34 @@ export function LinktreeFormPreview({
   onBlockSelect?: (index: number) => void;
 }) {
   const [viewport, setViewport] = useState<PreviewViewport>('desktop');
+  const [deviceWidth, setDeviceWidth] = useState(390);
   const [logoPreviewUrl, setLogoPreviewUrl] = useState<string | null>(null);
-  const viewportWidth = getViewportWidth(viewport, values.composition_layout || 'classic');
+  const viewportSelectionLocked = useRef(false);
+  const viewportWidth = getViewportWidth(viewport, deviceWidth);
   const scrollAreaRef = useRef<HTMLDivElement | null>(null);
   const contentRef = useRef<HTMLDivElement | null>(null);
   const [availableWidth, setAvailableWidth] = useState(viewportWidth);
   const [contentHeight, setContentHeight] = useState(960);
+
+  useEffect(() => {
+    const syncDeviceViewport = () => {
+      const width = window.innerWidth;
+      setDeviceWidth(width);
+
+      if (viewportSelectionLocked.current) return;
+      if (width < 640) {
+        setViewport('mobile');
+      } else if (width < 1024) {
+        setViewport('tablet');
+      } else {
+        setViewport('desktop');
+      }
+    };
+
+    syncDeviceViewport();
+    window.addEventListener('resize', syncDeviceViewport);
+    return () => window.removeEventListener('resize', syncDeviceViewport);
+  }, []);
 
   useEffect(() => {
     const logoFile = values.logo instanceof File ? values.logo : null;
@@ -207,7 +220,7 @@ export function LinktreeFormPreview({
               Live preview
             </p>
             <p className="mt-2 text-sm text-muted-foreground">
-              Fit-to-page preview using the same layout and spacing as your published site.
+              Mobile defaults to this device width so responsive spacing matches the live page.
             </p>
           </div>
 
@@ -220,7 +233,10 @@ export function LinktreeFormPreview({
                 <button
                   key={option.id}
                   type="button"
-                  onClick={() => setViewport(option.id)}
+                  onClick={() => {
+                    viewportSelectionLocked.current = true;
+                    setViewport(option.id);
+                  }}
                   className={[
                     'inline-flex items-center gap-2 border-r border-border/70 px-3 py-2 text-xs font-medium transition last:border-r-0',
                     isActive
