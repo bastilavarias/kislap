@@ -440,10 +440,15 @@ func (service Service) SaveOGImage(projectID int64) (*models.Project, error) {
 		return nil, fmt.Errorf("failed to upload OG image: %w", err)
 	}
 
-	project.OGImageURL = &uploadedURL
-
-	if err := service.DB.Save(&project).Error; err != nil {
+	if err := service.DB.
+		Model(&models.Project{}).
+		Where("id = ?", projectID).
+		Update("og_image_url", uploadedURL).Error; err != nil {
 		return nil, fmt.Errorf("failed to save project with OG image URL: %w", err)
+	}
+
+	if err := service.DB.First(&project, projectID).Error; err != nil {
+		return nil, fmt.Errorf("failed to reload project after saving OG image URL: %w", err)
 	}
 
 	return &project, nil
