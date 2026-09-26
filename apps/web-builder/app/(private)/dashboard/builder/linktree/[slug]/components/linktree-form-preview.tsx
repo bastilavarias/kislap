@@ -19,10 +19,19 @@ const VIEWPORT_OPTIONS: Array<{
   { id: 'mobile', label: 'Mobile', icon: Smartphone },
 ];
 
-function getViewportWidth(viewport: PreviewViewport) {
+function getViewportWidth(
+  viewport: PreviewViewport,
+  compositionLayout: LinktreeFormValues['composition_layout']
+) {
   if (viewport === 'mobile') return 390;
   if (viewport === 'tablet') return 900;
-  return 1280;
+
+  // Fit the virtual desktop viewport around the actual Page shell instead of
+  // shrinking a mostly-empty 1280px canvas into the split preview pane.
+  if (compositionLayout === 'portfolio') return 1200;
+  if (compositionLayout === 'bento') return 1080;
+  if (compositionLayout === 'creator') return 880;
+  return 720;
 }
 
 function createLinktreePreviewProject({
@@ -111,7 +120,7 @@ export function LinktreeFormPreview({
 }) {
   const [viewport, setViewport] = useState<PreviewViewport>('desktop');
   const [logoPreviewUrl, setLogoPreviewUrl] = useState<string | null>(null);
-  const viewportWidth = getViewportWidth(viewport);
+  const viewportWidth = getViewportWidth(viewport, values.composition_layout || 'classic');
   const scrollAreaRef = useRef<HTMLDivElement | null>(null);
   const contentRef = useRef<HTMLDivElement | null>(null);
   const [availableWidth, setAvailableWidth] = useState(viewportWidth);
@@ -198,7 +207,7 @@ export function LinktreeFormPreview({
               Live preview
             </p>
             <p className="mt-2 text-sm text-muted-foreground">
-              Preview updates instantly. Click Save to send those changes to your live site.
+              Fit-to-page preview using the same layout and spacing as your published site.
             </p>
           </div>
 
