@@ -1,27 +1,27 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState, type MouseEvent } from 'react';
-import { Laptop, MonitorSmartphone, Smartphone, Tablet } from 'lucide-react';
+import { Expand, Laptop, Smartphone, Tablet } from 'lucide-react';
 import { defaultThemeState } from '@/config/theme';
 import type { Settings } from '@/contexts/settings-context';
 import type { LinktreeFormValues } from '@/lib/schemas/linktree';
 import { PreviewSiteBuilder } from '@/app/(private)/dashboard/projects/new/components/preview-site-builder';
 
-type PreviewViewport = 'device' | 'desktop' | 'tablet' | 'mobile';
+type PreviewViewport = 'fit' | 'desktop' | 'tablet' | 'mobile';
 
 const VIEWPORT_OPTIONS: Array<{
   id: PreviewViewport;
   label: string;
   icon: React.ComponentType<{ className?: string }>;
 }> = [
-  { id: 'device', label: 'Device', icon: MonitorSmartphone },
+  { id: 'fit', label: 'Fit', icon: Expand },
   { id: 'desktop', label: 'Desktop', icon: Laptop },
   { id: 'tablet', label: 'Tablet', icon: Tablet },
   { id: 'mobile', label: 'Mobile', icon: Smartphone },
 ];
 
-function getViewportWidth(viewport: PreviewViewport, deviceWidth: number) {
-  if (viewport === 'device') return Math.max(320, deviceWidth);
+function getViewportWidth(viewport: PreviewViewport, availableWidth: number) {
+  if (viewport === 'fit') return Math.max(320, availableWidth);
   if (viewport === 'mobile') return 390;
   if (viewport === 'tablet') return 768;
   return 1280;
@@ -114,21 +114,13 @@ export function LinktreeFormPreview({
   themeSettings: Settings | null;
   onBlockSelect?: (index: number) => void;
 }) {
-  const [viewport, setViewport] = useState<PreviewViewport>('device');
-  const [deviceWidth, setDeviceWidth] = useState(390);
-  const [availableWidth, setAvailableWidth] = useState(1280);
+  const [viewport, setViewport] = useState<PreviewViewport>('fit');
+  const [availableWidth, setAvailableWidth] = useState(720);
   const [contentHeight, setContentHeight] = useState(900);
   const [logoPreviewUrl, setLogoPreviewUrl] = useState<string | null>(null);
   const scrollAreaRef = useRef<HTMLDivElement | null>(null);
   const contentRef = useRef<HTMLDivElement | null>(null);
-  const viewportWidth = getViewportWidth(viewport, deviceWidth);
-
-  useEffect(() => {
-    const syncDeviceViewport = () => setDeviceWidth(window.innerWidth);
-    syncDeviceViewport();
-    window.addEventListener('resize', syncDeviceViewport);
-    return () => window.removeEventListener('resize', syncDeviceViewport);
-  }, []);
+  const viewportWidth = getViewportWidth(viewport, availableWidth);
 
   useEffect(() => {
     const logoFile = values.logo instanceof File ? values.logo : null;
@@ -155,20 +147,27 @@ export function LinktreeFormPreview({
 
   useEffect(() => {
     const scrollArea = scrollAreaRef.current;
-    const content = contentRef.current;
-    if (!scrollArea || !content) return;
+    if (!scrollArea) return;
 
-    const update = () => {
-      setAvailableWidth(scrollArea.clientWidth);
-      setContentHeight(content.scrollHeight);
-    };
+    const updateWidth = () => setAvailableWidth(Math.max(320, scrollArea.clientWidth));
+    updateWidth();
 
-    update();
-    const observer = new ResizeObserver(update);
+    const observer = new ResizeObserver(updateWidth);
     observer.observe(scrollArea);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const content = contentRef.current;
+    if (!content) return;
+
+    const updateHeight = () => setContentHeight(content.scrollHeight);
+    updateHeight();
+
+    const observer = new ResizeObserver(updateHeight);
     observer.observe(content);
     return () => observer.disconnect();
-  }, [previewProject, viewport, themeSettings]);
+  }, [previewProject, viewport, themeSettings, viewportWidth]);
 
   useEffect(() => {
     scrollAreaRef.current?.scrollTo({ top: 0, left: 0 });
@@ -189,8 +188,12 @@ export function LinktreeFormPreview({
     onBlockSelect(index);
   };
 
-  const scale = Math.min(1, Math.max(0.25, availableWidth / viewportWidth));
-  const previewShellWidth = Math.ceil(viewportWidth * scale);
+  const scale =
+    viewport === 'fit'
+      ? 1
+      : Math.min(1, Math.max(0.25, availableWidth / viewportWidth));
+  const previewShellWidth =
+    viewport === 'fit' ? availableWidth : Math.ceil(viewportWidth * scale);
   const previewShellHeight = Math.ceil(contentHeight * scale);
 
   return (
@@ -202,7 +205,7 @@ export function LinktreeFormPreview({
               Live preview
             </p>
             <p className="mt-2 text-sm text-muted-foreground">
-              Preview and published Page use the exact same shared renderer.
+              Fit renders the shared public Page component at 1:1 inside this editor.
             </p>
           </div>
 
@@ -245,7 +248,7 @@ export function LinktreeFormPreview({
             ref={contentRef}
             style={{
               width: viewportWidth,
-              transform: `scale(${scale})`,
+              transform: scale === 1 ? undefined : `scale(${scale})`,
               transformOrigin: 'top left',
             }}
           >
