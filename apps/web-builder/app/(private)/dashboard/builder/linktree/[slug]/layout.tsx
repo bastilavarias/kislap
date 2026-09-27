@@ -27,7 +27,7 @@ function BuilderLayoutContent({ children }: { children: ReactNode }) {
   }
 
   return (
-    <div>
+    <div className="xl:relative xl:left-1/2 xl:w-[calc(100vw-3rem)] xl:max-w-[1700px] xl:-translate-x-1/2">
       <BackButton to="/dashboard" className="mb-5" icon={true}>
         Go back
       </BackButton>

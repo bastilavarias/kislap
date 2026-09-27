@@ -1,27 +1,35 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState, type MouseEvent } from 'react';
-import { Expand, Laptop, Smartphone, Tablet } from 'lucide-react';
+import { PanelsTopLeft, Laptop, Smartphone, Tablet } from 'lucide-react';
 import { defaultThemeState } from '@/config/theme';
 import type { Settings } from '@/contexts/settings-context';
 import type { LinktreeFormValues } from '@/lib/schemas/linktree';
 import { PreviewSiteBuilder } from '@/app/(private)/dashboard/projects/new/components/preview-site-builder';
+import { pageCanonicalViewportWidth } from '@kislap/templates/src/components/linktree/linktree-page-block';
 
-type PreviewViewport = 'fit' | 'desktop' | 'tablet' | 'mobile';
+type PreviewViewport = 'page' | 'desktop' | 'tablet' | 'mobile';
 
 const VIEWPORT_OPTIONS: Array<{
   id: PreviewViewport;
   label: string;
   icon: React.ComponentType<{ className?: string }>;
 }> = [
-  { id: 'fit', label: 'Fit', icon: Expand },
+  { id: 'page', label: 'Page', icon: PanelsTopLeft },
   { id: 'desktop', label: 'Desktop', icon: Laptop },
   { id: 'tablet', label: 'Tablet', icon: Tablet },
   { id: 'mobile', label: 'Mobile', icon: Smartphone },
 ];
 
-function getViewportWidth(viewport: PreviewViewport, availableWidth: number) {
-  if (viewport === 'fit') return Math.max(320, availableWidth);
+function getViewportWidth(
+  viewport: PreviewViewport,
+  compositionLayout: LinktreeFormValues['composition_layout'],
+  deviceWidth: number
+) {
+  if (viewport === 'page') {
+    if (deviceWidth < 1024) return Math.max(320, deviceWidth);
+    return pageCanonicalViewportWidth(compositionLayout || 'classic');
+  }
   if (viewport === 'mobile') return 390;
   if (viewport === 'tablet') return 768;
   return 1280;
@@ -114,13 +122,25 @@ export function LinktreeFormPreview({
   themeSettings: Settings | null;
   onBlockSelect?: (index: number) => void;
 }) {
-  const [viewport, setViewport] = useState<PreviewViewport>('fit');
+  const [viewport, setViewport] = useState<PreviewViewport>('page');
   const [availableWidth, setAvailableWidth] = useState(720);
+  const [deviceWidth, setDeviceWidth] = useState(1280);
   const [contentHeight, setContentHeight] = useState(900);
   const [logoPreviewUrl, setLogoPreviewUrl] = useState<string | null>(null);
   const scrollAreaRef = useRef<HTMLDivElement | null>(null);
   const contentRef = useRef<HTMLDivElement | null>(null);
-  const viewportWidth = getViewportWidth(viewport, availableWidth);
+  const viewportWidth = getViewportWidth(
+    viewport,
+    values.composition_layout || 'classic',
+    deviceWidth
+  );
+
+  useEffect(() => {
+    const updateDeviceWidth = () => setDeviceWidth(window.innerWidth);
+    updateDeviceWidth();
+    window.addEventListener('resize', updateDeviceWidth);
+    return () => window.removeEventListener('resize', updateDeviceWidth);
+  }, []);
 
   useEffect(() => {
     const logoFile = values.logo instanceof File ? values.logo : null;
@@ -188,12 +208,8 @@ export function LinktreeFormPreview({
     onBlockSelect(index);
   };
 
-  const scale =
-    viewport === 'fit'
-      ? 1
-      : Math.min(1, Math.max(0.25, availableWidth / viewportWidth));
-  const previewShellWidth =
-    viewport === 'fit' ? availableWidth : Math.ceil(viewportWidth * scale);
+  const scale = Math.min(1, Math.max(0.45, availableWidth / viewportWidth));
+  const previewShellWidth = Math.ceil(viewportWidth * scale);
   const previewShellHeight = Math.ceil(contentHeight * scale);
 
   return (
@@ -205,7 +221,7 @@ export function LinktreeFormPreview({
               Live preview
             </p>
             <p className="mt-2 text-sm text-muted-foreground">
-              Fit renders the shared public Page component at 1:1 inside this editor.
+              Page uses the same canonical canvas width as the published layout.
             </p>
           </div>
 

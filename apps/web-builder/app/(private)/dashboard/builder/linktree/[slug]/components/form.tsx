@@ -89,7 +89,7 @@ export function Form({
         </Tabs>
       </div>
 
-      <div className="grid min-w-0 gap-6 xl:grid-cols-[minmax(430px,5fr)_minmax(0,7fr)] xl:items-start">
+      <div className="grid min-w-0 gap-6 xl:grid-cols-[440px_minmax(0,1fr)] xl:items-start">
         <section
           className={[
             'min-w-0 space-y-5',

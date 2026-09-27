@@ -88,6 +88,13 @@ export function pageShellWidthClass(
   return classicWidth;
 }
 
+export function pageCanonicalViewportWidth(layout: CompositionLayout) {
+  if (layout === "portfolio") return 1180;
+  if (layout === "bento") return 1060;
+  if (layout === "creator") return 860;
+  return 700;
+}
+
 export function blockGridClass(
   layout: CompositionLayout,
   type: string,

@@ -47,6 +47,13 @@ function shadowVars(styles: ThemeStyle) {
   };
 }
 
+function normalizeSpacing(value: string) {
+  const remMatch = value.trim().match(/^(-?\d*\.?\d+)rem$/);
+  if (!remMatch) return value;
+
+  return `${Number.parseFloat(remMatch[1]) * 16}px`;
+}
+
 function themeVariables(themeStyles: ThemeStyles, mode: "light" | "dark") {
   const vars: Record<string, string> = {};
   const common = themeStyles.light || {};
@@ -54,7 +61,8 @@ function themeVariables(themeStyles: ThemeStyles, mode: "light" | "dark") {
 
   Object.entries(common).forEach(([key, value]) => {
     if (!value || !COMMON_STYLE_KEYS.has(key)) return;
-    vars[key === "spacing" ? "--theme-spacing" : `--${key}`] = value;
+    vars[key === "spacing" ? "--theme-spacing" : `--${key}`] =
+      key === "spacing" ? normalizeSpacing(value) : value;
   });
 
   Object.entries(active).forEach(([key, value]) => {
@@ -112,7 +120,7 @@ export function LinktreeSiteRenderer({
 
   return (
     <div
-      className="relative flex min-h-full w-full flex-auto flex-col"
+      className="relative flex min-h-full w-full flex-auto flex-col [box-sizing:border-box]"
       style={{
         ...vars,
         colorScheme: mode,
