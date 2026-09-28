@@ -10,7 +10,12 @@ import { motion } from "framer-motion";
 import { ShowcaseCard } from "@/components/showcase/showcase-card";
 
 const PAGE_LIMIT = 9;
+const HIDDEN_SHOWCASE_OWNER_IDS = new Set([1]);
 type ProjectTypeFilter = "all" | "portfolio" | "linktree" | "menu";
+
+function visibleShowcaseProjects(projects: APIResponseProject[]) {
+  return projects.filter((project) => !HIDDEN_SHOWCASE_OWNER_IDS.has(project.user_id));
+}
 
 const containerVariants = {
   hidden: { opacity: 1 },
@@ -66,7 +71,7 @@ export function ShowcaseFeed({
     portfolio: {},
     linktree: {},
     menu: {},
-    [initialType]: { 1: projects ?? [] },
+    [initialType]: { 1: visibleShowcaseProjects(projects ?? []) },
   });
   const [isLoading, setIsLoading] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -119,7 +124,7 @@ export function ShowcaseFeed({
     const meta = Array.isArray(payload) ? null : payload?.meta ?? null;
 
     return {
-      items: items as APIResponseProject[],
+      items: visibleShowcaseProjects(items as APIResponseProject[]),
       meta: meta as APIResponsePaginationMeta | null,
     };
   };

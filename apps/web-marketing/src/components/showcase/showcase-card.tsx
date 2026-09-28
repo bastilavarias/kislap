@@ -19,7 +19,7 @@ const styleConfig: Record<
     icon: Layout,
   },
   linktree: {
-    label: "Link Page",
+    label: "Kislap Page",
     accent: "bg-fuchsia-500 text-white",
     surface: "bg-fuchsia-100",
     icon: Globe,

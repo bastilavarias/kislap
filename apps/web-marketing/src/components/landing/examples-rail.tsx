@@ -86,10 +86,12 @@ export function ExamplesRail({ buildPaths }: ExamplesRailProps) {
 
         <div className="mt-12 flex justify-center">
           <a
-            href="/showcase"
+            href="https://juandelacruz.kislap.app"
+            target="_blank"
+            rel="noopener noreferrer"
             className="border-4 border-white bg-secondary px-6 py-4 font-mono text-sm font-black uppercase text-black shadow-[6px_6px_0_#ef4444] transition hover:-translate-y-1"
           >
-            Browse published Kislap Pages ↗
+            Open Juan's live Kislap Page ↗
           </a>
         </div>
       </div>

@@ -21,7 +21,8 @@ try {
   } else {
     const result = await response.json();
     const payload = result.data || result;
-    initialProjects = Array.isArray(payload) ? payload : payload.data || [];
+    const sourceProjects = Array.isArray(payload) ? payload : payload.data || [];
+    initialProjects = sourceProjects.filter((project: any) => project.user_id !== 1);
     initialMeta = Array.isArray(payload) ? null : payload.meta || null;
   }
 } catch (error) {

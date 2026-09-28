@@ -191,8 +191,8 @@ export function Hero({ buildPaths }: HeroProps) {
               size="lg"
               className="landing-pop-card h-14 rounded-none border-4 border-black bg-white px-7 text-base font-black uppercase text-black shadow-[7px_7px_0_#000] hover:translate-x-1 hover:translate-y-1 hover:bg-secondary hover:shadow-[3px_3px_0_#000]"
             >
-              <a href="/showcase">
-                Browse pages
+              <a href="https://juandelacruz.kislap.app" target="_blank" rel="noopener noreferrer">
+                See Juan's live page
               </a>
             </Button>
 

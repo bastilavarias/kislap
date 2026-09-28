@@ -46,12 +46,8 @@ export function getCreateButtonCopy(type: StarterProjectType) {
   return 'Create menu project';
 }
 
-export function getLinktreeStarterPreviewName(starterId: string) {
-  if (starterId === 'personal-brand') return 'Nika Valdez';
-  if (starterId === 'developer') return 'Avery Navarro';
-  if (starterId === 'freelancer') return 'Bea Santos';
-  if (starterId === 'launch-links') return 'Orbit Labs';
-  return 'Mika Reyes';
+export function getLinktreeStarterPreviewName(_starterId: string) {
+  return 'Juan Delacruz';
 }
 
 export function splitAudienceChips(value: string) {

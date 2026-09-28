@@ -193,6 +193,7 @@ export interface APIResponsePortfolio {
 
 export interface APIResponseProject {
   id: number;
+  user_id: number;
   name: string;
   description?: string;
   slug: string;

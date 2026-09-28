@@ -477,23 +477,13 @@ export function buildLinktreeStarterValues(
   projectName = 'John Doe'
 ): LinktreeFormValues {
   const starterName =
-    !projectName || projectName === 'John Doe'
-      ? starterId === 'personal-brand'
-        ? 'Nika Valdez'
-        : starterId === 'developer'
-          ? 'Avery Navarro'
-          : starterId === 'freelancer'
-            ? 'Bea Santos'
-            : starterId === 'launch-links'
-              ? 'Orbit Labs'
-              : 'Mika Reyes'
-      : projectName;
+    !projectName || projectName === 'John Doe' ? 'Juan Delacruz' : projectName;
   const base: LinktreeFormValues = {
     name: starterName,
     tagline: 'Creator notes, drops, and favorite corners of the internet.',
     about: 'A playful bio page for routing people into content, community, and projects without feeling generic.',
     phone: '+63 917 555 0247',
-    email: 'mika@canvasclub.me',
+    email: 'juan.delacruz@example.com',
     logo: null,
     logo_url:
       'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=600&q=80',
@@ -555,7 +545,7 @@ export function buildLinktreeStarterValues(
         type: 'link',
         title: 'Work with me',
         description: 'Brand collabs, UGC packages, speaking invites, and creative partnerships.',
-        url: 'mailto:mika@canvasclub.me',
+        url: 'mailto:juan.delacruz@example.com',
         icon_key: 'mail',
       },
       {
@@ -571,7 +561,7 @@ export function buildLinktreeStarterValues(
         description: 'If the notes, resources, or videos help you, you can send a small tip or just save the QR for later.',
         support_note: 'Every bit goes into better videos, better tools, and more weird internet experiments.',
         support_qr_image_url:
-          'https://api.qrserver.com/v1/create-qr-code/?size=280x280&margin=12&data=https%3A%2F%2Fexample.com%2Fsupport-mika',
+          'https://api.qrserver.com/v1/create-qr-code/?size=280x280&margin=12&data=https%3A%2F%2Fexample.com%2Fsupport-juan',
       },
     ],
   };
@@ -628,7 +618,7 @@ export function buildLinktreeStarterValues(
           type: 'link',
           title: 'Email me',
           description: 'Direct line for speaking and business inquiries.',
-          url: 'mailto:nika@signalstudio.co',
+          url: 'mailto:juan.delacruz@example.com',
           icon_key: 'mail',
         },
         {
@@ -722,7 +712,7 @@ export function buildLinktreeStarterValues(
           type: 'link',
           title: 'Email me',
           description: 'For work, collaboration, or consulting.',
-          url: 'mailto:avery@example.com',
+          url: 'mailto:juan.delacruz@example.com',
           layout: { width: 'third', align: 'left' },
         },
       ],

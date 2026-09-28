@@ -44,7 +44,7 @@ Kislap is useful as a link-in-bio page, personal website, creator hub, developer
 - About: https://kislap.app/about
 - Help: https://kislap.app/help
 - Open source: https://kislap.app/source
-- Showcase: https://kislap.app/showcase
+- Example Page: https://juandelacruz.kislap.app/
 
 ## Product terminology
 
