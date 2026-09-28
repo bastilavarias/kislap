@@ -1,6 +1,15 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState, ReactNode, useMemo } from 'react';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  ReactNode,
+} from 'react';
 import { useForm, UseFormReturn, useFieldArray, UseFieldArrayReturn } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { LinktreeFormValues, linktreeFormSchema } from '@/lib/schemas/linktree';
@@ -69,7 +78,18 @@ export function LinktreeProvider({ children }: { children: ReactNode }) {
   const params = useParams();
   const searchParams = useSearchParams();
   const [project, setProject] = useState<APIResponseProject | null>(null);
-  const [localThemeSettings, setLocalThemeSettings] = useState<Settings | null>(null);
+  const [localThemeSettings, setLocalThemeSettingsState] = useState<Settings | null>(null);
+  const localThemeSettingsRef = useRef<Settings | null>(null);
+
+  const setLocalThemeSettings = useCallback<React.Dispatch<React.SetStateAction<Settings | null>>>(
+    (value) => {
+      const previous = localThemeSettingsRef.current;
+      const next = typeof value === 'function' ? value(previous) : value;
+      localThemeSettingsRef.current = next;
+      setLocalThemeSettingsState(next);
+    },
+    []
+  );
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
@@ -141,7 +161,8 @@ export function LinktreeProvider({ children }: { children: ReactNode }) {
     try {
       await handleSubmit(
         async (data) => {
-          const draftTheme = { ...(localThemeSettings?.theme || {}) };
+          const currentThemeSettings = localThemeSettingsRef.current || localThemeSettings;
+          const draftTheme = { ...(currentThemeSettings?.theme || {}) };
           const draftVisualSignature = stableSerialize({
             theme: draftTheme,
             composition_layout: data.composition_layout,
@@ -181,7 +202,7 @@ export function LinktreeProvider({ children }: { children: ReactNode }) {
           setLinktreeID(verifiedLinktree.id || null);
           reset(mapToFormValues(verifiedLinktree));
           setLocalThemeSettings({
-            mode: localThemeSettings?.mode || 'light',
+            mode: currentThemeSettings?.mode || 'light',
             theme: verifiedLinktree.theme_object,
           });
           setSavedThemeSignature(stableSerialize(verifiedLinktree.theme_object));
