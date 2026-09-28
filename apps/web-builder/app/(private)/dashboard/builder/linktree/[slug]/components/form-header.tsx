@@ -52,6 +52,7 @@ interface Props<T> {
   hasContentSocialLinks: boolean;
   hasLayout: boolean;
   hasTheme: boolean;
+  hasUnsavedChanges: boolean;
 
   onTabChange?: (value: string) => void;
   onSave: (e?: React.BaseSyntheticEvent) => void | Promise<void>;
@@ -79,6 +80,7 @@ export function FormHeader<T>({
   hasContentSocialLinks,
   hasLayout,
   hasTheme,
+  hasUnsavedChanges,
 }: Props<T>) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isSaveConfirmOpen, setIsSaveConfirmOpen] = useState(false);
@@ -182,6 +184,11 @@ export function FormHeader<T>({
                     >
                       {isPublished ? 'Live' : 'Draft'}
                     </Badge>
+                    {hasUnsavedChanges ? (
+                      <Badge className="h-5 shrink-0 border border-amber-500 bg-amber-100 px-1.5 font-mono text-[10px] uppercase tracking-wider text-amber-700">
+                        Unsaved
+                      </Badge>
+                    ) : null}
 
                     <TooltipProvider>
                       <Tooltip>

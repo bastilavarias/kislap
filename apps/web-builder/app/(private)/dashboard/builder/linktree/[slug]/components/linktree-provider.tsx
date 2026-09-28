@@ -16,6 +16,22 @@ import { mapToFormValues } from './linktree-form-mapper';
 import { buildLinktreeSaveFormData } from './linktree-save-payload';
 import { buildLinktreeStarterValues, createThemeObject, getStarterById } from '@/lib/project-starters';
 
+function stableSerialize(value: unknown): string {
+  if (Array.isArray(value)) {
+    return `[${value.map((item) => stableSerialize(item)).join(',')}]`;
+  }
+
+  if (value && typeof value === 'object') {
+    const record = value as Record<string, unknown>;
+    return `{${Object.keys(record)
+      .sort()
+      .map((key) => `${JSON.stringify(key)}:${stableSerialize(record[key])}`)
+      .join(',')}}`;
+  }
+
+  return JSON.stringify(value);
+}
+
 interface LinktreeContextType {
   project: APIResponseProject | null;
   formMethods: UseFormReturn<LinktreeFormValues>;
@@ -42,6 +58,7 @@ interface LinktreeContextType {
   hasContentSocialLinks: boolean;
   hasLayout: boolean;
   hasTheme: boolean;
+  hasUnsavedChanges: boolean;
 
   onAddSection: () => void;
 }
@@ -58,6 +75,7 @@ export function LinktreeProvider({ children }: { children: ReactNode }) {
   const [isPublishing, setIsPublishing] = useState(false);
   const [user, setUser] = useState<AuthUser | null>(null);
   const [linktreeID, setLinktreeID] = useState<number | null>(null);
+  const [savedThemeSignature, setSavedThemeSignature] = useState('');
 
   const [files, setFiles] = useState<File[]>([]);
   const [isFileUploadDialogOpen, setIsFileUploadDialogOpen] = useState(false);
@@ -103,6 +121,7 @@ export function LinktreeProvider({ children }: { children: ReactNode }) {
           const mapped = mapToFormValues(data.linktree);
           reset(mapped);
           setLocalThemeSettings({ mode: 'light', theme: data.linktree.theme_object });
+          setSavedThemeSignature(stableSerialize(data.linktree.theme_object));
         } else {
           const starter = getStarterById('linktree', searchParams.get('starter'));
           const starterThemePreset = searchParams.get('theme') || starter.defaults.themePreset;
@@ -119,46 +138,74 @@ export function LinktreeProvider({ children }: { children: ReactNode }) {
   const save = async () => {
     setIsSaving(true);
 
-    await handleSubmit(
-      async (data) => {
-        const formData = buildLinktreeSaveFormData(data, {
-          projectID: project?.id,
-          linktreeID: linktreeID || project?.linktree?.id,
-          userID: user?.id,
-          theme: { ...(localThemeSettings?.theme || {}) },
-          layout: 'linktree-default',
-        });
+    try {
+      await handleSubmit(
+        async (data) => {
+          const draftTheme = { ...(localThemeSettings?.theme || {}) };
+          const draftVisualSignature = stableSerialize({
+            theme: draftTheme,
+            composition_layout: data.composition_layout,
+            background_style: data.background_style,
+          });
 
-        const response = await create(formData as any);
+          const formData = buildLinktreeSaveFormData(data, {
+            projectID: project?.id,
+            linktreeID: linktreeID || project?.linktree?.id,
+            userID: user?.id,
+            theme: draftTheme,
+            layout: 'linktree-default',
+          });
 
-        if (response.success) {
-          const savedLinktree = response?.data?.linktree;
-          setLinktreeID(savedLinktree?.id || null);
-
-          if (savedLinktree) {
-            reset(mapToFormValues(savedLinktree));
-            setProject((current) =>
-              current
-                ? {
-                    ...current,
-                    linktree: savedLinktree,
-                  }
-                : current
-            );
+          const response = await create(formData as any);
+          if (!response.success) {
+            toast.error(response.message || 'Error saving page');
+            return;
           }
 
-          toast.success('Saved successfully');
-        } else {
-          toast.error(response.message || 'Error saving page');
-        }
-      },
-      (errors) => {
-        console.error('Validation failed:', errors);
-        toast.error('Please check the form for errors.');
-      }
-    )();
+          const slug = params.slug as string;
+          const verification = await getBySlug(slug, 'full');
+          const verifiedProject = verification.success ? verification.data : null;
+          const verifiedLinktree = verifiedProject?.linktree;
 
-    setIsSaving(false);
+          if (!verifiedLinktree) {
+            toast.error('Save could not be verified. Your preview was not marked as saved.');
+            return;
+          }
+
+          const persistedVisualSignature = stableSerialize({
+            theme: verifiedLinktree.theme_object,
+            composition_layout: verifiedLinktree.composition_layout,
+            background_style: verifiedLinktree.background_style,
+          });
+
+          setLinktreeID(verifiedLinktree.id || null);
+          reset(mapToFormValues(verifiedLinktree));
+          setLocalThemeSettings({
+            mode: localThemeSettings?.mode || 'light',
+            theme: verifiedLinktree.theme_object,
+          });
+          setSavedThemeSignature(stableSerialize(verifiedLinktree.theme_object));
+          setProject(verifiedProject);
+
+          if (persistedVisualSignature !== draftVisualSignature) {
+            console.error('Page save verification mismatch', {
+              requested: draftVisualSignature,
+              persisted: persistedVisualSignature,
+            });
+            toast.error('Save verification failed. Preview was reset to the server version.');
+            return;
+          }
+
+          toast.success('Saved and verified');
+        },
+        (errors) => {
+          console.error('Validation failed:', errors);
+          toast.error('Please check the form for errors.');
+        }
+      )();
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const publish = async (isPublished: boolean) => {
@@ -200,6 +247,10 @@ export function LinktreeProvider({ children }: { children: ReactNode }) {
     return !!localThemeSettings;
   }, [localThemeSettings]);
 
+  const hasUnsavedChanges =
+    formMethods.formState.isDirty ||
+    stableSerialize(localThemeSettings?.theme || {}) !== savedThemeSignature;
+
   return (
     <LinktreeContext.Provider
       value={{
@@ -223,6 +274,7 @@ export function LinktreeProvider({ children }: { children: ReactNode }) {
         hasContentSocialLinks,
         hasLayout,
         hasTheme,
+        hasUnsavedChanges,
         onAddSection,
       }}
     >

@@ -16,6 +16,7 @@ function BuilderLayoutContent({ children }: { children: ReactNode }) {
     hasContentSocialLinks,
     hasLayout,
     hasTheme,
+    hasUnsavedChanges,
   } = useLinktreeBuilder();
 
   if (isLoading) {
@@ -40,6 +41,7 @@ function BuilderLayoutContent({ children }: { children: ReactNode }) {
           hasContentSocialLinks={hasContentSocialLinks}
           hasLayout={hasLayout}
           hasTheme={hasTheme}
+          hasUnsavedChanges={hasUnsavedChanges}
         />
         <div className="w-full">{children}</div>
       </div>
