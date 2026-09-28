@@ -315,7 +315,13 @@ export function LinktreeDefault({
           ) : null}
         </div>
 
-        <div className="mt-[calc(var(--theme-spacing)*6)] grid grid-flow-dense grid-cols-12 items-stretch gap-[calc(var(--theme-spacing)*3)]">
+        <div
+          className="grid grid-flow-dense grid-cols-12 items-stretch"
+          style={{
+            marginTop: "calc(var(--theme-spacing) * 6)",
+            gap: "calc(var(--theme-spacing) * 11)",
+          }}
+        >
           {contentItems.map((item) => {
             const block: FlexibleBlockData | null =
               item.kind === "link" && item.link

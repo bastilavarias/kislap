@@ -135,7 +135,6 @@ export function PageBlockFrame({
 }) {
   const variant = block.style_json?.variant || "default";
   const padding = block.style_json?.padding || "normal";
-  const hasStyleSettings = !!block.style_json;
   const decorated = variant === "card" || variant === "highlight";
 
   return (
@@ -143,7 +142,7 @@ export function PageBlockFrame({
       className={cn(
         "h-full",
         alignmentClass(block.layout_json?.align),
-        hasStyleSettings && paddingClass(padding),
+        decorated && paddingClass(padding),
         decorated &&
           (brutal
             ? "border-2 border-border"
