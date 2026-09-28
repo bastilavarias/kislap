@@ -66,6 +66,10 @@ const PUBLIC_LINKS = [
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
+    <meta name="application-name" content="Kislap" />
+    <meta name="author" content="Kislap" />
+    <meta name="theme-color" content="#facc15" />
+    <link rel="alternate" type="text/plain" href="/llms.txt" title="Kislap for AI systems" />
 
     <title>{title}</title>
     <meta name="description" content={description} />
@@ -92,7 +96,8 @@ const PUBLIC_LINKS = [
   "@context": "https://schema.org",
   "@type": "WebSite",
   "name": "Kislap",
-  "url": site
+  "url": site,
+  "description": HOME_SEO.description
 })} />
 
     <script type="application/ld+json" set:html={JSON.stringify({
@@ -100,6 +105,7 @@ const PUBLIC_LINKS = [
   "@type": "Organization",
   "name": "Kislap",
   "url": site,
+  "description": "Kislap builds customizable personal Pages for links, work, socials, projects, promos, and other online destinations.",
   "logo": new URL('/assets/logo.png', site).toString(),
   "sameAs": [
     "https://github.com/bastilavarias/kislap",
@@ -185,10 +191,10 @@ const PUBLIC_LINKS = [
               <LogoVersion url="/" showVersion />
             </div>
             <h2 class="mt-10 max-w-3xl text-5xl font-black uppercase leading-[0.88] md:text-7xl">
-              Forms in. Public pages out.
+              One page. Your whole internet.
             </h2>
             <p class="mt-7 max-w-2xl text-xl font-semibold leading-relaxed text-white/90">
-              Kislap helps people publish portfolios, link pages, and QR-ready menus without dragging blocks around an empty canvas.
+              Kislap helps creators, developers, freelancers, students, and anyone online combine links, work, socials, projects, promos, and more into one customizable public page.
             </p>
             <div class="mt-8 flex flex-col gap-4 sm:flex-row">
               <a
@@ -216,7 +222,7 @@ const PUBLIC_LINKS = [
                 Explore Kislap
               </p>
               <h3 class="mt-3 text-3xl font-black uppercase leading-none">
-                Pick a builder or get help.
+                Build your page or get help.
               </h3>
             </div>
 

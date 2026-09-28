@@ -19,34 +19,28 @@ export function FinalCta({ buildPaths }: FinalCtaProps) {
       <div className="mx-auto max-w-7xl px-4 md:px-6">
         <div className="landing-reveal grid border-4 border-black bg-primary p-6 text-white shadow-[12px_12px_0_#000] md:p-8 lg:grid-cols-[1fr_0.72fr] lg:items-center">
           <div className="p-2 md:p-4">
-            <h2 className="max-w-4xl text-5xl font-black uppercase leading-[0.88] md:text-7xl">
-              Pick the page type. Publish the first version.
+            <p className="font-mono text-xs font-black uppercase tracking-[0.2em] text-secondary">
+              Your corner of the internet
+            </p>
+            <h2 className="mt-4 max-w-4xl text-5xl font-black uppercase leading-[0.88] md:text-7xl">
+              Your internet has too many links. Give them a home.
             </h2>
             <p className="landing-scrub-text mt-8 max-w-2xl text-xl font-semibold leading-relaxed">
-              Choose the path that matches what you need to share today. Kislap
-              gives it structure, a public URL, and a cleaner first impression.
+              Start with the links you already share. Add projects, promos, skills,
+              experience, banners, support links, or whatever your page needs next.
             </p>
-            <div className="mt-10 grid gap-4 sm:grid-cols-3">
-              {[
-                ["Portfolio", buildPaths.portfolio],
-                ["Link Page", buildPaths.linktree],
-                ["Menu", buildPaths.menu],
-              ].map(([label, href]) => (
-                <Button
-                  key={label}
-                  asChild
-                  variant="secondary"
-                  className="h-14 rounded-none border-4 border-black bg-white font-black uppercase text-black shadow-[5px_5px_0_#000] hover:bg-secondary"
-                >
-                  <a href={href}>
-                    {label} <ArrowRight className="h-4 w-4" />
-                  </a>
-                </Button>
-              ))}
-            </div>
+            <Button
+              asChild
+              variant="secondary"
+              className="mt-10 h-14 rounded-none border-4 border-black bg-white px-8 font-black uppercase text-black shadow-[5px_5px_0_#000] hover:bg-secondary"
+            >
+              <a href={buildPaths.default}>
+                Build my page <ArrowRight className="h-4 w-4" />
+              </a>
+            </Button>
             <div className="mt-8 flex items-center gap-3 font-mono text-sm font-bold uppercase">
               <ShieldCheck className="h-5 w-5" />
-              Open source and hosted public URLs
+              Free to publish · Open source · Hosted Kislap URL
             </div>
           </div>
 

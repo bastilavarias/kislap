@@ -5,18 +5,10 @@ import { ShowcaseFeed } from '@/components/showcase-feed';
 import { getPublicProjectUrl } from '@/lib/site-config';
 import { PAGE_SEO } from '@/lib/seo';
 
-const allowedTypes = new Set(["all", "portfolio", "linktree", "menu"]);
-const rawSelectedType = (Astro.url.searchParams.get("type") || "all").toLowerCase();
-const selectedType = (allowedTypes.has(rawSelectedType) ? rawSelectedType : "all") as
-  | "all"
-  | "portfolio"
-  | "linktree"
-  | "menu";
+const selectedType = "linktree" as const;
 const apiUrl = new URL(`${import.meta.env.API_URL}/api/projects/list/public`);
 apiUrl.searchParams.set("limit", "9");
-if (selectedType !== "all") {
-  apiUrl.searchParams.set("type", selectedType);
-}
+apiUrl.searchParams.set("type", selectedType);
 
 let initialProjects = [];
 let initialMeta = null;

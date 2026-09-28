@@ -9,21 +9,6 @@ type ExamplesRailProps = {
   buildPaths: LandingBuildPaths;
 };
 
-const sampleLinks: Record<string, { url: string; label: string }> = {
-  Portfolio: {
-    url: "https://sebastech.kislap.app",
-    label: "sebastech.kislap.app",
-  },
-  "Link Page": {
-    url: "https://bastilavarias.kislap.app",
-    label: "bastilavarias.kislap.app",
-  },
-  "Digital Menu": {
-    url: "https://dontstir.kislap.app",
-    label: "dontstir.kislap.app",
-  },
-};
-
 export function ExamplesRail({ buildPaths }: ExamplesRailProps) {
   return (
     <section className="overflow-hidden border-b-4 border-black bg-black py-28 text-white md:py-40">
@@ -31,12 +16,13 @@ export function ExamplesRail({ buildPaths }: ExamplesRailProps) {
         <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
           <div>
             <Badge className="rounded-none border-4 border-black bg-secondary px-4 py-2 font-mono text-black shadow-[5px_5px_0_#000]">
-              Pages worth sharing
+              One Page, different jobs
             </Badge>
-            <h2 className="mt-8 max-w-4xl text-5xl font-black uppercase leading-[0.9] md:text-7xl">
-              Your first link should already look intentional.
+            <h2 className="mt-8 max-w-5xl text-5xl font-black uppercase leading-[0.9] md:text-7xl">
+              Start simple. Grow into the page you actually need.
             </h2>
           </div>
+
           <Button
             asChild
             className="h-13 w-fit rounded-none border-4 border-black bg-primary px-6 font-black uppercase text-white shadow-[6px_6px_0_#000] hover:bg-primary/90"
@@ -61,14 +47,12 @@ export function ExamplesRail({ buildPaths }: ExamplesRailProps) {
                     <span className="h-3 w-3 border-2 border-black bg-black" />
                   </div>
                   <div className="min-w-0 flex-1 border-2 border-black bg-white px-3 py-1 font-mono text-[11px] font-black text-zinc-700">
-                    <span className="block truncate">
-                      {sampleLinks[story.title]?.label}
-                    </span>
+                    yourname.kislap.app
                   </div>
                 </div>
 
                 <PlaceholderMedia
-                  title={`${story.title} published example`}
+                  title={story.imageSize}
                   size={story.imageSize}
                   icon={story.icon}
                   imageSrc={story.imageSrc}
@@ -76,32 +60,39 @@ export function ExamplesRail({ buildPaths }: ExamplesRailProps) {
                 />
               </div>
 
-              <div className="mt-5 flex items-end justify-between gap-4">
-                <div>
-                  <p className="font-mono text-xs font-bold uppercase tracking-[0.16em] text-zinc-600">
-                    Live sample
-                  </p>
-                  <h3 className="mt-1 text-3xl font-black uppercase">
-                    {story.title}
-                  </h3>
-                </div>
-                <div className={`landing-bounce h-10 w-10 border-4 border-black ${story.accent}`} />
+              <div className="mt-5">
+                <p className="font-mono text-xs font-bold uppercase tracking-[0.16em] text-zinc-600">
+                  {story.eyebrow}
+                </p>
+                <h3 className="mt-2 text-3xl font-black uppercase">
+                  {story.title}
+                </h3>
+                <p className="mt-3 max-w-xl text-sm font-semibold leading-relaxed text-zinc-700">
+                  {story.copy}
+                </p>
               </div>
 
               <Button
                 asChild
                 className="mt-5 h-13 w-full rounded-none border-4 border-black bg-black font-black uppercase text-white shadow-[5px_5px_0_#facc15] hover:bg-primary"
               >
-                <a
-                  href={sampleLinks[story.title]?.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Visit sample <ArrowRight className="h-4 w-4" />
+                <a href={buildPaths.default}>
+                  Build this kind of page <ArrowRight className="h-4 w-4" />
                 </a>
               </Button>
             </article>
           ))}
+        </div>
+
+        <div className="mt-12 flex justify-center">
+          <a
+            href="https://bastilavarias.kislap.app"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="border-4 border-white bg-secondary px-6 py-4 font-mono text-sm font-black uppercase text-black shadow-[6px_6px_0_#ef4444] transition hover:-translate-y-1"
+          >
+            Open a live Kislap Page ↗
+          </a>
         </div>
       </div>
     </section>

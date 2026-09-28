@@ -4,8 +4,23 @@ import Layout from '@/layouts/main.astro';
 import { AboutPageContent } from '@/components/about-page-content';
 import type { APIResponsePublicProjectStats } from '@/types/api-response';
 import { PAGE_SEO } from '@/lib/seo';
+import { SITE_URL } from '@/lib/site-config';
 
 const { title, description, keywords } = PAGE_SEO.about;
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "AboutPage",
+  "name": title,
+  "url": new URL('/about', SITE_URL).toString(),
+  "description": description,
+  "about": {
+    "@type": "SoftwareApplication",
+    "name": "Kislap",
+    "applicationCategory": "WebApplication",
+    "description": "A customizable personal Page for links, work, socials, projects, promos, and more."
+  }
+};
 
 let stats: APIResponsePublicProjectStats = {
   sites_published: 0,
@@ -29,5 +44,6 @@ try {
 ---
 
 <Layout title={title} description={description} keywords={keywords}>
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
   <AboutPageContent client:load stats={stats} />
 </Layout>

@@ -73,7 +73,7 @@ export function OpenSourceSection() {
             <p className="text-white">apps/web-marketing</p>
             <p className="text-white">apps/web-sites</p>
             <p className="text-white">apps/api-service</p>
-            <p className="mt-6 text-secondary">public pages from structured content</p>
+            <p className="mt-6 text-secondary">one customizable Page, built in public</p>
           </div>
 
           <div className="mt-6 grid gap-4">

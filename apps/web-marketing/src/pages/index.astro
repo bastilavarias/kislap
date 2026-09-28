@@ -2,14 +2,85 @@
 export const prerender = false;
 import Layout from '@/layouts/main.astro';
 import { LandingPageContent } from '@/components/landing-page-content';
+import { faqs } from '@/components/landing/data';
 import { HOME_SEO } from '@/lib/seo';
-import { getBuilderProjectCreateUrl } from '@/lib/site-config';
+import { BUILDER_URL, SITE_URL, getBuilderProjectCreateUrl } from '@/lib/site-config';
 
 const buildPaths = {
-  portfolio: getBuilderProjectCreateUrl({ type: "portfolio" }),
-  linktree: getBuilderProjectCreateUrl({ type: "linktree" }),
-  menu: getBuilderProjectCreateUrl({ type: "menu" }),
   default: getBuilderProjectCreateUrl(),
+};
+
+const softwareSchema = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Kislap",
+  "applicationCategory": "WebApplication",
+  "operatingSystem": "Web",
+  "url": SITE_URL,
+  "description": HOME_SEO.description,
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "featureList": [
+    "Customizable personal page",
+    "Link-in-bio page",
+    "Flexible content blocks",
+    "Projects and work showcase",
+    "Skills and experience blocks",
+    "Promos, banners, quotes, and support cards",
+    "Custom block widths and ordering",
+    "Themes and page layouts",
+    "Hosted Kislap public URL"
+  ],
+  "sameAs": [
+    "https://github.com/bastilavarias/kislap"
+  ],
+  "potentialAction": {
+    "@type": "CreateAction",
+    "target": getBuilderProjectCreateUrl(),
+    "name": "Create a Kislap Page"
+  }
+};
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": faqs.map((faq) => ({
+    "@type": "Question",
+    "name": faq.q,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": faq.a
+    }
+  }))
+};
+
+const webPageSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": HOME_SEO.title,
+  "url": SITE_URL,
+  "description": HOME_SEO.description,
+  "about": {
+    "@type": "SoftwareApplication",
+    "name": "Kislap"
+  },
+  "primaryImageOfPage": {
+    "@type": "ImageObject",
+    "url": new URL('/og-image.png', SITE_URL).toString()
+  },
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "Kislap",
+    "url": SITE_URL
+  },
+  "significantLink": [
+    BUILDER_URL,
+    "https://github.com/bastilavarias/kislap",
+    "https://bastilavarias.kislap.app"
+  ]
 };
 ---
 
@@ -18,5 +89,8 @@ const buildPaths = {
   description={HOME_SEO.description}
   keywords={HOME_SEO.keywords}
 >
+  <script type="application/ld+json" set:html={JSON.stringify(softwareSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(webPageSchema)} />
   <LandingPageContent client:load buildPaths={buildPaths} />
 </Layout>

@@ -1,0 +1,53 @@
+# Kislap
+
+> Kislap is an open-source customizable personal page builder for combining links, work, socials, projects, promos, and other important content into one public page.
+
+## What Kislap does
+
+Kislap lets a person create one public Page, arrange it with structured content blocks, choose a layout and theme, and publish it on a hosted Kislap URL such as `yourname.kislap.app`.
+
+Kislap is useful as a link-in-bio page, personal website, creator hub, developer page, freelancer profile, or lightweight portfolio-style page. These are use cases of the same Kislap Page product, not separate products.
+
+## Main capabilities
+
+- Profile and personal introduction
+- Link blocks
+- Social links
+- Text and About blocks
+- Featured projects
+- Experience and skills
+- Promo cards
+- Banners and quotes
+- Support and QR cards
+- Reorderable content blocks
+- Full, two-thirds, half, and one-third block widths
+- Multiple page layouts
+- Custom themes, typography, spacing, radius, and shadows
+- Responsive public pages
+- Hosted Kislap subdomain
+- Open-source codebase
+
+## Who Kislap is for
+
+- Creators
+- Developers
+- Freelancers and virtual assistants
+- Students
+- Makers
+- People who need one shareable page for their online presence
+
+## Important URLs
+
+- Website: https://kislap.app/
+- Builder: https://builder.kislap.app/
+- Showcase: https://kislap.app/showcase
+- About: https://kislap.app/about
+- Help: https://kislap.app/help
+- Open source: https://github.com/bastilavarias/kislap
+- Example Page: https://bastilavarias.kislap.app/
+
+## Product terminology
+
+Use "Kislap Page" for the current product. "Link-in-bio page", "personal page", and "Linktree alternative" may be used descriptively for discovery, but Kislap is designed to support richer blocks than a basic list of links.
+
+Kislap previously exposed separate Portfolio and Menu creation paths. Those are legacy product concepts and should not be described as the current Kislap product offering.

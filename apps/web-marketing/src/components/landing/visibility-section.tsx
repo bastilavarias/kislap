@@ -1,4 +1,4 @@
-import { ArrowRight, Database, Globe2, ServerCog } from "lucide-react";
+import { ArrowRight, Blocks, LayoutGrid, Palette } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import type { LandingBuildPaths } from "@/components/landing/data";
@@ -9,19 +9,19 @@ type VisibilitySectionProps = {
 
 const handledItems = [
   {
-    title: "Domain",
-    copy: "Your page gets a public Kislap URL without DNS setup.",
-    icon: Globe2,
+    title: "Blocks",
+    copy: "Add links, projects, text, skills, experience, promos, banners, quotes, support cards, and more.",
+    icon: Blocks,
   },
   {
-    title: "Database",
-    copy: "Your form content is stored and mapped into the right page type.",
-    icon: Database,
+    title: "Layout",
+    copy: "Reorder content and give each block the space it deserves with full, half, third, and flexible widths.",
+    icon: LayoutGrid,
   },
   {
-    title: "Code",
-    copy: "Templates, rendering, hosting, and updates stay behind the scenes.",
-    icon: ServerCog,
+    title: "Theme",
+    copy: "Choose the visual direction once. Kislap keeps colors, spacing, shadows, and typography consistent across the page.",
+    icon: Palette,
   },
 ];
 
@@ -31,21 +31,22 @@ export function VisibilitySection({ buildPaths }: VisibilitySectionProps) {
       <div className="mx-auto grid max-w-7xl gap-8 px-4 md:px-6 lg:grid-cols-[0.95fr_1.05fr] lg:items-stretch">
         <div className="landing-reveal border-4 border-black bg-primary p-7 text-white shadow-[12px_12px_0_#000] md:p-10">
           <p className="inline-flex border-4 border-black bg-secondary px-4 py-2 font-mono text-sm font-black uppercase text-black shadow-[5px_5px_0_#000]">
-            Be visible
+            More than a list of links
           </p>
           <h2 className="mt-8 max-w-4xl text-5xl font-black uppercase leading-[0.88] md:text-7xl">
-            Fill the form. Publish the page.
+            Build the page around you.
           </h2>
           <p className="mt-7 max-w-2xl text-xl font-bold leading-relaxed text-white">
-            You bring the real details. Kislap turns them into a public page and
-            handles the domain, database, code, hosting, and page structure.
+            Your latest video should not have to look like your GitHub link. Your
+            best project should not have to fit the same box as everything else.
+            Kislap lets you compose one page without turning into a blank-canvas website builder.
           </p>
           <Button
             asChild
             className="mt-9 h-14 rounded-none border-4 border-black bg-white px-6 font-black uppercase text-black shadow-[6px_6px_0_#000] hover:bg-secondary"
           >
             <a href={buildPaths.default}>
-              Start a page <ArrowRight className="h-5 w-5" />
+              Build your page <ArrowRight className="h-5 w-5" />
             </a>
           </Button>
         </div>

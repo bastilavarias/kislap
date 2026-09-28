@@ -1,57 +1,62 @@
 import {
-  FileText,
-  Globe,
-  QrCode,
+  BriefcaseBusiness,
+  Code2,
+  Megaphone,
 } from "lucide-react";
 
 export type LandingBuildPaths = {
-  portfolio: string;
-  linktree: string;
-  menu: string;
   default: string;
 };
 
 export const productStories = [
   {
-    title: "Portfolio",
-    eyebrow: "Proof for people hiring you",
-    copy: "A structured profile, project proof, work history, SEO metadata, and a public URL without assembling a website stack.",
-    accent: "bg-blue-500",
-    imageSize: "1600 x 1200 builder screenshot",
-    imageSrc: "/assets/home/portfolio-screen.png",
-    icon: FileText,
-  },
-  {
-    title: "Link Page",
-    eyebrow: "One branded route from every bio",
-    copy: "A mobile-first home for links, launches, booking, newsletters, and social traffic that should not feel disposable.",
+    title: "Creator Page",
+    eyebrow: "Put every destination behind one link",
+    copy: "Feature your latest video, socials, affiliate links, brand partnerships, support links, and whatever deserves attention now.",
     accent: "bg-fuchsia-500",
-    imageSize: "1200 x 1600 mobile page screenshot",
+    imageSize: "Kislap Page example",
     imageSrc: "/assets/home/link-page-screen.png",
-    icon: Globe,
+    icon: Megaphone,
   },
   {
-    title: "Digital Menu",
-    eyebrow: "QR-ready browsing for tables and counters",
-    copy: "A public menu with categories, item detail, gallery support, and a format customers can actually browse on mobile.",
+    title: "Developer Page",
+    eyebrow: "Links plus proof of work",
+    copy: "Mix GitHub, projects, experience, skills, writing, contact details, and social links without building a separate portfolio site.",
+    accent: "bg-blue-500",
+    imageSize: "Kislap Page example",
+    imageSrc: "/assets/home/portfolio-screen.png",
+    icon: Code2,
+  },
+  {
+    title: "Freelancer Page",
+    eyebrow: "Make the next action obvious",
+    copy: "Show services, selected work, testimonials, booking links, contact details, and social proof in one shareable page.",
     accent: "bg-amber-400",
-    imageSize: "1200 x 1600 menu mobile screenshot",
-    imageSrc: "/assets/home/digital-menu-screen.png",
-    icon: QrCode,
+    imageSize: "Kislap Page example",
+    imageSrc: "/assets/home/link-page-screen.png",
+    icon: BriefcaseBusiness,
   },
 ];
 
 export const faqs = [
   {
+    q: "What is Kislap?",
+    a: "Kislap is a customizable personal page builder for putting your links, work, socials, projects, promos, and other important content on one public page.",
+  },
+  {
+    q: "Is Kislap a Linktree alternative?",
+    a: "Kislap can replace a basic link-in-bio page, but it is designed to go further with flexible content blocks, multiple layouts, themes, projects, skills, experience, banners, support cards, and more.",
+  },
+  {
     q: "Is Kislap free to use?",
-    a: "Yes. You can build, publish, and host your page on a Kislap public URL for free.",
+    a: "Yes. You can build and publish a Kislap Page on a public Kislap URL for free.",
   },
   {
-    q: "Why forms instead of drag and drop?",
-    a: "Forms keep the structure clean. Kislap turns your content into a designed page without making you arrange every pixel.",
+    q: "Can I customize the layout?",
+    a: "Yes. Blocks can be reordered and given different widths, alignment, spacing, and appearance while Kislap keeps the page responsive.",
   },
   {
-    q: "Can I start with a specific page type?",
-    a: "Yes. Start directly with a portfolio, link page, or digital menu so the builder opens with the right structure.",
+    q: "Who is Kislap for?",
+    a: "Kislap is useful for creators, developers, freelancers, virtual assistants, students, and anyone who wants one shareable page for their online presence.",
   },
 ];

@@ -29,8 +29,7 @@ export function PricingFree({ buildPaths }: PricingFreeProps) {
               Publish without a bill.
             </h3>
             <p className="mt-5 text-lg font-bold leading-relaxed text-black">
-              Build portfolios, link pages, and digital menus with a public
-              Kislap URL. No pricing table needed for the first version.
+              Build and publish one customizable Kislap Page with your own public URL. No pricing table needed for the first version.
             </p>
             <Button
               asChild

@@ -26,16 +26,16 @@ const itemVariants = {
 
 const platformSteps = [
   {
-    title: "Answer focused forms",
-    copy: "Add the proof, links, menu items, contact paths, and settings your page actually needs.",
+    title: "Add your content",
+    copy: "Start with your profile and links, then add projects, skills, experience, promos, banners, support cards, and other blocks when you need them.",
   },
   {
-    title: "Kislap shapes the page",
-    copy: "Your content is stored, mapped to the right layout, and rendered with metadata and public-page structure.",
+    title: "Arrange your page",
+    copy: "Reorder blocks, choose widths, pick a layout, and apply one theme without designing every pixel from scratch.",
   },
   {
     title: "Publish one clear URL",
-    copy: "The domain path, database, templates, hosting flow, and code details stay out of your way.",
+    copy: "Kislap handles the hosted URL, rendering, metadata, and publishing flow so your page stays easy to update.",
   },
 ];
 
@@ -58,9 +58,9 @@ const platformWork = [
 ];
 
 const useCases = [
-  ["Portfolio", "Show proof, experience, services, and contact paths."],
-  ["Link page", "Route attention from bios, campaigns, offers, and socials."],
-  ["Digital menu", "Give customers a scan-ready menu that works on mobile."],
+  ["Creators", "Feature content, socials, brand links, affiliate destinations, support links, and the next action you want your audience to take."],
+  ["Developers", "Combine GitHub, projects, skills, experience, writing, contact details, and social links in one shareable Page."],
+  ["Freelancers", "Show services, selected work, proof, booking links, contact paths, and the links that help turn attention into inquiries."],
 ];
 
 interface AboutPageContentProps {
@@ -236,8 +236,7 @@ export function AboutPageContent({ stats }: AboutPageContentProps) {
               Small pages with a real job.
             </h2>
             <p className="mt-7 max-w-2xl text-xl font-semibold leading-relaxed text-zinc-300">
-              Kislap stays narrow on purpose. Each page type is designed around
-              what visitors need to understand or do next.
+              Kislap stays focused on one product: a personal Page you can shape around what visitors need to understand or do next.
             </p>
           </div>
 
@@ -277,8 +276,7 @@ export function AboutPageContent({ stats }: AboutPageContentProps) {
               Publish a page people can act on.
             </h2>
             <p className="mt-6 text-lg font-semibold text-white/90">
-              Start with a focused page type, add real content, and share one
-              clear URL.
+              Start with your profile and links, add the blocks your work needs, and share one clear URL.
             </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <a

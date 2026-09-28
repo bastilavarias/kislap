@@ -1,61 +1,68 @@
 export const HOME_SEO = {
-  title: 'Kislap - Build the page people see first',
+  title: 'Kislap - One Page for Everything You Do Online',
   description:
-    'Kislap turns structured content into portfolio pages, link pages, and QR-ready menus without making you design from a blank canvas.',
+    'Build a customizable personal page for your links, work, socials, projects, promos, and more. Arrange blocks, choose a theme, and publish on your own Kislap URL.',
   keywords: [
     'Kislap',
-    'form based website builder',
-    'portfolio builder',
+    'link in bio',
+    'link in bio page',
+    'personal page builder',
     'link page builder',
-    'digital menu builder',
-    'QR menu builder',
+    'Linktree alternative',
+    'bio link page',
+    'creator page',
+    'developer portfolio page',
+    'freelancer profile page',
+    'personal website builder',
   ],
 };
 
 export const PAGE_SEO = {
   features: {
-    title: 'Features - Portfolio, Link Page, and Digital Menu Builders | Kislap',
+    title: 'Features - Flexible Blocks, Layouts, and Themes | Kislap',
     description:
-      'Choose the Kislap builder for the public page you need: a portfolio, branded link page, or QR-ready digital menu built from focused forms.',
+      'Explore Kislap Page features including flexible content blocks, custom widths, layouts, themes, projects, skills, experience, promos, banners, support cards, and more.',
     keywords: [
       'Kislap features',
-      'portfolio builder',
-      'link page builder',
-      'digital menu builder',
-      'public page builder',
+      'link in bio features',
+      'custom link page',
+      'personal page blocks',
+      'bio page customization',
     ],
   },
   showcase: {
-    title: 'Showcase - Published Portfolio, Link Page, and Menu Examples | Kislap',
+    title: 'Showcase - Kislap Pages Built for Creators, Developers, and Freelancers',
     description:
-      'Explore public pages built with Kislap, including portfolios, link pages, and QR-ready menus created from structured content.',
+      'Explore public Kislap Pages and see how creators, developers, freelancers, and other people organize links, work, projects, socials, and calls to action.',
     keywords: [
       'Kislap showcase',
-      'published portfolio examples',
-      'link page examples',
-      'digital menu examples',
+      'link in bio examples',
+      'personal page examples',
+      'creator page examples',
+      'developer page examples',
     ],
   },
   about: {
-    title: 'About - Why Kislap Builds Public Pages from Forms',
+    title: 'About Kislap - One Customizable Page for Your Online Presence',
     description:
-      'Kislap helps people publish the page their audience sees first: a portfolio, link page, or digital menu without blank-canvas website work.',
+      'Kislap is an open-source personal page builder for combining links, work, socials, projects, promos, and more into one customizable public page.',
     keywords: [
       'about Kislap',
-      'form based publishing',
-      'public page builder',
-      'open source website builder',
+      'personal page builder',
+      'link in bio builder',
+      'open source link page',
+      'Linktree alternative',
     ],
   },
   help: {
-    title: 'Help - Support for Kislap Builder and Published Pages',
+    title: 'Help - Support for Kislap Page Builder',
     description:
-      'Get help with Kislap publishing, account access, builder issues, portfolios, link pages, and QR-ready digital menus.',
+      'Get help with your Kislap Page, publishing, account access, content blocks, themes, layouts, and public page issues.',
     keywords: [
       'Kislap help',
       'Kislap support',
-      'builder support',
-      'publishing help',
+      'page builder support',
+      'link page help',
     ],
   },
 };

@@ -37,10 +37,7 @@ const itemVariants = {
 };
 
 const filterOptions: Array<{ value: ProjectTypeFilter; label: string }> = [
-  { value: "all", label: "All" },
-  { value: "portfolio", label: "Portfolio" },
-  { value: "linktree", label: "Link Page" },
-  { value: "menu", label: "Menu" },
+  { value: "linktree", label: "Kislap Pages" },
 ];
 
 function getFilterHref(filter: ProjectTypeFilter) {
@@ -57,7 +54,7 @@ interface ShowcaseFeedProps {
 export function ShowcaseFeed({
   projects,
   apiBaseUrl,
-  initialType = "all",
+  initialType = "linktree",
   initialMeta = null,
 }: ShowcaseFeedProps) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -236,7 +233,7 @@ export function ShowcaseFeed({
           </motion.h1>
 
           <motion.p variants={itemVariants} className="max-w-3xl text-xl font-semibold leading-relaxed text-zinc-700">
-            Browse portfolios, link pages, and menus people have already published. Filter by format and open the work directly.
+            Browse public Kislap Pages and see how people combine links, work, projects, socials, promos, and calls to action in one place.
           </motion.p>
 
           <motion.div
