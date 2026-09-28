@@ -14,6 +14,7 @@ const disabledMarketingRoutes = new Set([
   "/linktree-builder/",
   "/menu-builder/",
   "/portfolio-builder/",
+  "/source/",
 ]);
 
 // https://astro.build/config

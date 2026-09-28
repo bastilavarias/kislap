@@ -1,6 +1,6 @@
 ---
 import { LogoVersion } from '@/components/logo-version';
-import { BUILDER_URL, CONTACT_EMAIL, getSiteUrl } from '@/lib/site-config';
+import { BUILDER_URL, getSiteUrl } from '@/lib/site-config';
 import { HOME_SEO } from '@/lib/seo';
 import '@fontsource/outfit/400.css';
 import '@fontsource/outfit/600.css';
@@ -108,7 +108,6 @@ const PUBLIC_LINKS = [
   "description": "Kislap builds customizable personal Pages for links, work, socials, projects, promos, and other online destinations.",
   "logo": new URL('/assets/logo.png', site).toString(),
   "sameAs": [
-    "https://github.com/bastilavarias/kislap",
     "https://discord.gg/YcmUebEWhT"
   ]
 })} />
@@ -205,9 +204,7 @@ const PUBLIC_LINKS = [
                 <ArrowUpRight class="h-4 w-4" />
               </a>
               <a
-                href="https://github.com/bastilavarias/kislap"
-                target="_blank"
-                rel="noreferrer"
+                href="/source"
                 class={`${buttonVariants({ variant: "outline", size: "lg" })} h-14 rounded-none border-4 border-white bg-black px-6 font-black uppercase text-white shadow-[6px_6px_0_#fff] hover:bg-zinc-900`}
               >
                 <Github class="h-4 w-4" />
@@ -267,19 +264,17 @@ const PUBLIC_LINKS = [
                     <ArrowUpRight class="h-4 w-4" />
                   </a>
                   <a
-                    href={`mailto:${CONTACT_EMAIL}`}
+                    href="/help"
                     class="flex min-w-0 items-center gap-3 border-b-2 border-black pb-2 text-sm font-black uppercase transition hover:text-primary"
                   >
                     <Mail class="h-4 w-4 shrink-0" />
-                    <span class="min-w-0 [overflow-wrap:anywhere]">{CONTACT_EMAIL}</span>
+                    <span>Contact support</span>
                   </a>
                 </div>
 
                 <div class="mt-6 flex gap-3">
                   <a
-                    href="https://github.com/bastilavarias/kislap"
-                    target="_blank"
-                    rel="noreferrer"
+                    href="/source"
                     class="flex h-12 w-12 items-center justify-center border-4 border-black bg-white shadow-[4px_4px_0_#000] transition hover:-translate-y-0.5"
                   >
                     <Github class="h-5 w-5" />
@@ -302,12 +297,7 @@ const PUBLIC_LINKS = [
 
         <div class="mt-10 flex flex-col gap-4 border-4 border-white bg-secondary px-5 py-4 font-mono text-sm font-black uppercase text-black shadow-[8px_8px_0_#fff] md:flex-row md:items-center md:justify-between">
           <p>&copy; {currentYear} Kislap. All rights reserved.</p>
-          <a
-            href="https://github.com/bastilavarias"
-            class="w-fit underline decoration-4 underline-offset-4 transition hover:text-primary"
-          >
-            Built by bastilavarias
-          </a>
+          <span>Built in public.</span>
         </div>
       </div>
     </footer>

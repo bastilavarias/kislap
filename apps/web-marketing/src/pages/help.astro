@@ -3,7 +3,7 @@ export const prerender = false;
 
 import { HelpPageContent } from '@/components/help-page-content';
 import Layout from '@/layouts/main.astro';
-import { CONTACT_EMAIL, SITE_URL } from '@/lib/site-config';
+import { SITE_URL } from '@/lib/site-config';
 import { PAGE_SEO } from '@/lib/seo';
 
 const { title, description, keywords } = PAGE_SEO.help;
@@ -17,8 +17,7 @@ const schema = {
   "mainEntity": {
     "@type": "Organization",
     "name": "Kislap",
-    "url": SITE_URL,
-    "email": CONTACT_EMAIL
+    "url": SITE_URL
   }
 };
 ---
@@ -28,6 +27,5 @@ const schema = {
   <HelpPageContent
     client:load
     apiBaseUrl={import.meta.env.API_URL}
-    contactEmail={CONTACT_EMAIL}
   />
 </Layout>

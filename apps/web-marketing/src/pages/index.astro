@@ -34,9 +34,6 @@ const softwareSchema = {
     "Themes and page layouts",
     "Hosted Kislap public URL"
   ],
-  "sameAs": [
-    "https://github.com/bastilavarias/kislap"
-  ],
   "potentialAction": {
     "@type": "CreateAction",
     "target": getBuilderProjectCreateUrl(),
@@ -78,8 +75,8 @@ const webPageSchema = {
   },
   "significantLink": [
     BUILDER_URL,
-    "https://github.com/bastilavarias/kislap",
-    "https://bastilavarias.kislap.app"
+    new URL("/showcase", SITE_URL).toString(),
+    new URL("/source", SITE_URL).toString()
   ]
 };
 ---

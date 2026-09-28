@@ -36,7 +36,7 @@ function EditorPanel() {
           <p className="font-mono text-[10px] font-black uppercase tracking-[0.18em] text-zinc-600">
             Profile
           </p>
-          <p className="mt-2 text-xl font-black">Sebastian Lavarias</p>
+          <p className="mt-2 text-xl font-black">Juan Delacruz</p>
           <p className="mt-1 text-sm font-semibold text-zinc-600">
             Developer · Creator · Builder
           </p>
@@ -100,7 +100,7 @@ function OutputPanel() {
       <div className="flex items-center justify-between border-b-4 border-black bg-zinc-100 px-4 py-3">
         <WindowControls />
         <span className="border-2 border-black bg-white px-3 py-1 font-mono text-[10px] font-black">
-          sebastian.kislap.app
+          juandelacruz.kislap.app
         </span>
       </div>
 
@@ -108,10 +108,10 @@ function OutputPanel() {
         <div className="border-4 border-black bg-white p-5 shadow-[6px_6px_0_#000]">
           <div className="flex items-center gap-4">
             <div className="flex h-16 w-16 shrink-0 items-center justify-center border-4 border-black bg-secondary text-2xl font-black shadow-[4px_4px_0_#000]">
-              SL
+              JD
             </div>
             <div>
-              <h3 className="text-2xl font-black uppercase">Sebastian Lavarias</h3>
+              <h3 className="text-2xl font-black uppercase">Juan Delacruz</h3>
               <p className="mt-1 font-mono text-xs font-black uppercase text-zinc-500">
                 Developer · Creator · Builder
               </p>
@@ -191,8 +191,8 @@ export function Hero({ buildPaths }: HeroProps) {
               size="lg"
               className="landing-pop-card h-14 rounded-none border-4 border-black bg-white px-7 text-base font-black uppercase text-black shadow-[7px_7px_0_#000] hover:translate-x-1 hover:translate-y-1 hover:bg-secondary hover:shadow-[3px_3px_0_#000]"
             >
-              <a href="https://bastilavarias.kislap.app" target="_blank" rel="noopener noreferrer">
-                See a live page
+              <a href="/showcase">
+                Browse pages
               </a>
             </Button>
 
@@ -202,7 +202,7 @@ export function Hero({ buildPaths }: HeroProps) {
               size="lg"
               className="h-14 px-4 font-black uppercase"
             >
-              <a href="https://github.com/bastilavarias/kislap" target="_blank" rel="noopener noreferrer">
+              <a href="/source">
                 <Github className="h-5 w-5" /> GitHub
               </a>
             </Button>

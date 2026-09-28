@@ -3,7 +3,7 @@ import { ArrowRight, Code2, GitFork, Github, ShieldCheck } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
-const repoUrl = "https://github.com/bastilavarias/kislap";
+const repoUrl = "/source";
 
 const proofItems = [
   {
@@ -44,7 +44,7 @@ export function OpenSourceSection() {
               asChild
               className="h-14 rounded-none border-4 border-black bg-black px-7 font-black uppercase text-white shadow-[6px_6px_0_#ef4444] hover:bg-zinc-900"
             >
-              <a href={repoUrl} target="_blank" rel="noopener noreferrer">
+              <a href={repoUrl}>
                 <Github className="h-5 w-5" />
                 View on GitHub
               </a>
@@ -68,7 +68,7 @@ export function OpenSourceSection() {
               <span className="h-3 w-3 border-2 border-white bg-secondary" />
               <span className="h-3 w-3 border-2 border-white bg-green-400" />
             </div>
-            <p>$ git clone github.com/bastilavarias/kislap</p>
+            <p>$ open kislap.app/source</p>
             <p className="mt-2 text-white">apps/web-builder</p>
             <p className="text-white">apps/web-marketing</p>
             <p className="text-white">apps/web-sites</p>

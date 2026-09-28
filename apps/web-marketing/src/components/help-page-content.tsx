@@ -1,11 +1,10 @@
 import { useMemo, useState, type FormEvent } from "react";
-import { LifeBuoy, Mail, MessageCircle, Send, ShieldCheck } from "lucide-react";
+import { LifeBuoy, MessageCircle, Send, ShieldCheck } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
 type HelpPageContentProps = {
   apiBaseUrl: string;
-  contactEmail: string;
 };
 
 type FormState = {
@@ -24,7 +23,7 @@ const initialFormState: FormState = {
   description: "",
 };
 
-export function HelpPageContent({ apiBaseUrl, contactEmail }: HelpPageContentProps) {
+export function HelpPageContent({ apiBaseUrl }: HelpPageContentProps) {
   const [form, setForm] = useState<FormState>(initialFormState);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -216,13 +215,10 @@ export function HelpPageContent({ apiBaseUrl, contactEmail }: HelpPageContentPro
               <div className="border-4 border-black bg-black p-6 text-white shadow-[10px_10px_0_#facc15]">
                 <p className="font-mono text-sm font-bold uppercase tracking-[0.24em] text-secondary">Contact us</p>
                 <div className="mt-5 space-y-4">
-                  <a
-                    href={`mailto:${contactEmail}`}
-                    className="flex min-w-0 items-center gap-3 border-4 border-white bg-white px-4 py-3 text-sm font-black text-black transition hover:bg-secondary"
-                  >
-                    <Mail className="h-4 w-4 shrink-0" />
-                    <span className="min-w-0 [overflow-wrap:anywhere]">{contactEmail}</span>
-                  </a>
+                  <div className="flex min-w-0 items-center gap-3 border-4 border-white bg-white px-4 py-3 text-sm font-black text-black">
+                    <LifeBuoy className="h-4 w-4 shrink-0" />
+                    <span>Use the support form on this page</span>
+                  </div>
                   <a
                     href="https://discord.gg/YcmUebEWhT"
                     target="_blank"
