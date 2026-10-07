@@ -35,13 +35,9 @@ ON DUPLICATE KEY UPDATE
   updated_at = NOW();
 
 SET @juan_user_id = LAST_INSERT_ID();
-SET @theme_object = (
-  SELECT theme_object
-  FROM linktrees
-  WHERE theme_object IS NOT NULL
-  ORDER BY id ASC
-  LIMIT 1
-);
+SET @creator_theme_object = CAST('{"preset":"pastel-dreams","styles":{"light":{"background":"oklch(0.97 0.01 314.78)","foreground":"oklch(0.37 0.03 259.73)","card":"oklch(1.00 0 0)","card-foreground":"oklch(0.37 0.03 259.73)","popover":"oklch(1.00 0 0)","popover-foreground":"oklch(0.37 0.03 259.73)","primary":"oklch(0.71 0.16 293.54)","primary-foreground":"oklch(1.00 0 0)","secondary":"oklch(0.91 0.05 306.09)","secondary-foreground":"oklch(0.45 0.03 256.80)","muted":"oklch(0.95 0.03 307.17)","muted-foreground":"oklch(0.55 0.02 264.36)","accent":"oklch(0.94 0.03 321.94)","accent-foreground":"oklch(0.37 0.03 259.73)","destructive":"oklch(0.81 0.10 19.57)","border":"oklch(0.91 0.05 306.09)","input":"oklch(0.91 0.05 306.09)","ring":"oklch(0.71 0.16 293.54)","chart-1":"oklch(0.71 0.16 293.54)","chart-2":"oklch(0.61 0.22 292.72)","chart-3":"oklch(0.54 0.25 293.01)","chart-4":"oklch(0.49 0.24 292.58)","chart-5":"oklch(0.43 0.21 292.76)","radius":"1.5rem","sidebar":"oklch(0.91 0.05 306.09)","sidebar-foreground":"oklch(0.37 0.03 259.73)","sidebar-primary":"oklch(0.71 0.16 293.54)","sidebar-primary-foreground":"oklch(1.00 0 0)","sidebar-accent":"oklch(0.94 0.03 321.94)","sidebar-accent-foreground":"oklch(0.37 0.03 259.73)","sidebar-border":"oklch(0.91 0.05 306.09)","sidebar-ring":"oklch(0.71 0.16 293.54)","font-sans":"Open Sans, sans-serif","font-serif":"Source Serif 4, serif","font-mono":"IBM Plex Mono, monospace","shadow-color":"hsl(0 0% 0%)","shadow-opacity":"0.08","shadow-blur":"16px","shadow-spread":"-4px","shadow-offset-x":"0px","shadow-offset-y":"8px","letter-spacing":"0em","spacing":"0.25rem"},"dark":{"background":"oklch(0.22 0.01 56.04)","foreground":"oklch(0.93 0.03 272.79)","card":"oklch(0.28 0.03 307.23)","card-foreground":"oklch(0.93 0.03 272.79)","popover":"oklch(0.28 0.03 307.23)","popover-foreground":"oklch(0.93 0.03 272.79)","primary":"oklch(0.79 0.12 295.75)","primary-foreground":"oklch(0.22 0.01 56.04)","secondary":"oklch(0.34 0.04 308.85)","secondary-foreground":"oklch(0.87 0.01 258.34)","muted":"oklch(0.28 0.03 307.23)","muted-foreground":"oklch(0.71 0.02 261.32)","accent":"oklch(0.39 0.05 304.64)","accent-foreground":"oklch(0.87 0.01 258.34)","destructive":"oklch(0.81 0.10 19.57)","border":"oklch(0.34 0.04 308.85)","input":"oklch(0.34 0.04 308.85)","ring":"oklch(0.79 0.12 295.75)","chart-1":"oklch(0.79 0.12 295.75)","chart-2":"oklch(0.71 0.16 293.54)","chart-3":"oklch(0.61 0.22 292.72)","chart-4":"oklch(0.54 0.25 293.01)","chart-5":"oklch(0.49 0.24 292.58)","sidebar":"oklch(0.34 0.04 308.85)","sidebar-foreground":"oklch(0.93 0.03 272.79)","sidebar-primary":"oklch(0.79 0.12 295.75)","sidebar-primary-foreground":"oklch(0.22 0.01 56.04)","sidebar-accent":"oklch(0.39 0.05 304.64)","sidebar-accent-foreground":"oklch(0.87 0.01 258.34)","sidebar-border":"oklch(0.34 0.04 308.85)","sidebar-ring":"oklch(0.79 0.12 295.75)","shadow-color":"hsl(0 0% 0%)","shadow-opacity":"0.1","shadow-blur":"3px","shadow-spread":"0px","shadow-offset-x":"0","shadow-offset-y":"1px","letter-spacing":"0em","spacing":"0.25rem"},"css":{}}}' AS JSON);
+SET @developer_theme_object = CAST('{"preset":"vs-code","styles":{"light":{"background":"oklch(0.97 0.02 225.66)","foreground":"oklch(0.15 0.02 269.18)","card":"oklch(0.98 0.01 228.79)","card-foreground":"oklch(0.15 0.02 269.18)","popover":"oklch(0.98 0.01 238.45)","popover-foreground":"oklch(0.15 0.02 269.18)","primary":"oklch(0.71 0.15 239.07)","primary-foreground":"oklch(0.94 0.03 232.39)","secondary":"oklch(0.91 0.03 229.20)","secondary-foreground":"oklch(0.15 0.02 269.18)","muted":"oklch(0.89 0.02 225.69)","muted-foreground":"oklch(0.36 0.03 230.30)","accent":"oklch(0.88 0.02 235.72)","accent-foreground":"oklch(0.34 0.05 229.72)","destructive":"oklch(0.61 0.24 20.96)","border":"oklch(0.82 0.02 240.77)","input":"oklch(0.82 0.02 240.77)","ring":"oklch(0.55 0.10 235.72)","chart-1":"oklch(0.57 0.11 228.97)","chart-2":"oklch(0.45 0.10 270.08)","chart-3":"oklch(0.65 0.15 159.03)","chart-4":"oklch(0.75 0.10 100.01)","chart-5":"oklch(0.55 0.15 299.88)","radius":"0rem","sidebar":"oklch(0.93 0.01 238.46)","sidebar-foreground":"oklch(0.15 0.02 269.18)","sidebar-primary":"oklch(0.57 0.11 228.97)","sidebar-primary-foreground":"oklch(0.99 0.01 203.97)","sidebar-accent":"oklch(0.88 0.02 235.72)","sidebar-accent-foreground":"oklch(0.15 0.02 269.18)","sidebar-border":"oklch(0.82 0.02 240.77)","sidebar-ring":"oklch(0.57 0.11 228.97)","font-sans":"''Source Code Pro'', ''Geist'', ''Geist Fallback'', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, ''Segoe UI'', Roboto, ''Helvetica Neue'', Arial, ''Noto Sans'', sans-serif, ''Apple Color Emoji'', ''Segoe UI Emoji'', ''Segoe UI Symbol'', ''Noto Color Emoji''","font-serif":"''Source Serif 4'', ''Geist'', ''Geist Fallback'', ui-serif, Georgia, Cambria, ''Times New Roman'', Times, serif","font-mono":"''Source Code Pro'', ''Geist Mono'', ''Geist Mono Fallback'', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, ''Liberation Mono'', ''Courier New'', monospace","shadow-color":"oklch(0.49 0.09 235.45)","shadow-opacity":"0.06","shadow-blur":"2.5px","shadow-spread":"0px","shadow-offset-x":"0px","shadow-offset-y":"1px","letter-spacing":"0em","spacing":"0.25rem"},"dark":{"background":"oklch(0.18 0.02 271.27)","foreground":"oklch(0.90 0.01 238.47)","card":"oklch(0.22 0.02 271.67)","card-foreground":"oklch(0.90 0.01 238.47)","popover":"oklch(0.22 0.02 271.67)","popover-foreground":"oklch(0.90 0.01 238.47)","primary":"oklch(0.71 0.15 239.07)","primary-foreground":"oklch(0.94 0.03 232.39)","secondary":"oklch(0.28 0.03 270.91)","secondary-foreground":"oklch(0.90 0.01 238.47)","muted":"oklch(0.28 0.03 270.91)","muted-foreground":"oklch(0.60 0.03 269.46)","accent":"oklch(0.28 0.03 270.91)","accent-foreground":"oklch(0.90 0.01 238.47)","destructive":"oklch(0.64 0.25 19.69)","border":"oklch(0.90 0.01 238.47 / 15%)","input":"oklch(0.90 0.01 238.47 / 20%)","ring":"oklch(0.66 0.13 227.15)","chart-1":"oklch(0.66 0.13 227.15)","chart-2":"oklch(0.60 0.10 269.83)","chart-3":"oklch(0.70 0.15 159.83)","chart-4":"oklch(0.80 0.10 100.65)","chart-5":"oklch(0.60 0.15 300.14)","sidebar":"oklch(0.22 0.02 271.67)","sidebar-foreground":"oklch(0.90 0.01 238.47)","sidebar-primary":"oklch(0.66 0.13 227.15)","sidebar-primary-foreground":"oklch(0.18 0.02 271.27)","sidebar-accent":"oklch(0.28 0.03 270.91)","sidebar-accent-foreground":"oklch(0.90 0.01 238.47)","sidebar-border":"oklch(0.90 0.01 238.47 / 15%)","sidebar-ring":"oklch(0.66 0.13 227.15)","shadow-color":"oklch(0 0 0)","shadow-opacity":"0.01","shadow-blur":"2px","shadow-spread":"0px","shadow-offset-x":"0px","shadow-offset-y":"1px","letter-spacing":"0em","spacing":"0.25rem"},"css":{}}}' AS JSON);
+SET @freelancer_theme_object = CAST('{"preset":"elegant-luxury","styles":{"light":{"background":"oklch(0.98 0.00 56.38)","foreground":"oklch(0.22 0 0)","card":"oklch(0.98 0.00 56.38)","card-foreground":"oklch(0.22 0 0)","popover":"oklch(0.98 0.00 56.38)","popover-foreground":"oklch(0.22 0 0)","primary":"oklch(0.47 0.15 24.94)","primary-foreground":"oklch(1.00 0 0)","secondary":"oklch(0.96 0.04 89.09)","secondary-foreground":"oklch(0.48 0.10 75.12)","muted":"oklch(0.94 0.01 53.44)","muted-foreground":"oklch(0.44 0.01 73.64)","accent":"oklch(0.96 0.06 95.62)","accent-foreground":"oklch(0.40 0.13 25.72)","destructive":"oklch(0.44 0.16 26.90)","border":"oklch(0.94 0.03 80.99)","input":"oklch(0.94 0.03 80.99)","ring":"oklch(0.47 0.15 24.94)","chart-1":"oklch(0.51 0.19 27.52)","chart-2":"oklch(0.47 0.15 24.94)","chart-3":"oklch(0.40 0.13 25.72)","chart-4":"oklch(0.56 0.15 49.00)","chart-5":"oklch(0.47 0.12 46.20)","radius":"0.375rem","sidebar":"oklch(0.94 0.01 53.44)","sidebar-foreground":"oklch(0.22 0 0)","sidebar-primary":"oklch(0.47 0.15 24.94)","sidebar-primary-foreground":"oklch(1.00 0 0)","sidebar-accent":"oklch(0.96 0.06 95.62)","sidebar-accent-foreground":"oklch(0.40 0.13 25.72)","sidebar-border":"oklch(0.94 0.03 80.99)","sidebar-ring":"oklch(0.47 0.15 24.94)","font-sans":"Poppins, sans-serif","font-serif":"Libre Baskerville, serif","font-mono":"IBM Plex Mono, monospace","shadow-color":"hsl(0 63% 18%)","shadow-opacity":"0.12","shadow-blur":"16px","shadow-spread":"-2px","shadow-offset-x":"1px","shadow-offset-y":"1px","letter-spacing":"0em","spacing":"0.25rem"},"dark":{"background":"oklch(0.22 0.01 56.04)","foreground":"oklch(0.97 0.00 106.42)","card":"oklch(0.27 0.01 34.30)","card-foreground":"oklch(0.97 0.00 106.42)","popover":"oklch(0.27 0.01 34.30)","popover-foreground":"oklch(0.97 0.00 106.42)","primary":"oklch(0.51 0.19 27.52)","primary-foreground":"oklch(0.98 0.00 56.38)","secondary":"oklch(0.47 0.12 46.20)","secondary-foreground":"oklch(0.96 0.06 95.62)","muted":"oklch(0.27 0.01 34.30)","muted-foreground":"oklch(0.87 0.00 56.37)","accent":"oklch(0.56 0.15 49.00)","accent-foreground":"oklch(0.96 0.06 95.62)","destructive":"oklch(0.64 0.21 25.33)","border":"oklch(0.37 0.01 67.56)","input":"oklch(0.37 0.01 67.56)","ring":"oklch(0.51 0.19 27.52)","chart-1":"oklch(0.71 0.17 22.22)","chart-2":"oklch(0.64 0.21 25.33)","chart-3":"oklch(0.58 0.22 27.33)","chart-4":"oklch(0.84 0.16 84.43)","chart-5":"oklch(0.77 0.16 70.08)","sidebar":"oklch(0.22 0.01 56.04)","sidebar-foreground":"oklch(0.97 0.00 106.42)","sidebar-primary":"oklch(0.51 0.19 27.52)","sidebar-primary-foreground":"oklch(0.98 0.00 56.38)","sidebar-accent":"oklch(0.56 0.15 49.00)","sidebar-accent-foreground":"oklch(0.96 0.06 95.62)","sidebar-border":"oklch(0.37 0.01 67.56)","sidebar-ring":"oklch(0.51 0.19 27.52)","shadow-color":"hsl(0 0% 0%)","shadow-opacity":"0.1","shadow-blur":"3px","shadow-spread":"0px","shadow-offset-x":"0","shadow-offset-y":"1px","letter-spacing":"0em","spacing":"0.25rem"},"css":{}}}' AS JSON);
 
 INSERT INTO projects (
   user_id,
@@ -113,9 +109,9 @@ SELECT
   'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80',
   'linktree-default',
   'creator',
-  'grid',
-  'default',
-  @theme_object,
+  'plain',
+  'pastel-dreams',
+  @creator_theme_object,
   NOW(),
   NOW()
 WHERE @creator_linktree_id IS NULL;
@@ -133,9 +129,9 @@ SET
   logo_url = 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80',
   layout_name = 'linktree-default',
   composition_layout = 'creator',
-  background_style = 'grid',
-  theme_name = 'default',
-  theme_object = COALESCE(@theme_object, theme_object),
+  background_style = 'plain',
+  theme_name = 'pastel-dreams',
+  theme_object = @creator_theme_object,
   deleted_at = NULL,
   updated_at = NOW()
 WHERE id = @creator_linktree_id;
@@ -415,8 +411,8 @@ SELECT
   'linktree-default',
   'portfolio',
   'grid',
-  'default',
-  @theme_object,
+  'vs-code',
+  @developer_theme_object,
   NOW(),
   NOW()
 WHERE @developer_linktree_id IS NULL;
@@ -435,54 +431,8 @@ SET
   layout_name = 'linktree-default',
   composition_layout = 'portfolio',
   background_style = 'grid',
-  theme_name = 'default',
-  theme_object = JSON_SET(
-    COALESCE(@theme_object, theme_object),
-    '$.styles.light.background', '#f6f1e7',
-    '$.styles.light.foreground', '#111111',
-    '$.styles.light.card', '#fffdf8',
-    '$.styles.light.muted', '#ebe4d8',
-    '$.styles.light."muted-foreground"', '#514b43',
-    '$.styles.light.primary', '#ff3132',
-    '$.styles.light."primary-foreground"', '#ffffff',
-    '$.styles.light.secondary', '#f6e652',
-    '$.styles.light."secondary-foreground"', '#111111',
-    '$.styles.light.accent', '#246bfe',
-    '$.styles.light."accent-foreground"', '#ffffff',
-    '$.styles.light.border', '#111111',
-    '$.styles.light.input', '#111111',
-    '$.styles.light.ring', '#ff3132',
-    '$.styles.light.radius', '0.35rem',
-    '$.styles.light.spacing', '0.18rem',
-    '$.styles.light."shadow-color"', '#111111',
-    '$.styles.light."shadow-opacity"', '1',
-    '$.styles.light."shadow-blur"', '0px',
-    '$.styles.light."shadow-spread"', '0px',
-    '$.styles.light."shadow-offset-x"', '5px',
-    '$.styles.light."shadow-offset-y"', '5px',
-    '$.styles.dark.background', '#0d0d0d',
-    '$.styles.dark.foreground', '#f8f5ee',
-    '$.styles.dark.card', '#171717',
-    '$.styles.dark.muted', '#242424',
-    '$.styles.dark."muted-foreground"', '#b8b2a8',
-    '$.styles.dark.primary', '#ff4b4c',
-    '$.styles.dark."primary-foreground"', '#0d0d0d',
-    '$.styles.dark.secondary', '#f6e652',
-    '$.styles.dark."secondary-foreground"', '#111111',
-    '$.styles.dark.accent', '#4f83ff',
-    '$.styles.dark."accent-foreground"', '#ffffff',
-    '$.styles.dark.border', '#f8f5ee',
-    '$.styles.dark.input', '#f8f5ee',
-    '$.styles.dark.ring', '#ff4b4c',
-    '$.styles.dark.radius', '0.35rem',
-    '$.styles.dark.spacing', '0.18rem',
-    '$.styles.dark."shadow-color"', '#000000',
-    '$.styles.dark."shadow-opacity"', '1',
-    '$.styles.dark."shadow-blur"', '0px',
-    '$.styles.dark."shadow-spread"', '0px',
-    '$.styles.dark."shadow-offset-x"', '5px',
-    '$.styles.dark."shadow-offset-y"', '5px'
-  ),
+  theme_name = 'vs-code',
+  theme_object = @developer_theme_object,
   deleted_at = NULL,
   updated_at = NOW()
 WHERE id = @developer_linktree_id;
@@ -514,7 +464,7 @@ VALUES
   'CURRENTLY BUILDING / SHIPPING WEB PRODUCTS / AUTOMATING THE BORING STUFF',
   NULL,
   NULL,
-  '#111111',
+  '#1e1e1e',
   JSON_OBJECT('width', 'full', 'align', 'center'),
   JSON_OBJECT('variant', 'default', 'padding', 'compact'),
   NOW(),
@@ -529,7 +479,7 @@ VALUES
   NULL,
   'Good software should feel obvious to the user and boring to operate.',
   'Juan Delacruz',
-  '#ff3132',
+  '#007acc',
   JSON_OBJECT('width', 'full', 'align', 'center'),
   JSON_OBJECT('variant', 'default', 'padding', 'spacious'),
   NOW(),
@@ -734,9 +684,9 @@ SELECT
   'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80',
   'linktree-default',
   'bento',
-  'grid',
-  'default',
-  @theme_object,
+  'plain',
+  'elegant-luxury',
+  @freelancer_theme_object,
   NOW(),
   NOW()
 WHERE @freelancer_linktree_id IS NULL;
@@ -754,9 +704,9 @@ SET
   logo_url = 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80',
   layout_name = 'linktree-default',
   composition_layout = 'bento',
-  background_style = 'grid',
-  theme_name = 'default',
-  theme_object = COALESCE(@theme_object, theme_object),
+  background_style = 'plain',
+  theme_name = 'elegant-luxury',
+  theme_object = @freelancer_theme_object,
   deleted_at = NULL,
   updated_at = NOW()
 WHERE id = @freelancer_linktree_id;
